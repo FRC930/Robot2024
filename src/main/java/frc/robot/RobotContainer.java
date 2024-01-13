@@ -6,8 +6,16 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.TestShooterCommand;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveDrivetrainSubsystem;
+
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -19,8 +27,31 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+    private static final double POV_PERCENT_SPEED = 0.3;
+    private static final double JOYSTICK_DEADBAND = 0.1;
+    private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
+    private static final double PERCENT_SPEED = 0.3;
+    // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
+    // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
+    final double MaxSpeed = Units.feetToMeters(16.2); //13.6); //  meters per second desired top speed
+    final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
+
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
+    SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
+    
+    SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    Telemetry logger = new Telemetry(MaxSpeed);
+    
+    SwerveRequest.Idle idle = new SwerveRequest.Idle();
+
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(3, 4);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -42,13 +73,43 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    SmartDashboard.putNumber("LeftMotor", 0.0);
+    SmartDashboard.putNumber("RightMotor", 0.0);
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    SmartDashboard.putNumber("LeftMotorSpeed", 0.0);
+    SmartDashboard.putNumber("RightMotorSpeed", 0.0);
+
+    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED) // Drive forward with
+                                                                                              // negative Y (forward)
+                .withVelocityY(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED) // Drive left with negative X (left)
+                .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                .withDeadband(JOYSTICK_DEADBAND)
+                .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
+            // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
+            ));
+
+    m_driverController.pov(0).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
+      ));
+    m_driverController.pov(180).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
+      ));
+    m_driverController.pov(90).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(-POV_PERCENT_SPEED * MaxSpeed)
+      ));
+    m_driverController.pov(270).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(POV_PERCENT_SPEED * MaxSpeed)
+      ));
+
+    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
+
+    m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
+    // reset the field-centric heading on left bumper press TODO test
+    m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+
+    drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   /**
@@ -58,6 +119,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return null;
   }
 }
