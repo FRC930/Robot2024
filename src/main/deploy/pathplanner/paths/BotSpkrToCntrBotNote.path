@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.1701701414875105,
+        "y": 3.5195631385526625
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7552552122312661,
+        "y": 2.7605338575877916
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.286069650533182,
+        "y": 0.7680819950550044
+      },
+      "prevControl": {
+        "x": 7.005207738904962,
+        "y": 0.8155213251153077
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CntrBot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "BotSpeaker",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
