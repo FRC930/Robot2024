@@ -6,7 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.TestShooterCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -49,6 +51,7 @@ public class RobotContainer {
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
   // The robot's subsystems and commands are defined here...
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(3, 4);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -70,6 +73,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    SmartDashboard.putNumber("LeftMotor", 0.0);
+    SmartDashboard.putNumber("RightMotor", 0.0);
+
+    SmartDashboard.putNumber("LeftMotorSpeed", 0.0);
+    SmartDashboard.putNumber("RightMotorSpeed", 0.0);
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED) // Drive forward with
@@ -94,6 +102,8 @@ public class RobotContainer {
       drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(POV_PERCENT_SPEED * MaxSpeed)
       ));
 
+    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
+
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // reset the field-centric heading on left bumper press TODO test
@@ -109,6 +119,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null; 
+    return null;
   }
 }
