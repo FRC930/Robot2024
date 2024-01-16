@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
- import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSubsystem {
+public class ShooterSubsystem extends SubsystemBase{
 
     private TalonFX m_leftMotor; 
     private TalonFX m_rightMotor; 
