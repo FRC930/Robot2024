@@ -4,6 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "TopSpeaker",
+    "MidSpeaker",
+    "BotSpeaker",
     "Amp"
   ],
   "autoFolders": [],
