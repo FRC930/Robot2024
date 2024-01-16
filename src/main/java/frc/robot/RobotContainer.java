@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.Autos;
 import frc.robot.commands.TestShooterCommand;
 import frc.robot.generated.TunerConstants;
@@ -15,6 +17,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -27,6 +31,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+    private final boolean UseLimeLightAprilTag = true; 
 
     private static final double POV_PERCENT_SPEED = 0.3;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -120,5 +126,23 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
+  }
+
+  public void updateVisionOdometry() {
+      if (UseLimeLightAprilTag) {    
+          Results lastResult = LimelightHelpers.getLatestResults("limelight-front").targetingResults;
+
+          if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
+              var alliance = DriverStation.getAlliance();
+
+              if (alliance.isPresent()) {
+                  if (alliance.get() == DriverStation.Alliance.Red) {
+                      drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiRed(), Timer.getFPGATimestamp());
+                  } else if (alliance.get() == DriverStation.Alliance.Blue){
+                      drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
+                  }
+              }
+          }
+      }
   }
 }
