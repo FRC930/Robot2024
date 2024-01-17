@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -38,6 +40,12 @@ public class ShooterSubsystem extends SubsystemBase{
     public void stop() {
         m_leftMotor.set(0.0);
         m_rightMotor.set(0.0);
+    }
+
+    @Override
+    public void periodic() {
+        Logger.recordOutput("Shooter/LeftMotorSpeed", getLeftMotorSpeed());
+        Logger.recordOutput("Shooter/RightMotorSpeed", getRightMotorSpeed());
     }
 
 }
