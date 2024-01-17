@@ -20,7 +20,8 @@
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
-      "/SmartDashboard/Module 3": "Mechanism2d"
+      "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/SelectAuto": "String Chooser"
     },
     "windows": {
       "/Pose": {
@@ -44,6 +45,11 @@
         }
       },
       "/SmartDashboard/Module 3": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/SelectAuto": {
         "window": {
           "visible": true
         }
