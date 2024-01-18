@@ -20,7 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CntrBotToWngBot"
+            "pathName": "BlueLineToWngBot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CntrBotToBlueLine"
           }
         }
       ]
