@@ -11,6 +11,7 @@ public class SparkTestShooterCommand extends Command {
     private SparkMaxShooterSubsystem m_shooter;
 
     private double m_leftMotorSpeed;
+    private double m_rightMotorSpeed;
 
     public SparkTestShooterCommand(SparkMaxShooterSubsystem shooter) {
         m_shooter = shooter;
@@ -18,14 +19,17 @@ public class SparkTestShooterCommand extends Command {
 
     @Override
     public void initialize() {
-        m_leftMotorSpeed = MathUtil.clamp(SmartDashboard.getNumber("SparkMotor", 0.0)/100, -1.0, 1.0); //Converts the inputted percentage
+        m_leftMotorSpeed = MathUtil.clamp(SmartDashboard.getNumber("LeftSparkMotor", 0.0)/100, -1.0, 1.0); //Converts the inputted percentage
+        m_rightMotorSpeed = MathUtil.clamp(SmartDashboard.getNumber("RightSparkMotor", 0.0)/100, -1.0, 1.0); //Converts the inputted percentage
 
-        m_shooter.setMotorSpeed(m_leftMotorSpeed);
+        m_shooter.setMotorSpeed(m_leftMotorSpeed, m_rightMotorSpeed);
     }
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("SparkMotorSpeed", m_shooter.gettopMotorSpeed());
+        SmartDashboard.putNumber("LeftSparkMotorSpeed", m_shooter.gettopMotorSpeed());
+        SmartDashboard.putNumber("RightSparkMotorSpeed", m_shooter.getbottomMotorSpeed());
+
     }
 
     @Override

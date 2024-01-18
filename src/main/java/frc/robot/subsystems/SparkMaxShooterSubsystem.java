@@ -14,12 +14,18 @@ public class SparkMaxShooterSubsystem {
     public SparkMaxShooterSubsystem(int shooterID, int shooterFollwerID) { //use IDs 3 & 4 TODO check to make sure those IDs are free
         m_topMotor = new SparkMaxWrapper(shooterID, MotorType.kBrushless);
         m_bottomMotor = new SparkMaxWrapper(shooterFollwerID, MotorType.kBrushless); 
-        m_bottomMotor.follow(m_topMotor, true);//Neither of these motors should be inverted.
+
+        m_topMotor.restoreFactoryDefaults();
+        m_bottomMotor.restoreFactoryDefaults();
+
+        m_bottomMotor.setInverted(true);
+        // m_bottomMotor.follow(m_topMotor, true);//Neither of these motors should be inverted.
         
     }
 
-    public void setMotorSpeed(double speed) {
-        m_topMotor.set(speed);
+    public void setMotorSpeed(double topSpeed, double bottomSpeed) {
+        m_topMotor.set(topSpeed);
+        m_bottomMotor.set(bottomSpeed);
     }
 
     public double gettopMotorSpeed() {

@@ -88,7 +88,9 @@ public class RobotContainer {
     // SmartDashboard.putNumber("LeftMotorSpeed", 0.0);
     // SmartDashboard.putNumber("RightMotorSpeed", 0.0);
 
-    SmartDashboard.putNumber("SparkMotor", 0.0);
+    SmartDashboard.putNumber("LeftSparkMotor", 0.0);
+    SmartDashboard.putNumber("RightSparkMotor", 0.0);
+
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED) // Drive forward with
