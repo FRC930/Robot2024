@@ -2,6 +2,7 @@ package frc.robot.subsystems.pivot;
 
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.utilities.constants.MotorConstants;
 
 
 public class PivotIORobot implements PivotIO{
@@ -16,6 +17,7 @@ public class PivotIORobot implements PivotIO{
      */
     public PivotIORobot(int motorID) {
         m_motor = new TalonFX(motorID);
+        MotorConstants.resetTalonFX(m_motor,true);
     }
     
     @Override

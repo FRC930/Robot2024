@@ -1,7 +1,9 @@
 package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.utilities.constants.MotorConstants;
 
 public class ElevatorIORobot implements ElevatorIO {
     private TalonFX leftElevatorFollower;
@@ -17,6 +19,11 @@ public class ElevatorIORobot implements ElevatorIO {
     public ElevatorIORobot (int rightMotorID, int leftMotorID, double circumference, double gearRatio){
         leftElevatorFollower = new TalonFX(leftMotorID);
         rightElevatorMaster = new TalonFX(rightMotorID);
+
+        MotorConstants.resetTalonFX(leftElevatorFollower,true);
+        MotorConstants.resetTalonFX(rightElevatorMaster,true);
+        rightElevatorMaster.setControl(new StaticBrake());
+
         leftElevatorFollower.setControl(new Follower(leftMotorID, true));
         this.circumference = circumference;
         this.gearRatio = gearRatio;
