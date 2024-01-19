@@ -17,6 +17,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -67,6 +68,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    portForwardLimelight();
   }
 
   /**
@@ -116,7 +118,7 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     drivetrain.registerTelemetry(logger::telemeterize);
-  }
+      }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -143,6 +145,13 @@ public class RobotContainer {
                   }
               }
           }
+      }
+  }
+
+  public void portForwardLimelight() {
+      for (int limeLightPort = 5800; limeLightPort <= 5807; limeLightPort++) {
+          int pcPort = limeLightPort + 0;
+          PortForwarder.add(pcPort, "limelight-front.local", limeLightPort);
       }
   }
 }
