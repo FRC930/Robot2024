@@ -11,7 +11,7 @@ public class SparkMaxShooterSubsystem {
     private SparkMaxWrapper m_topMotor; 
     private SparkMaxWrapper m_bottomMotor; 
    
-    public SparkMaxShooterSubsystem(int shooterID, int shooterFollwerID) { //use IDs 3 & 4 TODO check to make sure those IDs are free
+    public SparkMaxShooterSubsystem(int shooterID, int shooterFollwerID) { //use IDs 3 & 4
         m_topMotor = new SparkMaxWrapper(shooterID, MotorType.kBrushless);
         m_bottomMotor = new SparkMaxWrapper(shooterFollwerID, MotorType.kBrushless); 
 

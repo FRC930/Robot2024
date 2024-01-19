@@ -9,6 +9,11 @@ public class ElevatorIORobot implements ElevatorIO {
     private double circumference;
     private double gearRatio;
 
+    /**
+     * <h3>ElevatorIORobot</h3> 
+     * Creates a subsystem that represents an Elevator system
+     * @param motorID The id of the elevator motor
+     */
     public ElevatorIORobot (int rightMotorID, int leftMotorID, double circumference, double gearRatio){
         leftElevatorFollower = new TalonFX(leftMotorID);
         rightElevatorMaster = new TalonFX(rightMotorID);
@@ -32,7 +37,7 @@ public class ElevatorIORobot implements ElevatorIO {
 
     @Override
     public double getCurrentHeight() {
-        return rightElevatorMaster.getPosition().getValue() *circumference/gearRatio;
+        return rightElevatorMaster.getPosition().getValue() * circumference/gearRatio;
     }
     
 }

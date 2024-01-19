@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.utilities.constants.MotorConstants;
 
 public class PivotSubsystem extends SubsystemBase{
     private final PivotIO io;
@@ -17,6 +18,7 @@ public class PivotSubsystem extends SubsystemBase{
     private ArmFeedforward ffController;
 
     private double targetAngle;
+    private final MotorConstants motorConstants;
 
     private final double MAX_VELOCITY = 100;
     private final double MAX_ACCELERATION = 120;
@@ -30,6 +32,7 @@ public class PivotSubsystem extends SubsystemBase{
     public PivotSubsystem(int motorID) {
         pidController = new ProfiledPIDController(1, 0, 0, new Constraints(MAX_VELOCITY, MAX_ACCELERATION));
         ffController = new ArmFeedforward(0, 1, 0);
+        motorConstants = MotorConstants.getInstance();
 
         this.io = RobotBase.isReal() ? new PivotIORobot(motorID): new PivotIOSim();
         targetAngle = 0;
@@ -74,13 +77,14 @@ public class PivotSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+        io.updateInputs();
         // Always runs if the robot is in sim, only runs IRL if robot is enabled.
         if(DriverStation.isEnabled() || !Robot.isReal()) {
             double effort = pidController.calculate(getPosition(),getSetPoint());
             double feedforward = ffController.calculate(Units.degreesToRadians(getPosition()), Units.degreesToRadians(getVelocity()));
 
             effort += feedforward;
-            effort = MathUtil.clamp(effort,-3,3); //TODO: Update max voltages
+            effort = MathUtil.clamp(effort,-motorConstants.KRAKEN_MAX_VOLTAGE,motorConstants.KRAKEN_MAX_VOLTAGE); //TODO: Update max voltages
 
             io.setVoltage(effort);
         } else {
