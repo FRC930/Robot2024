@@ -5,15 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.Results;
-import frc.robot.commands.Autos;
 import frc.robot.commands.SparkTestShooterCommand;
-import frc.robot.commands.TestShooterCommand;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -51,6 +49,9 @@ public class RobotContainer {
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
+    ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13, 3, "ShootingElevator"); //TODO: MAKE SURE TO FIX VALS
+    ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, 3, "CimbingElevator"); //TODO: MAKE SURE TO FIX VALS
+    PivotSubsystem pivot = new PivotSubsystem(16);
     
     SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -119,6 +120,11 @@ public class RobotContainer {
     m_driverController.y().whileTrue(new SparkTestShooterCommand(m_sparkShooterSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
+    m_driverController.x().toggleOnTrue(shootingElevator.getTestCommand());
+
+    m_driverController.b().toggleOnTrue(pivot.getTestCommand());
+
 
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));

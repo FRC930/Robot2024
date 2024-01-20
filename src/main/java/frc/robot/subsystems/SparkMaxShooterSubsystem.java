@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
- import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.utilities.SparkMaxWrapper;
 public class SparkMaxShooterSubsystem {
@@ -11,7 +8,7 @@ public class SparkMaxShooterSubsystem {
     private SparkMaxWrapper m_topMotor; 
     private SparkMaxWrapper m_bottomMotor; 
    
-    public SparkMaxShooterSubsystem(int shooterID, int shooterFollwerID) { //use IDs 3 & 4 TODO check to make sure those IDs are free
+    public SparkMaxShooterSubsystem(int shooterID, int shooterFollwerID) { //use IDs 3 & 4
         m_topMotor = new SparkMaxWrapper(shooterID, MotorType.kBrushless);
         m_bottomMotor = new SparkMaxWrapper(shooterFollwerID, MotorType.kBrushless); 
 

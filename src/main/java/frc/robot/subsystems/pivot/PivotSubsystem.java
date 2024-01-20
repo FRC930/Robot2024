@@ -6,9 +6,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.utilities.TalonWrapper;
 
 public class PivotSubsystem extends SubsystemBase{
     private final PivotIO io;
@@ -29,9 +30,10 @@ public class PivotSubsystem extends SubsystemBase{
      */
     public PivotSubsystem(int motorID) {
         pidController = new ProfiledPIDController(1, 0, 0, new Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-        ffController = new ArmFeedforward(0, 1, 0);
+        ffController = new ArmFeedforward(0, 0, 0);
 
-        this.io = RobotBase.isReal() ? new PivotIORobot(motorID): new PivotIOSim();
+        //this.io = RobotBase.isReal() ? new PivotIORobot(MotorIO): new PivotIOSim();
+        this.io = new PivotIORobot(new TalonWrapper(motorID));
         targetAngle = 0;
     }
 
@@ -74,17 +76,24 @@ public class PivotSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+        io.updateInputs();
         // Always runs if the robot is in sim, only runs IRL if robot is enabled.
         if(DriverStation.isEnabled() || !Robot.isReal()) {
-            double effort = pidController.calculate(getPosition(),getSetPoint());
-            double feedforward = ffController.calculate(Units.degreesToRadians(getPosition()), Units.degreesToRadians(getVelocity()));
-
+            double effort = pidController.calculate(getPosition(),getSetPoint()); //TODO: Make sure PID output works for voltage
+            double feedforward = ffController.calculate(Units.degreesToRadians(getPosition()), Units.degreesToRadians(getSetPoint()));
+            //Do we need to convert this to voltage?
             effort += feedforward;
-            effort = MathUtil.clamp(effort,-3,3); //TODO: Update max voltages
-
-            io.setVoltage(effort);
-        } else {
-            pidController.reset(io.getCurrentAngleDegrees());
-        }
+            //if(effort != 0.0 && motorVoltage != 0.0) {
+                io.setVoltage(effort);
+            //} TODO: Check if zero 
+            
+        } /*else {
+            pidController.reset(io.getCurrentAngleDegrees()); TODO: Matt: Talk to greg
+        }*/
     }
+
+    public StartEndCommand getTestCommand() {
+        return new StartEndCommand(()->{setPosition(90);}, ()->{setPosition(0);}, this);
+    }
+
 }

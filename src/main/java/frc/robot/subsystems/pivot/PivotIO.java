@@ -32,4 +32,9 @@ public interface PivotIO {
      * @param offsetDegrees
      */
     public void adjustOffsetDegrees(double offsetDegrees);
+    /**
+     * <h3>getVoltage</h3>
+     * Gets the voltage of the motor.
+     */
+    public double getVoltage();
 }
