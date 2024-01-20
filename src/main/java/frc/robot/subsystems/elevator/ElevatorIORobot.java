@@ -1,13 +1,10 @@
 package frc.robot.subsystems.elevator;
 
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.StaticBrake;
-import com.ctre.phoenix6.hardware.TalonFX;
-import frc.robot.utilities.constants.MotorConstants;
+import frc.robot.utilities.TalonWrapper;
 
 public class ElevatorIORobot implements ElevatorIO {
-    private TalonFX leftElevatorFollower;
-    private TalonFX rightElevatorMaster;
+    private TalonWrapper leftElevatorFollower;
+    private TalonWrapper rightElevatorMaster;
     private double circumference;
     private double gearRatio;
 
@@ -16,15 +13,16 @@ public class ElevatorIORobot implements ElevatorIO {
      * Creates a subsystem that represents an Elevator system
      * @param motorID The id of the elevator motor
      */
-    public ElevatorIORobot (int rightMotorID, int leftMotorID, double circumference, double gearRatio){
-        leftElevatorFollower = new TalonFX(leftMotorID);
-        rightElevatorMaster = new TalonFX(rightMotorID);
+    public ElevatorIORobot (TalonWrapper motor1, TalonWrapper motor2, double circumference, double gearRatio){
+        leftElevatorFollower = motor1;
+        rightElevatorMaster = motor2;
 
-        MotorConstants.resetTalonFX(leftElevatorFollower,true);
-        MotorConstants.resetTalonFX(rightElevatorMaster,true);
-        rightElevatorMaster.setControl(new StaticBrake());
+        leftElevatorFollower.resetToFactoryDefaults();
+        leftElevatorFollower.setShouldBrake(true);
+        rightElevatorMaster.resetToFactoryDefaults();
+        rightElevatorMaster.setShouldBrake(true);
 
-        leftElevatorFollower.setControl(new Follower(leftMotorID, true));
+        leftElevatorFollower.followIO(rightElevatorMaster,true);
         this.circumference = circumference;
         this.gearRatio = gearRatio;
     }
@@ -45,6 +43,5 @@ public class ElevatorIORobot implements ElevatorIO {
     @Override
     public double getCurrentHeight() {
         return rightElevatorMaster.getPosition().getValue() * circumference/gearRatio;
-    }
-    
+    }  
 }

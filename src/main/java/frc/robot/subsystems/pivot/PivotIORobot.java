@@ -1,12 +1,12 @@
 package frc.robot.subsystems.pivot;
 
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import frc.robot.utilities.constants.MotorConstants;
+import edu.wpi.first.units.Units;
+import frc.robot.utilities.TalonWrapper;
 
 
 public class PivotIORobot implements PivotIO{
-    private TalonFX m_motor;
+    private TalonWrapper m_motor;
 
     private double offsetDegrees;
     
@@ -15,14 +15,14 @@ public class PivotIORobot implements PivotIO{
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor
      */
-    public PivotIORobot(int motorID) {
-        m_motor = new TalonFX(motorID);
-        MotorConstants.resetTalonFX(m_motor,true);
+    public PivotIORobot(TalonWrapper io) {
+        m_motor = io;
+        offsetDegrees = 0.0;
     }
     
     @Override
     public double getVelocityDegreesPerSecond() {
-       return m_motor.getVelocity().getValue() * 360; // TODO: make sure this is right direction
+       return Units.DegreesPerSecond.convertFrom(m_motor.getIOVelocity(), Units.RadiansPerSecond); // TODO: make sure this is right direction
     } 
 
     @Override
@@ -30,16 +30,21 @@ public class PivotIORobot implements PivotIO{
 
     @Override
     public double getCurrentAngleDegrees() {
-        return m_motor.getPosition().getValue() * 360 + offsetDegrees; // TODO: make sure this is right direction
+        return Units.Degrees.convertFrom(m_motor.getIOPosition(),Units.Radians) + offsetDegrees; // TODO: make sure this is right direction
     }
 
     @Override
     public void setVoltage(double volts) {
-        m_motor.set(volts);
+        m_motor.setVoltage(volts);
     }
 
     @Override
     public void adjustOffsetDegrees(double offsetDegrees) {
         this.offsetDegrees = offsetDegrees;
+    }
+
+    @Override
+    public double getVoltage() {
+        return m_motor.getMotorVoltage().getValue();
     }
 }

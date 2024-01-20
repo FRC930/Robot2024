@@ -2,7 +2,7 @@ package frc.robot.subsystems.pivot;
 
 public class PivotIOSim implements PivotIO {
 
-    private static final double GEAR_RATIO = 0; // TODO: Add from E-Mech
+    //private static final double GEAR_RATIO = 0; // TODO: Add from E-Mech
 
 
     //private final SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getNEO(1), 75,
@@ -37,6 +37,12 @@ public class PivotIOSim implements PivotIO {
     public void adjustOffsetDegrees(double offsetDegrees) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'adjustOffsetDegrees'");
+    }
+
+    @Override
+    public double getVoltage() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getVoltage'");
     }
     
 }

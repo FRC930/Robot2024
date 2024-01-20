@@ -3,11 +3,12 @@ package frc.robot.utilities;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
 
 
-public class SparkMaxWrapper extends CANSparkMax {
+public class SparkMaxWrapper extends CANSparkMax implements MotorIO {
     private SimDouble m_simSpeed;
     private SimDevice m_simSparkMax;
 
@@ -64,7 +65,37 @@ public class SparkMaxWrapper extends CANSparkMax {
             if (m_simSparkMax != null){
                 set(outputVolts / RobotController.getBatteryVoltage());
             } else {
-                super.setVoltage(outputVolts);
+                super.setVoltage(MathUtil.clamp(outputVolts,-getMaxVoltage(),getMaxVoltage()));
             }
         }
+        @Override
+        public void resetToFactoryDefaults() {
+            super.restoreFactoryDefaults();
+        }
+        @Override
+        public void setShouldBrake(boolean shouldBrake) {
+            super.setIdleMode(shouldBrake?IdleMode.kBrake:IdleMode.kCoast);
+        }
+
+        /**
+         * Typical operating voltage is 12V
+         */
+        @Override
+        public double getMaxVoltage() {
+            return 12;
+        }
+        
+        @Override
+        public double getIOVelocity() {
+            return Units.RadiansPerSecond.convertFrom(getEncoder().getVelocity(),Units.RPM);
+        }
+        @Override
+        public double getIOPosition() {
+            return Units.Radians.convertFrom(getEncoder().getPosition(),Units.Rotations);
+        }
+
+        public void followIO(SparkMaxWrapper other,boolean inverted) {
+            this.follow(other,inverted);
+        }
     }
+
