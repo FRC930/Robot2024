@@ -60,8 +60,8 @@ public class RobotContainer {
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
   // The robot's subsystems and commands are defined here...
-  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(3, 4);
-  // private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
+  // private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(3, 4);
+  private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -84,11 +84,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    SmartDashboard.putNumber("KrakenLeftMotor", 0.0);
-    SmartDashboard.putNumber("KrakenRightMotor", 0.0);
+    // SmartDashboard.putNumber("KrakenLeftMotor", 0.0);
+    // SmartDashboard.putNumber("KrakenRightMotor", 0.0);
 
-    // SmartDashboard.putNumber("LeftSparkMotor", 0.0);
-    // SmartDashboard.putNumber("RightSparkMotor", 0.0);
+    SmartDashboard.putNumber("LeftSparkMotor", 0.0);
+    SmartDashboard.putNumber("RightSparkMotor", 0.0);
 
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -114,8 +114,8 @@ public class RobotContainer {
       drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(POV_PERCENT_SPEED * MaxSpeed)
       ));
 
-    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
-    // m_driverController.y().whileTrue(new SparkTestShooterCommand(m_sparkShooterSubsystem));
+    // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
+    m_driverController.y().whileTrue(new SparkTestShooterCommand(m_sparkShooterSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
