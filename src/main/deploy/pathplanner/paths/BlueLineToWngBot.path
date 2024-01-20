@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.107634536492782,
+        "y": 1.874999696462108
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.3925480158652634,
+        "y": 2.4470018170805568
+      },
+      "isLocked": false,
+      "linkedName": "BlueLine"
+    },
+    {
+      "anchor": {
+        "x": 2.882905765811533,
+        "y": 4.114515152107228
+      },
+      "prevControl": {
+        "x": 3.3269181922979243,
+        "y": 3.3843613841073843
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "BotSpeaker",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

@@ -2,11 +2,16 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.wpilibj.Notifier;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -21,8 +26,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Telemetry;
@@ -33,17 +38,25 @@ import frc.robot.generated.TunerConstants;
  * so it can be used in command-based projects easily.
  */
 public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
-    
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
     private Field2d pp_field2d = new Field2d(); // TODO: Move to AutoCommandManager
+    private static final double kSimLoopPeriod = 0.005; // 5 ms
+    private Notifier m_simNotifier = null;
+    private double m_lastSimTime;
 
     public SwerveDrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
+        if (Utils.isSimulation()) {
+            startSimThread();
+        }
     }
     public SwerveDrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
+        if (Utils.isSimulation()) {
+            startSimThread();
+        }
     }
 
     public void configurePathPlanner() {
@@ -76,18 +89,44 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
             pp_field2d.setRobotPose(targetPose);
         });
     }
-
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    @Override
-    public void simulationPeriodic() {
-        /* Assume 20ms update rate, get battery voltage from WPILib */
-        updateSimState(0.02, RobotController.getBatteryVoltage());
+    private void startSimThread() {
+        m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+        /* Run simulation at a faster rate so PID gains behave more reasonably */
+        m_simNotifier = new Notifier(() -> {
+            final double currentTime = Utils.getCurrentTimeSeconds();
+            double deltaTime = currentTime - m_lastSimTime;
+            m_lastSimTime = currentTime;
+
+            /* use the measured time delta, get battery voltage from WPILib */
+            updateSimState(deltaTime, RobotController.getBatteryVoltage());
+        });
+        m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    @Override
+    public void periodic() {
+        Logger.recordOutput("Drivetrain/rotationVelocity", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
+        Logger.recordOutput("Drivetrain/XVelocity", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
+        Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+        
+        SmartDashboard.putNumber("Pigeon2Yaw", getPigeon2().getAngle());
+        SmartDashboard.putNumber("Pose2DYaw", getState().Pose.getRotation().getDegrees());
+        
+        for (int i = 0; i < 4; i++) {
+            SmartDashboard.putNumber("SwerveWheelSpeed" + i, getState().ModuleStates[i].speedMetersPerSecond);
+            SmartDashboard.putNumber("SwerveWheelAngle" + i, getState().ModuleStates[i].angle.getDegrees());
+        }
+
+        
+
     }
 }
