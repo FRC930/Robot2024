@@ -10,6 +10,7 @@ public class ShooterSubsystem {
     public ShooterSubsystem(int shooterID, int shooterFollwerID) { //use IDs 3 & 4 TODO check to make sure those IDs are free
         m_leftMotor = new TalonFX(shooterID);
         m_rightMotor = new TalonFX(shooterFollwerID); 
+
         m_rightMotor.setInverted(true); //TODO find out which motor we need to invert
     }
 
