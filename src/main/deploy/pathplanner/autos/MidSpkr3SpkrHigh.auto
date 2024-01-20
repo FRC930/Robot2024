@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.20862210340683,
+      "y": 5.550936522700434
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidSpkrToWingMid"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WingMidToCntrHigh"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WngShootPosToWngBotNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

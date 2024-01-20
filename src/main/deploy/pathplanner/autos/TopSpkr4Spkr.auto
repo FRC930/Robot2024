@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.592293350804212,
+      "y": 7.003080254377342
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopSpkrToTopWingNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopWingNoteToTopCntrNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopCntrNoteToScoringPos"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ScoringPos3ToHighCenterNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HighCntrNoteToScoringPos3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

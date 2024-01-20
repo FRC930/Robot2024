@@ -57,6 +57,8 @@ public class RobotContainer {
     SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     Telemetry logger = new Telemetry(MaxSpeed);
     
+    private AutoCommandManager m_autoManager = new AutoCommandManager();
+
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
   // The robot's subsystems and commands are defined here...
@@ -89,7 +91,6 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("LeftSparkMotor", 0.0);
     SmartDashboard.putNumber("RightSparkMotor", 0.0);
-
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED) // Drive forward with
@@ -132,7 +133,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return m_autoManager.getAutoManagerSelected();
   }
 
   public void updateVisionOdometry() {
