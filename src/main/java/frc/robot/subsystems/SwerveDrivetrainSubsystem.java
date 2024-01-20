@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -85,6 +86,11 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
     public void simulationPeriodic() {
         /* Assume 20ms update rate, get battery voltage from WPILib */
         updateSimState(0.02, RobotController.getBatteryVoltage());
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("PigeonOdometry", getPigeon2().getAngle());
     }
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
