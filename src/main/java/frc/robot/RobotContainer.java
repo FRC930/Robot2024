@@ -18,6 +18,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,7 +36,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-    private final boolean UseLimeLightAprilTag = false; 
+    private final boolean UseLimeLightAprilTag = true; 
 
     private static final double POV_PERCENT_SPEED = 0.3;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -74,7 +77,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    portForwardLimelight();
+    portForwardCameras();
   }
 
   /**
@@ -142,28 +145,56 @@ public class RobotContainer {
     return m_autoManager.getAutoManagerSelected();
   }
 
-  public void updateVisionOdometry() {
-      if (UseLimeLightAprilTag) {    
-          Results lastResult = LimelightHelpers.getLatestResults("limelight-front").targetingResults;
+  /*
+   * Sets the port offsets
+   */
+  public void portForwardCameras() {
+    // portForwardLimelight("front", 0);
+    // portForwardLimelight("side", 10);
 
-          if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
-              var alliance = DriverStation.getAlliance();
+    portForwardLimelight("10.99.90.12", 0);
+    portForwardLimelight("10.99.90.11", 10);
+  }
 
-              if (alliance.isPresent()) {
-                  if (alliance.get() == DriverStation.Alliance.Red) {
-                      drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiRed(), Timer.getFPGATimestamp());
-                  } else if (alliance.get() == DriverStation.Alliance.Blue){
+  /**
+   * Update all vision
+   */
+  public void updateAllVision() {
+    if (UseLimeLightAprilTag) {  
+      updateVisionOdometry("front");
+      updateVisionOdometry("side");
+    }
+  }
+
+  /**
+   * Prints limelight, and limelight name. If the last result was valid, and the length is bigger than 0.
+   * If there is a alliance to get the alliance, and if its red it sets the alliance to red; otherwise it sets the alliance to blue.
+   * @param limeLightName
+   */
+  public void updateVisionOdometry(String limeLightName) {
+          Results lastResult = LimelightHelpers.getLatestResults("limelight-" + limeLightName).targetingResults;
+          if (lastResult.valid && lastResult.targets_Fiducials.length > 1 && lastResult.targets_Fiducials[0].fiducialID != 0) {
+              // var alliance = DriverStation.getAlliance();
+              // if (alliance.isPresent()) {
+                  // if (alliance.get() == DriverStation.Alliance.Red) {
+                  //     drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiRed(), Timer.getFPGATimestamp());
+                  // } else if (alliance.get() == DriverStation.Alliance.Blue){
                       drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
-                  }
-              }
-          }
+                  // }
+              // }
       }
   }
 
-  public void portForwardLimelight() {
+  /** 
+   * This method makes a port for the limelights
+   * @param limeLightName the name of the Limelights
+   * @param portOffset the offset needed to ensure that the ports for the cameras are not the same
+   */
+  public void portForwardLimelight(String limeLightName, int portOffset) {
       for (int limeLightPort = 5800; limeLightPort <= 5807; limeLightPort++) {
-          int pcPort = limeLightPort + 0;
-          PortForwarder.add(pcPort, "limelight-front.local", limeLightPort);
+          int pcPort = limeLightPort + portOffset;
+          // PortForwarder.add(pcPort, "limelight-" + limeLightName, limeLightPort);
+          PortForwarder.add(pcPort, limeLightName, limeLightPort);
       }
   }
 }
