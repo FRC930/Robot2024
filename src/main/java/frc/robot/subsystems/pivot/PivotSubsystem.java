@@ -15,18 +15,18 @@ public class PivotSubsystem extends SubsystemBase{
     private final double GEAR_RATIO = 1;
 
     private final Slot0Configs PID_FF_CONFIGS = new Slot0Configs()
-    .withKP(1) //TODO: Configure
-    .withKI(0) //TODO: Configure
-    .withKD(0) //TODO: Configure
-    .withKA(1) //TODO: Configure
-    .withKG(0) //TODO: Configure
-    .withKS(0) //TODO: Configure
-    .withKV(1);//TODO: Configure
+        .withKP(1) //TODO: Configure
+        .withKI(0) //TODO: Configure
+        .withKD(0) //TODO: Configure
+        .withKA(1) //TODO: Configure
+        .withKG(0) //TODO: Configure
+        .withKS(0) //TODO: Configure
+        .withKV(1);//TODO: Configure
 
     private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
-    .withMotionMagicCruiseVelocity(20)//TODO: Configure
-    .withMotionMagicAcceleration(5)//TODO: Configure
-    .withMotionMagicJerk(1);//TODO: Configure
+        .withMotionMagicCruiseVelocity(20)//TODO: Configure
+        .withMotionMagicAcceleration(5)//TODO: Configure
+        .withMotionMagicJerk(1);//TODO: Configure
 
     private final String pivotName;
 

@@ -25,7 +25,7 @@ public class PivotIORobot implements PivotIO{
     public PivotIORobot(TalonFX motor, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
         m_motor = motor;
 
-        m_request = new MotionMagicVoltage(0);
+        m_request = new MotionMagicVoltage(0).withEnableFOC(true);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.withSlot0(config);

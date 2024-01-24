@@ -33,7 +33,7 @@ public class ElevatorIORobot implements ElevatorIO {
         this.maxHeight = maxHeight;
         this.gearRatio = gearRatio;
        
-        m_request = new MotionMagicVoltage(0);
+        m_request = new MotionMagicVoltage(0).withEnableFOC(true);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.withSlot0(config);
