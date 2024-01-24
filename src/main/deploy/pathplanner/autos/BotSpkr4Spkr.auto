@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.1701701414875105,
+      "y": 3.5195631385526625
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BotSpkrToCntrBotNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CntrBotToBlueLine"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueLineToCntrLowNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WngShootingPosToWngBotNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

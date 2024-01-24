@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.5744961805156295,
+      "y": 7.7725437202170875
+    },
+    "rotation": 0.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartToAmp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpToIntakeTopWingNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopNoteToAmp"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
