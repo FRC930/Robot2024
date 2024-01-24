@@ -8,7 +8,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.RobotController;
 
 
-public class SparkMaxWrapper extends CANSparkMax implements MotorIO {
+public class SparkMaxWrapper extends CANSparkMax{
     private SimDouble m_simSpeed;
     private SimDevice m_simSparkMax;
 
@@ -68,11 +68,11 @@ public class SparkMaxWrapper extends CANSparkMax implements MotorIO {
                 super.setVoltage(MathUtil.clamp(outputVolts,-getMaxVoltage(),getMaxVoltage()));
             }
         }
-        @Override
+        
         public void resetToFactoryDefaults() {
             super.restoreFactoryDefaults();
         }
-        @Override
+        
         public void setShouldBrake(boolean shouldBrake) {
             super.setIdleMode(shouldBrake?IdleMode.kBrake:IdleMode.kCoast);
         }
@@ -80,16 +80,14 @@ public class SparkMaxWrapper extends CANSparkMax implements MotorIO {
         /**
          * Typical operating voltage is 12V
          */
-        @Override
         public double getMaxVoltage() {
             return 12;
         }
         
-        @Override
         public double getIOVelocity() {
             return Units.RadiansPerSecond.convertFrom(getEncoder().getVelocity(),Units.RPM);
         }
-        @Override
+        
         public double getIOPosition() {
             return Units.Radians.convertFrom(getEncoder().getPosition(),Units.Rotations);
         }

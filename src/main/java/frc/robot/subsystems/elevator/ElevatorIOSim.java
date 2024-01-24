@@ -9,12 +9,6 @@ public class ElevatorIOSim implements ElevatorIO{
     }
 
     @Override
-    public void setVoltage(double volts) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
-    }
-
-    @Override
     public double getCurrentVelocity() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getCurrentVelocity'");
@@ -24,6 +18,18 @@ public class ElevatorIOSim implements ElevatorIO{
     public double getCurrentHeight() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getCurrentHeight'");
+    }
+
+    @Override
+    public void setTargetHeight(double height) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setTargetHeight'");
+    }
+
+    @Override
+    public double getTargetHeight() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTargetHeight'");
     }
     
 }

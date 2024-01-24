@@ -1,20 +1,15 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DriverStation;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.utilities.TalonWrapper;
 
 public class ElevatorSubsystem extends SubsystemBase {
     private ElevatorIO IO;
-
-    private PIDController pidController;
-    private ElevatorFeedforward ffController;
-
-    private double targetHeight;
+    private String elevatorName;
 
 
     /**
@@ -22,15 +17,9 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Creates a subsystem representing the elevator on the robot.
      * @return
      */
-    public ElevatorSubsystem(int motor1ID, int motor2ID, double maxHeight, String elevatorName) {
-        this.IO = new ElevatorIORobot(new TalonWrapper(motor1ID), new TalonWrapper(motor2ID), 1, 1); //TODO: Fix values
-        this.targetHeight = 0;
-
-        this.pidController = new PIDController(30, 0, 0.3);
-        this.ffController = new ElevatorFeedforward(0.0, 0.35, 0.0, 0.0); //TODO: Does not work for multi-elevator but we're revamping code on saturday so that's a problem for later us
-    
-        this.pidController.setTolerance(0.5, 0.5);
-        this.pidController.calculate(0,targetHeight);
+    public ElevatorSubsystem(int motor1ID, int motor2ID, double gearRatio, double maxHeight,Slot0Configs slot0Configs,MotionMagicConfigs mmConfigs) {
+        this.IO = new ElevatorIORobot(new TalonFX(motor1ID), new TalonFX(motor2ID),gearRatio,maxHeight,slot0Configs,mmConfigs);
+        elevatorName = "" + this.hashCode();
     }
 
     /**
@@ -39,7 +28,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @param targetHeight The height the robot will try to move to
      */
     public void setTargetHeight(double targetHeight) {
-        this.targetHeight = targetHeight;
+        IO.setTargetHeight(targetHeight);
     }
 
     /**
@@ -57,7 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return The target height
      */
     public double getTargetHeight() {
-        return targetHeight;
+        return IO.getTargetHeight();
     }
 
     /**
@@ -72,17 +61,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         IO.updateInputs();
-        // Always runs if the robot is in sim, only runs IRL if robot is enabled.
-        if(DriverStation.isEnabled() || !Robot.isReal()) {
-            double effort = pidController.calculate(getHeight(), targetHeight);
-            effort += ffController.calculate(IO.getCurrentVelocity());
-
-            IO.setVoltage(effort);
-        }
+        SmartDashboard.putNumber("ElevatorVelocity-" + elevatorName, getVelocity());
+        SmartDashboard.putNumber("ElevatorPosition-" + elevatorName, getHeight());
+        SmartDashboard.putNumber("ElevatorSetpoint-" + elevatorName, IO.getTargetHeight());
     }
 
     public StartEndCommand getTestCommand() {
-        return new StartEndCommand(()->{setTargetHeight(5);},()->{setTargetHeight(0);},this);
+        return new StartEndCommand(()->{setTargetHeight(5);System.out.println("Elevator Test Start");},()->{setTargetHeight(0);},this);
     }
-
 }

@@ -1,50 +1,73 @@
 package frc.robot.subsystems.pivot;
 
 
-import edu.wpi.first.units.Units;
-import frc.robot.utilities.TalonWrapper;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import frc.robot.sim.PhysicsSim;
 
 
 public class PivotIORobot implements PivotIO{
-    private TalonWrapper m_motor;
+    private TalonFX m_motor;
 
-    private double offsetDegrees;
+    private MotionMagicVoltage m_request;
     
     /**
      * <h3>PivotIORobot</h3> 
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor
      */
-    public PivotIORobot(TalonWrapper io) {
-        m_motor = io;
-        offsetDegrees = 0.0;
+    public PivotIORobot(TalonFX motor, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
+        m_motor = motor;
+
+        m_request = new MotionMagicVoltage(0);
+
+        TalonFXConfiguration cfg = new TalonFXConfiguration();
+        cfg.withSlot0(config);
+        cfg.withMotionMagic(mmConfigs);
+        cfg.Feedback.RotorToSensorRatio = gearRatio;
+        
+        m_motor.getConfigurator().apply(cfg);
+        m_motor.setNeutralMode(NeutralModeValue.Brake);
+
+        m_motor.setControl(m_request.withPosition(0).withSlot(0));
+
+        //TODO: TEMP
+        if(Utils.isSimulation()) {
+            PhysicsSim.getInstance().addTalonFX(m_motor, 0.001);
+        }
     }
     
-    @Override
-    public double getVelocityDegreesPerSecond() {
-       return Units.DegreesPerSecond.convertFrom(m_motor.getIOVelocity(), Units.RadiansPerSecond); // TODO: make sure this is right direction
-    } 
-
     @Override
     public void updateInputs() {}
 
     @Override
     public double getCurrentAngleDegrees() {
-        return Units.Degrees.convertFrom(m_motor.getIOPosition(),Units.Radians) + offsetDegrees; // TODO: make sure this is right direction
+        return m_motor.getPosition().getValue(); // TODO: make sure this is right direction
     }
 
     @Override
-    public void setVoltage(double volts) {
-        m_motor.setVoltage(volts);
+    public double getVelocityDegreesPerSecond() {
+       return m_motor.getVelocity().getValue(); // TODO: make sure this is right direction
     }
 
     @Override
-    public void adjustOffsetDegrees(double offsetDegrees) {
-        this.offsetDegrees = offsetDegrees;
+    public void setPosition(double position) {
+        m_motor.setControl(m_request.withPosition(position).withSlot(0));
     }
 
     @Override
     public double getVoltage() {
         return m_motor.getMotorVoltage().getValue();
+    }
+
+    @Override
+    public double getSetPoint() {
+        return ((MotionMagicVoltage)m_motor.getAppliedControl()).Position;
     }
 }

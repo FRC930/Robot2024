@@ -14,11 +14,10 @@ public interface ElevatorIO {
      */
     public void updateInputs();
     /**
-     * <h3>setVoltage</h3>
-     * Sets the current voltage of the elevator
-     * @param volts
+     * <h3>setTargetHeight</h3>
+     * Sets the target height of the elevator.
      */
-    public void setVoltage(double volts);
+    public void setTargetHeight(double height);
     /**
      * <h3>getCurrentVelocity</h3>
      * Gets the current velocity of the elevator
@@ -31,4 +30,10 @@ public interface ElevatorIO {
      * @return The height of the elevator
      */
     public double getCurrentHeight();
+    /**
+     * <h3>getCurrentHeight</h3>
+     * Gets the target height of the elevator
+     * @return The height of the elevator
+     */
+    public double getTargetHeight();
 }

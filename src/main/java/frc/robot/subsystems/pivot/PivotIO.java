@@ -20,21 +20,21 @@ public interface PivotIO {
      */
     public double getVelocityDegreesPerSecond();
     /**
-     * <h3>setVoltage</h3>
-     * Sets the voltage output of the turret motor.
-     * <p><b>THIS DOES NOT CLAMP THE VOLTAGE, BE CAREFUL WHAT YOU INPUT</b>
-     * @param volts The voltage
-     */
-    public void setVoltage(double volts);
-    /**
-     * <h3>adjustOffsetDegrees</h3>
-     * Sets the degrees from the horizontal that the turret is offset.
-     * @param offsetDegrees
-     */
-    public void adjustOffsetDegrees(double offsetDegrees);
-    /**
      * <h3>getVoltage</h3>
-     * Gets the voltage of the motor.
+     * Gets the current voltage of the subystem.
+     * @return The voltage the motor is running at.
      */
     public double getVoltage();
+    /**
+     * <h3>getSetPoint</h3>
+     * Gets the angle that the subsystem is currently trying to turn to
+     * @param angle The angle in degrees from the horizontal
+     */
+    public double getSetPoint();
+    /**
+     * <h3>setPosition</h3>
+     * Sets the degrees from the horizontal that the turret will move to.
+     * @param offsetDegrees
+     */
+    public void setPosition(double position);
 }

@@ -28,15 +28,15 @@ public class PivotIOSim implements PivotIO {
     }
 
     @Override
-    public void setVoltage(double volts) {
+    public void setPosition(double position) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
+        throw new UnsupportedOperationException("Unimplemented method 'setPosition'");
     }
 
     @Override
-    public void adjustOffsetDegrees(double offsetDegrees) {
+    public double getSetPoint() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adjustOffsetDegrees'");
+        throw new UnsupportedOperationException("Unimplemented method 'getSetPoint'");
     }
 
     @Override

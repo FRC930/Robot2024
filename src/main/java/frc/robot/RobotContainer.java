@@ -14,6 +14,8 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.util.Units;
@@ -42,6 +44,7 @@ public class RobotContainer {
     private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
     private static final double PERCENT_SPEED = 0.3;
+
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
     // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
     final double MaxSpeed = Units.feetToMeters(16.2); //13.6); //  meters per second desired top speed
@@ -52,8 +55,36 @@ public class RobotContainer {
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
-    ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13, 3, "ShootingElevator"); //TODO: MAKE SURE TO FIX VALS
-    ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, 3, "CimbingElevator"); //TODO: MAKE SURE TO FIX VALS
+
+    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13, 1, 5, 
+      new Slot0Configs()
+        .withKP(1)//TODO: Configure ALL
+        .withKI(0)
+        .withKD(0)
+        .withKA(0)
+        .withKG(0)
+        .withKS(0)
+        .withKV(1), 
+      new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(5)
+        .withMotionMagicAcceleration(1)
+        .withMotionMagicJerk(1)); 
+
+    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, 1, 5, 
+      new Slot0Configs()
+        .withKP(1)//TODO: Configure ALL
+        .withKI(0)
+        .withKD(0)
+        .withKA(0)
+        .withKG(0)
+        .withKS(0)
+        .withKV(1), 
+      new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(5)
+        .withMotionMagicAcceleration(1)
+        .withMotionMagicJerk(1));
+
+    
     PivotSubsystem pivot = new PivotSubsystem(16);
     
     SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -133,7 +164,7 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     drivetrain.registerTelemetry(logger::telemeterize);
-      }
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
