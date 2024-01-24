@@ -1,26 +1,34 @@
 package frc.robot.subsystems.pivot;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.utilities.TalonWrapper;
 
 public class PivotSubsystem extends SubsystemBase{
     private final PivotIO io;
 
-    private ProfiledPIDController pidController;
-    private ArmFeedforward ffController;
+    private final double GEAR_RATIO = 1;
 
-    private double targetAngle;
+    private final Slot0Configs PID_FF_CONFIGS = new Slot0Configs()
+    .withKP(1) //TODO: Configure
+    .withKI(0) //TODO: Configure
+    .withKD(0) //TODO: Configure
+    .withKA(1) //TODO: Configure
+    .withKG(0) //TODO: Configure
+    .withKS(0) //TODO: Configure
+    .withKV(1);//TODO: Configure
 
-    private final double MAX_VELOCITY = 100;
-    private final double MAX_ACCELERATION = 120;
+    private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
+    .withMotionMagicCruiseVelocity(20)//TODO: Configure
+    .withMotionMagicAcceleration(5)//TODO: Configure
+    .withMotionMagicJerk(1);//TODO: Configure
+
+    private final String pivotName;
 
     /**
      * <h3>PivotSubsystem</h3>
@@ -29,12 +37,8 @@ public class PivotSubsystem extends SubsystemBase{
      * @param motorID
      */
     public PivotSubsystem(int motorID) {
-        pidController = new ProfiledPIDController(1, 0, 0, new Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-        ffController = new ArmFeedforward(0, 0, 0);
-
-        //this.io = RobotBase.isReal() ? new PivotIORobot(MotorIO): new PivotIOSim();
-        this.io = new PivotIORobot(new TalonWrapper(motorID));
-        targetAngle = 0;
+        this.io = new PivotIORobot(new TalonFX(motorID), GEAR_RATIO,PID_FF_CONFIGS,MM_CONFIGS);
+        pivotName = "" + this.hashCode();
     }
 
     /**
@@ -43,7 +47,8 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        targetAngle = MathUtil.clamp(angle,0,180);
+        io.setPosition(MathUtil.clamp(angle,0,180));
+        
     }
 
     /**
@@ -52,7 +57,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public double getSetPoint() {
-        return targetAngle;
+        return io.getSetPoint();
     }
 
     /**
@@ -77,23 +82,13 @@ public class PivotSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         io.updateInputs();
-        // Always runs if the robot is in sim, only runs IRL if robot is enabled.
-        if(DriverStation.isEnabled() || !Robot.isReal()) {
-            double effort = pidController.calculate(getPosition(),getSetPoint()); //TODO: Make sure PID output works for voltage
-            double feedforward = ffController.calculate(Units.degreesToRadians(getPosition()), Units.degreesToRadians(getSetPoint()));
-            //Do we need to convert this to voltage?
-            effort += feedforward;
-            //if(effort != 0.0 && motorVoltage != 0.0) {
-                io.setVoltage(effort);
-            //} TODO: Check if zero 
-            
-        } /*else {
-            pidController.reset(io.getCurrentAngleDegrees()); TODO: Matt: Talk to greg
-        }*/
+        SmartDashboard.putNumber("PivotVelocity-" + pivotName,getVelocity());
+        SmartDashboard.putNumber("PivotAngle-" + pivotName,getPosition());
+        SmartDashboard.putNumber("PivotSetpoint-" + pivotName,getSetPoint());
     }
 
     public StartEndCommand getTestCommand() {
-        return new StartEndCommand(()->{setPosition(90);}, ()->{setPosition(0);}, this);
+        return new StartEndCommand(()->{setPosition(90); System.out.println("Pivot Test Start");}, ()->{setPosition(0);}, this);
     }
 
 }
