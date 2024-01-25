@@ -114,17 +114,21 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
 
     @Override
     public void periodic() {
-        Logger.recordOutput("Drivetrain/rotationVelocity", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
-        Logger.recordOutput("Drivetrain/XVelocity", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
-        Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
-        
-        SmartDashboard.putNumber("Pigeon2Yaw", getPigeon2().getAngle());
-        SmartDashboard.putNumber("Pose2DYaw", getState().Pose.getRotation().getDegrees());
-        
-        for (int i = 0; i < 4; i++) {
-            SmartDashboard.putNumber("SwerveWheelSpeed" + i, getState().ModuleStates[i].speedMetersPerSecond);
-            SmartDashboard.putNumber("SwerveWheelAngle" + i, getState().ModuleStates[i].angle.getDegrees());
+        // validates ModuleStaes are populated by odometry thread before logging them
+        if (getState().ModuleStates != null) {
+            Logger.recordOutput("Drivetrain/rotationVelocity", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
+            Logger.recordOutput("Drivetrain/XVelocity", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
+            Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+            
+            SmartDashboard.putNumber("Pigeon2Yaw", getPigeon2().getAngle());
+            SmartDashboard.putNumber("Pose2DYaw", getState().Pose.getRotation().getDegrees());
+            
+            for (int i = 0; i < 4; i++) {
+                SmartDashboard.putNumber("SwerveWheelSpeed" + i, getState().ModuleStates[i].speedMetersPerSecond);
+                SmartDashboard.putNumber("SwerveWheelAngle" + i, getState().ModuleStates[i].angle.getDegrees());
         }
+        }
+        
 
         
 
