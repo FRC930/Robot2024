@@ -57,9 +57,9 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param followerID The ID to the follower motor
      * @param sensorID 
      */
-    public IntakeSubsystem(int leaderID, int followerID, int sensorID)  {
-        m_leaderMotor = new TalonFX(leaderID);
-        m_followerMotor = new TalonFX(followerID);
+    public IntakeSubsystem(int leaderID, int followerID, int sensorID, String CANbus)  {
+        m_leaderMotor = new TalonFX(leaderID,CANbus);
+        m_followerMotor = new TalonFX(followerID,CANbus);
 
         m_request = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
 

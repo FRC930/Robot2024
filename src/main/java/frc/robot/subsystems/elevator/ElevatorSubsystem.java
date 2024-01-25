@@ -17,8 +17,8 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Creates a subsystem representing the elevator on the robot.
      * @return
      */
-    public ElevatorSubsystem(int motor1ID, int motor2ID, double gearRatio, double maxHeight,Slot0Configs slot0Configs,MotionMagicConfigs mmConfigs) {
-        this.IO = new ElevatorIORobot(new TalonFX(motor1ID), new TalonFX(motor2ID),gearRatio,maxHeight,slot0Configs,mmConfigs);
+    public ElevatorSubsystem(int motor1ID, int motor2ID, String CANbus, double gearRatio, double maxHeight,Slot0Configs slot0Configs,MotionMagicConfigs mmConfigs) {
+        this.IO = new ElevatorIORobot(new TalonFX(motor1ID,CANbus), new TalonFX(motor2ID,CANbus),gearRatio,maxHeight,slot0Configs,mmConfigs);
         elevatorName = "" + this.hashCode();
     } //TODO: Pass in CAN id
 

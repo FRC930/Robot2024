@@ -36,8 +36,8 @@ public class PivotSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public PivotSubsystem(int motorID) {
-        this.io = new PivotIORobot(new TalonFX(motorID), GEAR_RATIO,PID_FF_CONFIGS,MM_CONFIGS);
+    public PivotSubsystem(int motorID, String CANbus) {
+        this.io = new PivotIORobot(new TalonFX(motorID,CANbus), GEAR_RATIO,PID_FF_CONFIGS,MM_CONFIGS);
         pivotName = "" + this.hashCode();
     }
 

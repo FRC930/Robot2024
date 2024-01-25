@@ -59,10 +59,10 @@ public class IndexedShooterSubsystem extends SubsystemBase{
         .withMotionMagicJerk(1); // Motor max acceleration rate of change
     private final double INDEXER_GEAR_RATIO = 1;
 
-    public IndexedShooterSubsystem(int shooterID, int shooterFollwerID, int indexID, int sensorID) { //use IDs 3 & 4 TODO check to make sure those IDs are free
-        m_leftMotor = new TalonFX(shooterID);
-        m_rightMotor = new TalonFX(shooterFollwerID); 
-        m_indexMotor = new TalonFX(indexID);
+    public IndexedShooterSubsystem(int shooterID, int shooterFollwerID, int indexID, int sensorID, String CANbus) { //use IDs 3 & 4 TODO check to make sure those IDs are free
+        m_leftMotor = new TalonFX(shooterID,CANbus);
+        m_rightMotor = new TalonFX(shooterFollwerID,CANbus); 
+        m_indexMotor = new TalonFX(indexID,CANbus);
 
         m_rightMotor.setInverted(true); //TODO find out which motor we need to invert
 
