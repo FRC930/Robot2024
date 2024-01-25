@@ -20,7 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public ElevatorSubsystem(int motor1ID, int motor2ID, double gearRatio, double maxHeight,Slot0Configs slot0Configs,MotionMagicConfigs mmConfigs) {
         this.IO = new ElevatorIORobot(new TalonFX(motor1ID), new TalonFX(motor2ID),gearRatio,maxHeight,slot0Configs,mmConfigs);
         elevatorName = "" + this.hashCode();
-    }
+    } //TODO: Pass in CAN id
 
     /**
      * <h3>setTargetHeight</h3>

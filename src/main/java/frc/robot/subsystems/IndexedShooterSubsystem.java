@@ -10,9 +10,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.playingwithfusion.TimeOfFlight;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.sim.PhysicsSim;
 
-public class IndexedShooterSubsystem {
+public class IndexedShooterSubsystem extends SubsystemBase{
 
     private static final double TRIGGER_DISTANT = 200;
     private TalonFX m_leftMotor; 
@@ -32,9 +36,8 @@ public class IndexedShooterSubsystem {
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(0);
+        .withKV(1);
     private final MotionMagicConfigs FLYWHEEL_MM_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(1)
         .withMotionMagicAcceleration(1)
         .withMotionMagicJerk(1);
     private final double FLYWHEEL_GEAR_RATIO = 1;
@@ -48,7 +51,7 @@ public class IndexedShooterSubsystem {
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(0);
+        .withKV(1);
 
     
     private final MotionMagicConfigs INDEXER_MM_CONFIGS = new MotionMagicConfigs()
@@ -84,13 +87,21 @@ public class IndexedShooterSubsystem {
         
         if (Robot.isReal()) {
             m_sensor = new TimeOfFlight(sensorID);
-
         } else {
             m_sensorSim = new DigitalInput(0);
+            PhysicsSim.getInstance().addTalonFX(m_indexMotor, 0.001);
+            PhysicsSim.getInstance().addTalonFX(m_leftMotor, 0.001);
+            PhysicsSim.getInstance().addTalonFX(m_rightMotor, 0.001);
         }
+
+        SmartDashboard.putNumber("IndexedShooter/LeftWheel/SetPoint" ,0);
+        SmartDashboard.putNumber("IndexedShooter/RightWheel/SetPoint" ,0);
+        SmartDashboard.putNumber("IndexedShooter/Indexer/SetPoint" ,0);
     }
 
     public void setMotorSpeed(double leftSpeed, double rightSpeed) {
+        SmartDashboard.putNumber("IndexedShooter/LeftWheel/SetPoint" ,leftSpeed);
+        SmartDashboard.putNumber("IndexedShooter/RightWheel/SetPoint" ,rightSpeed);
         m_leftMotor.setControl(m_leftRequest.withVelocity(leftSpeed).withSlot(0));
         m_rightMotor.setControl(m_rightRequest.withVelocity(rightSpeed).withSlot(0));
     }
@@ -120,6 +131,7 @@ public class IndexedShooterSubsystem {
     }
 
     public void setIndexSpeed(double speed) {
+        SmartDashboard.putNumber("IndexedShooter/Indexer/SetPoint" ,speed);
         m_indexMotor.setControl(m_indexerRequest.withVelocity(speed).withSlot(0)); //TODO: Figure out how to do percent out
     }
 
@@ -137,6 +149,26 @@ public class IndexedShooterSubsystem {
         } else {
             return m_sensorSim.get();
         }
-    
+    }
+
+    public StartEndCommand getShootTest() {
+        return new StartEndCommand(() -> {setMotorSpeed(3,4);}, () -> {stop();}, this);
+    }
+
+    public StartEndCommand getIndexTest() {
+        return new StartEndCommand(()-> {setIndexSpeed(0.5);}, () -> {stopIndexer();}, this);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("IndexedShooter/LeftWheel/Velocity" ,getLeftMotorSpeed());
+        SmartDashboard.putNumber("IndexedShooter/LeftWheel/Voltage" ,getLeftVoltage());
+
+        SmartDashboard.putNumber("IndexedShooter/RightWheel/Velocity" ,getRightMotorSpeed());
+        SmartDashboard.putNumber("IndexedShooter/RightWheel/Voltage" ,getRightVoltage());
+
+        SmartDashboard.putNumber("IndexedShooter/Indexer/Velocity" ,getIndexVelocity());
+        SmartDashboard.putNumber("IndexedShooter/Indexer/Voltage" ,getIndexVoltage());
     }
 }
+

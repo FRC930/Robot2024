@@ -1,15 +1,11 @@
 package frc.robot.subsystems;
 
- import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SlotConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSubsystem {
+
+public class ShooterSubsystem extends SubsystemBase {
 
     private TalonFX m_leftMotor; 
     private TalonFX m_rightMotor; 

@@ -9,7 +9,12 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.playingwithfusion.TimeOfFlight;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.sim.PhysicsSim;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -17,7 +22,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 /**
  * This subsystem controls the intake
  */
-public class IntakeSubsystem {
+public class IntakeSubsystem extends SubsystemBase {
 
     private static final double TRIGGER_DISTANT = 200;
     private TalonFX m_leaderMotor;
@@ -35,13 +40,14 @@ public class IntakeSubsystem {
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(0);
+        .withKV(1);
 
     private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicAcceleration(1) // Motor target acceleration
         .withMotionMagicJerk(1); // Motor max acceleration rate of change
         
     private final double GEAR_RATIO = 1;
+
 
     /**
      * 
@@ -74,15 +80,27 @@ public class IntakeSubsystem {
 
         } else {
             m_sensorSim = new DigitalInput(0);
+            PhysicsSim.getInstance().addTalonFX(m_leaderMotor, 0.001);
+            PhysicsSim.getInstance().addTalonFX(m_followerMotor, 0.001);
         }
+        SmartDashboard.putNumber("IntakeSubsystem/SetPoint" ,0);
     }
 
     public void setIntakeSpeed(double speed) {
+        SmartDashboard.putNumber("IntakeSubsystem/SetPoint" , speed);
         m_leaderMotor.setControl(m_request.withVelocity(speed).withSlot(0));
     }
 
     public void stop() {
-        m_leaderMotor.set(0.0);
+        setIntakeSpeed(0);
+    }
+
+    public double getSpeed() {
+        return m_leaderMotor.getVelocity().getValue();
+    }
+
+    public double getVoltage() {
+        return m_leaderMotor.getMotorVoltage().getValue();
     }
     
     public boolean getSensor() {
@@ -92,6 +110,16 @@ public class IntakeSubsystem {
             return m_sensorSim.get();
         }
     
+    }
+
+    public StartEndCommand getTestCommand() {
+        return new StartEndCommand(() -> {setIntakeSpeed(3);}, () -> {stop();}, this);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("IntakeSubsystem/Velocity" ,getSpeed());
+        SmartDashboard.putNumber("IntakeSubsystem/Voltage" ,getVoltage());
     }
 }
 

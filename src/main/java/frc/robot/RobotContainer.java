@@ -8,6 +8,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.SparkTestShooterCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.sim.MechanismSimulator;
+import frc.robot.subsystems.IndexedShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -83,9 +86,10 @@ public class RobotContainer {
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicAcceleration(1)
         .withMotionMagicJerk(1));
-
+    
     
     PivotSubsystem pivot = new PivotSubsystem(16);
+    MechanismSimulator mechanismSimulator = new MechanismSimulator(pivot, shootingElevator, climbingElevator);
     
     SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -155,9 +159,11 @@ public class RobotContainer {
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    m_driverController.x().toggleOnTrue(shootingElevator.getTestCommand());
+    m_driverController.x().toggleOnTrue(pivot.getTestCommand());
 
-    m_driverController.b().toggleOnTrue(pivot.getTestCommand());
+    m_driverController.b().toggleOnTrue(shootingElevator.getTestCommand());
+
+    m_driverController.rightBumper().toggleOnTrue(climbingElevator.getTestCommand());
 
 
     // reset the field-centric heading on left bumper press TODO test
@@ -174,6 +180,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return m_autoManager.getAutoManagerSelected();
+  }
+
+  public void periodic() {
+    mechanismSimulator.periodic();
   }
 
   /*
