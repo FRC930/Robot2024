@@ -214,16 +214,22 @@ public class RobotContainer {
    * @param limeLightName
    */
   public void updateVisionOdometry(String limeLightName) {
-          Results lastResult = LimelightHelpers.getLatestResults("limelight-" + limeLightName).targetingResults;
-          if (lastResult.valid && lastResult.targets_Fiducials.length > 1 && lastResult.targets_Fiducials[0].fiducialID != 0) {
-              // var alliance = DriverStation.getAlliance();
-              // if (alliance.isPresent()) {
-                  // if (alliance.get() == DriverStation.Alliance.Red) {
-                  //     drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiRed(), Timer.getFPGATimestamp());
-                  // } else if (alliance.get() == DriverStation.Alliance.Blue){
-                      drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
-                  // }
-              // }
+      boolean useResult = true;
+      Results lastResult = LimelightHelpers.getLatestResults("limelight-" + limeLightName).targetingResults;
+      if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
+          if (lastResult.targets_Fiducials.length == 1) {
+              if (LimelightHelpers.getTA("limelight-" + limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
+                useResult = true;
+              } else {
+                useResult = false;
+              }
+          } else {
+              useResult = true;
+          }
+
+          if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
+              drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
+          }
       }
   }
 
