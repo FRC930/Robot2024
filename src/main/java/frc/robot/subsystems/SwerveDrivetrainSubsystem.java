@@ -60,6 +60,7 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
     }
 
     public void configurePathPlanner() {
+        SmartDashboard.putData("pp_field", pp_field2d);
         AutoBuilder.configureHolonomic(
             ()->this.getState().Pose,
             this::seedFieldRelative,
