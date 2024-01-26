@@ -5,6 +5,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,7 +16,7 @@ import frc.robot.sim.PhysicsSim;
 public class PivotIORobot implements PivotIO{
     private TalonFX m_motor;
 
-    private MotionMagicVoltage m_request;
+    private MotionMagicExpoVoltage m_request;
     
     /**
      * <h3>PivotIORobot</h3> 
@@ -25,7 +26,7 @@ public class PivotIORobot implements PivotIO{
     public PivotIORobot(TalonFX motor, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
         m_motor = motor;
 
-        m_request = new MotionMagicVoltage(0).withEnableFOC(true);
+        m_request = new MotionMagicExpoVoltage(0).withEnableFOC(true);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.withSlot0(config);
@@ -34,6 +35,7 @@ public class PivotIORobot implements PivotIO{
         
         m_motor.getConfigurator().apply(cfg);
         m_motor.setNeutralMode(NeutralModeValue.Brake);
+        
 
         m_motor.setControl(m_request.withPosition(0).withSlot(0));
 
@@ -68,6 +70,6 @@ public class PivotIORobot implements PivotIO{
 
     @Override
     public double getSetPoint() {
-        return ((MotionMagicVoltage)m_motor.getAppliedControl()).Position;
+        return ((MotionMagicExpoVoltage)m_motor.getAppliedControl()).Position;
     }
 }

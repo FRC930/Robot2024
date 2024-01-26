@@ -1,6 +1,9 @@
 package frc.robot.subsystems.pivot;
 
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+
 public interface PivotIO {
+    
     /**
      * <h3>updateInputs</h3>
      * Steps the simulation forward by 0.02 seconds.

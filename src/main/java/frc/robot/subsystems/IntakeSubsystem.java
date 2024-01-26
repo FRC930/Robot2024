@@ -26,11 +26,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private static final double TRIGGER_DISTANT = 200;
     private TalonFX m_leaderMotor;
-    private MotionMagicVelocityVoltage m_request;
+    //private MotionMagicVelocityVoltage m_request;
     private TalonFX m_followerMotor;
     private TimeOfFlight m_sensor;
     private DigitalInput m_sensorSim;
 
+    /* 
     private final SlotConfigs PIDFF_CONFIG = new SlotConfigs()
         //PID
         .withKP(1)
@@ -45,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicAcceleration(1) // Motor target acceleration
         .withMotionMagicJerk(1); // Motor max acceleration rate of change
-        
+    */
     private final double GEAR_RATIO = 1;
 
 
@@ -61,7 +62,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_leaderMotor = new TalonFX(leaderID,CANbus);
         m_followerMotor = new TalonFX(followerID,CANbus);
 
-        m_request = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
+        /*m_request = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.withSlot0(Slot0Configs.from(PIDFF_CONFIG));
@@ -70,9 +71,10 @@ public class IntakeSubsystem extends SubsystemBase {
         
 
         m_leaderMotor.getConfigurator().apply(config);
-        m_leaderMotor.setNeutralMode(NeutralModeValue.Coast);
         m_followerMotor.getConfigurator().apply(config);
+        */
         m_followerMotor.setNeutralMode(NeutralModeValue.Coast);
+        m_leaderMotor.setNeutralMode(NeutralModeValue.Coast);
 
         m_followerMotor.setControl(new Follower(leaderID, true));
         if (Robot.isReal()) {
@@ -88,7 +90,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setIntakeSpeed(double speed) {
         SmartDashboard.putNumber("IntakeSubsystem/SetPoint" , speed);
-        m_leaderMotor.setControl(m_request.withVelocity(speed).withSlot(0));
+        //m_leaderMotor.setControl(m_request.withVelocity(speed).withSlot(0));
+        m_leaderMotor.set(speed);
     }
 
     public void stop() {

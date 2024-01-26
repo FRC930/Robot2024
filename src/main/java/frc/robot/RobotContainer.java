@@ -59,7 +59,7 @@ public class RobotContainer {
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
-    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13,"rio",1, 5, 
+    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13,"rio",1, Units.inchesToMeters(20), 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -70,10 +70,10 @@ public class RobotContainer {
         .withKV(1), 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicAcceleration(1)
-        .withMotionMagicJerk(1)); 
+        .withMotionMagicExpo_kV(1)
+        .withMotionMagicExpo_kA(4));
 
-    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, "rio", 1, 5, 
+    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, "rio", 1, Units.inchesToMeters(20), 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -84,8 +84,8 @@ public class RobotContainer {
         .withKV(1), 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicAcceleration(1)
-        .withMotionMagicJerk(1));
+        .withMotionMagicExpo_kV(1)
+        .withMotionMagicExpo_kA(4));
     
     
     PivotSubsystem pivot = new PivotSubsystem(16,"rio");

@@ -24,9 +24,9 @@ public class PivotSubsystem extends SubsystemBase{
         .withKV(1);//TODO: Configure
 
     private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(20)//TODO: Configure
-        .withMotionMagicAcceleration(5)//TODO: Configure
-        .withMotionMagicJerk(1);//TODO: Configure
+        .withMotionMagicCruiseVelocity(80)//TODO: Configure
+        .withMotionMagicExpo_kV(1)
+        .withMotionMagicExpo_kA(4);//TODO: Configure
 
     private final String pivotName;
 
@@ -78,13 +78,23 @@ public class PivotSubsystem extends SubsystemBase{
         return io.getVelocityDegreesPerSecond();
     }
 
+    /**
+     * <h3>getVoltage</h3>
+     * Gets the current voltage of the subystem.
+     * @return The voltage the motor is running at.
+     */
+   // public double getVoltage() {
+
+   // }
 
     @Override
     public void periodic() {
         io.updateInputs();
-        SmartDashboard.putNumber("PivotVelocity-" + pivotName,getVelocity());
-        SmartDashboard.putNumber("PivotAngle-" + pivotName,getPosition());
-        SmartDashboard.putNumber("PivotSetpoint-" + pivotName,getSetPoint());
+        SmartDashboard.putNumber("Elevator-" + pivotName + "/Velocity", getVelocity());
+        SmartDashboard.putNumber("Elevator-" + pivotName + "/Height", getPosition());
+        SmartDashboard.putNumber("Elevator-" + pivotName + "/SetPoint", io.getSetPoint());
+        SmartDashboard.putNumber("Elevator-" + pivotName + "/Voltage", io.getVoltage());
+        
     }
 
     public StartEndCommand getTestCommand() {

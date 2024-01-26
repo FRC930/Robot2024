@@ -1,7 +1,8 @@
 package frc.robot.subsystems.elevator;
 
 public class ElevatorIOSim implements ElevatorIO{
-
+    
+    
     @Override
     public void updateInputs() {
         // TODO Auto-generated method stub
@@ -30,6 +31,12 @@ public class ElevatorIOSim implements ElevatorIO{
     public double getTargetHeight() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTargetHeight'");
+    }
+
+    @Override
+    public double getVoltage() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getVoltage'");
     }
     
 }

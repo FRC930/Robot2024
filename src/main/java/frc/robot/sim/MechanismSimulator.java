@@ -62,7 +62,7 @@ public class MechanismSimulator {
                 new MechanismLigament2d(
                     "PivotAndShooter",
                     Units.inchesToMeters(10),
-                    180,
+                    90,
                     10,
                     new Color8Bit(Color.kAzure)
                 )

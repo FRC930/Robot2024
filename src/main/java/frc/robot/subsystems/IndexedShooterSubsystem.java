@@ -29,6 +29,7 @@ public class IndexedShooterSubsystem extends SubsystemBase{
     private MotionMagicVelocityVoltage m_rightRequest = new MotionMagicVelocityVoltage(0);
     private MotionMagicVelocityVoltage m_indexerRequest = new MotionMagicVelocityVoltage(0);
 
+    /* 
     private final SlotConfigs FLYWHEEL_PIDFF_CONFIG = new SlotConfigs()
         .withKP(1)
         .withKI(0)
@@ -41,6 +42,7 @@ public class IndexedShooterSubsystem extends SubsystemBase{
         .withMotionMagicAcceleration(1)
         .withMotionMagicJerk(1);
     private final double FLYWHEEL_GEAR_RATIO = 1;
+    */
 
     private final SlotConfigs INDEXER_PIDFF_CONFIG = new SlotConfigs()
         //PID
@@ -64,24 +66,27 @@ public class IndexedShooterSubsystem extends SubsystemBase{
         m_rightMotor = new TalonFX(shooterFollwerID,CANbus); 
         m_indexMotor = new TalonFX(indexID,CANbus);
 
-        m_rightMotor.setInverted(true); //TODO find out which motor we need to invert
+        m_rightMotor.setInverted(true);//TODO find out which motor we need to invert
 
+        /* 
         TalonFXConfiguration flywheel_config = new TalonFXConfiguration();
         flywheel_config.withSlot0(Slot0Configs.from(FLYWHEEL_PIDFF_CONFIG));
         flywheel_config.Feedback.SensorToMechanismRatio = FLYWHEEL_GEAR_RATIO; //The ratio between the motor turning and the elevator moving. We may have to invert this
         flywheel_config.withMotionMagic(FLYWHEEL_MM_CONFIGS); // The Motion Magic configs
 
         m_leftMotor.getConfigurator().apply(flywheel_config);
-        m_leftMotor.setNeutralMode(NeutralModeValue.Coast);
         m_rightMotor.getConfigurator().apply(flywheel_config);
+        */
+        m_leftMotor.setNeutralMode(NeutralModeValue.Coast);
         m_rightMotor.setNeutralMode(NeutralModeValue.Coast);
 
+        /* 
         TalonFXConfiguration indexer_config = new TalonFXConfiguration();
         indexer_config.withSlot0(Slot0Configs.from(INDEXER_PIDFF_CONFIG));
         indexer_config.Feedback.SensorToMechanismRatio = INDEXER_GEAR_RATIO; //The ratio between the motor turning and the elevator moving. We may have to invert this
         indexer_config.withMotionMagic(INDEXER_MM_CONFIGS); // The Motion Magic configs
 
-        m_indexMotor.getConfigurator().apply(indexer_config);
+        m_indexMotor.getConfigurator().apply(indexer_config);*/
         m_indexMotor.setNeutralMode(NeutralModeValue.Brake);
 
         
@@ -102,8 +107,10 @@ public class IndexedShooterSubsystem extends SubsystemBase{
     public void setMotorSpeed(double leftSpeed, double rightSpeed) {
         SmartDashboard.putNumber("IndexedShooter/LeftWheel/SetPoint" ,leftSpeed);
         SmartDashboard.putNumber("IndexedShooter/RightWheel/SetPoint" ,rightSpeed);
-        m_leftMotor.setControl(m_leftRequest.withVelocity(leftSpeed).withSlot(0));
-        m_rightMotor.setControl(m_rightRequest.withVelocity(rightSpeed).withSlot(0));
+        //m_leftMotor.setControl(m_leftRequest.withVelocity(leftSpeed).withSlot(0));
+        //m_rightMotor.setControl(m_rightRequest.withVelocity(rightSpeed).withSlot(0));
+        m_leftMotor.set(leftSpeed);
+        m_rightMotor.set(rightSpeed);
     }
 
     public double getLeftMotorSpeed() {
@@ -132,7 +139,8 @@ public class IndexedShooterSubsystem extends SubsystemBase{
 
     public void setIndexSpeed(double speed) {
         SmartDashboard.putNumber("IndexedShooter/Indexer/SetPoint" ,speed);
-        m_indexMotor.setControl(m_indexerRequest.withVelocity(speed).withSlot(0)); //TODO: Figure out how to do percent out
+        //m_indexMotor.setControl(m_indexerRequest.withVelocity(speed).withSlot(0)); //TODO: Figure out how to do percent out
+        m_indexMotor.set(speed);
     }
 
     public double getIndexVelocity() {
