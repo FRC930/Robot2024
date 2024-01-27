@@ -9,6 +9,9 @@ import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SparkTestShooterCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.sim.MechanismSimulator;
+import frc.robot.subsystems.IndexedShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -63,7 +66,7 @@ public class RobotContainer {
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
-    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13, 1, 5, 
+    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13,"rio",1, Units.inchesToMeters(20), 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -74,10 +77,10 @@ public class RobotContainer {
         .withKV(1), 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicAcceleration(1)
-        .withMotionMagicJerk(1)); 
+        .withMotionMagicExpo_kV(1)
+        .withMotionMagicExpo_kA(4));
 
-    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, 1, 5, 
+    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, "rio", 1, Units.inchesToMeters(20), 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -88,11 +91,13 @@ public class RobotContainer {
         .withKV(1), 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicAcceleration(1)
-        .withMotionMagicJerk(1));
-
+        .withMotionMagicExpo_kV(1)
+        .withMotionMagicExpo_kA(4));
     
-    PivotSubsystem pivot = new PivotSubsystem(16);
+    
+    PivotSubsystem pivot = new PivotSubsystem(16,"rio");
+    
+    MechanismSimulator mechanismSimulator = new MechanismSimulator(pivot, shootingElevator, climbingElevator);
     
     SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -162,9 +167,11 @@ public class RobotContainer {
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    m_driverController.x().toggleOnTrue(shootingElevator.getTestCommand());
+    m_driverController.x().toggleOnTrue(pivot.getTestCommand());
 
-    m_driverController.b().toggleOnTrue(pivot.getTestCommand());
+    m_driverController.b().toggleOnTrue(shootingElevator.getTestCommand());
+
+    m_driverController.rightBumper().toggleOnTrue(climbingElevator.getTestCommand());
 
 
     // reset the field-centric heading on left bumper press TODO test
@@ -183,6 +190,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return m_autoManager.getAutoManagerSelected();
+  }
+
+  public void periodic() {
+    mechanismSimulator.periodic();
   }
 
   /*

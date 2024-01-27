@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,7 +19,7 @@ public class ElevatorIORobot implements ElevatorIO {
     private final double gearRatio;
     private final double maxHeight;
 
-    private final MotionMagicVoltage m_request;
+    private final MotionMagicExpoVoltage m_request;
 
     /**
      * <h3>ElevatorIORobot</h3> 
@@ -33,7 +34,7 @@ public class ElevatorIORobot implements ElevatorIO {
         this.maxHeight = maxHeight;
         this.gearRatio = gearRatio;
        
-        m_request = new MotionMagicVoltage(0).withEnableFOC(true);
+        m_request = new MotionMagicExpoVoltage(0).withEnableFOC(true);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.withSlot0(config);
@@ -74,8 +75,13 @@ public class ElevatorIORobot implements ElevatorIO {
     }
 
     @Override
+    public double getVoltage() {
+        return rightElevatorMaster.getMotorVoltage().getValue();
+    }
+
+    @Override
     public double getTargetHeight() {
-        return ((MotionMagicVoltage) rightElevatorMaster.getAppliedControl()).Position;
+        return ((MotionMagicExpoVoltage) rightElevatorMaster.getAppliedControl()).Position;
     }  
 }
 

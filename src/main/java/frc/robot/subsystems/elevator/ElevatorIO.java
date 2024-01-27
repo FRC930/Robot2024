@@ -36,4 +36,10 @@ public interface ElevatorIO {
      * @return The height of the elevator
      */
     public double getTargetHeight();
+    /**
+     * <h3>getVoltage</h3>
+     * Gets the current voltage of the subystem.
+     * @return The voltage the motor is running at.
+     */
+    public double getVoltage();
 }

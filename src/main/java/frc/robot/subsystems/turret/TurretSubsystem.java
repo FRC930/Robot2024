@@ -1,16 +1,15 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.turret;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class PivotSubsystem extends SubsystemBase{
-    private final PivotIO io;
+public class TurretSubsystem extends SubsystemBase{
+    private final TurretIO io;
 
     private final double GEAR_RATIO = 1;
 
@@ -24,11 +23,11 @@ public class PivotSubsystem extends SubsystemBase{
         .withKV(1);//TODO: Configure
 
     private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(80)//TODO: Configure
-        .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4);//TODO: Configure
+        .withMotionMagicCruiseVelocity(20)//TODO: Configure
+        .withMotionMagicAcceleration(5)//TODO: Configure
+        .withMotionMagicJerk(1);//TODO: Configure
 
-    private final String pivotName;
+    private final String turretName;
 
     /**
      * <h3>PivotSubsystem</h3>
@@ -36,9 +35,9 @@ public class PivotSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public PivotSubsystem(int motorID, String CANbus) {
-        this.io = new PivotIORobot(new TalonFX(motorID,CANbus), GEAR_RATIO,PID_FF_CONFIGS,MM_CONFIGS);
-        pivotName = "" + this.hashCode();
+    public TurretSubsystem(int motorID, String CANbus) {
+        this.io = new TurretIORobot(new TalonFX(motorID,CANbus), GEAR_RATIO,PID_FF_CONFIGS,MM_CONFIGS);
+        turretName = "" + this.hashCode();
     }
 
     /**
@@ -47,7 +46,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        io.setPosition(MathUtil.clamp(angle,0,180));
+        io.setPosition(angle);
         
     }
 
@@ -78,27 +77,17 @@ public class PivotSubsystem extends SubsystemBase{
         return io.getVelocityDegreesPerSecond();
     }
 
-    /**
-     * <h3>getVoltage</h3>
-     * Gets the current voltage of the subystem.
-     * @return The voltage the motor is running at.
-     */
-   // public double getVoltage() {
-
-   // }
 
     @Override
     public void periodic() {
         io.updateInputs();
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/Velocity", getVelocity());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/Height", getPosition());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/SetPoint", io.getSetPoint());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/Voltage", io.getVoltage());
-        
+        SmartDashboard.putNumber("TurretVelocity-" + turretName,getVelocity());
+        SmartDashboard.putNumber("TurretAngle-" + turretName,getPosition());
+        SmartDashboard.putNumber("TurretSetpoint-" + turretName,getSetPoint());
     }
 
     public StartEndCommand getTestCommand() {
-        return new StartEndCommand(()->{setPosition(90); System.out.println("Pivot Test Start");}, ()->{setPosition(0);}, this);
+        return new StartEndCommand(()->{setPosition(90); System.out.println("Turret Test Start");}, ()->{setPosition(0);}, this);
     }
 
 }

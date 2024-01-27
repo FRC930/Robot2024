@@ -1,10 +1,7 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.turret;
 
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-
-public interface PivotIO {
-    
-    /**
+public interface TurretIO {
+     /**
      * <h3>updateInputs</h3>
      * Steps the simulation forward by 0.02 seconds.
      * <p>Does nothing on physical robot
