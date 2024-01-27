@@ -6,18 +6,23 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.LimelightHelpers.Results;
+import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SparkTestShooterCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.utilities.GamePieceDetectionUtility;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.NetworkTable;
@@ -38,12 +43,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-    private final boolean UseLimeLightAprilTag = true; 
+    private final boolean UseLimeLightAprilTag = false; 
 
-    private static final double POV_PERCENT_SPEED = 0.3;
+    private static final double   POV_PERCENT_SPEED = 0.3;
     private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
     private static final double PERCENT_SPEED = 0.3;
+
+    private GamePieceDetectionUtility m_LimeLightUtility = new GamePieceDetectionUtility("limelight-front");
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
     // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
@@ -162,6 +169,8 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+
+    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
     }
