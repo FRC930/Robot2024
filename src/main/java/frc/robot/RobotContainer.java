@@ -12,9 +12,12 @@ import frc.robot.sim.MechanismSimulator;
 import frc.robot.subsystems.IndexedShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
+import frc.robot.commands.Autos;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+
+import java.util.Optional;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -28,6 +31,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -133,9 +137,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("RightSparkMotor", 0.0);
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED) // Drive forward with
+            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
                                                                                               // negative Y (forward)
-                .withVelocityY(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED) // Drive left with negative X (left)
+                .withVelocityY(negateBasedOnAlliance(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
                 .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 .withDeadband(JOYSTICK_DEADBAND)
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
@@ -244,5 +248,23 @@ public class RobotContainer {
           // PortForwarder.add(pcPort, "limelight-" + limeLightName, limeLightPort);
           PortForwarder.add(pcPort, limeLightName, limeLightPort);
       }
+  }
+  /**
+   * Checks whether alliance is red or blue so that teleop has correct facing controls IE: negate joystick value
+   * 
+   * @param joystickValue
+   * @return negative or positive coordinate values depending on what alliance robot is on
+   */
+  public double negateBasedOnAlliance(double joystickValue) {
+    Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+    //if on red alliance, return as negative
+    //if on blue alliance, return as positive
+    if (optionalAlliance.isPresent()){
+      Alliance alliance = optionalAlliance.get();
+      if (alliance == Alliance.Red) {
+         return joystickValue*-1;
+      }
+    }
+    return joystickValue;
   }
 }
