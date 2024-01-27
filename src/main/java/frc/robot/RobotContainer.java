@@ -6,21 +6,29 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.LimelightHelpers.Results;
+import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SparkTestShooterCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismSimulator;
 import frc.robot.subsystems.IndexedShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
+import frc.robot.commands.Autos;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.utilities.GamePieceDetectionUtility;
+
+import java.util.Optional;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.NetworkTable;
@@ -28,6 +36,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -41,12 +50,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-    private final boolean UseLimeLightAprilTag = true; 
+    private final boolean UseLimeLightAprilTag = false; 
 
-    private static final double POV_PERCENT_SPEED = 0.3;
+    private static final double   POV_PERCENT_SPEED = 0.3;
     private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
     private static final double PERCENT_SPEED = 0.3;
+
+    private GamePieceDetectionUtility m_LimeLightUtility = new GamePieceDetectionUtility("limelight-front");
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
     // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
@@ -133,9 +144,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("RightSparkMotor", 0.0);
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED) // Drive forward with
+            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
                                                                                               // negative Y (forward)
-                .withVelocityY(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED) // Drive left with negative X (left)
+                .withVelocityY(negateBasedOnAlliance(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
                 .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 .withDeadband(JOYSTICK_DEADBAND)
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
@@ -169,6 +180,8 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+
+    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -244,5 +257,23 @@ public class RobotContainer {
           // PortForwarder.add(pcPort, "limelight-" + limeLightName, limeLightPort);
           PortForwarder.add(pcPort, limeLightName, limeLightPort);
       }
+  }
+  /**
+   * Checks whether alliance is red or blue so that teleop has correct facing controls IE: negate joystick value
+   * 
+   * @param joystickValue
+   * @return negative or positive coordinate values depending on what alliance robot is on
+   */
+  public double negateBasedOnAlliance(double joystickValue) {
+    Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+    //if on red alliance, return as negative
+    //if on blue alliance, return as positive
+    if (optionalAlliance.isPresent()){
+      Alliance alliance = optionalAlliance.get();
+      if (alliance == Alliance.Red) {
+         return joystickValue*-1;
+      }
+    }
+    return joystickValue;
   }
 }
