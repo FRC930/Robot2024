@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -58,11 +59,11 @@ public class ShooterSubsystem extends SubsystemBase {
         m_rightMotor.set(rightSpeed);
     }
 
-    public double getLeftMotorSpeed() {
+    public double getLeftVelocity() {
         return m_leftMotor.getVelocity().getValue();
     }
 
-    public double getRightMotorSpeed() {
+    public double getRightVelocity() {
         return m_rightMotor.getVelocity().getValue();
     }
 
@@ -79,4 +80,13 @@ public class ShooterSubsystem extends SubsystemBase {
         m_rightMotor.set(0.0);
     }
 
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("ShooterLeftVoltage", getLeftVoltage());
+        SmartDashboard.putNumber("ShooterRightVoltage", getRightVoltage());
+        SmartDashboard.putNumber("ShooterLeftVelocity", getLeftVelocity());
+        SmartDashboard.putNumber("ShooterRightVelocity", getRightVelocity());
+    }
+
+    
 }

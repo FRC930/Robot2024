@@ -177,6 +177,8 @@ public class IndexedShooterSubsystem extends SubsystemBase{
 
         SmartDashboard.putNumber("IndexedShooter/Indexer/Velocity" ,getIndexVelocity());
         SmartDashboard.putNumber("IndexedShooter/Indexer/Voltage" ,getIndexVoltage());
+
+        SmartDashboard.putBoolean("IndexedShooter/Indexer/TimeOfFlight", getSensor());
     }
 }
 

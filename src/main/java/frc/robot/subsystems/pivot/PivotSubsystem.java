@@ -90,10 +90,10 @@ public class PivotSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         io.updateInputs();
-        SmartDashboard.putNumber("Elevator-" + pivotName + "/Velocity", getVelocity());
-        SmartDashboard.putNumber("Elevator-" + pivotName + "/Height", getPosition());
-        SmartDashboard.putNumber("Elevator-" + pivotName + "/SetPoint", io.getSetPoint());
-        SmartDashboard.putNumber("Elevator-" + pivotName + "/Voltage", io.getVoltage());
+        SmartDashboard.putNumber("Pivot-" + pivotName + "/Velocity", getVelocity());
+        SmartDashboard.putNumber("Pivot-" + pivotName + "/Height", getPosition());
+        SmartDashboard.putNumber("Pivot-" + pivotName + "/SetPoint", io.getSetPoint());
+        SmartDashboard.putNumber("Pivot-" + pivotName + "/Voltage", io.getVoltage());
         
     }
 

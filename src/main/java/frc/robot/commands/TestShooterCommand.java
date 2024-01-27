@@ -25,12 +25,6 @@ public class TestShooterCommand extends Command {
     }
 
     @Override
-    public void execute() {
-        SmartDashboard.putNumber("KrakenLeftMotorSpeed", m_shooter.getLeftMotorSpeed());
-        SmartDashboard.putNumber("KrakenRightMotorSpeed", m_shooter.getRightMotorSpeed());
-    }
-
-    @Override
     public boolean isFinished() {
         return false;
     }
