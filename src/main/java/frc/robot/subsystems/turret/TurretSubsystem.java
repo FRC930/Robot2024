@@ -1,31 +1,12 @@
 package frc.robot.subsystems.turret;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.PosSubsystemIO;
 
 public class TurretSubsystem extends SubsystemBase{
-    private final TurretIO io;
-
-    private final double GEAR_RATIO = 1;
-
-    private final Slot0Configs PID_FF_CONFIGS = new Slot0Configs()
-        .withKP(1) //TODO: Configure
-        .withKI(0) //TODO: Configure
-        .withKD(0) //TODO: Configure
-        .withKA(1) //TODO: Configure
-        .withKG(0) //TODO: Configure
-        .withKS(0) //TODO: Configure
-        .withKV(1);//TODO: Configure
-
-    private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(20)//TODO: Configure
-        .withMotionMagicAcceleration(5)//TODO: Configure
-        .withMotionMagicJerk(1);//TODO: Configure
+    private final PosSubsystemIO io;
 
     private final String turretName;
 
@@ -35,8 +16,8 @@ public class TurretSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public TurretSubsystem(int motorID, String CANbus) {
-        this.io = new TurretIORobot(new TalonFX(motorID,CANbus), GEAR_RATIO,PID_FF_CONFIGS,MM_CONFIGS);
+    public TurretSubsystem(PosSubsystemIO io) {
+        this.io = io;
         turretName = "" + this.hashCode();
     }
 
@@ -46,7 +27,7 @@ public class TurretSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        io.setPosition(angle);
+        io.setTarget(angle);
         
     }
 
@@ -56,7 +37,7 @@ public class TurretSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public double getSetPoint() {
-        return io.getSetPoint();
+        return io.getTarget();
     }
 
     /**
@@ -65,7 +46,7 @@ public class TurretSubsystem extends SubsystemBase{
      * @return The angle in degrees from the horizontal
      */
     public double getPosition() {
-        return io.getCurrentAngleDegrees();
+        return io.getPos();
     }
 
     /**
@@ -74,13 +55,13 @@ public class TurretSubsystem extends SubsystemBase{
      * @return
      */
     public double getVelocity() {
-        return io.getVelocityDegreesPerSecond();
+        return io.getVelocity();
     }
 
 
     @Override
     public void periodic() {
-        io.updateInputs();
+        io.runSim();
         SmartDashboard.putNumber("TurretVelocity-" + turretName,getVelocity());
         SmartDashboard.putNumber("TurretAngle-" + turretName,getPosition());
         SmartDashboard.putNumber("TurretSetpoint-" + turretName,getSetPoint());

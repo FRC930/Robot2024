@@ -1,42 +1,87 @@
 package frc.robot.subsystems.elevator;
 
-public class ElevatorIOSim implements ElevatorIO{
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+
+public class ElevatorIOSim extends ElevatorIORobot{
+    //private ElevatorSim elevatorSim;
+    private final double kMotorResistance = 0.002;
+    private DCMotorSim m_motorSim;
+    /**
+     * <h3>ElevatorIOSim</h3> 
+     * Creates a subsystem that represents an Elevator system
+     * @param motorID The id of the elevator motor
+     * @param config The PID and Feedforward controller configs
+     * @param gearRatio The ratio of the motor rotations to the height on the elevator
+     */
+    public ElevatorIOSim (
+        TalonFX motor1, 
+        TalonFX motor2, 
+        Slot0Configs config, 
+        MotionMagicConfigs mmConfigs,
+        ElevatorType elevator
+        ){
+        super(motor1,motor2,config,mmConfigs,elevator);
+        //this.elevatorSim = new ElevatorSim(elevator.m_kV, elevator.m_kA, DCMotor.getKrakenX60Foc(2), elevator.m_minHeight, elevator.m_maxHeight, true, elevator.m_startingHeight);
+        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
+    }
+    /*
+    @Override
+    public void runSim() {
     
+        elevatorSim.setInputVoltage(rightElevatorMaster.getSimState().getMotorVoltage());
+
+        elevatorSim.update(0.02);
+
+        /// SET SIM PHYSICS INPUTS
+        final double position_rot = rightElevatorMaster.getRotorPosition().getValue();
+        final double velocity_rps = rightElevatorMaster.getRotorVelocity().getValue();
+
+        leftElevatorFollower.getSimState().setRawRotorPosition(position_rot);
+        leftElevatorFollower.getSimState().setRotorVelocity(velocity_rps);
+        SmartDashboard.putNumber("LOL" + this.hashCode(), position_rot);
+        SmartDashboard.putNumber("LMAO" + this.hashCode(), velocity_rps);
+
+        rightElevatorMaster.getSimState().setRawRotorPosition(position_rot);
+        rightElevatorMaster.getSimState().setRotorVelocity(velocity_rps);
+
+       // leftElevatorFollower.getSimState().setSupplyVoltage(12 - leftElevatorFollower.getSimState().getSupplyCurrent() * kMotorResistance);
+        rightElevatorMaster.getSimState().setSupplyVoltage(12 - rightElevatorMaster.getSimState().getSupplyCurrent() * kMotorResistance);
+        
+        _motorSim.setInputVoltage(_falcon.getSimState().getMotorVoltage());
+
+        _motorSim.update(getPeriod());
+
+        /// SET SIM PHYSICS INPUTS
+        final double position_rot = _motorSim.getAngularPositionRotations();
+        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
+
+        _falcon.getSimState().setRawRotorPosition(position_rot);
+        _falcon.getSimState().setRotorVelocity(velocity_rps);
+
+        _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
+    }
+    */
+
+    @Override
+    public void runSim() {
+        /// DEVICE SPEED SIMULATION
     
-    @Override
-    public void updateInputs() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateInputs'");
-    }
-
-    @Override
-    public double getCurrentVelocity() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCurrentVelocity'");
-    }
-
-    @Override
-    public double getCurrentHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCurrentHeight'");
-    }
-
-    @Override
-    public void setTargetHeight(double height) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setTargetHeight'");
-    }
-
-    @Override
-    public double getTargetHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetHeight'");
-    }
-
-    @Override
-    public double getVoltage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getVoltage'");
-    }
+        m_motorSim.setInputVoltage(rightElevatorMaster.getSimState().getMotorVoltage());
     
+        m_motorSim.update(getPeriod());
+    
+        /// SET SIM PHYSICS INPUTS
+        final double position_rot = m_motorSim.getAngularPositionRotations();
+        final double velocity_rps = Units.radiansToRotations(m_motorSim.getAngularVelocityRadPerSec());
+    
+        rightElevatorMaster.getSimState().setRawRotorPosition(position_rot);
+        rightElevatorMaster.getSimState().setRotorVelocity(velocity_rps);
+    
+        rightElevatorMaster.getSimState().setSupplyVoltage(12 - rightElevatorMaster.getSimState().getSupplyCurrent() * kMotorResistance);
+    }
 }

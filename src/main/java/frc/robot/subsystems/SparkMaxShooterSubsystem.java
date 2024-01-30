@@ -3,6 +3,7 @@ package frc.robot.subsystems;
  import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.utilities.SparkMaxWrapper;
+@Deprecated
 public class SparkMaxShooterSubsystem {
 
     private SparkMaxWrapper m_topMotor; 

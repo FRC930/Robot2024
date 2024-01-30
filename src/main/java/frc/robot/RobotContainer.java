@@ -8,15 +8,22 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SparkTestShooterCommand;
+import frc.robot.commands.TestShooterCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismSimulator;
-import frc.robot.subsystems.IndexedShooterSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorType;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.roller.RollerMotorIOReal;
+import frc.robot.subsystems.roller.RollerMotorIOSim;
+import frc.robot.subsystems.timeofflight.TimeOfFlightIOReal;
+import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
 
 import java.util.Optional;
@@ -41,6 +48,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.TestIndexerCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -70,7 +78,7 @@ public class RobotContainer {
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
-    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13,"rio",1, Units.inchesToMeters(20), 
+    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13,"rio", 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -82,9 +90,10 @@ public class RobotContainer {
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4));
+        .withMotionMagicExpo_kA(4),
+      ElevatorType.SHOOTING_ELEVATOR);
 
-    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, "rio", 1, Units.inchesToMeters(20), 
+    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, "rio",
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -96,7 +105,8 @@ public class RobotContainer {
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4));
+        .withMotionMagicExpo_kA(4),
+      ElevatorType.CLIMBING_ELEVATOR);
     
     
     PivotSubsystem pivot = new PivotSubsystem(16,"rio");
@@ -113,8 +123,15 @@ public class RobotContainer {
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
   // The robot's subsystems and commands are defined here...
-  // private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(3, 4);
-  private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
+      Robot.isReal() ? new RollerMotorIOReal(3) : new RollerMotorIOSim(3),
+      Robot.isReal() ? new RollerMotorIOReal(4) : new RollerMotorIOSim(4));
+  // private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
+
+  private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
+      Robot.isReal() ? new RollerMotorIOReal(20) : new RollerMotorIOSim(20),
+      Robot.isReal() ? new TimeOfFlightIOReal(0, 200) : new TimeOfFlightIOSim(0)
+  );
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -166,17 +183,20 @@ public class RobotContainer {
       drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(POV_PERCENT_SPEED * MaxSpeed)
       ));
 
-    // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
-    m_driverController.y().whileTrue(new SparkTestShooterCommand(m_sparkShooterSubsystem));
+    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
+
+    m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    
+    
 
-    m_driverController.x().toggleOnTrue(pivot.getTestCommand());
+    // m_driverController.x().toggleOnTrue(pivot.getTestCommand());
 
-    m_driverController.b().toggleOnTrue(shootingElevator.getTestCommand());
+    // m_driverController.b().toggleOnTrue(shootingElevator.getTestCommand());
 
-    m_driverController.rightBumper().toggleOnTrue(climbingElevator.getTestCommand());
-
+    // m_driverController.rightBumper().toggleOnTrue(climbingElevator.getTestCommand());
+    
 
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
