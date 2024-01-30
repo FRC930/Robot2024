@@ -45,7 +45,7 @@ public class LimeLightIntakeCommand extends Command {
     private TrapezoidProfile.State m_setpoint;
     private TrapezoidProfile profile;
 
-    private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
 
 
     /**
