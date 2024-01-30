@@ -1,20 +1,18 @@
 package frc.robot.subsystems.pivot;
 
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.sim.PhysicsSim;
+import frc.robot.subsystems.PosSubsystemIO;
 
 
-public class PivotIORobot implements PivotIO{
-    private TalonFX m_motor;
+public class PivotIORobot implements PosSubsystemIO{
+    protected TalonFX m_motor;
 
     private MotionMagicExpoVoltage m_request;
     
@@ -38,28 +36,23 @@ public class PivotIORobot implements PivotIO{
         
 
         m_motor.setControl(m_request.withPosition(0).withSlot(0));
-
-        //TODO: TEMP
-        if(Utils.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(m_motor, 0.001);
-        }
     }
     
     @Override
-    public void updateInputs() {}
+    public void runSim() {}
 
     @Override
-    public double getCurrentAngleDegrees() {
+    public double getPos() {
         return m_motor.getPosition().getValue(); // TODO: make sure this is right direction
     }
 
     @Override
-    public double getVelocityDegreesPerSecond() {
+    public double getVelocity() {
        return m_motor.getVelocity().getValue(); // TODO: make sure this is right direction
     }
 
     @Override
-    public void setPosition(double position) {
+    public void setTarget(double position) {
         m_motor.setControl(m_request.withPosition(position).withSlot(0));
     }
 
@@ -69,7 +62,7 @@ public class PivotIORobot implements PivotIO{
     }
 
     @Override
-    public double getSetPoint() {
+    public double getTarget() {
         return ((MotionMagicExpoVoltage)m_motor.getAppliedControl()).Position;
     }
 }

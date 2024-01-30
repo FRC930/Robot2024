@@ -6,19 +6,29 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.subsystems.PosSubsystemIO;
 
 public class ElevatorSubsystem extends SubsystemBase {
-    private ElevatorIO IO;
+    private PosSubsystemIO IO;
     private String elevatorName;
-
 
     /**
      * <h3>ElevatorSubsystem</h3>
      * Creates a subsystem representing the elevator on the robot.
      * @return
      */
-    public ElevatorSubsystem(int motor1ID, int motor2ID, String CANbus, double gearRatio, double maxHeight,Slot0Configs slot0Configs,MotionMagicConfigs mmConfigs) {
-        this.IO = new ElevatorIORobot(new TalonFX(motor1ID,CANbus), new TalonFX(motor2ID,CANbus),gearRatio,maxHeight,slot0Configs,mmConfigs);
+    public ElevatorSubsystem(
+        int motor1ID, 
+        int motor2ID, 
+        String CANbus, 
+        Slot0Configs slot0Configs,
+        MotionMagicConfigs mmConfigs,
+        ElevatorType elevator
+        ) {
+        this.IO = Robot.isReal() 
+        ? new ElevatorIORobot(new TalonFX(motor1ID,CANbus), new TalonFX(motor2ID,CANbus),slot0Configs,mmConfigs,elevator)
+        : new ElevatorIOSim(new TalonFX(motor1ID,CANbus), new TalonFX(motor2ID,CANbus),slot0Configs,mmConfigs,elevator);
         elevatorName = "" + this.hashCode();
     } 
 
@@ -28,7 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @param targetHeight The height the robot will try to move to
      */
     public void setTargetHeight(double targetHeight) {
-        IO.setTargetHeight(targetHeight);
+        IO.setTarget(targetHeight);
     }
 
     /**
@@ -37,7 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return The height of the elevator
      */
     public double getHeight() {
-        return IO.getCurrentHeight();
+        return IO.getPos();
     }
 
     /**
@@ -46,7 +56,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return The target height
      */
     public double getTargetHeight() {
-        return IO.getTargetHeight();
+        return IO.getTarget();
     }
 
     /**
@@ -55,15 +65,15 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return The velocity of the elevator
      */
     public double getVelocity() {
-        return IO.getCurrentVelocity();
+        return IO.getVelocity();
     }
 
     @Override
     public void periodic() {
-        IO.updateInputs();
+        IO.runSim();
         SmartDashboard.putNumber("Elevator-" + elevatorName + "/Velocity", getVelocity());
         SmartDashboard.putNumber("Elevator-" + elevatorName + "/Height", getHeight());
-        SmartDashboard.putNumber("Elevator-" + elevatorName + "/SetPoint", IO.getTargetHeight());
+        SmartDashboard.putNumber("Elevator-" + elevatorName + "/SetPoint", IO.getTarget());
         SmartDashboard.putNumber("Elevator-" + elevatorName + "/Voltage", IO.getVoltage());
     }
 

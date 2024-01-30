@@ -1,21 +1,20 @@
 package frc.robot.subsystems.elevator;
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
-import frc.robot.sim.PhysicsSim;
+import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.PosSubsystemIO;
 
-public class ElevatorIORobot implements ElevatorIO {
-    private final TalonFX leftElevatorFollower;
-    private final TalonFX rightElevatorMaster;
+public class ElevatorIORobot implements PosSubsystemIO {
+    protected final TalonFX leftElevatorFollower;
+    protected final TalonFX rightElevatorMaster;
     private final double gearRatio;
     private final double maxHeight;
 
@@ -28,13 +27,14 @@ public class ElevatorIORobot implements ElevatorIO {
      * @param config The PID and Feedforward controller configs
      * @param gearRatio The ratio of the motor rotations to the height on the elevator
      */
-    public ElevatorIORobot (TalonFX motor1, TalonFX motor2, double gearRatio, double maxHeight, Slot0Configs config, MotionMagicConfigs mmConfigs){
+    public ElevatorIORobot (TalonFX motor1, TalonFX motor2, Slot0Configs config, MotionMagicConfigs mmConfigs,ElevatorType elevator){
         leftElevatorFollower = motor1;
         rightElevatorMaster = motor2;
-        this.maxHeight = maxHeight;
-        this.gearRatio = gearRatio;
+        this.maxHeight = elevator.m_maxHeight;
+        this.gearRatio = elevator.m_gearRatio;
        
         m_request = new MotionMagicExpoVoltage(0).withEnableFOC(true);
+        
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.withSlot0(config);
@@ -48,29 +48,24 @@ public class ElevatorIORobot implements ElevatorIO {
 
         leftElevatorFollower.setControl(new Follower(rightElevatorMaster.getDeviceID(), true));
         rightElevatorMaster.setControl(m_request.withPosition(0).withSlot(0));
-
-        //TODO: TEMP
-        if(Utils.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(leftElevatorFollower, 0.001);
-            PhysicsSim.getInstance().addTalonFX(rightElevatorMaster, 0.001);
-        }
     }
     
 
     @Override
-    public void updateInputs() {}
+    public void runSim() {}
 
-    public void setTargetHeight(double height) {
-        rightElevatorMaster.setControl(m_request.withPosition(MathUtil.clamp(height,0,maxHeight)).withSlot(0));
+    @Override
+    public void setTarget(double height) {
+        rightElevatorMaster.setControl(m_request.withPosition(MathUtil.clamp(Units.inchesToMeters(height),0,maxHeight)).withSlot(0));
     }
 
     @Override
-    public double getCurrentVelocity() {
+    public double getVelocity() {
         return rightElevatorMaster.getVelocity().getValue();
     }
 
     @Override
-    public double getCurrentHeight() {
+    public double getPos() {
         return rightElevatorMaster.getPosition().getValue();
     }
 
@@ -80,7 +75,7 @@ public class ElevatorIORobot implements ElevatorIO {
     }
 
     @Override
-    public double getTargetHeight() {
+    public double getTarget() {
         return ((MotionMagicExpoVoltage) rightElevatorMaster.getAppliedControl()).Position;
     }  
 }

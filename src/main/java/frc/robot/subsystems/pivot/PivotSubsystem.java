@@ -8,9 +8,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.PosSubsystemIO;
 
 public class PivotSubsystem extends SubsystemBase{
-    private final PivotIO io;
+    private final PosSubsystemIO io;
 
     private final double GEAR_RATIO = 1;
 
@@ -47,7 +48,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        io.setPosition(MathUtil.clamp(angle,0,180));
+        io.setTarget(MathUtil.clamp(angle,0,180));
         
     }
 
@@ -57,7 +58,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public double getSetPoint() {
-        return io.getSetPoint();
+        return io.getTarget();
     }
 
     /**
@@ -66,7 +67,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @return The angle in degrees from the horizontal
      */
     public double getPosition() {
-        return io.getCurrentAngleDegrees();
+        return io.getPos();
     }
 
     /**
@@ -75,7 +76,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @return
      */
     public double getVelocity() {
-        return io.getVelocityDegreesPerSecond();
+        return io.getVelocity();
     }
 
     /**
@@ -89,10 +90,10 @@ public class PivotSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        io.updateInputs();
+        io.runSim();
         SmartDashboard.putNumber("Pivot-" + pivotName + "/Velocity", getVelocity());
         SmartDashboard.putNumber("Pivot-" + pivotName + "/Height", getPosition());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/SetPoint", io.getSetPoint());
+        SmartDashboard.putNumber("Pivot-" + pivotName + "/SetPoint", getSetPoint());
         SmartDashboard.putNumber("Pivot-" + pivotName + "/Voltage", io.getVoltage());
         
     }

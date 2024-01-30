@@ -1,19 +1,14 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SlotConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.playingwithfusion.TimeOfFlight;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.sim.PhysicsSim;
+import frc.robot.subsystems.roller.RollerMotorIO;
+import frc.robot.subsystems.timeofflight.TimeOfFlightIO;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -24,13 +19,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
  */
 public class IntakeSubsystem extends SubsystemBase {
 
-    private static final double TRIGGER_DISTANT = 200;
-    private TalonFX m_leaderMotor;
+    private RollerMotorIO m_leaderMotor;
     //private MotionMagicVelocityVoltage m_request;
-    private TalonFX m_followerMotor;
-    private TimeOfFlight m_sensor;
-    private DigitalInput m_sensorSim;
-
+    private RollerMotorIO m_followerMotor;
+    private TimeOfFlightIO m_sensorL;
+    private TimeOfFlightIO m_sensorR;
     /* 
     private final SlotConfigs PIDFF_CONFIG = new SlotConfigs()
         //PID
@@ -47,7 +40,6 @@ public class IntakeSubsystem extends SubsystemBase {
         .withMotionMagicAcceleration(1) // Motor target acceleration
         .withMotionMagicJerk(1); // Motor max acceleration rate of change
     */
-    private final double GEAR_RATIO = 1;
 
 
     /**
@@ -58,9 +50,12 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param followerID The ID to the follower motor
      * @param sensorID 
      */
-    public IntakeSubsystem(int leaderID, int followerID, int sensorID, String CANbus)  {
-        m_leaderMotor = new TalonFX(leaderID,CANbus);
-        m_followerMotor = new TalonFX(followerID,CANbus);
+    public IntakeSubsystem(RollerMotorIO leader, RollerMotorIO follower, TimeOfFlightIO leftSensor, TimeOfFlightIO rightSensor)  {
+        m_leaderMotor = leader;
+        m_followerMotor = follower;
+        m_sensorL = leftSensor;
+        m_sensorR = rightSensor;
+
 
         /*m_request = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
 
@@ -73,25 +68,15 @@ public class IntakeSubsystem extends SubsystemBase {
         m_leaderMotor.getConfigurator().apply(config);
         m_followerMotor.getConfigurator().apply(config);
         */
-        m_followerMotor.setNeutralMode(NeutralModeValue.Coast);
-        m_leaderMotor.setNeutralMode(NeutralModeValue.Coast);
+        m_followerMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
+        m_leaderMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
 
-        m_followerMotor.setControl(new Follower(leaderID, true));
-        if (Robot.isReal()) {
-            m_sensor = new TimeOfFlight(sensorID);
-
-        } else {
-            m_sensorSim = new DigitalInput(0);
-            PhysicsSim.getInstance().addTalonFX(m_leaderMotor, 0.001);
-            PhysicsSim.getInstance().addTalonFX(m_followerMotor, 0.001);
-        }
-        SmartDashboard.putNumber("IntakeSubsystem/SetPoint" ,0);
+        m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), true));
+        SmartDashboard.putNumber("IntakeSubsystem/SetPoint", 0);
     }
 
     public void setIntakeSpeed(double speed) {
-        SmartDashboard.putNumber("IntakeSubsystem/SetPoint" , speed);
-        //m_leaderMotor.setControl(m_request.withVelocity(speed).withSlot(0));
-        m_leaderMotor.set(speed);
+        m_leaderMotor.setSpeed(speed);
     }
 
     public void stop() {
@@ -99,30 +84,28 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public double getSpeed() {
-        return m_leaderMotor.getVelocity().getValue();
+        return m_leaderMotor.getSpeed();
     }
 
     public double getVoltage() {
-        return m_leaderMotor.getMotorVoltage().getValue();
+        return m_leaderMotor.getVoltage();
     }
-    
+
     public boolean getSensor() {
-        if (Robot.isReal()) {
-            return m_sensor.getRange() < TRIGGER_DISTANT;
-        } else {
-            return m_sensorSim.get();
-        }
-    
+        return m_sensorL.get() || m_sensorR.get();
     }
 
     public StartEndCommand getTestCommand() {
-        return new StartEndCommand(() -> {setIntakeSpeed(3);}, () -> {stop();}, this);
+        return new StartEndCommand(() -> {setIntakeSpeed(0.3);}, () -> {stop();}, this);
     }
 
     @Override
     public void periodic() {
+        m_leaderMotor.runSim();
+        m_followerMotor.runSim();
         SmartDashboard.putNumber("IntakeSubsystem/Velocity" ,getSpeed());
         SmartDashboard.putNumber("IntakeSubsystem/Voltage" ,getVoltage());
+        SmartDashboard.putBoolean("IntakeSubsystem/IntookenYet", getSensor());
     }
 }
 
