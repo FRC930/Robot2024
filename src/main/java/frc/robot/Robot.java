@@ -64,7 +64,7 @@ public class Robot extends LoggedRobot {
       String folder = "/U";
       File logFolder = new File(folder);
       if (!logFolder.exists()) {
-        writer = new WPILOGWriter("/home/lvuser");
+        writer = new WPILOGWriter("/home/lvuser/logs");
         DriverStation.reportWarning("Usb stick not in roborio so not saving logs on /U/logs folder, but in "+folder, false);
       }
       Logger.addDataReceiver(writer); 
