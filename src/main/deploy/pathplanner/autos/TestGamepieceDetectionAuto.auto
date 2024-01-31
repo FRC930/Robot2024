@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.41726639009093575,
+      "y": 7.0
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TestGamepieceDetection"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AllianceTopNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DownTestGamepieceDetection"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
