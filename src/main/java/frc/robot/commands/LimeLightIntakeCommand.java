@@ -86,7 +86,7 @@ public class LimeLightIntakeCommand extends Command {
         //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
         m_strafe = -MathUtil.clamp(pid.calculate(m_LimeLight.get_tx(), 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
-        m_throttle = profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
+        m_throttle = -profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
         SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
         SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
         SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
@@ -103,7 +103,7 @@ public class LimeLightIntakeCommand extends Command {
         */
 
 
-        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(0.0).withRotationalRate(0.0);
+        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(m_strafe).withRotationalRate(0.0);
         m_SwerveDrive.setControl(requestSupplier.get());
     }
 
