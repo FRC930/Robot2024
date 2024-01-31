@@ -29,6 +29,7 @@ import frc.robot.utilities.GamePieceDetectionUtility;
 import java.util.Optional;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -140,6 +141,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    configureNamedCommands();
     configureBindings();
     portForwardCameras();
   }
@@ -295,5 +297,24 @@ public class RobotContainer {
       }
     }
     return joystickValue;
+  }
+
+  public void configureNamedCommands() { //TODO update all of the x and y positions for each of the alliance colors (don't do center line points)
+      NamedCommands.registerCommand("AllianceTopNote", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(2.9, 7.0, new Rotation2d(0.0)), new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+      NamedCommands.registerCommand("AllianceMidNote", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(0.0, 0.0, new Rotation2d(0.0)), new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+      NamedCommands.registerCommand("AllianceLowNote", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(0.0, 0.0, new Rotation2d(0.0)), new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+      NamedCommands.registerCommand("MidLineLevel1", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+      NamedCommands.registerCommand("MidLineLevel2", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+      NamedCommands.registerCommand("MidLineLevel3", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+      NamedCommands.registerCommand("MidLineLevel4", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+      NamedCommands.registerCommand("MidLineLevel5", new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, 
+          new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
   }
 }

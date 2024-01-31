@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -11,6 +12,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
@@ -31,6 +34,8 @@ public class LimeLightIntakeCommand extends Command {
     private SwerveDrivetrainSubsystem m_SwerveDrive;
     private GamePieceDetectionUtility m_LimeLight;
 
+    private Pose2d m_bluePosition;
+    private Pose2d m_redPosition;
     private Pose2d m_position;
     
     private double m_throttle = 0.0;
@@ -55,18 +60,34 @@ public class LimeLightIntakeCommand extends Command {
      * 
      * @param swerveDrive Swerve Drive
      * @param limeLight GamePieceDetectionUtility
-     * @param position Pose2d of the location of where the robot should go
+     * @param bluePosition Pose2d of the location of where the robot should go
      * 
      */
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, GamePieceDetectionUtility limeLight, Pose2d position) {
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, GamePieceDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition) {
         m_SwerveDrive = swerveDrive;
         m_LimeLight = limeLight;
-        m_position = position;
+        m_bluePosition = bluePosition;
+        m_redPosition = redPosition;
+        m_position = m_bluePosition;
         addRequirements(m_SwerveDrive);
+    }
+
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, GamePieceDetectionUtility m_LimeLightUtility, Pose2d pose2d) {
+        this(drivetrain, m_LimeLightUtility, pose2d, pose2d);
     }
 
     @Override
     public void initialize() { 
+        Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+        //if on red alliance, return as negative
+        //if on blue alliance, return as positive
+        if (optionalAlliance.isPresent()){
+        Alliance alliance = optionalAlliance.get();
+            if (alliance == Alliance.Red) {
+                m_position = m_redPosition;
+            }
+        }
+
         m_TimeElapsed = 0.0;
 
         m_distance = distanceToTarget();
@@ -77,7 +98,7 @@ public class LimeLightIntakeCommand extends Command {
         
         //Creates the trapezoid profile using the given information
         m_goal = new TrapezoidProfile.State(m_distance, 0.0); //sets the desired state to be the total distance away
-        m_setpoint = new TrapezoidProfile.State(0.0, 0.0); //sets the current state at (0,0)
+        m_setpoint = new TrapezoidProfile.State(0.0, 1.0); //sets the current state at (0,0)
         profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint); //combines everything into the trapezoid profile
     }
 
