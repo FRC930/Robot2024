@@ -10,9 +10,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.PosSubsystemIO;
+import frc.robot.IOs.TalonPosIO;
 
-public class ElevatorIORobot implements PosSubsystemIO {
+public class ElevatorIORobot implements TalonPosIO {
     protected final TalonFX leftElevatorFollower;
     protected final TalonFX rightElevatorMaster;
     private final double gearRatio;
@@ -27,9 +27,9 @@ public class ElevatorIORobot implements PosSubsystemIO {
      * @param config The PID and Feedforward controller configs
      * @param gearRatio The ratio of the motor rotations to the height on the elevator
      */
-    public ElevatorIORobot (TalonFX motor1, TalonFX motor2, Slot0Configs config, MotionMagicConfigs mmConfigs,ElevatorType elevator){
-        leftElevatorFollower = motor1;
-        rightElevatorMaster = motor2;
+    public ElevatorIORobot (int motor1ID, int motor2ID, String canbus, Slot0Configs config, MotionMagicConfigs mmConfigs,ElevatorType elevator){
+        leftElevatorFollower = new TalonFX(motor1ID, canbus);
+        rightElevatorMaster = new TalonFX(motor2ID, canbus);
         this.maxHeight = elevator.m_maxHeight;
         this.gearRatio = elevator.m_gearRatio;
        

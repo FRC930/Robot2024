@@ -6,12 +6,12 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.roller.RollerMotorIO;
+import frc.robot.IOs.TalonRollerIO;
 
 public class ShooterSubsystem extends SubsystemBase{
 
-    private RollerMotorIO m_leftMotor; 
-    private RollerMotorIO m_rightMotor;
+    private TalonRollerIO m_leftMotor; 
+    private TalonRollerIO m_rightMotor;
 
     // private MotionMagicVelocityVoltage m_leftRequest = new MotionMagicVelocityVoltage(0);
     // private MotionMagicVelocityVoltage m_rightRequest = new MotionMagicVelocityVoltage(0);
@@ -48,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase{
     //     .withMotionMagicJerk(1); // Motor max acceleration rate of change
     // private final double INDEXER_GEAR_RATIO = 1;
 
-    public ShooterSubsystem(RollerMotorIO leftMotor, RollerMotorIO rightMotor) { //use IDs 3 & 4 TODO check to make sure those IDs are free
+    public ShooterSubsystem(TalonRollerIO leftMotor, TalonRollerIO rightMotor) { //use IDs 3 & 4 TODO check to make sure those IDs are free
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
 

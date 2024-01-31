@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.IOs.TalonPosIO;
 import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SparkTestShooterCommand;
@@ -16,12 +17,14 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SparkMaxShooterSubsystem;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
+import frc.robot.subsystems.elevator.ElevatorIORobot;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorType;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.roller.RollerMotorIOReal;
+import frc.robot.subsystems.roller.RollerMotorIORobot;
 import frc.robot.subsystems.roller.RollerMotorIOSim;
-import frc.robot.subsystems.timeofflight.TimeOfFlightIOReal;
+import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
@@ -66,6 +69,8 @@ public class RobotContainer {
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
     private static final double PERCENT_SPEED = 0.3;
 
+    private static final String RIO = "rio";
+
     private GamePieceDetectionUtility m_LimeLightUtility = new GamePieceDetectionUtility("limelight-front");
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
@@ -79,7 +84,8 @@ public class RobotContainer {
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
-    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(12, 13,"rio", 
+        
+    private Slot0Configs shootingS0C = 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -87,14 +93,23 @@ public class RobotContainer {
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(1), 
+        .withKV(1);
+    
+    private MotionMagicConfigs shootingMMC = 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4),
-      ElevatorType.SHOOTING_ELEVATOR);
+        .withMotionMagicExpo_kA(4);
 
-    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(14, 15, "rio",
+    private TalonPosIO shootingIO = 
+        Robot.isReal() ?
+          new ElevatorIORobot(12, 13,"rio", shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
+        : new ElevatorIOSim(12, 13,"rio", shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR);
+
+    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(shootingIO);
+
+
+    private Slot0Configs climbingS0C = 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -102,12 +117,21 @@ public class RobotContainer {
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(1), 
+        .withKV(1);
+    
+    private MotionMagicConfigs climbingMMC = 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4),
-      ElevatorType.CLIMBING_ELEVATOR);
+        .withMotionMagicExpo_kA(4);
+
+    private TalonPosIO climbingIO = 
+        Robot.isReal() ?
+          new ElevatorIORobot(14, 15, "rio", climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
+        : new ElevatorIOSim(14, 15, "rio", climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR);
+
+
+    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(climbingIO);
     
     
     PivotSubsystem pivot = new PivotSubsystem(16,"rio");
@@ -125,13 +149,13 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-      Robot.isReal() ? new RollerMotorIOReal(3) : new RollerMotorIOSim(3),
-      Robot.isReal() ? new RollerMotorIOReal(4) : new RollerMotorIOSim(4));
+      Robot.isReal() ? new RollerMotorIORobot(3, RIO) : new RollerMotorIOSim(3),
+      Robot.isReal() ? new RollerMotorIORobot(4, RIO) : new RollerMotorIOSim(4));
   // private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
 
   private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
-      Robot.isReal() ? new RollerMotorIOReal(20) : new RollerMotorIOSim(20),
-      Robot.isReal() ? new TimeOfFlightIOReal(0, 200) : new TimeOfFlightIOSim(0)
+      Robot.isReal() ? new RollerMotorIORobot(20, RIO) : new RollerMotorIOSim(20),
+      Robot.isReal() ? new TimeOfFlightIORobot(0, 200) : new TimeOfFlightIOSim(0)
   );
 
   // Replace with CommandPS4Controller or CommandJoystick if needed

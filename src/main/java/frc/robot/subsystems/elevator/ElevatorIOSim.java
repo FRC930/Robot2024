@@ -19,53 +19,17 @@ public class ElevatorIOSim extends ElevatorIORobot{
      * @param gearRatio The ratio of the motor rotations to the height on the elevator
      */
     public ElevatorIOSim (
-        TalonFX motor1, 
-        TalonFX motor2, 
+        int motor1ID, 
+        int motor2ID, 
+        String canbus,
         Slot0Configs config, 
         MotionMagicConfigs mmConfigs,
         ElevatorType elevator
         ){
-        super(motor1,motor2,config,mmConfigs,elevator);
+        super(motor1ID,motor2ID,canbus,config,mmConfigs,elevator);
         //this.elevatorSim = new ElevatorSim(elevator.m_kV, elevator.m_kA, DCMotor.getKrakenX60Foc(2), elevator.m_minHeight, elevator.m_maxHeight, true, elevator.m_startingHeight);
         m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
     }
-    /*
-    @Override
-    public void runSim() {
-    
-        elevatorSim.setInputVoltage(rightElevatorMaster.getSimState().getMotorVoltage());
-
-        elevatorSim.update(0.02);
-
-        /// SET SIM PHYSICS INPUTS
-        final double position_rot = rightElevatorMaster.getRotorPosition().getValue();
-        final double velocity_rps = rightElevatorMaster.getRotorVelocity().getValue();
-
-        leftElevatorFollower.getSimState().setRawRotorPosition(position_rot);
-        leftElevatorFollower.getSimState().setRotorVelocity(velocity_rps);
-        SmartDashboard.putNumber("LOL" + this.hashCode(), position_rot);
-        SmartDashboard.putNumber("LMAO" + this.hashCode(), velocity_rps);
-
-        rightElevatorMaster.getSimState().setRawRotorPosition(position_rot);
-        rightElevatorMaster.getSimState().setRotorVelocity(velocity_rps);
-
-       // leftElevatorFollower.getSimState().setSupplyVoltage(12 - leftElevatorFollower.getSimState().getSupplyCurrent() * kMotorResistance);
-        rightElevatorMaster.getSimState().setSupplyVoltage(12 - rightElevatorMaster.getSimState().getSupplyCurrent() * kMotorResistance);
-        
-        _motorSim.setInputVoltage(_falcon.getSimState().getMotorVoltage());
-
-        _motorSim.update(getPeriod());
-
-        /// SET SIM PHYSICS INPUTS
-        final double position_rot = _motorSim.getAngularPositionRotations();
-        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
-
-        _falcon.getSimState().setRawRotorPosition(position_rot);
-        _falcon.getSimState().setRotorVelocity(velocity_rps);
-
-        _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
-    }
-    */
 
     @Override
     public void runSim() {

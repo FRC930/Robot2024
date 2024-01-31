@@ -5,16 +5,16 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.roller.RollerMotorIO;
-import frc.robot.subsystems.timeofflight.TimeOfFlightIO;
+import frc.robot.IOs.TalonRollerIO;
+import frc.robot.IOs.TimeOfFlightIO;
 
 public class IndexerSubsystem extends SubsystemBase {
-    private RollerMotorIO roller;
+    private TalonRollerIO roller;
     private TimeOfFlightIO tof;
 
     // private MotionMagicExpoVoltage m_request;
 
-    public IndexerSubsystem(RollerMotorIO motor, TimeOfFlightIO ToF) {
+    public IndexerSubsystem(TalonRollerIO motor, TimeOfFlightIO ToF) {
         roller = motor;
         tof = ToF;
 

@@ -1,8 +1,13 @@
-package frc.robot.subsystems.roller;
+package frc.robot.IOs;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-public interface RollerMotorIO {
+public interface TalonRollerIO {
+    /**
+     * <h3>setSpeed</h3>
+     * Sets speed based off of percent output
+     * @param speed - 
+     */
     public void setSpeed(double speed);
     public double getSpeed();
     public double getVoltage();

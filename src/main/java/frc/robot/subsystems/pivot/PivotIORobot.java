@@ -8,10 +8,10 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.subsystems.PosSubsystemIO;
+import frc.robot.IOs.TalonPosIO;
 
 
-public class PivotIORobot implements PosSubsystemIO{
+public class PivotIORobot implements TalonPosIO{
     protected TalonFX m_motor;
 
     private MotionMagicExpoVoltage m_request;

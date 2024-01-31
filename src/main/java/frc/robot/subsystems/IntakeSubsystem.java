@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.roller.RollerMotorIO;
-import frc.robot.subsystems.timeofflight.TimeOfFlightIO;
+import frc.robot.IOs.TalonRollerIO;
+import frc.robot.IOs.TimeOfFlightIO;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -19,9 +19,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
  */
 public class IntakeSubsystem extends SubsystemBase {
 
-    private RollerMotorIO m_leaderMotor;
+    private TalonRollerIO m_leaderMotor;
     //private MotionMagicVelocityVoltage m_request;
-    private RollerMotorIO m_followerMotor;
+    private TalonRollerIO m_followerMotor;
     private TimeOfFlightIO m_sensorL;
     private TimeOfFlightIO m_sensorR;
     /* 
@@ -50,7 +50,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param followerID The ID to the follower motor
      * @param sensorID 
      */
-    public IntakeSubsystem(RollerMotorIO leader, RollerMotorIO follower, TimeOfFlightIO leftSensor, TimeOfFlightIO rightSensor)  {
+    public IntakeSubsystem(TalonRollerIO leader, TalonRollerIO follower, TimeOfFlightIO leftSensor, TimeOfFlightIO rightSensor)  {
         m_leaderMotor = leader;
         m_followerMotor = follower;
         m_sensorL = leftSensor;

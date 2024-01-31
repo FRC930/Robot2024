@@ -2,12 +2,14 @@ package frc.robot.subsystems.timeofflight;
 
 import com.playingwithfusion.TimeOfFlight;
 
-public class TimeOfFlightIOReal implements TimeOfFlightIO {
+import frc.robot.IOs.TimeOfFlightIO;
+
+public class TimeOfFlightIORobot implements TimeOfFlightIO {
 
     private TimeOfFlight m_sensor;
     private double m_dist;
 
-    public TimeOfFlightIOReal(int id, double triggerDistance) {
+    public TimeOfFlightIORobot(int id, double triggerDistance) {
         m_sensor = new TimeOfFlight(id);
         m_dist = triggerDistance;
     }

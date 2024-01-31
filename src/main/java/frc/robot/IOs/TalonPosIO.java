@@ -1,6 +1,6 @@
-package frc.robot.subsystems;
+package frc.robot.IOs;
 
-public interface PosSubsystemIO {
+public interface TalonPosIO {
     /**
      * <h3>updateInputs</h3>
      * Steps the simulation forward by 0.02 seconds.

@@ -5,13 +5,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 
-public class RollerMotorIOSim extends RollerMotorIOReal {
+public class RollerMotorIOSim extends RollerMotorIORobot {
 
     private DCMotorSim m_sim;
     private final double kMotorResistance = 0.002;
 
     public RollerMotorIOSim(int id) {
-        super(id);
+        super(id, "rio");
         m_sim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
     }
 

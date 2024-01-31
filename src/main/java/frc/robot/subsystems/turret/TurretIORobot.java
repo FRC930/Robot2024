@@ -7,10 +7,10 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.subsystems.PosSubsystemIO;
+import frc.robot.IOs.TalonPosIO;
 
 
-public class TurretIORobot implements PosSubsystemIO{
+public class TurretIORobot implements TalonPosIO{
     protected TalonFX m_motor;
     private MotionMagicVoltage m_request;
 

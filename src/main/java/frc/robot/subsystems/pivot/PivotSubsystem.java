@@ -8,10 +8,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.PosSubsystemIO;
+import frc.robot.IOs.TalonPosIO;
 
 public class PivotSubsystem extends SubsystemBase{
-    private final PosSubsystemIO io;
+    private final TalonPosIO io;
 
     private final double GEAR_RATIO = 1;
 

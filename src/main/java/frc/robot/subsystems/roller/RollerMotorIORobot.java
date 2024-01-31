@@ -2,12 +2,14 @@ package frc.robot.subsystems.roller;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-public class RollerMotorIOReal implements RollerMotorIO {
+import frc.robot.IOs.TalonRollerIO;
+
+public class RollerMotorIORobot implements TalonRollerIO {
 
     protected TalonFX m_motor;
 
-    public RollerMotorIOReal(int id) {
-        m_motor = new TalonFX(id);
+    public RollerMotorIORobot(int id, String canbus) {
+        m_motor = new TalonFX(id, canbus);
     }
 
     @Override

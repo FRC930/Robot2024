@@ -3,10 +3,10 @@ package frc.robot.subsystems.turret;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.PosSubsystemIO;
+import frc.robot.IOs.TalonPosIO;
 
 public class TurretSubsystem extends SubsystemBase{
-    private final PosSubsystemIO io;
+    private final TalonPosIO io;
 
     private final String turretName;
 
@@ -16,7 +16,7 @@ public class TurretSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public TurretSubsystem(PosSubsystemIO io) {
+    public TurretSubsystem(TalonPosIO io) {
         this.io = io;
         turretName = "" + this.hashCode();
     }
