@@ -71,7 +71,7 @@ public class RobotContainer {
 
     private static final String RIO = "rio";
 
-    private GamePieceDetectionUtility m_LimeLightUtility = new GamePieceDetectionUtility("limelight-front");
+    private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
     // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
@@ -143,7 +143,7 @@ public class RobotContainer {
     SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     Telemetry logger = new Telemetry(MaxSpeed);
     
-    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, m_LimeLightUtility);
+    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, m_GamePieceUtility);
 
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
@@ -226,7 +226,7 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
+    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
     }

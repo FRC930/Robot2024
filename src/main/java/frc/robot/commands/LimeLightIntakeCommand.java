@@ -73,8 +73,8 @@ public class LimeLightIntakeCommand extends Command {
         addRequirements(m_SwerveDrive);
     }
 
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, GamePieceDetectionUtility m_LimeLightUtility, Pose2d pose2d) {
-        this(drivetrain, m_LimeLightUtility, pose2d, pose2d);
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, GamePieceDetectionUtility m_GamePieceUtility, Pose2d pose2d) {
+        this(drivetrain, m_GamePieceUtility, pose2d, pose2d);
     }
 
     @Override
