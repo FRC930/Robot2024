@@ -27,7 +27,7 @@ public class AutoCommandManager {
     }
     public void configureNamedCommands(SwerveDrivetrainSubsystem drivetrain, GamePieceDetectionUtility limeLightUtility) { //TODO update all of the x and y positions for each of the alliance colors (don't do center line points)
       NamedCommands.registerCommand("AllianceTopNote", new LimeLightIntakeCommand(drivetrain, limeLightUtility, 
-          new Pose2d(2.9, 7.0, new Rotation2d(0.0)), new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
+          new Pose2d(2.9, 7.0, new Rotation2d(0.0)), new Pose2d(13.68, 7.0, new Rotation2d(0.0))));
       NamedCommands.registerCommand("AllianceMidNote", new LimeLightIntakeCommand(drivetrain, limeLightUtility, 
           new Pose2d(0.0, 0.0, new Rotation2d(0.0)), new Pose2d(0.0, 0.0, new Rotation2d(0.0))));
       NamedCommands.registerCommand("AllianceLowNote", new LimeLightIntakeCommand(drivetrain, limeLightUtility, 
