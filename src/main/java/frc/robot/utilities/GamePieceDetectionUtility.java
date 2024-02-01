@@ -22,6 +22,7 @@ public class GamePieceDetectionUtility {
      */
     public GamePieceDetectionUtility(String LimeLightName) {
         m_LimeLightName = LimeLightName;
+        LimelightHelpers.setPipelineIndex(m_LimeLightName, 1);
     }
 
     public double get_tx() { //returns the amount of degrees off horizontally a game piece is from the center of the camera
