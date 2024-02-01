@@ -51,7 +51,7 @@ public class LimeLightIntakeCommand extends Command {
     private TrapezoidProfile profile;
 
     private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
-
+    private double m_direction;
 
     /**
      * <h3>LimeLightIntakeCommand</h3>
@@ -68,6 +68,7 @@ public class LimeLightIntakeCommand extends Command {
         m_LimeLight = limeLight;
         m_bluePosition = bluePosition;
         m_redPosition = redPosition;
+        // Default to blue alliance
         m_position = m_bluePosition;
         addRequirements(m_SwerveDrive);
     }
@@ -78,6 +79,11 @@ public class LimeLightIntakeCommand extends Command {
 
     @Override
     public void initialize() { 
+        //TODO This assumes you are directly in front or behind (if overshoot will go wrong direction)
+        m_direction = -1.0; //Currently camera in back of robot (go backwards) when camera in front use 1.0
+        //Default to blue alliance (named commands are reused)
+        m_position = m_bluePosition;
+
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
         //if on red alliance, return as negative
         //if on blue alliance, return as positive
@@ -98,16 +104,18 @@ public class LimeLightIntakeCommand extends Command {
         
         //Creates the trapezoid profile using the given information
         m_goal = new TrapezoidProfile.State(m_distance, 0.0); //sets the desired state to be the total distance away
+        //TODO fix deprecated and how to get current velocity
         m_setpoint = new TrapezoidProfile.State(0.0, 1.0); //sets the current state at (0,0)
         profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint); //combines everything into the trapezoid profile
     }
 
     @Override
     public void execute() {
-        //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
-        m_strafe = -MathUtil.clamp(pid.calculate(m_LimeLight.get_tx(), 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
-        m_throttle = -profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
+        //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
+        m_strafe = m_direction * MathUtil.clamp(pid.calculate(m_LimeLight.get_tx(), 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
+
+        m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
         SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
         SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
         SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
