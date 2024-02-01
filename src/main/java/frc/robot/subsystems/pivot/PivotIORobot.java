@@ -19,23 +19,22 @@ public class PivotIORobot implements TalonPosIO{
     /**
      * <h3>PivotIORobot</h3> 
      * Creates a subsystem that represents the actual pivot subsystem
-     * @param motorID The id of the pivot motor
      */
-    public PivotIORobot(TalonFX motor, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
-        m_motor = motor;
+    public PivotIORobot(int id, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
+        m_motor = new TalonFX(id, canbus);
 
         m_request = new MotionMagicExpoVoltage(0).withEnableFOC(true);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
-        cfg.withSlot0(config);
-        cfg.withMotionMagic(mmConfigs);
-        cfg.Feedback.RotorToSensorRatio = gearRatio;
+        cfg.withSlot0(config); // PID/FF configs
+        cfg.withMotionMagic(mmConfigs); // Motion magic configs
+        cfg.Feedback.RotorToSensorRatio = gearRatio; // Applies gear ratio
         
-        m_motor.getConfigurator().apply(cfg);
-        m_motor.setNeutralMode(NeutralModeValue.Brake);
+        m_motor.getConfigurator().apply(cfg); // Applies these configs ^
+        m_motor.setNeutralMode(NeutralModeValue.Brake); // Enables brake mode
         
 
-        m_motor.setControl(m_request.withPosition(0).withSlot(0));
+        m_motor.setControl(m_request.withPosition(0).withSlot(0)); // 
     }
     
     @Override
@@ -43,12 +42,12 @@ public class PivotIORobot implements TalonPosIO{
 
     @Override
     public double getPos() {
-        return m_motor.getPosition().getValue(); // TODO: make sure this is right direction
+        return m_motor.getPosition().getValue(); 
     }
 
     @Override
     public double getVelocity() {
-       return m_motor.getVelocity().getValue(); // TODO: make sure this is right direction
+       return m_motor.getVelocity().getValue();
     }
 
     @Override

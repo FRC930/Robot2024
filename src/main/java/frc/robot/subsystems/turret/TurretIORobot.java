@@ -1,51 +1,33 @@
 package frc.robot.subsystems.turret;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.IOs.TalonPosIO;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import frc.robot.IOs.TalonRollerEncoderIO;
 
 
-public class TurretIORobot implements TalonPosIO{
-    protected TalonFX m_motor;
-    private MotionMagicVoltage m_request;
+public class TurretIORobot implements TalonRollerEncoderIO{
 
-    public TurretIORobot(TalonFX motor, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
-        m_motor = motor;
+    protected TalonFX m_motor; // Protected because needed by IOSim
+    private DutyCycleEncoder m_encoder;
 
-        m_request = new MotionMagicVoltage(0).withEnableFOC(true);
+    public TurretIORobot(int motorID, int encoderID, String canbus) {
+        m_motor = new TalonFX(motorID, canbus);
 
-        TalonFXConfiguration cfg = new TalonFXConfiguration();
-        cfg.withSlot0(config);
-        cfg.withMotionMagic(mmConfigs);
-        cfg.Feedback.RotorToSensorRatio = gearRatio;
-        
-        m_motor.getConfigurator().apply(cfg);
+        m_encoder = new DutyCycleEncoder(encoderID);
+
         m_motor.setNeutralMode(NeutralModeValue.Brake);
-
-        m_motor.setControl(m_request.withPosition(0).withSlot(0));
-    }
-    
-    @Override
-    public void runSim() {}
-
-    @Override
-    public double getPos() {
-        return m_motor.getPosition().getValue(); // TODO: make sure this is right direction
     }
 
     @Override
-    public double getVelocity() {
-       return m_motor.getVelocity().getValue(); // TODO: make sure this is right direction
+    public void setSpeed(double speed) {
+        m_motor.set(speed);
     }
 
     @Override
-    public void setTarget(double position) {
-        m_motor.setControl(m_request.withPosition(position).withSlot(0));
+    public double getSpeed() {
+        return m_motor.getVelocity().getValue();
     }
 
     @Override
@@ -54,8 +36,22 @@ public class TurretIORobot implements TalonPosIO{
     }
 
     @Override
-    public double getTarget() {
-        return ((MotionMagicVoltage)m_motor.getAppliedControl()).Position;
+    public void runSim() {}
+
+    @Override
+    public TalonFX getTalon() {
+        return m_motor;
+    }
+
+    @Override
+    public double getDegrees() {
+        return getMechRotations() * 360; // Multiply by 360 to convert from rotations to degrees in 1:1 gear ratio 
+        // TODO: Verify conversion
+    }
+
+    @Override
+    public double getMechRotations() {
+        return m_encoder.get();
     }
     
 }

@@ -23,6 +23,7 @@
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
       "/SmartDashboard/MechanismSimulator/mechanism2d": "Mechanism2d",
+      "/SmartDashboard/MechanismSimulator/turret2d": "Mechanism2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
@@ -38,6 +39,16 @@
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/MechanismSimulator/mechanism2d": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/MechanismSimulator/turret2d": {
         "window": {
           "visible": true
         }

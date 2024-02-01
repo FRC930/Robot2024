@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.IOs.TalonRollerEncoderIO;
 import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SparkTestShooterCommand;
@@ -21,11 +22,16 @@ import frc.robot.subsystems.elevator.ElevatorIORobot;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorType;
+import frc.robot.subsystems.pivot.PivotIORobot;
+import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.roller.RollerMotorIORobot;
 import frc.robot.subsystems.roller.RollerMotorIOSim;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
+import frc.robot.subsystems.turret.TurretIORobot;
+import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
 
@@ -35,6 +41,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -84,8 +91,8 @@ public class RobotContainer {
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
-        
-    private Slot0Configs shootingS0C = 
+    //--PID AND FF CONSTANTS--\\
+    private final Slot0Configs shootingS0C = 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -94,22 +101,8 @@ public class RobotContainer {
         .withKG(0)
         .withKS(0)
         .withKV(1);
-    
-    private MotionMagicConfigs shootingMMC = 
-      new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4);
 
-    private TalonPosIO shootingIO = 
-        Robot.isReal() ?
-          new ElevatorIORobot(12, 13,"rio", shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(12, 13,"rio", shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR);
-
-    public final ElevatorSubsystem shootingElevator = new ElevatorSubsystem(shootingIO);
-
-
-    private Slot0Configs climbingS0C = 
+    private final Slot0Configs climbingS0C = 
       new Slot0Configs()
         .withKP(1)//TODO: Configure ALL
         .withKI(0)
@@ -118,25 +111,74 @@ public class RobotContainer {
         .withKG(0)
         .withKS(0)
         .withKV(1);
+
+    private final Slot0Configs pivotS0C =
+      new Slot0Configs()
+        .withKP(1) 
+        .withKI(0) 
+        .withKD(0) 
+        .withKA(1) 
+        .withKG(0) 
+        .withKS(0) 
+        .withKV(1);
+
+    //--MOTION MAGIC CONSTANTS--\\
     
-    private MotionMagicConfigs climbingMMC = 
+    private final MotionMagicConfigs shootingMMC = 
+      new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(5)
+        .withMotionMagicExpo_kV(1)
+        .withMotionMagicExpo_kA(4);
+    
+    private final MotionMagicConfigs climbingMMC = 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicExpo_kV(1)
         .withMotionMagicExpo_kA(4);
 
-    private TalonPosIO climbingIO = 
-        Robot.isReal() ?
-          new ElevatorIORobot(14, 15, "rio", climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
-        : new ElevatorIOSim(14, 15, "rio", climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR);
+    private final MotionMagicConfigs pivotMMC =
+      new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(80)
+        .withMotionMagicExpo_kV(1)
+        .withMotionMagicExpo_kA(4);
 
+    //--SUBSYSTEMS--\\
 
-    public final ElevatorSubsystem climbingElevator = new ElevatorSubsystem(climbingIO);
-    
-    
-    PivotSubsystem pivot = new PivotSubsystem(16,"rio");
-    
-    MechanismSimulator mechanismSimulator = new MechanismSimulator(pivot, shootingElevator, climbingElevator);
+    public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
+        Robot.isReal()
+        ? new ElevatorIORobot(12, 13, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
+        : new ElevatorIOSim(12, 13, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
+
+    public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
+      Robot.isReal()
+        ? new ElevatorIORobot(14, 15, RIO, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
+        : new ElevatorIOSim(14, 15, RIO, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
+
+    private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
+      Robot.isReal()
+        ? new PivotIORobot(16, RIO, 1, pivotS0C, pivotMMC)
+        : new PivotIOSim(16, RIO, 1, pivotS0C, pivotMMC));
+
+    private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
+      Robot.isReal()
+        ? new TurretIORobot(40, 3, RIO)
+        : new TurretIOSim(40, 3, RIO));
+
+    private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
+      Robot.isReal() ? new RollerMotorIORobot(3, RIO) : new RollerMotorIOSim(3, RIO),
+      Robot.isReal() ? new RollerMotorIORobot(4, RIO) : new RollerMotorIOSim(4, RIO));
+
+    private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
+        Robot.isReal() ? new RollerMotorIORobot(20, RIO) : new RollerMotorIOSim(20, RIO),
+        Robot.isReal() ? new TimeOfFlightIORobot(0, 200) : new TimeOfFlightIOSim(0));
+
+    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
+        Robot.isReal() ? new RollerMotorIORobot(41, RIO) : new RollerMotorIOSim(41, RIO),
+        Robot.isReal() ? new RollerMotorIORobot(42, RIO) : new RollerMotorIOSim(42, RIO),
+        Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
+        Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
+
+    MechanismSimulator mechanismSimulator = new MechanismSimulator(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
     
     SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -148,15 +190,9 @@ public class RobotContainer {
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
   // The robot's subsystems and commands are defined here...
-  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-      Robot.isReal() ? new RollerMotorIORobot(3, RIO) : new RollerMotorIOSim(3),
-      Robot.isReal() ? new RollerMotorIORobot(4, RIO) : new RollerMotorIOSim(4));
+  
   // private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
 
-  private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
-      Robot.isReal() ? new RollerMotorIORobot(20, RIO) : new RollerMotorIOSim(20),
-      Robot.isReal() ? new TimeOfFlightIORobot(0, 200) : new TimeOfFlightIOSim(0)
-  );
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -208,19 +244,19 @@ public class RobotContainer {
       drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(POV_PERCENT_SPEED * MaxSpeed)
       ));
 
-    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
+    // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
 
-    m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
+    // m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     
     
 
-    // m_driverController.x().toggleOnTrue(pivot.getTestCommand());
+    m_driverController.x().toggleOnTrue(m_pivotSubsystem.getTestCommand());
 
-    // m_driverController.b().toggleOnTrue(shootingElevator.getTestCommand());
+    m_driverController.b().toggleOnTrue(m_shootingElevatorSubsystem.getTestCommand());
 
-    // m_driverController.rightBumper().toggleOnTrue(climbingElevator.getTestCommand());
+    m_driverController.rightBumper().toggleOnTrue(m_climbingElevatorSubsystem.getTestCommand());
     
 
     // reset the field-centric heading on left bumper press TODO test

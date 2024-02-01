@@ -1,8 +1,5 @@
 package frc.robot.subsystems.turret;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -10,6 +7,8 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class TurretIOSim extends TurretIORobot {
 
     // private SingleJointedArmSim m_ArmSim;
+
+    private static final double MOTOR_GEAR_RATIO = 40; // Only used in sim due to bore through encoder
 
     private final double kMotorResistance = 0.002;
     // private final double armMOI = 0.001;
@@ -21,10 +20,10 @@ public class TurretIOSim extends TurretIORobot {
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor
      */
-    public TurretIOSim(TalonFX motor, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
-        super(motor, gearRatio, config, mmConfigs);
+    public TurretIOSim(int motorID, int encoderID, String canbus) {
+        super(motorID, encoderID, canbus);
         // m_ArmSim = new SingleJointedArmSim(DCMotor.getKrakenX60Foc(0), gearRatio, gearRatio, gearRatio, gearRatio, gearRatio, false, gearRatio);
-        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
+        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), MOTOR_GEAR_RATIO ,0.001);
     }
     
     // @Override
@@ -58,5 +57,10 @@ public class TurretIOSim extends TurretIORobot {
         m_motor.getSimState().setRotorVelocity(velocity_rps);
     
         m_motor.getSimState().setSupplyVoltage(12 - m_motor.getSimState().getSupplyCurrent() * kMotorResistance);
+    }
+
+    @Override
+    public double getMechRotations() {
+        return Units.radiansToRotations(m_motorSim.getAngularPositionRad());
     }
 }

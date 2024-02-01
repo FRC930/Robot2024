@@ -10,8 +10,8 @@ public class RollerMotorIOSim extends RollerMotorIORobot {
     private DCMotorSim m_sim;
     private final double kMotorResistance = 0.002;
 
-    public RollerMotorIOSim(int id) {
-        super(id, "rio");
+    public RollerMotorIOSim(int id, String canbus) {
+        super(id, canbus);
         m_sim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
     }
 

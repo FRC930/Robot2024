@@ -1,9 +1,5 @@
 package frc.robot.subsystems.pivot;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -11,23 +7,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonPosIO;
 
 public class PivotSubsystem extends SubsystemBase{
-    private final TalonPosIO io;
 
-    private final double GEAR_RATIO = 1;
-
-    private final Slot0Configs PID_FF_CONFIGS = new Slot0Configs()
-        .withKP(1) //TODO: Configure
-        .withKI(0) //TODO: Configure
-        .withKD(0) //TODO: Configure
-        .withKA(1) //TODO: Configure
-        .withKG(0) //TODO: Configure
-        .withKS(0) //TODO: Configure
-        .withKV(1);//TODO: Configure
-
-    private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(80)//TODO: Configure
-        .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4);//TODO: Configure
+    private final TalonPosIO m_io;
 
     private final String pivotName;
 
@@ -37,8 +18,8 @@ public class PivotSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public PivotSubsystem(int motorID, String CANbus) {
-        this.io = new PivotIORobot(new TalonFX(motorID,CANbus), GEAR_RATIO,PID_FF_CONFIGS,MM_CONFIGS);
+    public PivotSubsystem(TalonPosIO io) {
+        m_io = io;
         pivotName = "" + this.hashCode();
     }
 
@@ -48,7 +29,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        io.setTarget(MathUtil.clamp(angle,0,180));
+        m_io.setTarget(MathUtil.clamp(angle,0,180));
         
     }
 
@@ -58,7 +39,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public double getSetPoint() {
-        return io.getTarget();
+        return m_io.getTarget();
     }
 
     /**
@@ -67,7 +48,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @return The angle in degrees from the horizontal
      */
     public double getPosition() {
-        return io.getPos();
+        return m_io.getPos();
     }
 
     /**
@@ -76,7 +57,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @return
      */
     public double getVelocity() {
-        return io.getVelocity();
+        return m_io.getVelocity();
     }
 
     /**
@@ -90,11 +71,11 @@ public class PivotSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        io.runSim();
+        m_io.runSim();
         SmartDashboard.putNumber("Pivot-" + pivotName + "/Velocity", getVelocity());
         SmartDashboard.putNumber("Pivot-" + pivotName + "/Height", getPosition());
         SmartDashboard.putNumber("Pivot-" + pivotName + "/SetPoint", getSetPoint());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/Voltage", io.getVoltage());
+        SmartDashboard.putNumber("Pivot-" + pivotName + "/Voltage", m_io.getVoltage());
         
     }
 

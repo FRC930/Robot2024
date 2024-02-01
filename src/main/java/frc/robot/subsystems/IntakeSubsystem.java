@@ -1,16 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.Follower;
-import com.playingwithfusion.TimeOfFlight;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 
@@ -20,26 +16,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class IntakeSubsystem extends SubsystemBase {
 
     private TalonRollerIO m_leaderMotor;
-    //private MotionMagicVelocityVoltage m_request;
     private TalonRollerIO m_followerMotor;
     private TimeOfFlightIO m_sensorL;
     private TimeOfFlightIO m_sensorR;
-    /* 
-    private final SlotConfigs PIDFF_CONFIG = new SlotConfigs()
-        //PID
-        .withKP(1)
-        .withKI(0)
-        .withKD(0)
-        //FeedForward
-        .withKA(0)
-        .withKG(0)
-        .withKS(0)
-        .withKV(1);
-
-    private final MotionMagicConfigs MM_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(1) // Motor target acceleration
-        .withMotionMagicJerk(1); // Motor max acceleration rate of change
-    */
 
 
     /**
@@ -56,18 +35,6 @@ public class IntakeSubsystem extends SubsystemBase {
         m_sensorL = leftSensor;
         m_sensorR = rightSensor;
 
-
-        /*m_request = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
-
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.withSlot0(Slot0Configs.from(PIDFF_CONFIG));
-        config.Feedback.SensorToMechanismRatio = GEAR_RATIO; //The ratio between the motor turning and the elevator moving. We may have to invert this
-        config.withMotionMagic(MM_CONFIGS); // The Motion Magic configs
-        
-
-        m_leaderMotor.getConfigurator().apply(config);
-        m_followerMotor.getConfigurator().apply(config);
-        */
         m_followerMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
         m_leaderMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
 

@@ -81,10 +81,6 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public void setMotorSpeed(double leftSpeed, double rightSpeed) {
-        SmartDashboard.putNumber("IndexedShooter/LeftWheel/SetPoint" ,leftSpeed);
-        SmartDashboard.putNumber("IndexedShooter/RightWheel/SetPoint" ,rightSpeed);
-        //m_leftMotor.setControl(m_leftRequest.withVelocity(leftSpeed).withSlot(0));
-        //m_rightMotor.setControl(m_rightRequest.withVelocity(rightSpeed).withSlot(0));
         m_leftMotor.setSpeed(leftSpeed);
         m_rightMotor.setSpeed(rightSpeed);
     }

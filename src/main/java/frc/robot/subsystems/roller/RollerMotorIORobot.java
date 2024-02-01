@@ -6,7 +6,7 @@ import frc.robot.IOs.TalonRollerIO;
 
 public class RollerMotorIORobot implements TalonRollerIO {
 
-    protected TalonFX m_motor;
+    protected TalonFX m_motor; // Protected because needed by IOSim
 
     public RollerMotorIORobot(int id, String canbus) {
         m_motor = new TalonFX(id, canbus);

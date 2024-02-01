@@ -1,12 +1,11 @@
 package frc.robot.subsystems.turret;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.IOs.TalonPosIO;
+import frc.robot.IOs.TalonRollerEncoderIO;
 
 public class TurretSubsystem extends SubsystemBase{
-    private final TalonPosIO io;
+    private final TalonRollerEncoderIO m_io;
 
     private final String turretName;
 
@@ -16,37 +15,22 @@ public class TurretSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public TurretSubsystem(TalonPosIO io) {
-        this.io = io;
+    public TurretSubsystem(TalonRollerEncoderIO io) {
+        m_io = io;
         turretName = "" + this.hashCode();
     }
 
-    /**
-     * <h3>setPosition</h3>
-     * Sets the target angle of the subsystem
-     * @param angle The angle in degrees from the horizontal
-     */
-    public void setPosition(double angle) {
-        io.setTarget(angle);
-        
-    }
-
-    /**
-     * <h3>getSetPoint</h3>
-     * Gets the angle that the subsystem is currently trying to turn to
-     * @param angle The angle in degrees from the horizontal
-     */
-    public double getSetPoint() {
-        return io.getTarget();
+    public void setSpeed(double speed) {
+        m_io.setSpeed(speed);
     }
 
     /**
      * <h3>getPosition</h3>
      * Gets the current angle of the subsystem.
-     * @return The angle in degrees from the horizontal
+     * @return The angle in degrees from 0
      */
     public double getPosition() {
-        return io.getPos();
+        return m_io.getDegrees();
     }
 
     /**
@@ -55,20 +39,21 @@ public class TurretSubsystem extends SubsystemBase{
      * @return
      */
     public double getVelocity() {
-        return io.getVelocity();
+        return m_io.getSpeed();
+    }
+
+    public double getVoltage() {
+        return m_io.getVoltage();
     }
 
 
     @Override
     public void periodic() {
-        io.runSim();
+        m_io.runSim();
+        SmartDashboard.putNumber("TurretVoltage-" + turretName, getVoltage());
         SmartDashboard.putNumber("TurretVelocity-" + turretName,getVelocity());
-        SmartDashboard.putNumber("TurretAngle-" + turretName,getPosition());
-        SmartDashboard.putNumber("TurretSetpoint-" + turretName,getSetPoint());
-    }
-
-    public StartEndCommand getTestCommand() {
-        return new StartEndCommand(()->{setPosition(90); System.out.println("Turret Test Start");}, ()->{setPosition(0);}, this);
+        SmartDashboard.putNumber("TurretDegrees-" + turretName,getPosition());
+        SmartDashboard.putNumber("TurretRotations-" + turretName,m_io.getMechRotations());
     }
 
 }

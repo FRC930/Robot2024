@@ -2,7 +2,6 @@ package frc.robot.subsystems.pivot;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -21,8 +20,8 @@ public class PivotIOSim extends PivotIORobot {
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor
      */
-    public PivotIOSim(TalonFX motor, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
-        super(motor, gearRatio, config, mmConfigs);
+    public PivotIOSim(int id, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
+        super(id, canbus, gearRatio, config, mmConfigs);
         // m_ArmSim = new SingleJointedArmSim(DCMotor.getKrakenX60Foc(0), gearRatio, gearRatio, gearRatio, gearRatio, gearRatio, false, gearRatio);
         m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
     }
