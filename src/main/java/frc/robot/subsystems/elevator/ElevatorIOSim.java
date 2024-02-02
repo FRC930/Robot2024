@@ -6,6 +6,10 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
+/**
+ * <h3>ElevatorIOSim</h3>
+ * An IO to the simulated robot's elevator
+ */
 public class ElevatorIOSim extends ElevatorIORobot{
     //private ElevatorSim elevatorSim;
     private final double kMotorResistance = 0.002;

@@ -20,6 +20,10 @@
   },
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/MechanismSimulator/mechanism2d": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/MechanismSimulator/turret2d": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/MechanismViewer/mechanism2d": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/MechanismViewer/turret2d": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
       "/SmartDashboard/MechanismSimulator/mechanism2d": "Mechanism2d",
@@ -32,6 +36,16 @@
       "/SmartDashboard/pp_field": "Field2d"
     },
     "windows": {
+      "/AdvantageKit/RealOutputs/MechanismViewer/mechanism2d": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/AdvantageKit/RealOutputs/MechanismViewer/turret2d": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Pose": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -39,16 +53,6 @@
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/MechanismSimulator/mechanism2d": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/MechanismSimulator/turret2d": {
         "window": {
           "visible": true
         }
@@ -98,5 +102,8 @@
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

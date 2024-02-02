@@ -1,5 +1,9 @@
 package frc.robot.IOs;
 
+/**
+ * <h3>TalonPosIO</h3>
+ * IO for Talons that are set with positions
+ */
 public interface TalonPosIO {
     /**
      * <h3>updateInputs</h3>

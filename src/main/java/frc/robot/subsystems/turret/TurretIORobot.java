@@ -4,10 +4,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import frc.robot.IOs.TalonRollerEncoderIO;
+import frc.robot.IOs.TalonTurretIO;
 
-
-public class TurretIORobot implements TalonRollerEncoderIO{
+/**
+ * <h3>TurretIORobot</h3>
+ * An IO to the real robot's turret
+ */
+public class TurretIORobot implements TalonTurretIO{
 
     protected TalonFX m_motor; // Protected because needed by IOSim
     private DutyCycleEncoder m_encoder;
@@ -23,6 +26,11 @@ public class TurretIORobot implements TalonRollerEncoderIO{
     @Override
     public void setSpeed(double speed) {
         m_motor.set(speed);
+    }
+
+    @Override
+    public void setVoltage(double volts) {
+        m_motor.setVoltage(volts);
     }
 
     @Override

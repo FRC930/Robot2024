@@ -4,6 +4,10 @@ import com.playingwithfusion.TimeOfFlight;
 
 import frc.robot.IOs.TimeOfFlightIO;
 
+/**
+ * <h3>TimeOfFlightIORobot</h3>
+ * Representation of a time of flight sensor
+ */
 public class TimeOfFlightIORobot implements TimeOfFlightIO {
 
     private TimeOfFlight m_sensor;

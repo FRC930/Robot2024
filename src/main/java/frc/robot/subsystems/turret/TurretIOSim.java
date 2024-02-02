@@ -4,6 +4,10 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
+/**
+ * <h3>TurretIOSim</h3>
+ * An IO to the simulated robot's turret
+ */
 public class TurretIOSim extends TurretIORobot {
 
     // private SingleJointedArmSim m_ArmSim;
@@ -15,7 +19,7 @@ public class TurretIOSim extends TurretIORobot {
 
 	private DCMotorSim m_motorSim;
     
-    /**
+    /*
      * <h3>PivotIORobot</h3> 
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor

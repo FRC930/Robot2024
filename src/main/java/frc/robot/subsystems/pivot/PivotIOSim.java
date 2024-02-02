@@ -6,6 +6,10 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
+/**
+ * <h3>PivotIO</h3>
+ * An IO to the simulated robot's pivot
+ */
 public class PivotIOSim extends PivotIORobot {
 
     // private SingleJointedArmSim m_ArmSim;

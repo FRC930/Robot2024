@@ -1,13 +1,18 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonPosIO;
 
+/**
+ * <h3>ElevatorSubsystem</h3>
+ * A subsystem that repr
+ */
 public class ElevatorSubsystem extends SubsystemBase {
-    private TalonPosIO m_io;
-    private String m_elevatorName;
+    private TalonPosIO m_io; // IO for real or simulated robot
+    private String m_elevatorName; // Hashcode to differentiate between the two elevatorss in debugging
 
     /**
      * <h3>ElevatorSubsystem</h3>
@@ -15,7 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return
      */
     public ElevatorSubsystem(TalonPosIO io) {
-        this.m_io = io;
+        m_io = io;
         m_elevatorName = "" + this.hashCode();
     } 
 
@@ -58,13 +63,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         m_io.runSim();
-        SmartDashboard.putNumber("Elevator-" + m_elevatorName + "/Velocity", getVelocity());
-        SmartDashboard.putNumber("Elevator-" + m_elevatorName + "/Height", getHeight());
-        SmartDashboard.putNumber("Elevator-" + m_elevatorName + "/SetPoint", m_io.getTarget());
-        SmartDashboard.putNumber("Elevator-" + m_elevatorName + "/Voltage", m_io.getVoltage());
-    }
-
-    public StartEndCommand getTestCommand() {
-        return new StartEndCommand(()->{setTargetHeight(5);System.out.println("Elevator Test Start");},()->{setTargetHeight(0);},this);
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + m_elevatorName + "/Velocity", getVelocity());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + m_elevatorName + "/Height", getHeight());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + m_elevatorName + "/SetPoint", m_io.getTarget());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + m_elevatorName + "/Voltage", m_io.getVoltage());
     }
 }

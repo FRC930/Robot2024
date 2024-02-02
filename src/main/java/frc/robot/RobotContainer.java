@@ -5,18 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.IOs.TalonPosIO;
-import frc.robot.IOs.TalonRollerEncoderIO;
 import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.LimeLightIntakeCommand;
-import frc.robot.commands.SparkTestShooterCommand;
-import frc.robot.commands.TestShooterCommand;
 import frc.robot.generated.TunerConstants;
-import frc.robot.sim.MechanismSimulator;
+import frc.robot.sim.MechanismViewer;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.SparkMaxShooterSubsystem;
-import frc.robot.commands.Autos;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorIORobot;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -38,20 +32,17 @@ import frc.robot.utilities.GamePieceDetectionUtility;
 import java.util.Optional;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -59,7 +50,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.TestIndexerCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -77,6 +67,12 @@ public class RobotContainer {
     private static final double PERCENT_SPEED = 0.3;
 
     private static final String RIO = "rio";
+
+    //--DIO IDS--\\
+    private static final int INTAKE_TOF_1_ID = 0;
+    private static final int INTAKE_TOF_2_ID = 1;
+    private static final int INDEXER_TOF_ID = 2;
+    private static final int TURRET_ENCODER_ID = 3;
 
     private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
 
@@ -122,6 +118,10 @@ public class RobotContainer {
         .withKS(0) 
         .withKV(1);
 
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0, 0,0 , new Constraints(360, 720)); //TODO: Set good vals
+
+    private final ArmFeedforward turretFF = new ArmFeedforward(0, 0, 0);
+
     //--MOTION MAGIC CONSTANTS--\\
     
     private final MotionMagicConfigs shootingMMC = 
@@ -145,7 +145,7 @@ public class RobotContainer {
     //--SUBSYSTEMS--\\
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
-        Robot.isReal()
+      Robot.isReal()
         ? new ElevatorIORobot(12, 13, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
         : new ElevatorIOSim(12, 13, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
 
@@ -159,26 +159,29 @@ public class RobotContainer {
         ? new PivotIORobot(16, RIO, 1, pivotS0C, pivotMMC)
         : new PivotIOSim(16, RIO, 1, pivotS0C, pivotMMC));
 
+    // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
       Robot.isReal()
-        ? new TurretIORobot(40, 3, RIO)
-        : new TurretIOSim(40, 3, RIO));
+        ? new TurretIORobot(40, TURRET_ENCODER_ID, RIO)
+        : new TurretIOSim(40, TURRET_ENCODER_ID, RIO), 
+        turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-      Robot.isReal() ? new RollerMotorIORobot(3, RIO) : new RollerMotorIOSim(3, RIO),
-      Robot.isReal() ? new RollerMotorIORobot(4, RIO) : new RollerMotorIOSim(4, RIO));
+        Robot.isReal() ? new RollerMotorIORobot(3, RIO) : new RollerMotorIOSim(3, RIO),
+        Robot.isReal() ? new RollerMotorIORobot(4, RIO) : new RollerMotorIOSim(4, RIO));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, RIO) : new RollerMotorIOSim(20, RIO),
-        Robot.isReal() ? new TimeOfFlightIORobot(0, 200) : new TimeOfFlightIOSim(0));
+        Robot.isReal() ? new TimeOfFlightIORobot(INDEXER_TOF_ID, 200) : new TimeOfFlightIOSim(INDEXER_TOF_ID));
 
+    // TODO: Figure out real motor/ToF ids
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
-        Robot.isReal() ? new RollerMotorIORobot(41, RIO) : new RollerMotorIOSim(41, RIO),
+        Robot.isReal() ? new RollerMotorIORobot(19, RIO) : new RollerMotorIOSim(19, RIO),
         Robot.isReal() ? new RollerMotorIORobot(42, RIO) : new RollerMotorIOSim(42, RIO),
-        Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
-        Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
+        Robot.isReal() ? new TimeOfFlightIORobot(INTAKE_TOF_1_ID, 200) : new TimeOfFlightIOSim(INTAKE_TOF_1_ID),
+        Robot.isReal() ? new TimeOfFlightIORobot(INTAKE_TOF_2_ID, 200) : new TimeOfFlightIOSim(INTAKE_TOF_2_ID));
 
-    MechanismSimulator mechanismSimulator = new MechanismSimulator(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
+    MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
     
     SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -215,11 +218,12 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // SmartDashboard.putNumber("KrakenLeftMotor", 0.0);
-    // SmartDashboard.putNumber("KrakenRightMotor", 0.0);
+    SmartDashboard.putNumber("KrakenLeftMotor", 0.0);
+    SmartDashboard.putNumber("KrakenRightMotor", 0.0);
+    SmartDashboard.putNumber("IndexerSetSpeed", 0.0);
 
-    SmartDashboard.putNumber("LeftSparkMotor", 0.0);
-    SmartDashboard.putNumber("RightSparkMotor", 0.0);
+    // SmartDashboard.putNumber("LeftSparkMotor", 0.0);
+    // SmartDashboard.putNumber("RightSparkMotor", 0.0);
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
@@ -230,34 +234,13 @@ public class RobotContainer {
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
             ));
-
-    m_driverController.pov(0).whileTrue(
-      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
-      ));
-    m_driverController.pov(180).whileTrue(
-      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
-      ));
-    m_driverController.pov(90).whileTrue(
-      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(-POV_PERCENT_SPEED * MaxSpeed)
-      ));
-    m_driverController.pov(270).whileTrue(
-      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(POV_PERCENT_SPEED * MaxSpeed)
-      ));
-
+          
+    
     // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
 
     // m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    
-    
-
-    m_driverController.x().toggleOnTrue(m_pivotSubsystem.getTestCommand());
-
-    m_driverController.b().toggleOnTrue(m_shootingElevatorSubsystem.getTestCommand());
-
-    m_driverController.rightBumper().toggleOnTrue(m_climbingElevatorSubsystem.getTestCommand());
-    
 
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -277,8 +260,9 @@ public class RobotContainer {
     return m_autoManager.getAutoManagerSelected();
   }
 
-  public void periodic() {
-    mechanismSimulator.periodic();
+  public void robotPeriodic() {
+    updateAllVision();
+    m_mechViewer.periodic();
   }
 
   /*
@@ -356,6 +340,10 @@ public class RobotContainer {
       }
     }
     return joystickValue;
+  }
+
+  public void simulationPeriodic() {
+    // mechanismSimulator.periodic(); // Moved to robotPeriodic()
   }
 
 }

@@ -4,6 +4,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.IOs.TalonRollerIO;
 
+/**
+ * <h3>RollerMotorIORobot</h3>
+ * Representation of a roller motor on the robot
+ */
 public class RollerMotorIORobot implements TalonRollerIO {
 
     protected TalonFX m_motor; // Protected because needed by IOSim

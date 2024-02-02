@@ -1,11 +1,15 @@
 package frc.robot.subsystems.pivot;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonPosIO;
 
+/**
+ * <h3>PivotSubsystem</h3>
+ * A subsystem that represents the pivot
+ */
 public class PivotSubsystem extends SubsystemBase{
 
     private final TalonPosIO m_io;
@@ -72,15 +76,11 @@ public class PivotSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         m_io.runSim();
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/Velocity", getVelocity());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/Height", getPosition());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/SetPoint", getSetPoint());
-        SmartDashboard.putNumber("Pivot-" + pivotName + "/Voltage", m_io.getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Velocity", getVelocity());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Height", getPosition());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/SetPoint", getSetPoint());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Voltage", m_io.getVoltage());
         
-    }
-
-    public StartEndCommand getTestCommand() {
-        return new StartEndCommand(()->{setPosition(90); System.out.println("Pivot Test Start");}, ()->{setPosition(0);}, this);
     }
 
 }

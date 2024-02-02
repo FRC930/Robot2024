@@ -12,6 +12,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.IOs.TalonPosIO;
 
+/**
+ * <h3>ElevatorIORobot</h3>
+ * An IO to the real robot's elevator
+ */
 public class ElevatorIORobot implements TalonPosIO {
     protected final TalonFX leftElevatorFollower;
     protected final TalonFX rightElevatorMaster;

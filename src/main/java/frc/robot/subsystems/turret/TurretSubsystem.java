@@ -1,13 +1,26 @@
 package frc.robot.subsystems.turret;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.IOs.TalonRollerEncoderIO;
-
+import frc.robot.IOs.TalonTurretIO;
+/**
+ * <h3>TurretSubsystem</h3>
+ * A subsystem that represents the turret on the robot.
+ */
 public class TurretSubsystem extends SubsystemBase{
-    private final TalonRollerEncoderIO m_io;
+    private final TalonTurretIO m_io;
 
-    private final String turretName;
+    private final ProfiledPIDController m_pid;
+
+    private final ArmFeedforward m_ff;
+
+    private double m_target = 0;
+
 
     /**
      * <h3>PivotSubsystem</h3>
@@ -15,9 +28,18 @@ public class TurretSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public TurretSubsystem(TalonRollerEncoderIO io) {
+    public TurretSubsystem(TalonTurretIO io, ProfiledPIDController pid, ArmFeedforward ff) {
         m_io = io;
-        turretName = "" + this.hashCode();
+        m_pid = pid;
+        m_ff = ff;
+    }
+
+    /**
+     * <h3>setPosition</h3>
+     * Sets target position
+     */
+    public void setPosition(double position) {
+        m_target = position;
     }
 
     public void setSpeed(double speed) {
@@ -46,14 +68,30 @@ public class TurretSubsystem extends SubsystemBase{
         return m_io.getVoltage();
     }
 
+    public void setVoltage(double volts) {
+        m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
+    }
+
 
     @Override
     public void periodic() {
+        double currentDegrees = m_io.getDegrees();
+
+        // Set up PID controller
+        double effort = m_pid.calculate(currentDegrees, m_target);
+        
+        //Set up Feed Forward
+        double feedforward = m_ff.calculate(Units.degreesToRadians(currentDegrees), Units.degreesToRadians(m_io.getSpeed()));
+
+        effort += feedforward;
+
+        m_io.setVoltage(effort);
+
         m_io.runSim();
-        SmartDashboard.putNumber("TurretVoltage-" + turretName, getVoltage());
-        SmartDashboard.putNumber("TurretVelocity-" + turretName,getVelocity());
-        SmartDashboard.putNumber("TurretDegrees-" + turretName,getPosition());
-        SmartDashboard.putNumber("TurretRotations-" + turretName,m_io.getMechRotations());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity",getVelocity());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Degrees",getPosition());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Rotations",m_io.getMechRotations());
     }
 
 }

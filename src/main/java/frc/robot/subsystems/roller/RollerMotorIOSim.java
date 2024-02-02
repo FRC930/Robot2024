@@ -5,6 +5,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 
+/**
+ * <h3>RollerMotorIOSim</h3>
+ * Simulated representation of a roller motor
+ */
 public class RollerMotorIOSim extends RollerMotorIORobot {
 
     private DCMotorSim m_sim;

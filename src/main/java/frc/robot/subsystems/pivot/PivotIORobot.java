@@ -11,6 +11,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.IOs.TalonPosIO;
 
 
+/**
+ * <h3>PivotIORobot</h3>
+ * An IO to the real robot's pivot
+ */
 public class PivotIORobot implements TalonPosIO{
     protected TalonFX m_motor;
 
