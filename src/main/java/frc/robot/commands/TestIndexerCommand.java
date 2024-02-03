@@ -13,6 +13,7 @@ public class TestIndexerCommand extends Command {
 
     public TestIndexerCommand(IndexerSubsystem indexer) {
         m_indexer = indexer;
+        addRequirements(indexer);
     }
 
     @Override

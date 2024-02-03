@@ -1,7 +1,9 @@
 package frc.robot.subsystems.elevator;
 
 public enum ElevatorType {
-    SHOOTING_ELEVATOR(1,1,1,0,0.509,0), //TODO: Configure constants
+    //1 divided by diameter * Pi * gear ratio of 2. TODO test to see if closer to an inch   
+    //1 divided by diameter * Pi * (1/gear ratio of 2). Pretty close to an inch
+    SHOOTING_ELEVATOR(1 / (1.253 * Math.PI * 0.5),1,1,0,12,0), //TODO: Configure constants
     CLIMBING_ELEVATOR(1,1,1,0,0.509,0); //TODO: Configure constants
 
     public final double m_gearRatio;
@@ -10,7 +12,16 @@ public enum ElevatorType {
     public final double m_minHeight;
     public final double m_maxHeight;
     public final double m_startingHeight;
-
+    
+    /**
+     * 
+     * @param gearRatio
+     * @param kV
+     * @param kA
+     * @param minHeight inches
+     * @param maxHeight inches
+     * @param startingHeight inches
+     */
     private ElevatorType(
         double gearRatio, 
         double kV,

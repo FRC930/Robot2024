@@ -10,6 +10,7 @@ public class RunIntakeCommand extends Command {
     public RunIntakeCommand(IntakeSubsystem intakeSubsystem, double intakeSpeed) {
         m_intake = intakeSubsystem;
         m_intakeSpeed = intakeSpeed; // Add intake
+        addRequirements(intakeSubsystem);
     }
 
     @Override

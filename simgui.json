@@ -98,12 +98,22 @@
   "NetworkTables": {
     "Persistent Values": {
       "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "SelectAuto": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }
