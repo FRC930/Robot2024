@@ -103,37 +103,38 @@ public class RobotContainer {
     //--PID AND FF CONSTANTS--\\
     private final Slot0Configs shootingS0C = 
       new Slot0Configs()
-        .withKP(1)//TODO: Configure ALL
+        .withKP(0)//TODO: Configure ALL
         .withKI(0)
         .withKD(0)
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(1);
+        .withKV(0);
 
     private final Slot0Configs climbingS0C = 
       new Slot0Configs()
-        .withKP(1)//TODO: Configure ALL
+        .withKP(0)//TODO: Configure ALL
         .withKI(0)
         .withKD(0)
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(1);
+        .withKV(0);
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(1) 
+        .withKP(0) 
         .withKI(0) 
         .withKD(0) 
         .withKA(1) 
         .withKG(0) 
         .withKS(0) 
-        .withKV(1);
+        .withKV(0);
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
 
-    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0, 0, 0);
+    // ks overcomes friction on the turret
+    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0, 0); 
 
     
     //--MOTION MAGIC CONSTANTS--\\
@@ -170,14 +171,14 @@ public class RobotContainer {
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(6, CANBUS, 1, pivotS0C, pivotMMC)
-        : new PivotIOSim(6, CANBUS, 1, pivotS0C, pivotMMC));
+        ? new PivotIORobot(5, CANBUS, 1, pivotS0C, pivotMMC)
+        : new PivotIOSim(5, CANBUS, 1, pivotS0C, pivotMMC));
 
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
       Robot.isReal()
-        ? new TurretIORobot(5, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET)
-        : new TurretIOSim(5, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET), 
+        ? new TurretIORobot(6, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET)
+        : new TurretIOSim(6, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET), 
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
@@ -304,7 +305,7 @@ public class RobotContainer {
       new RunIntakeCommand(m_intakeSubsystem, -.15)
     );
 
-    m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
+    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
 
     m_driverController.b().whileTrue(new SetTurretPositionCommand(m_turretSubsystem, SmartDashboard.getNumber("TurretSetPosition", 0.0)));
 

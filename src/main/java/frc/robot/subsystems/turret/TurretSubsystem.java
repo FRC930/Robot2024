@@ -47,11 +47,11 @@ public class TurretSubsystem extends SubsystemBase{
         m_target = position;
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(double speed) { // TODO remove
         if (getPosition() <= TURRET_MIN_POS && speed < 0) {
-            speed = 0;
+        speed = 0;
         } else if (getPosition() >= TURRET_MAX_POSITION && speed > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
-            speed = 0;
+        speed = 0;
         }
         m_io.setSpeed(speed);
     }
@@ -80,9 +80,9 @@ public class TurretSubsystem extends SubsystemBase{
 
     public void setVoltage(double volts) {
         if (getPosition() <= TURRET_MIN_POS && volts < 0) {
-            volts = 0;
+        volts = 0;
         } else if (getPosition() >= TURRET_MAX_POSITION && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
-            volts = 0;
+        volts = 0;
         }
         m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
     }
@@ -103,6 +103,7 @@ public class TurretSubsystem extends SubsystemBase{
         m_io.setVoltage(effort);
 
         m_io.runSim();
+        Logger.recordOutput(this.getClass().getSimpleName() + "/TargetDegrees", m_target);
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity",getVelocity());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Degrees",getPosition());
