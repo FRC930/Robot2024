@@ -34,6 +34,8 @@ import frc.robot.utilities.LimelightHelpers.Results;
 
 import java.util.Optional;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -242,6 +244,19 @@ public class RobotContainer {
     m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
 
     m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
+
+    m_driverController.pov(0).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
+      ));
+    m_driverController.pov(180).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
+      ));
+    m_driverController.pov(90).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(-POV_PERCENT_SPEED * MaxSpeed)
+      ));
+    m_driverController.pov(270).whileTrue(
+      drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.0).withVelocityY(POV_PERCENT_SPEED * MaxSpeed)
+      ));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
