@@ -146,24 +146,24 @@ public class RobotContainer {
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
-        ? new ElevatorIORobot(12, 13, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(12, 13, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
+        ? new ElevatorIORobot(14, 15, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
+        : new ElevatorIOSim(14, 15, RIO, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
 
     public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
-        ? new ElevatorIORobot(14, 15, RIO, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
-        : new ElevatorIOSim(14, 15, RIO, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
+        ? new ElevatorIORobot(21, 22, RIO, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
+        : new ElevatorIOSim(21, 22, RIO, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(16, RIO, 1, pivotS0C, pivotMMC)
-        : new PivotIOSim(16, RIO, 1, pivotS0C, pivotMMC));
+        ? new PivotIORobot(6, RIO, 1, pivotS0C, pivotMMC)
+        : new PivotIOSim(6, RIO, 1, pivotS0C, pivotMMC));
 
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
       Robot.isReal()
-        ? new TurretIORobot(40, TURRET_ENCODER_ID, RIO)
-        : new TurretIOSim(40, TURRET_ENCODER_ID, RIO), 
+        ? new TurretIORobot(5, TURRET_ENCODER_ID, RIO)
+        : new TurretIOSim(5, TURRET_ENCODER_ID, RIO), 
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
@@ -177,7 +177,7 @@ public class RobotContainer {
     // TODO: Figure out real motor/ToF ids
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(19, RIO) : new RollerMotorIOSim(19, RIO),
-        Robot.isReal() ? new RollerMotorIORobot(42, RIO) : new RollerMotorIOSim(42, RIO),
+        Robot.isReal() ? new RollerMotorIORobot(7, RIO) : new RollerMotorIOSim(47, RIO),
         Robot.isReal() ? new TimeOfFlightIORobot(INTAKE_TOF_1_ID, 200) : new TimeOfFlightIOSim(INTAKE_TOF_1_ID),
         Robot.isReal() ? new TimeOfFlightIORobot(INTAKE_TOF_2_ID, 200) : new TimeOfFlightIOSim(INTAKE_TOF_2_ID));
 
