@@ -74,10 +74,7 @@ public class RobotContainer {
     private static final String RIO = "rio";
 
     //--DIO IDS--\\
-    private static final int INTAKE_TOF_1_ID = 0;
-    private static final int INTAKE_TOF_2_ID = 1;
-    private static final int INDEXER_TOF_ID = 2;
-    private static final int TURRET_ENCODER_ID = 3;
+    private static final int TURRET_ENCODER_DIO = 0;
 
     private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
 
@@ -167,8 +164,8 @@ public class RobotContainer {
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
       Robot.isReal()
-        ? new TurretIORobot(5, TURRET_ENCODER_ID, RIO)
-        : new TurretIOSim(5, TURRET_ENCODER_ID, RIO), 
+        ? new TurretIORobot(5, TURRET_ENCODER_DIO, RIO)
+        : new TurretIOSim(5, TURRET_ENCODER_DIO, RIO), 
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
@@ -177,14 +174,14 @@ public class RobotContainer {
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, RIO) : new RollerMotorIOSim(20, RIO),
-        Robot.isReal() ? new TimeOfFlightIORobot(INDEXER_TOF_ID, 200) : new TimeOfFlightIOSim(INDEXER_TOF_ID));
+        Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
     // TODO: Figure out real motor/ToF ids
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(19, RIO) : new RollerMotorIOSim(19, RIO),
         Robot.isReal() ? new RollerMotorIORobot(7, RIO) : new RollerMotorIOSim(47, RIO),
-        Robot.isReal() ? new TimeOfFlightIORobot(INTAKE_TOF_1_ID, 200) : new TimeOfFlightIOSim(INTAKE_TOF_1_ID),
-        Robot.isReal() ? new TimeOfFlightIORobot(INTAKE_TOF_2_ID, 200) : new TimeOfFlightIOSim(INTAKE_TOF_2_ID));
+        Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
+        Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
     MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
     
