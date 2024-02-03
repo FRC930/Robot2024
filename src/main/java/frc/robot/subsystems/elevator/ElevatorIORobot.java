@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
@@ -41,7 +42,7 @@ public class ElevatorIORobot implements TalonPosIO {
         
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
-        cfg.withSlot0(config);
+        cfg.withSlot0(config.withGravityType(GravityTypeValue.Elevator_Static));
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
