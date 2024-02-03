@@ -7,6 +7,8 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.LimeLightIntakeCommand;
+import frc.robot.commands.TestIndexerCommand;
+import frc.robot.commands.TestShooterCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -236,9 +238,9 @@ public class RobotContainer {
             ));
           
     
-    // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
+    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
 
-    // m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
+    m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
