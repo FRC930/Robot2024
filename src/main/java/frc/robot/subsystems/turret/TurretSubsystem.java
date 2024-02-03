@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonTurretIO;
@@ -21,7 +22,7 @@ public class TurretSubsystem extends SubsystemBase{
 
     private final ProfiledPIDController m_pid;
 
-    private final ArmFeedforward m_ff;
+    private final SimpleMotorFeedforward m_ff;
 
     private double m_target = 0;
 
@@ -32,7 +33,7 @@ public class TurretSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public TurretSubsystem(TalonTurretIO io, ProfiledPIDController pid, ArmFeedforward ff) {
+    public TurretSubsystem(TalonTurretIO io, ProfiledPIDController pid, SimpleMotorFeedforward ff) {
         m_io = io;
         m_pid = pid;
         m_ff = ff;
