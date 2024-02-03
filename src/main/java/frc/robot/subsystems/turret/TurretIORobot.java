@@ -1,5 +1,6 @@
 package frc.robot.subsystems.turret;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -17,6 +18,7 @@ public class TurretIORobot implements TalonTurretIO{
 
     public TurretIORobot(int motorID, int encoderID, String canbus, double offset) {
         m_motor = new TalonFX(motorID, canbus);
+        m_motor.getConfigurator().apply(new TalonFXConfiguration());
 
         m_encoder = new DutyCycleEncoder(encoderID);
 

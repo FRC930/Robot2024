@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IndexerSubsystem;
 
@@ -23,11 +24,16 @@ public class IndexerCommand extends Command {
         addRequirements(indexer);
     }
 
+    // @Override
+    // public void initialize() {
+    //     double speed = MathUtil.clamp(m_speed, -1.0, 1.0); //Converts the inputted percentage
+
+    //     m_indexer.setSpeed(speed);
+    // }
+
     @Override
     public void initialize() {
-        double speed = MathUtil.clamp(m_speed, -1.0, 1.0); //Converts the inputted percentage
-
-        m_indexer.setSpeed(speed);
+        m_indexer.setSpeed(MathUtil.clamp(SmartDashboard.getNumber("IndexerMotor", 0.0)/100, -1.0, 1.0));
     }
 
     @Override

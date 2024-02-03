@@ -7,7 +7,8 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
-import frc.robot.commands.RunIntakeCommand;
+import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SetPositionsCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
@@ -252,6 +253,9 @@ public class RobotContainer {
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
             ));
+    // m_intakeSubsystem.setDefaultCommand(
+    //   new IntakeCommand(m_intakeSubsystem, -.15)
+    // ); TODO: Implement when needed
     //#endregion
     
     //#region Button controls
@@ -293,24 +297,27 @@ public class RobotContainer {
   
   private void configureTestBindings() {
     SmartDashboard.putNumber("TurretSetPosition", 0.0);
+    SmartDashboard.putNumber("PivotSetPosition", 0.0);
     SmartDashboard.putNumber("ShooterLeftMotor", 0.0);
     SmartDashboard.putNumber("ShooterRightMotor", 0.0);
     SmartDashboard.putNumber("IndexerMotor", 0.0);
+    SmartDashboard.putNumber("IntakeMotor", 0.0);
 
-    m_intakeSubsystem.setDefaultCommand(
-      new RunIntakeCommand(m_intakeSubsystem, -.15)
-    );
+    
 
     m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
 
     m_driverController.b().whileTrue(new SetTurretPositionCommand(m_turretSubsystem, SmartDashboard.getNumber("TurretSetPosition", 0.0)));
 
-    m_driverController.rightTrigger().whileTrue(
-      new RunIntakeCommand(m_intakeSubsystem,0.6)
-      .alongWith(new IndexerCommand(m_indexerSubsystem,SmartDashboard.getNumber("IndexerMotor",0.0)))
-      .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
-  
+    // m_driverController.rightTrigger().whileTrue(
+    //   new RunIntakeCommand(m_intakeSubsystem,0.6)
+    //   .alongWith(new IndexerCommand(m_indexerSubsystem,SmartDashboard.getNumber("IndexerMotor",0.0)))
+    //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
+    
+    m_driverController.y().whileTrue(new IntakeCommand(m_intakeSubsystem,SmartDashboard.getNumber("IntakeMotor", 0.0)/100));
     m_driverController.leftTrigger().whileTrue(new ShooterCommand(m_shooterSubsystem,SmartDashboard.getNumber("ShooterLeftMotor", 0.0)/100,SmartDashboard.getNumber("ShooterRightMotor", 0.0)/100));
+
+    m_driverController.a().whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, 90));
   }
 
   /**
