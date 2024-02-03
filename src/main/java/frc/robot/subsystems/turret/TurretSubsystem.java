@@ -13,6 +13,10 @@ import frc.robot.IOs.TalonTurretIO;
  * A subsystem that represents the turret on the robot.
  */
 public class TurretSubsystem extends SubsystemBase{
+
+    private static final double TURRET_MIN_POS = -180;
+    private static final double TURRET_MAX_POSITION = 180;
+
     private final TalonTurretIO m_io;
 
     private final ProfiledPIDController m_pid;
@@ -69,6 +73,11 @@ public class TurretSubsystem extends SubsystemBase{
     }
 
     public void setVoltage(double volts) {
+        if (getPosition() <= TURRET_MIN_POS && volts < 0) {
+            volts = 0;
+        } else if (getPosition() >= TURRET_MAX_POSITION && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
+            volts = 0;
+        }
         m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
     }
 

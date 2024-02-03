@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.IOs.TalonPosIO;
@@ -30,7 +31,7 @@ public class PivotIORobot implements TalonPosIO{
         m_request = new MotionMagicExpoVoltage(0).withEnableFOC(true);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
-        cfg.withSlot0(config); // PID/FF configs
+        cfg.withSlot0(config.withGravityType(GravityTypeValue.Arm_Cosine)); // PID/FF configs
         cfg.withMotionMagic(mmConfigs); // Motion magic configs
         cfg.Feedback.RotorToSensorRatio = gearRatio; // Applies gear ratio
         
