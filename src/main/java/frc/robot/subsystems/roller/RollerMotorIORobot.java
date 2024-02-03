@@ -1,5 +1,6 @@
 package frc.robot.subsystems.roller;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.IOs.TalonRollerIO;
@@ -14,6 +15,7 @@ public class RollerMotorIORobot implements TalonRollerIO {
 
     public RollerMotorIORobot(int id, String canbus) {
         m_motor = new TalonFX(id, canbus);
+        m_motor.getConfigurator().apply(new TalonFXConfiguration());
     }
 
     @Override
