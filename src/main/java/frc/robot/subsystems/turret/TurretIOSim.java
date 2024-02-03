@@ -18,16 +18,18 @@ public class TurretIOSim extends TurretIORobot {
     // private final double armMOI = 0.001;
 
 	private DCMotorSim m_motorSim;
+    private double m_offset;
     
     /*
      * <h3>PivotIORobot</h3> 
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor
      */
-    public TurretIOSim(int motorID, int encoderID, String canbus) {
-        super(motorID, encoderID, canbus);
+    public TurretIOSim(int motorID, int encoderID, String canbus, double offset) {
+        super(motorID, encoderID, canbus, offset);
         // m_ArmSim = new SingleJointedArmSim(DCMotor.getKrakenX60Foc(0), gearRatio, gearRatio, gearRatio, gearRatio, gearRatio, false, gearRatio);
         m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), MOTOR_GEAR_RATIO ,0.001);
+        m_offset = offset;
     }
     
     // @Override
@@ -65,6 +67,6 @@ public class TurretIOSim extends TurretIORobot {
 
     @Override
     public double getMechRotations() {
-        return Units.radiansToRotations(m_motorSim.getAngularPositionRad());
+        return Units.radiansToRotations(m_motorSim.getAngularPositionRad()) % 1.0 + (m_offset/360); // Mod rotations by 1 to simulate absolute encoder
     }
 }

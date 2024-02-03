@@ -15,10 +15,12 @@ public class TurretIORobot implements TalonTurretIO{
     protected TalonFX m_motor; // Protected because needed by IOSim
     private DutyCycleEncoder m_encoder;
 
-    public TurretIORobot(int motorID, int encoderID, String canbus) {
+    public TurretIORobot(int motorID, int encoderID, String canbus, double offset) {
         m_motor = new TalonFX(motorID, canbus);
 
         m_encoder = new DutyCycleEncoder(encoderID);
+
+        m_encoder.setPositionOffset(offset);
 
         m_motor.setNeutralMode(NeutralModeValue.Brake);
     }

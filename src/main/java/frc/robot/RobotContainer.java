@@ -83,6 +83,8 @@ public class RobotContainer {
     //--DIO IDS--\\
     private static final int TURRET_ENCODER_DIO = 0;
 
+    private static final double TURRET_OFFSET = 0.0;
+
     private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
@@ -171,8 +173,8 @@ public class RobotContainer {
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
       Robot.isReal()
-        ? new TurretIORobot(5, TURRET_ENCODER_DIO, CANBUS)
-        : new TurretIOSim(5, TURRET_ENCODER_DIO, CANBUS), 
+        ? new TurretIORobot(5, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET)
+        : new TurretIOSim(5, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET), 
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
@@ -289,9 +291,9 @@ public class RobotContainer {
   
   private void configureTestBindings() {
     SmartDashboard.putNumber("TurretSetPosition", 0.0);
-    SmartDashboard.putNumber("ShooterLeftMotor", -85.0);
-    SmartDashboard.putNumber("ShooterRightMotor", -85.0);
-    SmartDashboard.putNumber("IndexerMotor", 10);
+    SmartDashboard.putNumber("ShooterLeftMotor", 0.0);
+    SmartDashboard.putNumber("ShooterRightMotor", 0.0);
+    SmartDashboard.putNumber("IndexerMotor", 0.0);
 
     m_intakeSubsystem.setDefaultCommand(
       new RunIntakeCommand(m_intakeSubsystem, -.15)
@@ -301,8 +303,11 @@ public class RobotContainer {
 
     m_driverController.b().whileTrue(new SetTurretPositionCommand(m_turretSubsystem, SmartDashboard.getNumber("TurretSetPosition", 0.0)));
 
-    m_driverController.rightTrigger().whileTrue(new RunIntakeCommand(m_intakeSubsystem,0.6).alongWith(new IndexerCommand(m_indexerSubsystem,SmartDashboard.getNumber("IndexerMotor",0.0))));
-
+    m_driverController.rightTrigger().whileTrue(
+      new RunIntakeCommand(m_intakeSubsystem,0.6)
+      .alongWith(new IndexerCommand(m_indexerSubsystem,SmartDashboard.getNumber("IndexerMotor",0.0)))
+      .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
+  
     m_driverController.leftTrigger().whileTrue(new ShooterCommand(m_shooterSubsystem,SmartDashboard.getNumber("ShooterLeftMotor", 0.0)/100,SmartDashboard.getNumber("ShooterRightMotor", 0.0)/100));
   }
 

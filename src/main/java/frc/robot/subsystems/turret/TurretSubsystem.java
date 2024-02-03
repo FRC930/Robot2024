@@ -14,8 +14,8 @@ import frc.robot.IOs.TalonTurretIO;
  */
 public class TurretSubsystem extends SubsystemBase{
 
-    private static final double TURRET_MIN_POS = -180;
-    private static final double TURRET_MAX_POSITION = 180;
+    private static final double TURRET_MIN_POS = 0.0;
+    private static final double TURRET_MAX_POSITION = 360.0;
 
     private final TalonTurretIO m_io;
 
@@ -47,6 +47,11 @@ public class TurretSubsystem extends SubsystemBase{
     }
 
     public void setSpeed(double speed) {
+        if (getPosition() <= TURRET_MIN_POS && speed < 0) {
+            speed = 0;
+        } else if (getPosition() >= TURRET_MAX_POSITION && speed > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
+            speed = 0;
+        }
         m_io.setSpeed(speed);
     }
 
