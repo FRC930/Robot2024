@@ -48,6 +48,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -127,10 +128,11 @@ public class RobotContainer {
         .withKS(0) 
         .withKV(1);
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(1, 0,0 , new Constraints(360, 720)); //TODO: Set good vals
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
 
-    private final ArmFeedforward turretFF = new ArmFeedforward(1, 0, 0);
+    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0, 0, 0);
 
+    
     //--MOTION MAGIC CONSTANTS--\\
     
     private final MotionMagicConfigs shootingMMC = 
@@ -301,6 +303,7 @@ public class RobotContainer {
 
     m_driverController.b().whileTrue(new SetTurretPositionCommand(m_turretSubsystem, SmartDashboard.getNumber("TurretSetPosition", 0.0)));
 
+    
     m_driverController.rightTrigger().whileTrue(new RunIntakeCommand(m_intakeSubsystem,0.6).alongWith(new IndexerCommand(m_indexerSubsystem,SmartDashboard.getNumber("IndexerMotor",0.0))));
 
     m_driverController.leftTrigger().whileTrue(new ShooterCommand(m_shooterSubsystem,SmartDashboard.getNumber("ShooterLeftMotor", 0.0)/100,SmartDashboard.getNumber("ShooterRightMotor", 0.0)/100));
