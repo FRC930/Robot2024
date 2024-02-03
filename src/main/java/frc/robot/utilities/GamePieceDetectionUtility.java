@@ -2,8 +2,6 @@ package frc.robot.utilities;
 
 import org.littletonrobotics.junction.Logger;
 
-import frc.robot.LimelightHelpers;
-
 /**
  * 
  * A utility class for the game piece detection Lime Light camera

@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.LimelightHelpers.Results;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.TestIndexerCommand;
 import frc.robot.commands.TestShooterCommand;
@@ -30,6 +29,8 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
+import frc.robot.utilities.LimelightHelpers;
+import frc.robot.utilities.LimelightHelpers.Results;
 
 import java.util.Optional;
 
