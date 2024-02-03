@@ -21,7 +21,7 @@ public class ElevatorIOSim extends ElevatorIORobot{
      * @param config The PID and Feedforward controller configs
      * @param gearRatio The ratio of the motor rotations to the height on the elevator
      */
-    public ElevatorIOSim (
+    public ElevatorIOSim ( //TODO elevator simulation is currently not working
         int motor1ID, 
         int motor2ID, 
         String canbus,
