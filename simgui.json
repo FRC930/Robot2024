@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "Talon FX (v6)[20]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX (v6)[3]": {
         "header": {
           "open": true
@@ -15,8 +20,14 @@
   },
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/MechanismSimulator/mechanism2d": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/MechanismSimulator/turret2d": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/MechanismViewer/mechanism2d": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/MechanismViewer/turret2d": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/SmartDashboard/MechanismSimulator/mechanism2d": "Mechanism2d",
+      "/SmartDashboard/MechanismSimulator/turret2d": "Mechanism2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
@@ -25,6 +36,16 @@
       "/SmartDashboard/pp_field": "Field2d"
     },
     "windows": {
+      "/AdvantageKit/RealOutputs/MechanismViewer/mechanism2d": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/AdvantageKit/RealOutputs/MechanismViewer/turret2d": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Pose": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -74,7 +95,15 @@
       }
     }
   },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    }
+  },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

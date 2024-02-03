@@ -16,7 +16,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -64,7 +63,7 @@ public class Robot extends LoggedRobot {
       String folder = "/U";
       File logFolder = new File(folder);
       if (!logFolder.exists()) {
-        writer = new WPILOGWriter("/home/lvuser");
+        writer = new WPILOGWriter("/home/lvuser/logs");
         DriverStation.reportWarning("Usb stick not in roborio so not saving logs on /U/logs folder, but in "+folder, false);
       }
       Logger.addDataReceiver(writer); 
@@ -104,7 +103,8 @@ public class Robot extends LoggedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run(); 
+    CommandScheduler.getInstance().run();
+    m_robotContainer.robotPeriodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -168,9 +168,10 @@ public class Robot extends LoggedRobot {
   public void simulationInit() {}
 
   @Override
-  public void testExit() {}
+  public void simulationPeriodic() {
+    m_robotContainer.simulationPeriodic();
+  }
 
-  /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void testExit() {}
 }
