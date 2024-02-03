@@ -25,6 +25,11 @@ public class MechanismViewer {
     private MechanismLigament2d m_pivotControl;
     private MechanismLigament2d m_turretControl;
 
+    private MechanismLigament2d m_shootingElevatorControlTarget;
+    private MechanismLigament2d m_climbingElevatorControlTarget;
+    private MechanismLigament2d m_pivotControlTarget;
+    private MechanismLigament2d m_turretControlTarget;
+
     private MechanismRoot2d m_shootingElevatorRoot;
     private MechanismRoot2d m_climbingElevatorRoot;
     private MechanismRoot2d m_turretRoot;
@@ -80,6 +85,17 @@ public class MechanismViewer {
                     new Color8Bit(Color.kGray)
                 )
             );
+        // Adds elevator target to the robot in simulation at robot frame
+        m_shootingElevatorControlTarget =
+            m_shootingElevatorRoot.append(
+                new MechanismLigament2d(
+                    "shootingElevatorTarget",
+                    Units.inchesToMeters(10),
+                    90,
+                    2,
+                    new Color8Bit(Color.kBlue)
+                )
+            );
         
         // Applies pivot ligament to end of shooting elevator ligament
         m_pivotControl =
@@ -90,6 +106,17 @@ public class MechanismViewer {
                     90,
                     10,
                     new Color8Bit(Color.kAzure)
+                )
+            );
+        // Applies pivot ligament target to end of shooting elevator ligament
+        m_pivotControlTarget =
+            m_shootingElevatorControl.append(
+                new MechanismLigament2d(
+                    "PivotAndShooterTarget",
+                    Units.inchesToMeters(10),
+                    90,
+                    2,
+                    new Color8Bit(Color.kBlue)
                 )
             );
         
@@ -105,6 +132,18 @@ public class MechanismViewer {
                 )
             );
 
+        // Applies climbing elevator target to robot base
+        m_climbingElevatorControlTarget = 
+            m_climbingElevatorRoot.append(
+                new MechanismLigament2d(
+                    "climbingElevatorTarget",
+                    Units.inchesToMeters(10),
+                    90,
+                    2,
+                    new Color8Bit(Color.kBlue)
+                )
+            );
+
         // Applies turret ligament for turret window
         m_turretControl =
             m_turretRoot.append(
@@ -116,14 +155,31 @@ public class MechanismViewer {
                     new Color8Bit(Color.kDarkOrange)
                 )
             );
+        
+        // Applies turret ligament for turret window
+        m_turretControlTarget =
+            m_turretRoot.append(
+                new MechanismLigament2d(
+                    "turretTarget",
+                    Units.inchesToMeters(10),
+                    0,
+                    2,
+                    new Color8Bit(Color.kBlue)
+                )
+            );
     }   
 
     public void periodic() {
         // Updates position of mechanisms
         m_climbingElevatorControl.setLength(m_climbingElevator.getHeight()+0.2);
+        m_climbingElevatorControlTarget.setLength(m_climbingElevator.getTargetHeight()+0.2);
         m_pivotControl.setAngle(-90+m_pivot.getPosition());
+        m_pivotControlTarget.setAngle(-90+m_pivot.getSetPoint());
         m_shootingElevatorControl.setLength(m_shootingElevator.getHeight()+0.2);
+        m_shootingElevatorControlTarget.setLength(m_shootingElevator.getTargetHeight()+0.2);
         m_turretControl.setAngle(m_turret.getPosition());
+        m_turretControlTarget.setAngle(m_turret.getTarget());
+       
 
         // Logs to advantage kit
         Logger.recordOutput(this.getClass().getSimpleName()+"/mechanism2d", m_mainAssembly);

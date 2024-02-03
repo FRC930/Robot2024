@@ -87,6 +87,9 @@ public class TurretSubsystem extends SubsystemBase{
         m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
     }
 
+    public double getTarget() {
+        return m_target;
+    }
 
     @Override
     public void periodic() {

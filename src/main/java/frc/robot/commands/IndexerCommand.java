@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IndexerSubsystem;
 
+/**
+ * <h3>IndexerCommand</h3>
+ * Sets the speed to run the indexer motor
+ */
 public class IndexerCommand extends Command {
 
     private IndexerSubsystem m_indexer;
@@ -16,7 +20,7 @@ public class IndexerCommand extends Command {
      * <h3>IndexerCommand</h3>
      * Creates a new indexer command
      * @param indexer the indexer to use
-     * @param speed the speed of the indexer in percent [-100,100]
+     * @param speed the speed of the indexer in percent output [-1.0,1.0]
      */
     public IndexerCommand(IndexerSubsystem indexer, double speed) {
         m_indexer = indexer;

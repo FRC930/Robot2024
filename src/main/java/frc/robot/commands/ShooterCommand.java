@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 
+/**
+ * <h3>ShooterCommand</h3>
+ * Sets the speed of the two shooter motors in percent output until interrupted
+ */
 public class ShooterCommand extends Command {
 
     private ShooterSubsystem m_shooter;
@@ -12,6 +16,13 @@ public class ShooterCommand extends Command {
     private double m_leftMotorSpeed;
     private double m_rightMotorSpeed;
 
+    /**
+    * <h3>ShooterCommand</h3>
+    * Creates an instance of a shooter command
+    * @param shooter    instance of shooter subsystem
+    * @param leftSpeed  speed of left two motors
+    * @param rightSpeed speed of right two rollers 
+    */
     public ShooterCommand(ShooterSubsystem shooter, double leftSpeed, double rightSpeed) {
         m_shooter = shooter;
         m_leftMotorSpeed = leftSpeed;
