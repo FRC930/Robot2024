@@ -22,12 +22,6 @@ public class SetElevatorPositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        // SmartDashboard.putNumber("ShooterElevatorDesiredPosition", m_ElevatorSubsystem.getTargetHeight());
-        if (m_ElevatorSubsystem.getTargetHeight() == 5.0) {
-            SmartDashboard.putNumber("ShooterElevatorDesiredPosition", m_ElevatorSubsystem.getTargetHeight());
-        } else {
-            SmartDashboard.putNumber("DefaultShooterElevatorDesiredPosition", m_ElevatorSubsystem.getTargetHeight());
-        }
         return false;
     }
 }

@@ -103,11 +103,11 @@ public class RobotContainer {
     //--PID AND FF CONSTANTS--\\
     private final Slot0Configs shootingS0C = 
       new Slot0Configs()
-        .withKP(0)//TODO: Configure ALL
+        .withKP(12)//TODO: Configure ALL
         .withKI(0)
         .withKD(0)
         .withKA(0)
-        .withKG(0)
+        .withKG(0.5)
         .withKS(0)
         .withKV(0);
 
@@ -126,7 +126,7 @@ public class RobotContainer {
         .withKP(0) 
         .withKI(0) 
         .withKD(0) 
-        .withKA(1) 
+        .withKA(0) 
         .withKG(0) 
         .withKS(0) 
         .withKV(0);
@@ -256,7 +256,7 @@ public class RobotContainer {
 
     m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
           
-    m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 5.0));
+    m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
     
     //#region Button controls
 

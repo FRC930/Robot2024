@@ -50,6 +50,7 @@ public class ElevatorIORobot implements TalonPosIO {
         rightElevatorMaster.getConfigurator().apply(cfg);
       //  leftElevatorFollower.setNeutralMode(NeutralModeValue.Brake);
         rightElevatorMaster.setNeutralMode(NeutralModeValue.Brake);
+        rightElevatorMaster.setInverted(true);
 
       //  leftElevatorFollower.setControl(new Follower(rightElevatorMaster.getDeviceID(), true));
         rightElevatorMaster.setControl(m_request.withPosition(0).withSlot(0));
@@ -59,9 +60,12 @@ public class ElevatorIORobot implements TalonPosIO {
     @Override
     public void runSim() {}
 
+    /**
+     * @param Height
+     */
     @Override
     public void setTarget(double height) {
-        rightElevatorMaster.setControl(m_request.withPosition(MathUtil.clamp(Units.inchesToMeters(height),0,maxHeight)).withSlot(0));
+        rightElevatorMaster.setControl(m_request.withPosition(MathUtil.clamp((height),0,maxHeight)).withSlot(0));
     }
 
     @Override
