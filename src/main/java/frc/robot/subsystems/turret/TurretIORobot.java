@@ -1,7 +1,9 @@
 package frc.robot.subsystems.turret;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -15,14 +17,19 @@ public class TurretIORobot implements TalonTurretIO{
 
     protected TalonFX m_motor; // Protected because needed by IOSim
     private DutyCycleEncoder m_encoder;
+    private VoltageOut m_outputRequest;
 
     public TurretIORobot(int motorID, int encoderID, String canbus, double offset) {
         m_motor = new TalonFX(motorID, canbus);
-        m_motor.getConfigurator().apply(new TalonFXConfiguration());
+
+        m_outputRequest = new VoltageOut(0.0);
 
         m_encoder = new DutyCycleEncoder(encoderID);
 
         m_encoder.setPositionOffset(offset);
+
+        TalonFXConfiguration cfg = new TalonFXConfiguration();
+        m_motor.getConfigurator().apply(cfg);
 
         m_motor.setNeutralMode(NeutralModeValue.Brake);
     }
@@ -34,7 +41,7 @@ public class TurretIORobot implements TalonTurretIO{
 
     @Override
     public void setVoltage(double volts) {
-        m_motor.setVoltage(volts);
+        m_motor.setControl(m_outputRequest.withOutput(volts));
     }
 
     @Override

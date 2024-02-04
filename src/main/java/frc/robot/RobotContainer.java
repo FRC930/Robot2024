@@ -7,9 +7,9 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
+import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.SetPositionsCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TestIndexerCommand;
@@ -103,37 +103,38 @@ public class RobotContainer {
     //--PID AND FF CONSTANTS--\\
     private final Slot0Configs shootingS0C = 
       new Slot0Configs()
-        .withKP(1)//TODO: Configure ALL
+        .withKP(12)//TODO: Configure ALL
         .withKI(0)
         .withKD(0)
         .withKA(0)
-        .withKG(0)
+        .withKG(0.5)
         .withKS(0)
-        .withKV(1);
+        .withKV(0);
 
     private final Slot0Configs climbingS0C = 
       new Slot0Configs()
-        .withKP(1)//TODO: Configure ALL
+        .withKP(0)//TODO: Configure ALL
         .withKI(0)
         .withKD(0)
         .withKA(0)
         .withKG(0)
         .withKS(0)
-        .withKV(1);
+        .withKV(0);
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(1) 
+        .withKP(0) 
         .withKI(0) 
         .withKD(0) 
-        .withKA(1) 
+        .withKA(0) 
         .withKG(0) 
         .withKS(0) 
-        .withKV(1);
+        .withKV(0);
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
 
-    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0, 0, 0);
+    // ks overcomes friction on the turret
+    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0, 0); 
 
     
     //--MOTION MAGIC CONSTANTS--\\
@@ -170,14 +171,14 @@ public class RobotContainer {
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(6, CANBUS, 1, pivotS0C, pivotMMC)
-        : new PivotIOSim(6, CANBUS, 1, pivotS0C, pivotMMC));
+        ? new PivotIORobot(5, CANBUS, 1, pivotS0C, pivotMMC)
+        : new PivotIOSim(5, CANBUS, 1, pivotS0C, pivotMMC));
 
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
       Robot.isReal()
-        ? new TurretIORobot(5, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET)
-        : new TurretIOSim(5, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET), 
+        ? new TurretIORobot(6, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET)
+        : new TurretIOSim(6, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET), 
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
@@ -209,7 +210,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   
   // private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
-
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -253,16 +253,20 @@ public class RobotContainer {
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
             ));
+
     // m_intakeSubsystem.setDefaultCommand(
     //   new IntakeCommand(m_intakeSubsystem, -.15)
     // ); TODO: Implement when needed
-    //#endregion
+    
+    m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
+          
+    m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
     
     //#region Button controls
 
     // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
     m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
-
+    
     m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -305,7 +309,7 @@ public class RobotContainer {
 
     
 
-    m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
+    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
 
     m_driverController.b().whileTrue(new SetTurretPositionCommand(m_turretSubsystem, SmartDashboard.getNumber("TurretSetPosition", 0.0)));
 
