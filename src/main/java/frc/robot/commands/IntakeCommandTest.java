@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -8,23 +9,21 @@ import frc.robot.subsystems.IntakeSubsystem;
  * <h3>IntakeCommand</h3>
  * Sets the intake speed
  */
-public class IntakeCommand extends Command {
+@Deprecated
+public class IntakeCommandTest extends IntakeCommand {
     
-    protected IntakeSubsystem m_intake;
-    private double m_intakeSpeed;
     /**
     * <h3>IntakeCommand</h3>
     * Constructs a command to set the intake speed.
     */
-    public IntakeCommand(IntakeSubsystem intakeSubsystem, double intakeSpeed) {
-        m_intake = intakeSubsystem;
-        m_intakeSpeed = intakeSpeed; // Add intake
-        addRequirements(intakeSubsystem);
+    public IntakeCommandTest(IntakeSubsystem intakeSubsystem, double intakeSpeed) {
+        super(intakeSubsystem, intakeSpeed);
+        SmartDashboard.putNumber("IntakeMotor", 0.0);
     }
 
     @Override
     public void initialize() {
-        m_intake.setIntakeSpeed(m_intakeSpeed);
+        m_intake.setIntakeSpeed(MathUtil.clamp(SmartDashboard.getNumber("IntakeMotor", 0.0)/100,-1,1));
     }
 
     @Override

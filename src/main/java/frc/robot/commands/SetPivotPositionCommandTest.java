@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
@@ -7,23 +8,22 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
  * <h3>SetPivotPositionCommand</h3>
  * Sets the pivot's position
  */
-public class SetPivotPositionCommand extends Command {
+@Deprecated
+public class SetPivotPositionCommandTest extends SetPivotPositionCommand {
 
-    protected PivotSubsystem m_pivot;
-    private double m_turretPos;
+
     /**
     * <h3>SetPivotPositionCommand</h3>
     * Constructs a command to set the pivot's position
     */
-    public SetPivotPositionCommand(PivotSubsystem turretSubsystem, double turretPosition) {
-        m_pivot = turretSubsystem;
-        m_turretPos = turretPosition;
-        addRequirements(turretSubsystem);
+    public SetPivotPositionCommandTest(PivotSubsystem turretSubsystem, double turretPosition) {
+        super(turretSubsystem, turretPosition);
+        SmartDashboard.putNumber("PivotSetPosition", 0.0);
     }
 
     @Override
     public void initialize() {
-        m_pivot.setPosition(m_turretPos);
+        m_pivot.setPosition(SmartDashboard.getNumber("PivotSetPosition", 0.0));
     }
 
     @Override

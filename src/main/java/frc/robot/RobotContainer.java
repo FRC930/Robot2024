@@ -9,9 +9,13 @@ import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.SetPivotPositionCommandTest;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeCommandTest;
 import frc.robot.commands.SetTurretPositionCommand;
+import frc.robot.commands.SetTurretPositionCommandTest;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.ShooterCommandTest;
 import frc.robot.commands.TestIndexerCommand;
 import frc.robot.commands.TestShooterCommand;
 import frc.robot.generated.TunerConstants;
@@ -235,14 +239,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    SmartDashboard.putNumber("KrakenLeftMotor", 0.0);
-    SmartDashboard.putNumber("KrakenRightMotor", 0.0);
-    SmartDashboard.putNumber("IndexerSetSpeed", 0.0);
-    
-
-    // SmartDashboard.putNumber("LeftSparkMotor", 0.0);
-    // SmartDashboard.putNumber("RightSparkMotor", 0.0);
-
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
@@ -299,29 +295,23 @@ public class RobotContainer {
 
     }
   
+  @Deprecated
   private void configureTestBindings() {
-    SmartDashboard.putNumber("TurretSetPosition", 0.0);
-    SmartDashboard.putNumber("PivotSetPosition", 0.0);
-    SmartDashboard.putNumber("ShooterLeftMotor", 0.0);
-    SmartDashboard.putNumber("ShooterRightMotor", 0.0);
-    SmartDashboard.putNumber("IndexerMotor", 0.0);
-    SmartDashboard.putNumber("IntakeMotor", 0.0);
-
     
 
     // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
 
-    m_driverController.b().whileTrue(new SetTurretPositionCommand(m_turretSubsystem, SmartDashboard.getNumber("TurretSetPosition", 0.0)));
+    m_driverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
 
     // m_driverController.rightTrigger().whileTrue(
-    //   new RunIntakeCommand(m_intakeSubsystem,0.6)
-    //   .alongWith(new IndexerCommand(m_indexerSubsystem,SmartDashboard.getNumber("IndexerMotor",0.0)))
+    //   new IntakeCommand(m_intakeSubsystem,0.6)
+    //   .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
     //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
     
-    m_driverController.y().whileTrue(new IntakeCommand(m_intakeSubsystem,SmartDashboard.getNumber("IntakeMotor", 0.0)/100));
-    m_driverController.leftTrigger().whileTrue(new ShooterCommand(m_shooterSubsystem,SmartDashboard.getNumber("ShooterLeftMotor", 0.0)/100,SmartDashboard.getNumber("ShooterRightMotor", 0.0)/100));
+    m_driverController.y().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
+    m_driverController.leftTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
 
-    m_driverController.a().whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, 90));
+    m_driverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
   }
 
   /**

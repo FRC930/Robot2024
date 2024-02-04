@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 
+@Deprecated
 public class TestShooterCommand extends Command {
 
     private ShooterSubsystem m_shooter;
@@ -15,6 +16,8 @@ public class TestShooterCommand extends Command {
     public TestShooterCommand(ShooterSubsystem shooter) {
         m_shooter = shooter;
         addRequirements(shooter);
+        SmartDashboard.putNumber("KrakenLeftMotor", 0.0);
+        SmartDashboard.putNumber("KrakenRightMotor", 0.0);    
     }
 
     @Override

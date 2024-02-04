@@ -11,7 +11,7 @@ import frc.robot.subsystems.IndexerSubsystem;
  */
 public class IndexerCommand extends Command {
 
-    private IndexerSubsystem m_indexer;
+    protected IndexerSubsystem m_indexer;
 
     private double m_speed;
 
@@ -28,16 +28,11 @@ public class IndexerCommand extends Command {
         addRequirements(indexer);
     }
 
-    // @Override
-    // public void initialize() {
-    //     double speed = MathUtil.clamp(m_speed, -1.0, 1.0); //Converts the inputted percentage
-
-    //     m_indexer.setSpeed(speed);
-    // }
-
     @Override
     public void initialize() {
-        m_indexer.setSpeed(MathUtil.clamp(SmartDashboard.getNumber("IndexerMotor", 0.0)/100, -1.0, 1.0));
+        double speed = MathUtil.clamp(m_speed, -1.0, 1.0); //Converts the inputted percentage
+
+        m_indexer.setSpeed(speed);
     }
 
     @Override

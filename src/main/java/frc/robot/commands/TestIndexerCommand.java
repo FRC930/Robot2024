@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IndexerSubsystem;
 
+@Deprecated
 public class TestIndexerCommand extends Command {
 
     private IndexerSubsystem m_indexer;
@@ -14,6 +15,7 @@ public class TestIndexerCommand extends Command {
     public TestIndexerCommand(IndexerSubsystem indexer) {
         m_indexer = indexer;
         addRequirements(indexer);
+        SmartDashboard.putNumber("IndexerSetSpeed", 0.0);
     }
 
     @Override
