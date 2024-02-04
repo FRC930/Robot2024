@@ -50,7 +50,7 @@ public class MechanismViewer {
         m_turret = turret;
 
         // Main assembly window
-        m_mainAssembly = new Mechanism2d(Units.inchesToMeters(100), Units.inchesToMeters(100));
+        m_mainAssembly = new Mechanism2d(Units.inchesToMeters(36), Units.inchesToMeters(24));//(Units.inchesToMeters(100), Units.inchesToMeters(100));
 
         // Start pos of shooting elevator
         m_shootingElevatorRoot = m_mainAssembly.getRoot("shooting_elevator", Units.inchesToMeters(7.35), Units.inchesToMeters(10));
@@ -122,7 +122,7 @@ public class MechanismViewer {
         // Updates position of mechanisms
         m_climbingElevatorControl.setLength(m_climbingElevator.getHeight()+0.2);
         m_pivotControl.setAngle(-90+m_pivot.getPosition());
-        m_shootingElevatorControl.setLength(m_shootingElevator.getHeight()+0.2);
+        m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getHeight())+0.2);
         m_turretControl.setAngle(m_turret.getPosition());
 
         // Logs to advantage kit

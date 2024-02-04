@@ -111,6 +111,16 @@ public class RobotContainer {
         .withKS(0)
         .withKV(0);
 
+    private final Slot0Configs shootingS0CSimulation = 
+      new Slot0Configs()
+        .withKP(1)//TODO: Configure ALL
+        .withKI(0)
+        .withKD(0)
+        .withKA(0)
+        .withKG(0)
+        .withKS(0)
+        .withKV(0);
+
     private final Slot0Configs climbingS0C = 
       new Slot0Configs()
         .withKP(0)//TODO: Configure ALL
@@ -162,7 +172,7 @@ public class RobotContainer {
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
         ? new ElevatorIORobot(14, 15, CANBUS, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(14, 15, CANBUS, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
+        : new ElevatorIOSim(14, 15, CANBUS, shootingS0CSimulation, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
 
     public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
@@ -222,6 +232,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureTestBindings();
+    // configureBindings();
     portForwardCameras();
   }
 
