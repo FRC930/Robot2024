@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 /**
  * <h3>ElevatorIOSim</h3>
@@ -31,7 +32,7 @@ public class ElevatorIOSim extends ElevatorIORobot{
         ){
         super(motor1ID,motor2ID,canbus,config,mmConfigs,elevator);
         //this.elevatorSim = new ElevatorSim(elevator.m_kV, elevator.m_kA, DCMotor.getKrakenX60Foc(2), elevator.m_minHeight, elevator.m_maxHeight, true, elevator.m_startingHeight);
-        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
+        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), ElevatorType.SHOOTING_ELEVATOR.m_gearRatio, 0.001);
     }
 
     @Override
