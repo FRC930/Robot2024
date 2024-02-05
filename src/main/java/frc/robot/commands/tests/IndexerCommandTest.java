@@ -1,8 +1,8 @@
-package frc.robot.commands;
+package frc.robot.commands.tests;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 
 /**

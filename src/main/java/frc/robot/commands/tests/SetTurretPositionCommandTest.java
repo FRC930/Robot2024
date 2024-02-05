@@ -1,7 +1,7 @@
-package frc.robot.commands;
+package frc.robot.commands.tests;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.subsystems.turret.TurretSubsystem;
 
 /**
