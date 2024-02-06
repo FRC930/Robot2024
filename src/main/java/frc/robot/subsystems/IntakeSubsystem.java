@@ -3,10 +3,10 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
+import frc.robot.utilities.Phoenix6Utility;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -40,7 +40,8 @@ public class IntakeSubsystem extends SubsystemBase {
         m_followerMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
         m_leaderMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
 
-        m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), true));
+        Phoenix6Utility.applyConfigAndRetry(m_followerMotor.getTalon(), 
+            () -> m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), true)));
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", 0);
     }
 

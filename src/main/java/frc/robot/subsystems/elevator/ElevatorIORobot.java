@@ -3,15 +3,14 @@ package frc.robot.subsystems.elevator;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.utilities.Phoenix6Utility;
 
 /**
  * <h3>ElevatorIORobot</h3>
@@ -47,13 +46,15 @@ public class ElevatorIORobot implements TalonPosIO {
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
        // leftElevatorFollower.getConfigurator().apply(cfg);
-        rightElevatorMaster.getConfigurator().apply(cfg);
+        Phoenix6Utility.setTalonFxConfiguration(rightElevatorMaster, cfg);
+        // rightElevatorMaster.getConfigurator().apply(cfg);
       //  leftElevatorFollower.setNeutralMode(NeutralModeValue.Brake);
         rightElevatorMaster.setNeutralMode(NeutralModeValue.Brake);
         rightElevatorMaster.setInverted(true);
 
       //  leftElevatorFollower.setControl(new Follower(rightElevatorMaster.getDeviceID(), true));
-        rightElevatorMaster.setControl(m_request.withPosition(0).withSlot(0));
+        Phoenix6Utility.applyConfigAndRetry(rightElevatorMaster, 
+            () -> rightElevatorMaster.setControl(m_request.withPosition(0).withSlot(0)));
     }
     
 
@@ -65,7 +66,8 @@ public class ElevatorIORobot implements TalonPosIO {
      */
     @Override
     public void setTarget(double height) {
-        rightElevatorMaster.setControl(m_request.withPosition(MathUtil.clamp((height),0,maxHeight)).withSlot(0));
+        Phoenix6Utility.applyConfigAndRetry(rightElevatorMaster, 
+            () -> rightElevatorMaster.setControl(m_request.withPosition(MathUtil.clamp((height),0,maxHeight)).withSlot(0)));
     }
 
     @Override
