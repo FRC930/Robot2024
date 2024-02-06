@@ -1,9 +1,18 @@
 package frc.robot.subsystems;
 
- import com.ctre.phoenix6.signals.NeutralModeValue;
+ import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
+import frc.robot.IOs.TalonVelocityIO;
+
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -11,46 +20,38 @@ import org.littletonrobotics.junction.Logger;
  * This subsystem controls the shooter
  */
 public class ShooterSubsystem extends SubsystemBase{
+    private TalonVelocityIO IO_Left;
+    private TalonVelocityIO IO_Right;
 
-    private TalonRollerIO m_leftMotor; 
-    private TalonRollerIO m_rightMotor;
-
-    public ShooterSubsystem(TalonRollerIO leftMotor, TalonRollerIO rightMotor) {
-        m_leftMotor = leftMotor;
-        m_rightMotor = rightMotor;
-
-        m_rightMotor.getTalon().setInverted(true);
-
-        // Applies coast mode to Talons
-        m_leftMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
-        m_rightMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
-
+    public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
+        IO_Left = LeftIO;
+        IO_Right = RightIO;
     }
     
     /**
-    * <h3>setMotorSpeec</h3>
-    * @param leftSpeed the speed the left motor will be set to
-    * @param rightSpeed the speed the right motor will be set to
+    * <h3>setSpeed</h3>
+    * @param leftSpeed the speed the left wheel will be set to
+    * @param rightSpeed the speed the right wheel will be set to
     */
-    public void setMotorSpeed(double leftSpeed, double rightSpeed) {
-        m_leftMotor.setSpeed(leftSpeed);
-        m_rightMotor.setSpeed(rightSpeed);
+    public void setSpeed(double leftSpeed, double rightSpeed) {
+        IO_Left.setSpeed(leftSpeed);
+        IO_Right.setSpeed(rightSpeed);
     }
 
     /**
     * <h3>getLeftMotorSpeed</h3>
-    * @return The current motor speed of the left motor
+    * @return The current motor speed of the left wheel in rps
     */
     public double getLeftMotorSpeed() {
-        return m_leftMotor.getSpeed();
+        return IO_Left.getSpeed();
     }
 
     /**
     * <h3>getRightMotorSpeed</h3>
-    * @return The current motor speed of the right motor
+    * @return The current motor speed of the right wheel in rps
     */
     public double getRightMotorSpeed() {
-        return m_rightMotor.getSpeed();
+        return IO_Right.getSpeed();
     }
 
     /**
@@ -58,7 +59,7 @@ public class ShooterSubsystem extends SubsystemBase{
     * @return The current voltage of the left motor
     */
     public double getLeftVoltage() {
-        return m_leftMotor.getVoltage();
+        return IO_Left.getVoltage();
     }
 
     /**
@@ -66,7 +67,23 @@ public class ShooterSubsystem extends SubsystemBase{
     * @return The current voltage of the right motor
     */
     public double getRightVoltage() {
-        return m_rightMotor.getVoltage();
+        return IO_Right.getVoltage();
+    }
+
+    /**
+    * <h3>getLeftTargetVelocity</h3>
+    * @return The current voltage of the right motor
+    */
+    public double getLeftTargetVelocity() {
+        return IO_Left.getTargetVelocity();
+    }
+
+    /**
+    * <h3>getRightTargetVelocity</h3>
+    * @return The current voltage of the right motor
+    */
+    public double getRightTargetVelocity() {
+        return IO_Right.getTargetVelocity();
     }
 
     /**
@@ -74,16 +91,18 @@ public class ShooterSubsystem extends SubsystemBase{
     * This sets the shooter's speed to 0
     */
     public void stop() {
-        setMotorSpeed(0, 0);
+        setSpeed(0,0);
     }
 
     @Override
     public void periodic() {
         Logger.recordOutput(this.getClass().getSimpleName() + "/LeftWheel/Velocity" ,getLeftMotorSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/LeftWheel/Voltage" ,getLeftVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LeftWheel/SetPoint" ,getLeftTargetVelocity());
 
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/Velocity" ,getRightMotorSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/Voltage" ,getRightVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/SetPoint" ,getRightTargetVelocity());
     }
 }
 

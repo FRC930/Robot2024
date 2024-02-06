@@ -24,6 +24,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorIORobot;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -34,12 +35,12 @@ import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.roller.RollerMotorIORobot;
 import frc.robot.subsystems.roller.RollerMotorIOSim;
+import frc.robot.subsystems.shooter.TalonVelocityIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
 import frc.robot.subsystems.turret.TurretIORobot;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.LimelightHelpers.Results;
@@ -146,6 +147,16 @@ public class RobotContainer {
         .withKG(0) 
         .withKS(0) 
         .withKV(0);
+    
+    private final Slot0Configs shooterS0C =
+      new Slot0Configs()
+        .withKP(0) 
+        .withKI(0) 
+        .withKD(0) 
+        .withKA(0) 
+        .withKG(0) 
+        .withKS(0) //TODO set
+        .withKV(0);
 
     private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
 
@@ -173,6 +184,12 @@ public class RobotContainer {
         .withMotionMagicExpo_kV(1)
         .withMotionMagicExpo_kA(4);
 
+    private final MotionMagicConfigs shooterMMC =
+      new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(0)
+        .withMotionMagicExpo_kV(0)
+        .withMotionMagicExpo_kA(0); //TODO set vals
+
     //--SUBSYSTEMS--\\
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
@@ -198,8 +215,8 @@ public class RobotContainer {
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS),
-        Robot.isReal() ? new RollerMotorIORobot(4, CANBUS) : new RollerMotorIOSim(4, CANBUS));
+        Robot.isReal() ? new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) : new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)); //TODO set gear ratios
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
@@ -323,7 +340,7 @@ public class RobotContainer {
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
 
     m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
-    
+
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
   }
 

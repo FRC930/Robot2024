@@ -28,9 +28,9 @@ public class ShooterCommandTest extends ShooterCommand {
     @Override
     public void initialize() {
         double lSpeed = MathUtil.clamp(SmartDashboard.getNumber("ShooterLeftMotor",0.0)/100, -1.0, 1.0); //Converts the inputted percentage
-        double rSpeed = MathUtil.clamp(SmartDashboard.getNumber("ShooterRightMotor", 0.0)/100, -1.0, 1.0);
+        double rSpeed = MathUtil.clamp(SmartDashboard.getNumber("ShooterRightMotor", 0.0)/100, -1.0, 1.0); //TODO remove clamp
 
-        m_shooter.setMotorSpeed(lSpeed, rSpeed);
+        m_shooter.setSpeed(lSpeed, rSpeed);
     }
 
     @Override
