@@ -55,7 +55,7 @@ public class MechanismViewer {
         m_turret = turret;
 
         // Main assembly window
-        m_mainAssembly = new Mechanism2d(Units.inchesToMeters(36), Units.inchesToMeters(24));//(Units.inchesToMeters(100), Units.inchesToMeters(100));
+        m_mainAssembly = new Mechanism2d(Units.inchesToMeters(50), Units.inchesToMeters(50));//(Units.inchesToMeters(100), Units.inchesToMeters(100));
 
         // Start pos of shooting elevator
         m_shootingElevatorRoot = m_mainAssembly.getRoot("shooting_elevator", Units.inchesToMeters(7.35), Units.inchesToMeters(10));
@@ -171,12 +171,12 @@ public class MechanismViewer {
 
     public void periodic() {
         // Updates position of mechanisms
-        m_climbingElevatorControl.setLength(m_climbingElevator.getHeight()+0.2);
-        m_climbingElevatorControlTarget.setLength(m_climbingElevator.getTargetHeight()+0.2);
+        m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getHeight()+0.2));
+        m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTargetHeight()+0.2));
         m_pivotControl.setAngle(-90+m_pivot.getPosition());
         m_pivotControlTarget.setAngle(-90+m_pivot.getSetPoint());
         m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getHeight())+0.2);
-        m_shootingElevatorControlTarget.setLength(m_shootingElevator.getTargetHeight()+0.2);
+        m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTargetHeight())+0.2);
         m_turretControl.setAngle(m_turret.getPosition());
         m_turretControlTarget.setAngle(m_turret.getTarget());
        

@@ -14,7 +14,9 @@ import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TestIndexerCommand;
 import frc.robot.commands.TestShooterCommand;
+import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
+import frc.robot.commands.tests.SetElevatorPositionCommandTest;
 import frc.robot.commands.tests.SetPivotPositionCommandTest;
 import frc.robot.commands.tests.SetTurretPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
@@ -235,8 +237,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureTestBindings();
-    // configureBindings();
+    configureCoDriverBindingsForTesting();
+    configureBindings();
     portForwardCameras();
   }
 
@@ -264,6 +266,11 @@ public class RobotContainer {
     // m_intakeSubsystem.setDefaultCommand(
     //   new IntakeCommand(m_intakeSubsystem, -.15)
     // ); TODO: Implement when needed
+
+    // m_driverController.rightTrigger().whileTrue(
+    //   new IntakeCommand(m_intakeSubsystem,0.6)
+    //   .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
+    //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
     
     m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
           
@@ -271,10 +278,6 @@ public class RobotContainer {
     
     //#region Button controls
 
-    // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
-    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
-    
-    m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     //#endregion
@@ -307,24 +310,21 @@ public class RobotContainer {
     }
   
   @Deprecated
-  private void configureTestBindings() {
+  private void configureCoDriverBindingsForTesting() {
+
+    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_coDriverController.getLeftX() / 4),m_turretSubsystem));
+
+    m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
+
     
-
-    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
-
-    m_driverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
-
-    // m_driverController.rightTrigger().whileTrue(
-    //   new IntakeCommand(m_intakeSubsystem,0.6)
-    //   .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
-    //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
     
-    m_driverController.y().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
-    m_driverController.leftTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
+    m_coDriverController.y().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
 
-    m_driverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
-
-    m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0));
+    m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
+    
+    m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
   }
 
   /**
