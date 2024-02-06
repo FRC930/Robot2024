@@ -323,6 +323,8 @@ public class RobotContainer {
     m_driverController.leftTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
 
     m_driverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
+
+    m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0));
   }
 
   /**
