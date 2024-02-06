@@ -20,7 +20,7 @@ import frc.robot.IOs.TalonPosIO;
 public class ElevatorIORobot implements TalonPosIO {
     protected final TalonFX leftElevatorFollower;
     protected final TalonFX rightElevatorMaster;
-    private final double gearRatio;
+    protected final double gearRatio;
     private final double maxHeight;
 
     private final MotionMagicExpoVoltage m_request;

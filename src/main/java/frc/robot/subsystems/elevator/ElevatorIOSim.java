@@ -32,7 +32,7 @@ public class ElevatorIOSim extends ElevatorIORobot{
         ){
         super(motor1ID,motor2ID,canbus,config,mmConfigs,elevator);
         //this.elevatorSim = new ElevatorSim(elevator.m_kV, elevator.m_kA, DCMotor.getKrakenX60Foc(2), elevator.m_minHeight, elevator.m_maxHeight, true, elevator.m_startingHeight);
-        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), ElevatorType.SHOOTING_ELEVATOR.m_gearRatio, 0.001);
+        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), elevator.m_gearRatio, 0.001);
     }
 
     @Override
