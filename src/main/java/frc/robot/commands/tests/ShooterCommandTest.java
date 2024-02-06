@@ -34,11 +34,6 @@ public class ShooterCommandTest extends ShooterCommand {
     }
 
     @Override
-    public boolean isFinished() {
-        return false;
-    }
-
-    @Override
     public void end(boolean interrupted) {
         m_shooter.stop();
     }

@@ -27,11 +27,6 @@ public class IntakeCommandTest extends IntakeCommand {
     }
 
     @Override
-    public boolean isFinished() {
-        return false;
-    }
-
-    @Override
     public void end(boolean interrupted) {
         m_intake.stop();
     }

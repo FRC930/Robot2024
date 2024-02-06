@@ -25,15 +25,4 @@ public class SetTurretPositionCommandTest extends SetTurretPositionCommand {
     public void initialize() {
         m_turret.setPosition(SmartDashboard.getNumber("TurretSetPosition", 0.0));
     }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        m_turret.setPosition(0);
-    }
-
 }
