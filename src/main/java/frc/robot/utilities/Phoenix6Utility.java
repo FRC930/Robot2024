@@ -61,7 +61,7 @@ public final class Phoenix6Utility {
             finalCode = toApply.get();
         } while (!finalCode.isOK() && --triesLeftOver > 0);
         if(finalCode.isOK()) {
-            DriverStation.reportError(
+            DriverStation.reportWarning(
                 String.format("Unable to configure device %s: %s", device.getDeviceID(), finalCode.toString()), 
                 true);
         }
