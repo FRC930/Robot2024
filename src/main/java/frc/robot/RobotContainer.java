@@ -219,8 +219,6 @@ public class RobotContainer {
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
   // The robot's subsystems and commands are defined here...
-  
-  // private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
