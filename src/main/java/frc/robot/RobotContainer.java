@@ -14,6 +14,7 @@ import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TestIndexerCommand;
 import frc.robot.commands.TestShooterCommand;
+import frc.robot.commands.TurretAutoAimCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
 import frc.robot.commands.tests.SetElevatorPositionCommandTest;
@@ -268,6 +269,8 @@ public class RobotContainer {
     //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
     
     m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
+
+    m_turretSubsystem.setDefaultCommand(new TurretAutoAimCommand(m_turretSubsystem, new Pose2d(16.53, 5.55, new Rotation2d(0.0))));
           
     m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
     
