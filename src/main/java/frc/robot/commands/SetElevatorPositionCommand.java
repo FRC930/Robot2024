@@ -1,23 +1,22 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class SetElevatorPositionCommand extends Command {
 
-    private ElevatorSubsystem m_ElevatorSubsystem;
-    private double m_TargetPos;
+    protected ElevatorSubsystem m_elevator;
+    private double m_targetPos;
 
     public SetElevatorPositionCommand(ElevatorSubsystem elevatorSubsystem, double targetPos) {
-        m_ElevatorSubsystem = elevatorSubsystem;
-        m_TargetPos = targetPos;
-        addRequirements(m_ElevatorSubsystem);
+        m_elevator = elevatorSubsystem;
+        m_targetPos = targetPos;
+        addRequirements(m_elevator);
     }
     
     @Override
     public void initialize() {
-        m_ElevatorSubsystem.setTargetHeight(m_TargetPos);
+        m_elevator.setTargetHeight(m_targetPos);
     }
 
     @Override

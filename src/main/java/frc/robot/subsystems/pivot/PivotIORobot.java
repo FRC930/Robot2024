@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.utilities.Phoenix6Utility;
 
 
 /**
@@ -35,11 +36,12 @@ public class PivotIORobot implements TalonPosIO{
         cfg.withMotionMagic(mmConfigs); // Motion magic configs
         cfg.Feedback.RotorToSensorRatio = gearRatio; // Applies gear ratio
         
-        m_motor.getConfigurator().apply(cfg); // Applies these configs ^
+        Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg);
         m_motor.setNeutralMode(NeutralModeValue.Brake); // Enables brake mode
         
 
-        m_motor.setControl(m_request.withPosition(0).withSlot(0)); // 
+        Phoenix6Utility.applyConfigAndRetry(m_motor,
+            () -> m_motor.setControl(m_request.withPosition(0).withSlot(0)));
     }
     
     @Override
@@ -57,7 +59,8 @@ public class PivotIORobot implements TalonPosIO{
 
     @Override
     public void setTarget(double position) {
-        m_motor.setControl(m_request.withPosition(position).withSlot(0));
+        Phoenix6Utility.applyConfigAndNoRetry(m_motor,
+            () -> m_motor.setControl(m_request.withPosition(position).withSlot(0)));
     }
 
     @Override

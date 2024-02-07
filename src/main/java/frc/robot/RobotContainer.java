@@ -8,12 +8,18 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
-import frc.robot.commands.RunIntakeCommand;
-import frc.robot.commands.SetPositionsCommand;
+import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TestIndexerCommand;
 import frc.robot.commands.TestShooterCommand;
+import frc.robot.commands.tests.IndexerCommandTest;
+import frc.robot.commands.tests.IntakeCommandTest;
+import frc.robot.commands.tests.SetElevatorPositionCommandTest;
+import frc.robot.commands.tests.SetPivotPositionCommandTest;
+import frc.robot.commands.tests.SetTurretPositionCommandTest;
+import frc.robot.commands.tests.ShooterCommandTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -40,14 +46,11 @@ import frc.robot.utilities.LimelightHelpers.Results;
 
 import java.util.Optional;
 
-import java.util.Optional;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -58,9 +61,7 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -231,8 +232,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureTestBindings();
-    // configureBindings();
+    configureCoDriverBindingsForTesting();
+    configureDriverBindings();
     portForwardCameras();
   }
 
@@ -245,15 +246,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
-    SmartDashboard.putNumber("KrakenLeftMotor", 0.0);
-    SmartDashboard.putNumber("KrakenRightMotor", 0.0);
-    SmartDashboard.putNumber("IndexerSetSpeed", 0.0);
-    
-
-    // SmartDashboard.putNumber("LeftSparkMotor", 0.0);
-    // SmartDashboard.putNumber("RightSparkMotor", 0.0);
-
+  private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
@@ -265,16 +258,21 @@ public class RobotContainer {
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
             ));
 
+    // m_intakeSubsystem.setDefaultCommand(
+    //   new IntakeCommand(m_intakeSubsystem, -.15)
+    // ); TODO: Implement when needed
+
+    // m_driverController.rightTrigger().whileTrue(
+    //   new IntakeCommand(m_intakeSubsystem,0.6)
+    //   .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
+    //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
+    
     m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
           
     m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
     
     //#region Button controls
 
-    // m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
-    m_driverController.y().whileTrue(new TestShooterCommand(m_shooterSubsystem));
-    
-    m_driverController.x().whileTrue(new TestIndexerCommand(m_indexerSubsystem));
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     //#endregion
@@ -306,26 +304,22 @@ public class RobotContainer {
 
     }
   
-  private void configureTestBindings() {
-    SmartDashboard.putNumber("TurretSetPosition", 0.0);
-    SmartDashboard.putNumber("ShooterLeftMotor", 0.0);
-    SmartDashboard.putNumber("ShooterRightMotor", 0.0);
-    SmartDashboard.putNumber("IndexerMotor", 0.0);
+  @Deprecated
+  private void configureCoDriverBindingsForTesting() {
 
-    m_intakeSubsystem.setDefaultCommand(
-      new RunIntakeCommand(m_intakeSubsystem, -.15)
-    );
+    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_coDriverController.getLeftX() / 4),m_turretSubsystem));
 
-    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_driverController.getLeftX() / 4),m_turretSubsystem));
+    m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
 
-    m_driverController.b().whileTrue(new SetTurretPositionCommand(m_turretSubsystem, SmartDashboard.getNumber("TurretSetPosition", 0.0)));
+    
+    
+    m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
+    m_coDriverController.y().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
 
-    m_driverController.rightTrigger().whileTrue(
-      new RunIntakeCommand(m_intakeSubsystem,0.6)
-      .alongWith(new IndexerCommand(m_indexerSubsystem,SmartDashboard.getNumber("IndexerMotor",0.0)))
-      .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
-  
-    m_driverController.leftTrigger().whileTrue(new ShooterCommand(m_shooterSubsystem,SmartDashboard.getNumber("ShooterLeftMotor", 0.0)/100,SmartDashboard.getNumber("ShooterRightMotor", 0.0)/100));
+    m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
+    
+    m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
   }
 
   /**
