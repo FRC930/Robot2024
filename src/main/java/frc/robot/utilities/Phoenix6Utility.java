@@ -9,6 +9,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
+/**
+ * Provided by Steve Wegner per Phoenix6 example, modified by Harry Prochnow
+ */
 public final class Phoenix6Utility {
     
     private static final int CONFIG_RETRY_COUNT = 5;
