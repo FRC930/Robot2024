@@ -37,19 +37,21 @@ public class TunerConstants {
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
-    public static final double kSpeedAt12VoltsMps = Units.inchesToMeters(16.2 * 12.0);
+    //https://www.swervedrivespecialties.com/products/mk4i-swerve-module
+    public static final double kSpeedAt12VoltsMps = Units.inchesToMeters(16.5 * 12.0); // or 17.1 
+    //public static final double kSpeedAt12VoltsMps = 5.96;  // generated maybe it was based on T16 gear
+    
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 3.5;
+    private static final double kCoupleRatio = 3.125;
 
-    //https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
-    // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
-    private static final double kDriveGearRatio = 6.86;
-    private static final double kSteerGearRatio = 12.8;
-    private static final double kWheelRadiusInches = 2.0;
+    // generarted based on L3 T16 gear (choosen in swerver generator )
+    private static final double kDriveGearRatio = 5.357142857142857;
+    private static final double kSteerGearRatio = 21.428571428571427;
+    private static final double kWheelRadiusInches = 2;
 
-    private static final boolean kSteerMotorReversed = false;
+    private static final boolean kSteerMotorReversed = true;
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
 
@@ -91,37 +93,37 @@ public class TunerConstants {
     private static final int kFrontLeftDriveMotorId = 9;
     private static final int kFrontLeftSteerMotorId = 8;
     private static final int kFrontLeftEncoderId = 8;
-    private static final double kFrontLeftEncoderOffset = 0.27734375;
+    private static final double kFrontLeftEncoderOffset = -0.1826171875;
 
-    private static final double kFrontLeftXPosInches = 11.25;
-    private static final double kFrontLeftYPosInches = 11.25;
+    private static final double kFrontLeftXPosInches = 9.375;
+    private static final double kFrontLeftYPosInches = 11.5;
 
     // Front Right
     private static final int kFrontRightDriveMotorId = 11;
     private static final int kFrontRightSteerMotorId = 10;
     private static final int kFrontRightEncoderId = 10;
-    private static final double kFrontRightEncoderOffset = -0.153076171875;
+    private static final double kFrontRightEncoderOffset = -0.3134765625;
 
-    private static final double kFrontRightXPosInches = 11.25;
-    private static final double kFrontRightYPosInches = -11.25;
+    private static final double kFrontRightXPosInches = 9.375;
+    private static final double kFrontRightYPosInches = -11.5;
 
     // Back Left
     private static final int kBackLeftDriveMotorId = 2;
     private static final int kBackLeftSteerMotorId = 1;
     private static final int kBackLeftEncoderId = 1;
-    private static final double kBackLeftEncoderOffset = -0.2060546875;
+    private static final double kBackLeftEncoderOffset = 0.077880859375;
 
-    private static final double kBackLeftXPosInches = -11.25;
-    private static final double kBackLeftYPosInches = 11.25;
+    private static final double kBackLeftXPosInches = -9.375;
+    private static final double kBackLeftYPosInches = 11.5;
 
     // Back Right
     private static final int kBackRightDriveMotorId = 18;
     private static final int kBackRightSteerMotorId = 17;
     private static final int kBackRightEncoderId = 17;
-    private static final double kBackRightEncoderOffset = -0.301513671875;
+    private static final double kBackRightEncoderOffset = 0.420166015625;
 
-    private static final double kBackRightXPosInches = -11.25;
-    private static final double kBackRightYPosInches = -11.25;
+    private static final double kBackRightXPosInches = -9.375;
+    private static final double kBackRightYPosInches = -11.5;
 
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
