@@ -10,20 +10,20 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 public class SetPivotPositionCommand extends Command {
 
     protected PivotSubsystem m_pivot;
-    private double m_turretPos;
+    private double m_pivotPos;
     /**
     * <h3>SetPivotPositionCommand</h3>
     * Constructs a command to set the pivot's position
     */
-    public SetPivotPositionCommand(PivotSubsystem turretSubsystem, double turretPosition) {
-        m_pivot = turretSubsystem;
-        m_turretPos = turretPosition;
-        addRequirements(turretSubsystem);
+    public SetPivotPositionCommand(PivotSubsystem pivotSubsystem, double pivotPosition) {
+        m_pivot = pivotSubsystem;
+        m_pivotPos = pivotPosition;
+        addRequirements(pivotSubsystem);
     }
 
     @Override
     public void initialize() {
-        m_pivot.setPosition(m_turretPos);
+        m_pivot.setPosition(m_pivotPos);
     }
 
     @Override

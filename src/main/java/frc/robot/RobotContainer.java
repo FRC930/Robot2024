@@ -84,11 +84,22 @@ public class RobotContainer {
     private static final String CANBUS = "rio";
 
     //--DIO IDS--\\
-    private static final int TURRET_ENCODER_DIO = 0;
 
+    private static final int TURRET_ENCODER_DIO = 0;
     private static final double TURRET_OFFSET = 0.0;
 
+   //#region positions
+    private static final double STOW_TURRET_POS = 0.0;
+
+    private static final double STOW_ELEVATOR_POS = 0.0;
+    private static final double AMP_ELEVATOR_POS = 10.0;
+    
+    private static final double STOW_PIVOT_POS = 0.0;
+    private static final double AMP_PIVOT_POS = 90.0;
+    private static final double INTAKE_PIVOT_POS = 90.0;
+
     private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
+    //#endregion
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
     // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
@@ -134,11 +145,11 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(0) 
+        .withKP(1) 
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
-        .withKG(0) 
+        .withKG(1) 
         .withKS(0) 
         .withKV(0);
 
@@ -268,12 +279,21 @@ public class RobotContainer {
           
     //#region Other Buttons
 
-    // m_driverController.rightTrigger().whileTrue(
-    //   new IntakeCommand(m_intakeSubsystem,0.6)
-    //   .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
-    //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
-
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    //TODO Test
+    //AMP position button
+    m_driverController.y()
+      .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, AMP_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, AMP_ELEVATOR_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS))))
+      .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
+    // //TODO Test
+    m_driverController.b()
+      .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, INTAKE_PIVOT_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS)))
+      .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
 
     //#endregion
     
@@ -295,10 +315,15 @@ public class RobotContainer {
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-    m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
 
     m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
     
+    //TODO Test
+    m_driverController.rightTrigger().whileTrue(
+      new IntakeCommand(m_intakeSubsystem,0.6)
+      .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
+      .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
+
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
