@@ -259,20 +259,22 @@ public class RobotContainer {
     // m_intakeSubsystem.setDefaultCommand(
     //   new IntakeCommand(m_intakeSubsystem, -.15)
     // ); TODO: Implement when needed
+    
+    // m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
+
+    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_coDriverController.getLeftX() / 4),m_turretSubsystem));
+
+    //#endregion
+          
+    //#region Other Buttons
 
     // m_driverController.rightTrigger().whileTrue(
     //   new IntakeCommand(m_intakeSubsystem,0.6)
     //   .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
     //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
-    
-    m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
-          
-    m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
-    
-    //#region Button controls
-
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
     //#endregion
     
     //#region POV controls
@@ -293,6 +295,7 @@ public class RobotContainer {
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
 
     m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
     
@@ -304,12 +307,9 @@ public class RobotContainer {
   
   @Deprecated
   private void configureCoDriverBindingsForTesting() {
-
-    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_coDriverController.getLeftX() / 4),m_turretSubsystem));
+    //#region Test Commands
 
     m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
-
-    
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
     m_coDriverController.y().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
@@ -318,6 +318,7 @@ public class RobotContainer {
     m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
     
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
+    //#endregion
   }
 
   /**
