@@ -345,11 +345,10 @@ public class RobotContainer {
    * Sets the port offsets
    */
   public void portForwardCameras() {
-    // portForwardLimelight("front", 0);
-    // portForwardLimelight("side", 10);
-
-    portForwardLimelight("10.99.90.12", 0);
-    portForwardLimelight("10.99.90.11", 10);
+    PortForwarder.add(5800, "10.9.30.30", 5801); //limelight-front
+    PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-back
+    PortForwarder.add(5802, "10.9.30.32", 5801); //limelight-game
+    PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-turret
   }
 
   /**
@@ -358,7 +357,7 @@ public class RobotContainer {
   public void updateAllVision() {
     if (UseLimeLightAprilTag) {  
       updateVisionOdometry("front");
-      updateVisionOdometry("side");
+      updateVisionOdometry("back");
     }
   }
 
@@ -387,18 +386,6 @@ public class RobotContainer {
       }
   }
 
-  /** 
-   * This method makes a port for the limelights
-   * @param limeLightName the name of the Limelights
-   * @param portOffset the offset needed to ensure that the ports for the cameras are not the same
-   */
-  public void portForwardLimelight(String limeLightName, int portOffset) {
-      for (int limeLightPort = 5800; limeLightPort <= 5807; limeLightPort++) {
-          int pcPort = limeLightPort + portOffset;
-          // PortForwarder.add(pcPort, "limelight-" + limeLightName, limeLightPort);
-          PortForwarder.add(pcPort, limeLightName, limeLightPort);
-      }
-  }
   /**
    * Checks whether alliance is red or blue so that teleop has correct facing controls IE: negate joystick value
    * 
