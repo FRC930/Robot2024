@@ -76,10 +76,10 @@ public class RobotContainer {
 
     private final boolean UseLimeLightAprilTag = false; 
 
-    private static final double   POV_PERCENT_SPEED = 0.3;
+    private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
-    private static final double PERCENT_SPEED = 0.3;
+    private static final double PERCENT_SPEED = 1.0;
 
     private static final String CANBUS = "rio";
 
@@ -101,9 +101,8 @@ public class RobotContainer {
     private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
     //#endregion
 
-    // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
-    // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
-    final double MaxSpeed = Units.feetToMeters(16.2); //13.6); //  meters per second desired top speed
+    //Use max speed from tuner constants from webpage
+    final double MaxSpeed = TunerConstants.kMaxSpeed;
     final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
