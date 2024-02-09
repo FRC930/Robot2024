@@ -22,10 +22,10 @@ public class TestShooterCommand extends Command {
 
     @Override
     public void initialize() {
-        m_leftMotorSpeed = MathUtil.clamp(SmartDashboard.getNumber("KrakenLeftMotor", 0.0)/100, -1.0, 1.0); //Converts the inputted percentage
-        m_rightMotorSpeed = MathUtil.clamp(SmartDashboard.getNumber("KrakenRightMotor", 0.0)/100, -1.0, 1.0); // TODO remove clamp
+        m_leftMotorSpeed = SmartDashboard.getNumber("KrakenLeftMotor", 0.0); //Converts the inputted percentage
+        m_rightMotorSpeed = SmartDashboard.getNumber("KrakenRightMotor", 0.0);
 
-        m_shooter.setSpeed(m_leftMotorSpeed, m_rightMotorSpeed,1,1);
+        m_shooter.setSpeed(m_leftMotorSpeed, m_rightMotorSpeed);
     }
 
     @Override
