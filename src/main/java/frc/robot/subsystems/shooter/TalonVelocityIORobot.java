@@ -34,20 +34,22 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
-        cfg.Voltage.PeakForwardVoltage = 8;
-        cfg.Voltage.PeakReverseVoltage = -8;
-        cfg.TorqueCurrent.PeakForwardTorqueCurrent = 40;
-        cfg.TorqueCurrent.PeakReverseTorqueCurrent = -40;
+        // cfg.Voltage.PeakForwardVoltage = 8;
+        // cfg.Voltage.PeakReverseVoltage = -8;
+        // cfg.TorqueCurrent.PeakForwardTorqueCurrent = 40;
+        // cfg.TorqueCurrent.PeakReverseTorqueCurrent = -40;
 
         m_motor.getConfigurator().apply(cfg); //Applies the configuration to the motor
 
         m_motor.setNeutralMode(NeutralModeValue.Coast); //Makes the motor continue rotating even when it is told to brake (its velocity is set to 0)
 
-        if(initReal) {
-            m_motor.setControl(m_request.withVelocity(0).withSlot(0));
-        } else {
-            m_motor.setControl(simRequest);
-        }
+        m_motor.setControl(m_request.withVelocity(0).withSlot(0));
+
+        // if(initReal) {
+        //     m_motor.setControl(m_request.withVelocity(0).withSlot(0));
+        // } else {
+        //     m_motor.setControl(simRequest);
+        // }
         
     }
 

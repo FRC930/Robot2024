@@ -17,16 +17,17 @@ public class TalonVelocityIOSim extends TalonVelocityIORobot {
 
     public TalonVelocityIOSim(int MotorID, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
         super(MotorID, gearRatio, config, mmConfigs,false, new MotionMagicVelocityVoltage(0,0,true,0,0,false,false,false));
-        m_motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), gearRatio, 0.001);
-        m_simRequest = (MotionMagicVelocityVoltage) m_motor.getAppliedControl();
+        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), gearRatio, 0.001);
+        // m_simRequest = (MotionMagicVelocityVoltage) m_motor.getAppliedControl();
     }
 
     @Override
     public void runSim() {
         /// DEVICE SPEED SIMULATION
+        var motorVoltage = m_motor.getSimState().getMotorVoltage();
+        m_motorSim.setInputVoltage(motorVoltage);
     
-        m_motorSim.setInputVoltage(m_motor.getSimState().getMotorVoltage());
-    
+        var velocity = m_motor.getAcceleration();
         m_motorSim.update(getPeriod());
     
         /// SET SIM PHYSICS INPUTS
@@ -35,25 +36,26 @@ public class TalonVelocityIOSim extends TalonVelocityIORobot {
     
         m_motor.getSimState().setRawRotorPosition(position_rot);
         m_motor.getSimState().setRotorVelocity(velocity_rps);
-    
-        m_motor.getSimState().setSupplyVoltage(12 - m_motor.getSimState().getSupplyCurrent() * kMotorResistance);
+        
+        double supplyVoltage = 12 - m_motor.getSimState().getSupplyCurrent() * kMotorResistance;
+        m_motor.getSimState().setSupplyVoltage(supplyVoltage);
     }
 
-    /**
-    * <h3>setSpeed</h3>
-    * @param speed the speed the wheel will be set to
-    */
-    @Override
-    public void setSpeed(double speed,double acceleration) {
-        m_motor.setControl(m_simRequest.withVelocity(speed).withSlot(0));
-    }
+    // /**
+    // * <h3>setSpeed</h3>
+    // * @param speed the speed the wheel will be set to
+    // */
+    // @Override
+    // public void setSpeed(double speed,double acceleration) {
+    //     m_motor.setControl(m_simRequest.withVelocity(speed).withSlot(0));
+    // }
 
-    /**
-    * <h3>getTargetVelocity</h3>
-    * @return The current voltage of the right motor
-    */
-    @Override
-    public double getTargetVelocity() {
-        return ((MotionMagicVelocityVoltage) m_motor.getAppliedControl()).Velocity;
-    }
+    // /**
+    // * <h3>getTargetVelocity</h3>
+    // * @return The current voltage of the right motor
+    // */
+    // @Override
+    // public double getTargetVelocity() {
+    //     return ((MotionMagicVelocityVoltage) m_motor.getAppliedControl()).Velocity;
+    // }
 }
