@@ -65,6 +65,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -309,6 +311,15 @@ public class RobotContainer {
       .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
         .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
 
+    // m_driverController.x()
+    //   .whileTrue(
+    //     new ShooterCommand(m_shooterSubsystem,0.7,0.8)
+    //     .raceWith(new WaitCommand(1.0))
+    //     .andThen(
+    //       new IndexerCommand(m_indexerSubsystem,0.2)
+    //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
+    //     )
+    //   ); //TODO review values and code
     //#endregion
     
     //#region POV controls

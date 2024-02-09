@@ -26,6 +26,8 @@ public class ShooterSubsystem extends SubsystemBase{
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
         IO_Left = LeftIO;
         IO_Right = RightIO;
+        IO_Left.getTalon().setInverted(true);
+        IO_Right.getTalon().setInverted(true);
     }
     
     /**

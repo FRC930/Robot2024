@@ -82,7 +82,6 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     public double getSpeed() {
         return m_motor.getVelocity().getValue();
     }
-
     
     /**
     * <h3>getVoltage</h3>
@@ -103,6 +102,11 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         return ((MotionMagicVelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
     }
 
+    @Override
+    public TalonFX getTalon() {
+        return m_motor;
+    }
+    
     /**
     * <h3>stop</h3>
     * This sets the shooter's speed to 0
