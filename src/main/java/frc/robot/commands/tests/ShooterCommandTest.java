@@ -30,7 +30,7 @@ public class ShooterCommandTest extends ShooterCommand {
         double lSpeed = SmartDashboard.getNumber("ShooterLeftMotor",0.0); 
         double rSpeed = SmartDashboard.getNumber("ShooterRightMotor",0.0);
 
-        m_shooter.setSpeed(lSpeed, rSpeed,1,1);
+        m_shooter.setSpeed(lSpeed, rSpeed);
     }
 
     @Override
