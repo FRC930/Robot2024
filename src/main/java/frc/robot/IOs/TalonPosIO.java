@@ -6,7 +6,7 @@ package frc.robot.IOs;
  */
 public interface TalonPosIO {
     /**
-     * <h3>updateInputs</h3>
+     * <h3>runSim</h3>
      * Steps the simulation forward by 0.02 seconds.
      * <p>Does nothing on physical robot
      */

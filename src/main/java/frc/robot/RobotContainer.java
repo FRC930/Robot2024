@@ -24,6 +24,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorIORobot;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -34,12 +35,13 @@ import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.roller.RollerMotorIORobot;
 import frc.robot.subsystems.roller.RollerMotorIOSim;
+import frc.robot.subsystems.shooter.TalonVelocityIORobot;
+import frc.robot.subsystems.shooter.TalonVelocityIOSim;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
 import frc.robot.subsystems.turret.TurretIORobot;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.LimelightHelpers.Results;
@@ -112,7 +114,7 @@ public class RobotContainer {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
     //--PID AND FF CONSTANTS--\\
-    private final Slot0Configs shootingS0C = 
+    private final Slot0Configs shootingElevatorS0C = 
       new Slot0Configs()
         .withKP(12)//TODO: Configure ALL
         .withKI(0)
@@ -151,6 +153,13 @@ public class RobotContainer {
         .withKG(0) 
         .withKS(0) 
         .withKV(0);
+    
+    private final Slot0Configs shooterS0C =
+      new Slot0Configs()
+        .withKP(0) 
+        .withKI(0) 
+        .withKD(0) 
+        .withKV(0);
 
     private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
 
@@ -160,7 +169,7 @@ public class RobotContainer {
     
     //--MOTION MAGIC CONSTANTS--\\
     
-    private final MotionMagicConfigs shootingMMC = 
+    private final MotionMagicConfigs shootingElevatorMMC = 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicExpo_kV(1)
@@ -178,12 +187,17 @@ public class RobotContainer {
         .withMotionMagicExpo_kV(1)
         .withMotionMagicExpo_kA(4);
 
+    private final MotionMagicConfigs shooterMMC =
+      new MotionMagicConfigs()
+        .withMotionMagicAcceleration(0)
+        .withMotionMagicJerk(0); //TODO set vals
+
     //--SUBSYSTEMS--\\
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
-        ? new ElevatorIORobot(14, 15, CANBUS, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(14, 15, CANBUS, shootingS0CSimulation, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
+        ? new ElevatorIORobot(14, 15, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
+        : new ElevatorIOSim(14, 15, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
 
     public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
@@ -203,8 +217,8 @@ public class RobotContainer {
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS),
-        Robot.isReal() ? new RollerMotorIORobot(4, CANBUS) : new RollerMotorIOSim(4, CANBUS));
+        Robot.isReal() ? new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(3, 1, shooterS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
@@ -340,7 +354,7 @@ public class RobotContainer {
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
 
     m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
-    
+
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
   }
