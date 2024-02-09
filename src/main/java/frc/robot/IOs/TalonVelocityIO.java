@@ -11,7 +11,7 @@ public interface TalonVelocityIO {
     * <h3>setSpeed</h3>
     * @param speed the speed the wheel will be set to
     */
-    void setSpeed(double speed);
+    void setSpeed(double speed, double acceleration);
 
     /**
     * <h3>geMotorSpeed</h3>

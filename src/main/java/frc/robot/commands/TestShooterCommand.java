@@ -25,7 +25,7 @@ public class TestShooterCommand extends Command {
         m_leftMotorSpeed = MathUtil.clamp(SmartDashboard.getNumber("KrakenLeftMotor", 0.0)/100, -1.0, 1.0); //Converts the inputted percentage
         m_rightMotorSpeed = MathUtil.clamp(SmartDashboard.getNumber("KrakenRightMotor", 0.0)/100, -1.0, 1.0); // TODO remove clamp
 
-        m_shooter.setSpeed(m_leftMotorSpeed, m_rightMotorSpeed);
+        m_shooter.setSpeed(m_leftMotorSpeed, m_rightMotorSpeed,1,1);
     }
 
     @Override

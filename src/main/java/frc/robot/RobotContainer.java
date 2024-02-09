@@ -36,6 +36,7 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.roller.RollerMotorIORobot;
 import frc.robot.subsystems.roller.RollerMotorIOSim;
 import frc.robot.subsystems.shooter.TalonVelocityIORobot;
+import frc.robot.subsystems.shooter.TalonVelocityIOSim;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
 import frc.robot.subsystems.turret.TurretIORobot;
@@ -108,7 +109,7 @@ public class RobotContainer {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
     //--PID AND FF CONSTANTS--\\
-    private final Slot0Configs shootingS0C = 
+    private final Slot0Configs shootingElevatorS0C = 
       new Slot0Configs()
         .withKP(12)//TODO: Configure ALL
         .withKI(0)
@@ -153,9 +154,6 @@ public class RobotContainer {
         .withKP(0) 
         .withKI(0) 
         .withKD(0) 
-        .withKA(0) 
-        .withKG(0) 
-        .withKS(0) //TODO set
         .withKV(0);
 
     private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
@@ -166,7 +164,7 @@ public class RobotContainer {
     
     //--MOTION MAGIC CONSTANTS--\\
     
-    private final MotionMagicConfigs shootingMMC = 
+    private final MotionMagicConfigs shootingElevatorMMC = 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicExpo_kV(1)
@@ -186,16 +184,15 @@ public class RobotContainer {
 
     private final MotionMagicConfigs shooterMMC =
       new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(0)
-        .withMotionMagicExpo_kV(0)
-        .withMotionMagicExpo_kA(0); //TODO set vals
+        .withMotionMagicAcceleration(0)
+        .withMotionMagicJerk(0); //TODO set vals
 
     //--SUBSYSTEMS--\\
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
-        ? new ElevatorIORobot(14, 15, CANBUS, shootingS0C, shootingMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(14, 15, CANBUS, shootingS0CSimulation, shootingMMC, ElevatorType.SHOOTING_ELEVATOR));
+        ? new ElevatorIORobot(14, 15, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
+        : new ElevatorIOSim(14, 15, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
 
     public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
@@ -215,8 +212,8 @@ public class RobotContainer {
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) : new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)); //TODO set gear ratios
+        Robot.isReal() ? new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(3, 1, shooterS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC)); //TODO set gear ratios
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),

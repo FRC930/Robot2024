@@ -33,9 +33,9 @@ public class ShooterSubsystem extends SubsystemBase{
     * @param leftSpeed the speed the left wheel will be set to
     * @param rightSpeed the speed the right wheel will be set to
     */
-    public void setSpeed(double leftSpeed, double rightSpeed) {
-        IO_Left.setSpeed(leftSpeed);
-        IO_Right.setSpeed(rightSpeed);
+    public void setSpeed(double leftSpeed, double rightSpeed, double leftAccel, double rightAccel) {
+        IO_Left.setSpeed(leftSpeed, leftAccel);
+        IO_Right.setSpeed(rightSpeed, rightAccel);
     }
 
     /**
@@ -91,11 +91,14 @@ public class ShooterSubsystem extends SubsystemBase{
     * This sets the shooter's speed to 0
     */
     public void stop() {
-        setSpeed(0,0);
+        setSpeed(0,0,0,0);
     }
 
     @Override
     public void periodic() {
+        IO_Left.runSim();
+        IO_Right.runSim();
+        
         Logger.recordOutput(this.getClass().getSimpleName() + "/LeftWheel/Velocity" ,getLeftMotorSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/LeftWheel/Voltage" ,getLeftVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/LeftWheel/SetPoint" ,getLeftTargetVelocity());

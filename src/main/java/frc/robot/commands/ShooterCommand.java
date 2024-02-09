@@ -34,7 +34,7 @@ public class ShooterCommand extends Command {
         double lSpeed = MathUtil.clamp(m_leftMotorSpeed, -1.0, 1.0); //Converts the inputted percentage
         double rSpeed = MathUtil.clamp(m_rightMotorSpeed, -1.0, 1.0); //TODO remove clamp
 
-        m_shooter.setSpeed(lSpeed, rSpeed);
+        m_shooter.setSpeed(lSpeed, rSpeed,1,1);
     }
 
     @Override
