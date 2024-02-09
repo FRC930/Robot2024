@@ -14,6 +14,7 @@ import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TestIndexerCommand;
 import frc.robot.commands.TestShooterCommand;
+import frc.robot.commands.TurretAutoAimCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
 import frc.robot.commands.tests.SetElevatorPositionCommandTest;
@@ -284,11 +285,10 @@ public class RobotContainer {
     //   new IntakeCommand(m_intakeSubsystem, -.15)
     // ); TODO: Implement when needed
     
-    // m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
+    //m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
 
-    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_coDriverController.getLeftX() / 4),m_turretSubsystem));
-
-    //#endregion
+    //TODO make not run if there isn't a note in the indexer
+    // m_turretSubsystem.setDefaultCommand(new TurretAutoAimCommand(m_turretSubsystem, new Pose2d(16.53, 5.55, new Rotation2d(0.0)), new Pose2d(0, 5.55, new Rotation2d(0.0))));
           
     //#region Other Buttons
 
@@ -378,11 +378,10 @@ public class RobotContainer {
    * Sets the port offsets
    */
   public void portForwardCameras() {
-    // portForwardLimelight("front", 0);
-    // portForwardLimelight("side", 10);
-
-    portForwardLimelight("10.99.90.12", 0);
-    portForwardLimelight("10.99.90.11", 10);
+    PortForwarder.add(5800, "10.9.30.30", 5801); //limelight-front
+    PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-back
+    PortForwarder.add(5802, "10.9.30.32", 5801); //limelight-game
+    PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-turret
   }
 
   /**
@@ -391,7 +390,7 @@ public class RobotContainer {
   public void updateAllVision() {
     if (UseLimeLightAprilTag) {  
       updateVisionOdometry("front");
-      updateVisionOdometry("side");
+      updateVisionOdometry("back");
     }
   }
 
@@ -420,18 +419,6 @@ public class RobotContainer {
       }
   }
 
-  /** 
-   * This method makes a port for the limelights
-   * @param limeLightName the name of the Limelights
-   * @param portOffset the offset needed to ensure that the ports for the cameras are not the same
-   */
-  public void portForwardLimelight(String limeLightName, int portOffset) {
-      for (int limeLightPort = 5800; limeLightPort <= 5807; limeLightPort++) {
-          int pcPort = limeLightPort + portOffset;
-          // PortForwarder.add(pcPort, "limelight-" + limeLightName, limeLightPort);
-          PortForwarder.add(pcPort, limeLightName, limeLightPort);
-      }
-  }
   /**
    * Checks whether alliance is red or blue so that teleop has correct facing controls IE: negate joystick value
    * 

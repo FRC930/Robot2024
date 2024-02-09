@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.utilities.RobotOdometryUtility;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
@@ -111,6 +112,8 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
 
     @Override
     public void periodic() {
+        RobotOdometryUtility.getInstance().setRobotOdometry(getState().Pose);
+
         // validates ModuleStaes are populated by odometry thread before logging them
         if (getState().ModuleStates != null) {
             Logger.recordOutput("Drivetrain/rotationVelocity", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
