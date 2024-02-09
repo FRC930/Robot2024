@@ -31,10 +31,7 @@ public class ShooterCommand extends Command {
 
     @Override
     public void initialize() {
-        double lSpeed = m_leftMotorSpeed; //Converts the inputted percentage
-        double rSpeed = m_rightMotorSpeed; //TODO remove clamp
-
-        m_shooter.setSpeed(lSpeed, rSpeed); //TODO may need to input accel
+        m_shooter.setSpeed( m_leftMotorSpeed,  m_rightMotorSpeed); //TODO may need to input accel
     }
 
     @Override
