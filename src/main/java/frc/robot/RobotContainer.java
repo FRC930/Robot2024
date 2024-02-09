@@ -76,23 +76,33 @@ public class RobotContainer {
 
     private final boolean UseLimeLightAprilTag = false; 
 
-    private static final double   POV_PERCENT_SPEED = 0.3;
+    private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
-    private static final double PERCENT_SPEED = 0.3;
+    private static final double PERCENT_SPEED = 1.0;
 
     private static final String CANBUS = "rio";
 
     //--DIO IDS--\\
-    private static final int TURRET_ENCODER_DIO = 0;
 
+    private static final int TURRET_ENCODER_DIO = 0;
     private static final double TURRET_OFFSET = 0.0;
 
-    private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
+   //#region positions
+    private static final double STOW_TURRET_POS = 0.0;
 
-    // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
-    // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
-    final double MaxSpeed = Units.feetToMeters(16.2); //13.6); //  meters per second desired top speed
+    private static final double STOW_ELEVATOR_POS = 0.0;
+    private static final double AMP_ELEVATOR_POS = 10.0;
+    
+    private static final double STOW_PIVOT_POS = 0.0;
+    private static final double AMP_PIVOT_POS = 90.0;
+    private static final double INTAKE_PIVOT_POS = 90.0;
+
+    private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
+    //#endregion
+
+    //Use max speed from tuner constants from webpage
+    final double MaxSpeed = TunerConstants.kMaxSpeed;
     final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -134,7 +144,7 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(0) 
+        .withKP(0) //TODO: Configure
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
@@ -219,8 +229,6 @@ public class RobotContainer {
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
   // The robot's subsystems and commands are defined here...
-  
-  // private final SparkMaxShooterSubsystem m_sparkShooterSubsystem = new SparkMaxShooterSubsystem(3, 4);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -261,20 +269,31 @@ public class RobotContainer {
     // m_intakeSubsystem.setDefaultCommand(
     //   new IntakeCommand(m_intakeSubsystem, -.15)
     // ); TODO: Implement when needed
-
-    // m_driverController.rightTrigger().whileTrue(
-    //   new IntakeCommand(m_intakeSubsystem,0.6)
-    //   .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
-    //   .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
     
-    m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
+    // m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
+
+    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_coDriverController.getLeftX() / 4),m_turretSubsystem));
+
+    //#endregion
           
-    m_driverController.rightBumper().whileTrue(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 2.0));
-    
-    //#region Button controls
-
+    //#region Other Buttons
 
     m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    //TODO Test
+    //AMP position button
+    m_driverController.y()
+      .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, AMP_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, AMP_ELEVATOR_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS))))
+      .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
+    // //TODO Test
+    m_driverController.b()
+      .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, INTAKE_PIVOT_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS)))
+      .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
+
     //#endregion
     
     //#region POV controls
@@ -298,6 +317,12 @@ public class RobotContainer {
 
     m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
     
+    //TODO Test
+    m_driverController.rightTrigger().whileTrue(
+      new IntakeCommand(m_intakeSubsystem,0.6)
+      .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
+      .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
+
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -306,12 +331,9 @@ public class RobotContainer {
   
   @Deprecated
   private void configureCoDriverBindingsForTesting() {
-
-    // m_turretSubsystem.setDefaultCommand(new InstantCommand(() -> m_turretSubsystem.setSpeed(m_coDriverController.getLeftX() / 4),m_turretSubsystem));
+    //#region Test Commands
 
     m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
-
-    
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
     m_coDriverController.y().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
@@ -320,6 +342,7 @@ public class RobotContainer {
     m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
     
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
+    //#endregion
   }
 
   /**
