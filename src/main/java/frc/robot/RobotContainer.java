@@ -210,10 +210,10 @@ public class RobotContainer {
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    // TODO: Figure out real motor/ToF ids
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
-        Robot.isReal() ? new RollerMotorIORobot(19, CANBUS) : new RollerMotorIOSim(19, CANBUS),
-        Robot.isReal() ? new RollerMotorIORobot(7, CANBUS) : new RollerMotorIOSim(7, CANBUS),
+        // TunerConstants.kCANbusName means same canivore as drivetrain
+        Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName) : new RollerMotorIOSim(19, TunerConstants.kCANbusName),
+        Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName) : new RollerMotorIOSim(7, TunerConstants.kCANbusName),
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
