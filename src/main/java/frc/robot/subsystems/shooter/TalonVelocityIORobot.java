@@ -63,8 +63,15 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     */
     @Override
     public void setSpeed(double speed,double acceleration) {
+        m_motor.setControl(m_request.withVelocity(speed).withAcceleration(acceleration).withSlot(0));
+    }
+    /**
+    * <h3>setSpeed</h3>
+    * @param speed the speed the wheel will be set to
+    */
+    @Override
+    public void setSpeed(double speed) {
         m_motor.setControl(m_request.withVelocity(speed).withSlot(0));
-
     }
 
     /**

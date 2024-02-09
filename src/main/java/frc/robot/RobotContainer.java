@@ -218,7 +218,7 @@ public class RobotContainer {
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         Robot.isReal() ? new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(3, 1, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC)); //TODO set gear ratios
+        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),

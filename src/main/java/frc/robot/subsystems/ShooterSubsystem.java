@@ -39,6 +39,16 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     /**
+    * <h3>setSpeed</h3>
+    * @param leftSpeed the speed the left wheel will be set to
+    * @param rightSpeed the speed the right wheel will be set to
+    */
+    public void setSpeed(double leftSpeed, double rightSpeed) {
+        IO_Left.setSpeed(leftSpeed);
+        IO_Right.setSpeed(rightSpeed);
+    }
+
+    /**
     * <h3>getLeftMotorSpeed</h3>
     * @return The current motor speed of the left wheel in rps
     */
