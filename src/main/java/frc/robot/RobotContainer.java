@@ -144,11 +144,11 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(1) 
+        .withKP(0) //TODO: Configure
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
-        .withKG(1) 
+        .withKG(0) 
         .withKS(0) 
         .withKV(0);
 
