@@ -342,8 +342,6 @@ public class RobotContainer {
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
-    // m_driverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
     }
   
   @Deprecated
@@ -360,6 +358,9 @@ public class RobotContainer {
 
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
+
+    m_coDriverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
+
   }
 
   /**
