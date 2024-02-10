@@ -46,6 +46,7 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
+import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
 
 import java.util.Optional;
@@ -115,6 +116,8 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
+    private StartInTeleopUtility m_StartInTeleopUtility = new StartInTeleopUtility(drivetrain::seedFieldRelative);
+
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
@@ -381,7 +384,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_autoManager.getAutoManagerSelected();
+    Command autoCommand = m_autoManager.getAutoManagerSelected();
+    if (autoCommand != null) {
+        m_StartInTeleopUtility.updateAutonomous();
+    }
+    return autoCommand;
   }
 
   public void robotPeriodic() {
@@ -429,6 +436,7 @@ public class RobotContainer {
           }
 
           if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
+              m_StartInTeleopUtility.updateTags();
               drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
           }
       }
@@ -455,6 +463,10 @@ public class RobotContainer {
 
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
+  }
+
+  public void teleopInit() {
+    m_StartInTeleopUtility.updateStartingPosition();
   }
 
 }
