@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
-import frc.robot.utilities.GamePieceDetectionUtility;
+import frc.robot.utilities.LimeLightDetectionUtility;
 
 /**
  * 
@@ -31,7 +31,7 @@ public class LimeLightIntakeCommand extends Command {
     private PIDController pid = new PIDController(0.01, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
 
     private SwerveDrivetrainSubsystem m_SwerveDrive;
-    private GamePieceDetectionUtility m_LimeLight;
+    private LimeLightDetectionUtility m_LimeLight;
 
     private Pose2d m_bluePosition;
     private Pose2d m_redPosition;
@@ -62,7 +62,7 @@ public class LimeLightIntakeCommand extends Command {
      * @param bluePosition Pose2d of the location of where the robot should go
      * 
      */
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, GamePieceDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition) {
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition) {
         m_SwerveDrive = swerveDrive;
         m_LimeLight = limeLight;
         m_bluePosition = bluePosition;
@@ -72,7 +72,7 @@ public class LimeLightIntakeCommand extends Command {
         addRequirements(m_SwerveDrive);
     }
 
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, GamePieceDetectionUtility m_GamePieceUtility, Pose2d pose2d) {
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, Pose2d pose2d) {
         this(drivetrain, m_GamePieceUtility, pose2d, pose2d);
     }
 
