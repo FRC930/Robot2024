@@ -55,10 +55,14 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
@@ -193,7 +197,12 @@ public class RobotContainer {
       new MotionMagicConfigs()
         .withMotionMagicAcceleration(0)
         .withMotionMagicJerk(0); //TODO set vals
-
+    
+    //--VisionSTDsDevConstants--\\
+    // TODO configure for april tag confidence level 
+    //https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/mechanisms/swerve/SwerveDrivetrain.html#setVisionMeasurementStdDev
+    private Matrix<N3, N1> visionSTDsDevs = VecBuilder.fill(0.9, 0.9, 0.9);
+  
     //--SUBSYSTEMS--\\
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
@@ -260,6 +269,8 @@ public class RobotContainer {
     configureCoDriverBindingsForTesting();
     configureDriverBindings();
     portForwardCameras();
+    // set our own visionMeasurementDeviations
+    drivetrain.setVisionMeasurementStdDevs(visionSTDsDevs);
   }
 
   /**
