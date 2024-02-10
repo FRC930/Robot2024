@@ -12,8 +12,6 @@ import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.TestIndexerCommand;
-import frc.robot.commands.TestShooterCommand;
 import frc.robot.commands.TurretAutoAimCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
@@ -66,6 +64,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -305,16 +304,16 @@ public class RobotContainer {
     //m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
 
     //TODO make not run if there isn't a note in the indexer
-    m_turretSubsystem.setDefaultCommand(
-      new TurretAutoAimCommand(
-        m_turretSubsystem, 
-        new Pose2d(16.53, 5.55, new Rotation2d(0.0)), 
-        new Pose2d(0, 5.55, new Rotation2d(0.0)))
-        .onlyIf(() -> m_indexerSubsystem.getSensor())
-      .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS) //stow if no note detected
-        .unless(() -> m_indexerSubsystem.getSensor())));
+    // m_turretSubsystem.setDefaultCommand(
+    //   new ConditionalCommand(
+    //     new TurretAutoAimCommand(
+    //       m_turretSubsystem, 
+    //       new Pose2d(16.53, 5.55, new Rotation2d(0.0)), 
+    //       new Pose2d(0, 5.55, new Rotation2d(0.0))), 
+    //     new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS), 
+    //     m_indexerSubsystem::getSensor));
     
-    
+  
           
     //#region Other Buttons
 
@@ -395,7 +394,8 @@ public class RobotContainer {
     m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
-    m_coDriverController.y().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
 
     m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
