@@ -343,7 +343,7 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    m_driverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
+    // m_driverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
     }
   
   @Deprecated
