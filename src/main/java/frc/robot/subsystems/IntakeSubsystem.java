@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         Phoenix6Utility.applyConfigAndRetry(m_followerMotor.getTalon(), 
             () -> m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), true)));
-        Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", 0);
+        Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", 0.0);
     }
 
     /**
@@ -92,6 +92,7 @@ public class IntakeSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/IntookenYet", getSensor());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", m_leaderMotor.getTalon().get());
     }
 }
 
