@@ -23,7 +23,7 @@ public class IntakeCommand extends Command {
 
     @Override
     public void initialize() {
-        m_intake.setIntakeSpeed(m_intakeSpeed);
+        m_intake.setSpeed(m_intakeSpeed);
     }
 
     @Override

@@ -1,16 +1,7 @@
 package frc.robot.subsystems;
 
- import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
+ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TalonVelocityIO;
 
 import org.littletonrobotics.junction.Logger;
@@ -118,6 +109,10 @@ public class ShooterSubsystem extends SubsystemBase{
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/Velocity" ,getRightMotorSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/Voltage" ,getRightVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/SetPoint" ,getRightTargetVelocity());
+    }
+
+    public InstantCommand newSetSpeedsCommand(double leftSpeed, double rightSpeed) {
+        return new InstantCommand(() -> setSpeed(leftSpeed, rightSpeed), this);
     }
 }
 

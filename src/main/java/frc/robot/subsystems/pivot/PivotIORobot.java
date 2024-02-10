@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -72,6 +71,6 @@ public class PivotIORobot implements TalonPosIO{
 
     @Override
     public double getTarget() {
-        return Units.rotationsToDegrees(((MotionMagicExpoVoltage)m_motor.getAppliedControl()).Position);
+        return Units.rotationsToDegrees(((MotionMagicExpoTorqueCurrentFOC)m_motor.getAppliedControl()).Position);
     }
 }

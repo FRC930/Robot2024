@@ -3,6 +3,7 @@ package frc.robot.subsystems.pivot;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonPosIO;
 
@@ -83,4 +84,7 @@ public class PivotSubsystem extends SubsystemBase{
         
     }
 
+    public InstantCommand newSetPosCommand(double pos) {
+        return new InstantCommand(() -> setPosition(pos), this);
+    }
 }

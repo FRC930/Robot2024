@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
@@ -81,6 +82,10 @@ public class IndexerSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Sensor", getSensor());
+    }
+
+    public InstantCommand newSetSpeedCommand(double speed) {
+        return new InstantCommand(() -> setSpeed(speed), this);
     }
 
 
