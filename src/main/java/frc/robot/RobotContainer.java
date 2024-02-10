@@ -28,6 +28,7 @@ import frc.robot.subsystems.turret.TurretIORobot;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utilities.FieldCoordinateSystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.LimelightHelpers.Results;
@@ -88,6 +89,9 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
+    final private FieldCoordinateSystem m_fieldCoordinateSystem = 
+        new FieldCoordinateSystem(()->drivetrain.getState().Pose, drivetrain::seedFieldRelative);
+
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
@@ -274,8 +278,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    Command autonomousCommand = m_autoManager.getAutoManagerSelected();
+    m_fieldCoordinateSystem.autoExecutedwithCommand(autonomousCommand);
     // An example command will be run in autonomous
-    return m_autoManager.getAutoManagerSelected();
+    return autonomousCommand;
   }
 
   public void robotPeriodic() {
@@ -290,8 +296,8 @@ public class RobotContainer {
     // portForwardLimelight("front", 0);
     // portForwardLimelight("side", 10);
 
-    portForwardLimelight("10.99.90.12", 0);
-    portForwardLimelight("10.99.90.11", 10);
+    // portForwardLimelight("10.99.90.12", 0);
+    // portForwardLimelight("10.99.90.11", 10);
   }
 
   /**
@@ -301,6 +307,7 @@ public class RobotContainer {
     if (UseLimeLightAprilTag) {  
       updateVisionOdometry("front");
       updateVisionOdometry("side");
+
     }
   }
 
@@ -325,6 +332,7 @@ public class RobotContainer {
 
           if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
               drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
+              m_fieldCoordinateSystem.odometryUpdatedWithAprilTag();
           }
       }
   }
@@ -362,6 +370,10 @@ public class RobotContainer {
 
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
+  }
+
+  public void teleopInit() {
+     m_fieldCoordinateSystem.setRobotPoseOnField();
   }
 
 }
