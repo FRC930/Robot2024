@@ -289,7 +289,7 @@ public class RobotContainer {
     //m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
 
     //TODO make not run if there isn't a note in the indexer
-    // m_turretSubsystem.setDefaultCommand(new TurretAutoAimCommand(m_turretSubsystem, new Pose2d(16.53, 5.55, new Rotation2d(0.0)), new Pose2d(0, 5.55, new Rotation2d(0.0))));
+   m_turretSubsystem.setDefaultCommand(new TurretAutoAimCommand(m_turretSubsystem));
           
     //#region Other Buttons
 

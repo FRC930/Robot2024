@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.RobotOdometryUtility;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 
 //Automatically aims the turret to one of the speakers based on the alliance.
 public class TurretAutoAimCommand extends Command{
@@ -21,6 +23,8 @@ public class TurretAutoAimCommand extends Command{
     private double m_CurrentRobotHeading;
     private double m_DesiredHeading;
 
+    private AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
     private double tx; //target x
     private double ty; //target y
     private double rx; //robot x
@@ -28,13 +32,11 @@ public class TurretAutoAimCommand extends Command{
     /**
      * Constructor
      * @param turretSubsystem the subsystem that controls the turret.
-     * @param redTargetPose the target position if the alliance is red.
-     * @param blueTargetPose the target position if the alliance is blue.
      */
-    public TurretAutoAimCommand(TurretSubsystem turretSubsystem, Pose2d redTargetPose, Pose2d blueTargetPose) {
-        m_RedTargetPose = redTargetPose;
-        m_BlueTargetPose = blueTargetPose;
-        m_TargetPose = blueTargetPose;
+    public TurretAutoAimCommand(TurretSubsystem turretSubsystem) {
+        m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
+        m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
+        m_TargetPose = m_BlueTargetPose;
 
         m_TurretSubsystem = turretSubsystem;
         addRequirements(m_TurretSubsystem);
