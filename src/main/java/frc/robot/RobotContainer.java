@@ -50,6 +50,7 @@ import frc.robot.utilities.LimelightHelpers.Results;
 import java.util.Optional;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -102,6 +103,19 @@ public class RobotContainer {
     private static final double STOW_PIVOT_POS = 0.0;
     private static final double AMP_PIVOT_POS = 90.0;
     private static final double INTAKE_PIVOT_POS = 90.0;
+
+    private static final double LEFT_SHOOTER_SPEAKER_SPEED = 0.7;
+    private static final double RIGHT_SHOOTER_SPEAKER_SPEED = 0.8;
+    private static final double INDEXER_SPEAKER_SPEED = 0.5;
+
+    private static final double LEFT_SHOOTER_AMP_SPEED = -0.3;
+    private static final double RIGHT_SHOOTER_AMP_SPEED = -0.3;
+    private static final double INDEXER_AMP_SPEED = 0.2;
+
+    private static final double LEFT_SHOOTER_EJECT_SPEED = 0.2;
+    private static final double RIGHT_SHOOTER_EJECT_SPEED = 0.2;
+    private static final double INDEXER_EJECT_SPEED = 0.2;
+
 
     private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
     //#endregion
@@ -322,10 +336,10 @@ public class RobotContainer {
 
     // m_driverController.x()
     //   .whileTrue(
-    //     new ShooterCommand(m_shooterSubsystem,0.7,0.8)
+    //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
     //     .raceWith(new WaitCommand(1.0))
     //     .andThen(
-    //       new IndexerCommand(m_indexerSubsystem,0.2)
+    //       new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)
     //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
     //     )
     //   ); //TODO review values and code
@@ -351,6 +365,16 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
+
+    m_driverController.leftTrigger()
+      .whileTrue(
+        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_EJECT_SPEED, RIGHT_SHOOTER_EJECT_SPEED)
+        .raceWith(new WaitCommand(1.0))
+        .andThen(
+          new IndexerCommand(m_indexerSubsystem, INDEXER_EJECT_SPEED)
+          .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
+        )
+      ); //TODO review values and code
     
     //TODO Test
     m_driverController.rightTrigger().whileTrue(
@@ -378,6 +402,26 @@ public class RobotContainer {
 
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
+  }
+
+  private void configureNamedCommands(){
+    NamedCommands.registerCommand("aimAndShoot", null);
+    NamedCommands.registerCommand("intake", new IntakeCommand(m_intakeSubsystem, -.15));
+    NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(m_pivotSubsystem, AMP_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, AMP_ELEVATOR_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS))));
+    NamedCommands.registerCommand("stow", new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS))
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS)));
+    NamedCommands.registerCommand("ampShoot", 
+      new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
+          .raceWith(new WaitCommand(1.0))
+          .andThen(
+            new IndexerCommand(m_indexerSubsystem, INDEXER_AMP_SPEED))
+          .andThen(new WaitCommand(0.25))
+          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0).alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
+          );
+    NamedCommands.registerCommand("stopIntake", new IntakeCommand(m_intakeSubsystem, 0));
   }
 
   /**
