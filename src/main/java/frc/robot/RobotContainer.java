@@ -15,6 +15,7 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TestIndexerCommand;
 import frc.robot.commands.TestShooterCommand;
 import frc.robot.commands.TurretAutoAimCommand;
+import frc.robot.commands.TurretLimeLightAimCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
 import frc.robot.commands.tests.SetElevatorPositionCommandTest;
@@ -43,7 +44,7 @@ import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
 import frc.robot.subsystems.turret.TurretIORobot;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
-import frc.robot.utilities.GamePieceDetectionUtility;
+import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.LimelightHelpers.Results;
 
@@ -101,7 +102,7 @@ public class RobotContainer {
     private static final double AMP_PIVOT_POS = 90.0;
     private static final double INTAKE_PIVOT_POS = 90.0;
 
-    private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
+    private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-front");
     //#endregion
 
     //Use max speed from tuner constants from webpage
@@ -240,7 +241,7 @@ public class RobotContainer {
     SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     Telemetry logger = new Telemetry(MaxSpeed);
     
-    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, m_GamePieceUtility);
+    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, m_LimeLightDetectionUtility);
 
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
@@ -330,7 +331,7 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
+    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
     
     //TODO Test
     m_driverController.rightTrigger().whileTrue(
@@ -341,7 +342,6 @@ public class RobotContainer {
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
     }
   
   @Deprecated
@@ -358,6 +358,9 @@ public class RobotContainer {
 
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
+
+    m_coDriverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
+
   }
 
   /**

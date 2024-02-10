@@ -7,7 +7,7 @@ import org.littletonrobotics.junction.Logger;
  * A utility class for the game piece detection Lime Light camera
  * 
  */
-public class GamePieceDetectionUtility {
+public class LimeLightDetectionUtility {
 
     private String m_LimeLightName;
 
@@ -18,9 +18,8 @@ public class GamePieceDetectionUtility {
      * @param LimeLightName The name of the camera1
      * 
      */
-    public GamePieceDetectionUtility(String LimeLightName) {
+    public LimeLightDetectionUtility(String LimeLightName) {
         m_LimeLightName = LimeLightName;
-        LimelightHelpers.setPipelineIndex(m_LimeLightName, 1);
     }
 
     public double get_tx() { //returns the amount of degrees off horizontally a game piece is from the center of the camera
