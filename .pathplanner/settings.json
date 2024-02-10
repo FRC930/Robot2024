@@ -3,12 +3,15 @@
   "robotLength": 0.58,
   "holonomicMode": true,
   "pathFolders": [
-    "TopSpeaker",
-    "MidSpeaker",
+    "Amp",
     "BotSpeaker",
-    "Amp"
+    "MidSpeaker",
+    "Robot2024",
+    "TopSpeaker"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Robot2024"
+  ],
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,

@@ -274,6 +274,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureCoDriverBindingsForTesting();
     configureDriverBindings();
+    configureNamedCommands();
     portForwardCameras();
   }
 
@@ -334,15 +335,15 @@ public class RobotContainer {
       .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
         .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
 
-    // m_driverController.x()
-    //   .whileTrue(
-    //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
-    //     .raceWith(new WaitCommand(1.0))
-    //     .andThen(
-    //       new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)
-    //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
-    //     )
-    //   ); //TODO review values and code
+    m_driverController.x()
+      .whileTrue(
+        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
+        .raceWith(new WaitCommand(1.0))
+        .andThen(
+          new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)
+          .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
+        )
+      ); //TODO review values and code
     //#endregion
     
     //#region POV controls
@@ -366,15 +367,15 @@ public class RobotContainer {
 
     m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
 
-    m_driverController.leftTrigger()
-      .whileTrue(
-        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_EJECT_SPEED, RIGHT_SHOOTER_EJECT_SPEED)
-        .raceWith(new WaitCommand(1.0))
-        .andThen(
-          new IndexerCommand(m_indexerSubsystem, INDEXER_EJECT_SPEED)
-          .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
-        )
-      ); //TODO review values and code
+    // m_driverController.leftTrigger()
+    //   .whileTrue(
+    //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_EJECT_SPEED, RIGHT_SHOOTER_EJECT_SPEED)
+    //     .raceWith(new WaitCommand(1.0))
+    //     .andThen(
+    //       new IndexerCommand(m_indexerSubsystem, INDEXER_EJECT_SPEED)
+    //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
+    //     )
+    //   ); //TODO review values and code
     
     //TODO Test
     m_driverController.rightTrigger().whileTrue(
@@ -408,7 +409,17 @@ public class RobotContainer {
   }
 
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("aimAndShoot", null);
+    NamedCommands.registerCommand("aimAndShoot", 
+        new TurretLimeLightAimCommand(m_turretSubsystem)
+        .andThen(
+          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
+          .raceWith(new WaitCommand(1.0))
+          .andThen(
+            new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED))
+          .andThen(new WaitCommand(0.25))
+          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0)
+            .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
+        ));
     NamedCommands.registerCommand("intake", new IntakeCommand(m_intakeSubsystem, -.15));
     NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(m_pivotSubsystem, AMP_PIVOT_POS)
         .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, AMP_ELEVATOR_POS)
@@ -422,9 +433,11 @@ public class RobotContainer {
           .andThen(
             new IndexerCommand(m_indexerSubsystem, INDEXER_AMP_SPEED))
           .andThen(new WaitCommand(0.25))
-          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0).alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
+          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0)
+            .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
           );
-    NamedCommands.registerCommand("stopIntake", new IntakeCommand(m_intakeSubsystem, 0));
+    NamedCommands.registerCommand("stopIntake", new IntakeCommand(m_intakeSubsystem, 0)
+      .until(() -> true));
   }
 
   /**
