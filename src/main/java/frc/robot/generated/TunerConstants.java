@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
+import frc.robot.utilities.SysIdRoutineForSwerveDrive;
 
 public class TunerConstants {
     // Both sets of gains need to be tuned to your individual robot.
@@ -133,6 +134,6 @@ public class TunerConstants {
     private static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
             kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), kInvertRightSide);
 
-    public static final SwerveDrivetrainSubsystem DriveTrain = new SwerveDrivetrainSubsystem(DrivetrainConstants, FrontLeft,
+    public static final SwerveDrivetrainSubsystem DriveTrain = new SysIdRoutineForSwerveDrive(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);
 }
