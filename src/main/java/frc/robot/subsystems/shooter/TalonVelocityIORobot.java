@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -17,7 +18,7 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
 
     protected TalonFX m_motor; 
 
-    protected MotionMagicVelocityTorqueCurrentFOC m_request;
+    protected VelocityTorqueCurrentFOC m_request;
 
     protected TalonVelocityIORobot(int MotorID, double gearRatio,Slot0Configs config, MotionMagicConfigs mmConfigs, boolean initReal, MotionMagicVelocityVoltage simRequest) {
         m_motor = new TalonFX(MotorID); //Initializes the motor
@@ -25,8 +26,8 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         this.gearRatio = gearRatio; // The gear ratio
         
         
-        m_request = new MotionMagicVelocityTorqueCurrentFOC(0,0,true,0,0,true,false,false); //The request that will be sent to the motor
-
+        // m_request = new MotionMagicVelocityTorqueCurrentFOC(0,0,true,0,0,true,false,false); //The request that will be sent to the motor- Commented it out because of not working in testing
+        m_request = new VelocityTorqueCurrentFOC(0.0,0.0,0.0,0,true,false,true); //The request that will be sent to the motor
         
 
         TalonFXConfiguration cfg = new TalonFXConfiguration(); //Creates a new blank TalonFX congfiguration that will be applied to the motors in a bit
@@ -99,7 +100,7 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     */
     @Override
     public double getTargetVelocity() {
-        return ((MotionMagicVelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
+        return ((VelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
     }
 
     @Override

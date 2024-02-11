@@ -173,10 +173,11 @@ public class RobotContainer {
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(0) 
+        .withKP(30) 
         .withKI(0) 
         .withKD(0) 
-        .withKV(0);
+        .withKG(0)
+        .withKS(4); 
 
     private final ProfiledPIDController turretPID = new ProfiledPIDController(0.0, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
     // private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0));
@@ -235,8 +236,8 @@ public class RobotContainer {
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(3, 1, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(15, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC));
+        Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 1, shooterS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(15, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 1, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
