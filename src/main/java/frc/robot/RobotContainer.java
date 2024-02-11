@@ -95,14 +95,14 @@ public class RobotContainer {
     private static final double TURRET_OFFSET = 0.0;
 
    //#region positions
-    private static final double STOW_TURRET_POS = 0.0;
+    private static final double TURRET_STOW_POS = 0.0;
 
-    private static final double STOW_ELEVATOR_POS = 0.0;
-    private static final double AMP_ELEVATOR_POS = 10.0;
+    private static final double ELEVATOR_STOW_POS = 0.0;
+    private static final double ELEVATOR_AMP_POS = 10.0;
     
-    private static final double STOW_PIVOT_POS = 0.0;
-    private static final double AMP_PIVOT_POS = 90.0;
-    private static final double INTAKE_PIVOT_POS = 90.0;
+    private static final double PIVOT_STOW_POS = 0.0;
+    private static final double PIVOT_AMP_POS = 90.0;
+    private static final double PIVOT_INTAKE_POS = 90.0;
 
     private static final double LEFT_SHOOTER_SPEAKER_SPEED = 0.7;
     private static final double RIGHT_SHOOTER_SPEAKER_SPEED = 0.8;
@@ -115,6 +115,11 @@ public class RobotContainer {
     private static final double LEFT_SHOOTER_EJECT_SPEED = 0.2;
     private static final double RIGHT_SHOOTER_EJECT_SPEED = 0.2;
     private static final double INDEXER_EJECT_SPEED = 0.2;
+
+    private static final double INTAKE_SPEED = 0.6;
+    private static final double INTAKE_REJECT_SPEED = -0.15;
+
+    private static final double INDEXER_INTAKE_SPEED = 0.2;
 
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-front");
@@ -299,52 +304,53 @@ public class RobotContainer {
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
             ));
 
-    // m_intakeSubsystem.setDefaultCommand(
-    //   new IntakeCommand(m_intakeSubsystem, -.15)
-    // ); TODO: Implement when needed
+    m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, INTAKE_REJECT_SPEED));
     
-    //m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
+    m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_STOW_POS));
+    
+    m_pivotSubsystem.setDefaultCommand(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_STOW_POS));
+    
+    m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
 
-    //TODO make not run if there isn't a note in the indexer
-    // m_turretSubsystem.setDefaultCommand(
-    //   new ConditionalCommand(
-    //     new TurretAutoAimCommand(
-    //       m_turretSubsystem, 
-    //       new Pose2d(16.53, 5.55, new Rotation2d(0.0)), 
-    //       new Pose2d(0, 5.55, new Rotation2d(0.0))), 
-    //     new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS), 
-    //     m_indexerSubsystem::getSensor));
+    m_shooterSubsystem.setDefaultCommand(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0));
+
+    m_turretSubsystem.setDefaultCommand(
+      new ConditionalCommand(
+        new TurretAutoAimCommand(
+          m_turretSubsystem, 
+          new Pose2d(16.53, 5.55, new Rotation2d(0.0)), 
+          new Pose2d(0, 5.55, new Rotation2d(0.0))), 
+        new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS), 
+        m_indexerSubsystem::getSensor));
     
   
           
-    //#region Other Buttons
 
-    m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    //TODO Test
-    //AMP position button
-    m_driverController.y()
-      .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, AMP_PIVOT_POS)
-        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, AMP_ELEVATOR_POS)
-        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS))))
-      .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
-        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
+    // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     // //TODO Test
-    m_driverController.b()
-      .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, INTAKE_PIVOT_POS)
-        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS)))
-      .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
-        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
+    // //AMP position button
+    // m_driverController.y()
+    //   .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_AMP_POS)
+    //     .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_AMP_POS)
+    //     .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS))))
+    //   .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_STOW_POS)
+    //     .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_STOW_POS)));
+    // // //TODO Test
+    // m_driverController.b()
+    //   .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_INTAKE_POS)
+    //     .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS)))
+    //   .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_STOW_POS)
+    //     .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_STOW_POS)));
 
-    m_driverController.x()
-      .whileTrue(
-        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
-        .raceWith(new WaitCommand(1.0))
-        .andThen(
-          new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)
-          .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
-        )
-      ); //TODO review values and code
-    //#endregion
+    // m_driverController.x()
+    //   .whileTrue(
+    //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
+    //     .raceWith(new WaitCommand(1.0))
+    //     .andThen(
+    //       new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)
+    //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
+    //     )
+    //   ); //TODO review values and code
     
     //#region POV controls
     m_driverController.pov(0).whileTrue(
@@ -363,30 +369,44 @@ public class RobotContainer {
 
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
-    m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
+    // m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
 
-    // m_driverController.leftTrigger()
-    //   .whileTrue(
-    //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_EJECT_SPEED, RIGHT_SHOOTER_EJECT_SPEED)
-    //     .raceWith(new WaitCommand(1.0))
-    //     .andThen(
-    //       new IndexerCommand(m_indexerSubsystem, INDEXER_EJECT_SPEED)
-    //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
-    //     )
-    //   ); //TODO review values and code
+    // Eject shooter button
+    m_driverController.leftTrigger().whileTrue(
+        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_EJECT_SPEED, RIGHT_SHOOTER_EJECT_SPEED)
+        .alongWith(new WaitCommand(1.0).andThen(
+          new IndexerCommand(m_indexerSubsystem, INDEXER_EJECT_SPEED)))
+      )
+      .onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0).alongWith(m_indexerSubsystem.newSetSpeedCommand(0.0))); //TODO review values and code
     
-    //TODO Test
-    m_driverController.rightTrigger().whileTrue(
-      new IntakeCommand(m_intakeSubsystem,0.6)
-      .alongWith(new IndexerCommand(m_indexerSubsystem,0.0))
-      .until(() -> m_indexerSubsystem.getSensor())); // Ends intake when note is detected in indexer
+    // Intake button TODO Test
+    m_driverController.leftBumper().whileTrue(
+      new IntakeCommand(m_intakeSubsystem,INTAKE_SPEED)
+      .alongWith(new IndexerCommand(m_indexerSubsystem,INDEXER_INTAKE_SPEED))
+        .until(() -> m_indexerSubsystem.getSensor())// Ends intake when note is detected in indexer
+      ); 
 
+    // Speaker score button
+    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+      new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
+        .alongWith(new WaitCommand(1.0).andThen(
+          new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)))
+      )
+      .onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0).alongWith(m_indexerSubsystem.newSetSpeedCommand(0.0)));
+
+    // Amp score button
+    m_driverController.rightBumper().and(m_driverController.rightTrigger()).whileTrue(
+      new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
+        .alongWith(new WaitCommand(1.0).andThen(
+          new IndexerCommand(m_indexerSubsystem, INDEXER_AMP_SPEED)))
+      )
+      .onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0).alongWith(m_indexerSubsystem.newSetSpeedCommand(0.0)));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
-    }
+  }
   
   @Deprecated
   private void configureCoDriverBindingsForTesting() {
@@ -417,27 +437,23 @@ public class RobotContainer {
           .andThen(
             new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED))
           .andThen(new WaitCommand(0.25))
-          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0)
-            .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
+          .andThen(m_indexerSubsystem.newSetSpeedCommand(0.0)
+            .alongWith(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0)))
         ));
     NamedCommands.registerCommand("intake", new IntakeCommand(m_intakeSubsystem, -.15));
-    NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(m_pivotSubsystem, AMP_PIVOT_POS)
-        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, AMP_ELEVATOR_POS)
-        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS))));
-    NamedCommands.registerCommand("stow", new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
-        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS))
-        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS)));
+    NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_AMP_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_AMP_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS))));
     NamedCommands.registerCommand("ampShoot", 
       new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
-          .raceWith(new WaitCommand(1.0))
+          .raceWith(new WaitCommand(0.25))
           .andThen(
             new IndexerCommand(m_indexerSubsystem, INDEXER_AMP_SPEED))
           .andThen(new WaitCommand(0.25))
-          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0)
-            .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
+          .andThen(m_indexerSubsystem.newSetSpeedCommand(0.0)
+            .alongWith(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0)))
           );
-    NamedCommands.registerCommand("stopIntake", new IntakeCommand(m_intakeSubsystem, 0)
-      .until(() -> true));
+    NamedCommands.registerCommand("stopIntake", m_intakeSubsystem.newSetSpeedCommand(0.0));
   }
 
   /**
