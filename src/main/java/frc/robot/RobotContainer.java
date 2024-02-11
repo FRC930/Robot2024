@@ -121,6 +121,8 @@ public class RobotContainer {
 
     private static final double INDEXER_INTAKE_SPEED = 0.2;
 
+    private static final double ELEVATOR_CLIMB_POS = 10.0;
+
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-front");
     //#endregion
@@ -351,6 +353,10 @@ public class RobotContainer {
     //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
     //     )
     //   ); //TODO review values and code
+
+    m_driverController.back().whileTrue(
+      new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_CLIMB_POS)
+    ).onFalse(m_shootingElevatorSubsystem.newSetPosCommand(ELEVATOR_STOW_POS));
     
     //#region POV controls
     m_driverController.pov(0).whileTrue(
