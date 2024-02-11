@@ -50,7 +50,7 @@ public class ElevatorIORobot implements TalonPosIO {
         // rightElevatorMaster.getConfigurator().apply(cfg);
       //  leftElevatorFollower.setNeutralMode(NeutralModeValue.Brake);
         rightElevatorMaster.setNeutralMode(NeutralModeValue.Brake);
-        rightElevatorMaster.setInverted(true);
+        rightElevatorMaster.setInverted(false);
 
       //  leftElevatorFollower.setControl(new Follower(rightElevatorMaster.getDeviceID(), true));
         Phoenix6Utility.applyConfigAndRetry(rightElevatorMaster, 

@@ -133,11 +133,11 @@ public class RobotContainer {
     //--PID AND FF CONSTANTS--\\
     private final Slot0Configs shootingElevatorS0C = 
       new Slot0Configs()
-        .withKP(0.0)//12
+        .withKP(12.0)//12
         .withKI(0.0)
         .withKD(0)
         .withKA(0)
-        .withKG(0.0)//0.5
+        .withKG(0.5)//0.5
         .withKS(0)
         .withKV(0);
 
@@ -163,21 +163,21 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(0) //TODO: Configure
+        .withKP(0) 
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
-        .withKG(0) 
+        .withKG(0) // 15- unsure, if we go to 18, it jumps and skips gears
         .withKS(0) 
         .withKV(0);
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(30) 
+        .withKP(30.0) 
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
-        .withKS(4); 
+        .withKS(4.0); 
 
     private final ProfiledPIDController turretPID = new ProfiledPIDController(0.0, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
     // private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0));
@@ -189,10 +189,12 @@ public class RobotContainer {
     //--MOTION MAGIC CONSTANTS--\\
     
     private final MotionMagicConfigs shootingElevatorMMC = 
+    // We used motion magic voltage when tuning
       new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4);
+        .withMotionMagicAcceleration(1.0)
+        .withMotionMagicCruiseVelocity(10.0)
+        .withMotionMagicExpo_kV(1.0)
+        .withMotionMagicExpo_kA(4.0);
     
     private final MotionMagicConfigs climbingMMC = 
       new MotionMagicConfigs()
@@ -225,8 +227,8 @@ public class RobotContainer {
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(5, CANBUS, 67.127, pivotS0C, pivotMMC)
-        : new PivotIOSim(5, CANBUS, 67.127, pivotS0C, pivotMMC));
+        ? new PivotIORobot(5, CANBUS, 67.12675, pivotS0C, pivotMMC)
+        : new PivotIOSim(5, CANBUS, 67.12675, pivotS0C, pivotMMC));
 
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(

@@ -39,7 +39,7 @@ public class PivotIORobot implements TalonPosIO{
         
         Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg);
         m_motor.setNeutralMode(NeutralModeValue.Brake); // Enables brake mode
-        
+        m_motor.setInverted(true);
 
         Phoenix6Utility.applyConfigAndRetry(m_motor,
             () -> m_motor.setControl(m_request.withPosition(0).withSlot(0)));
