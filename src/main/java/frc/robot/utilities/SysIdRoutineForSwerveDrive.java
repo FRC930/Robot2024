@@ -2,17 +2,12 @@ package frc.robot.utilities;
 
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.Consumer;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -24,14 +19,14 @@ public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
 
     public enum SysIdTypeOfTest {Translation, Steer, Rotation};
 
-    public SysIdRoutineForSwerveDrive(SysIdTypeOfTest type, SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
+    public SysIdRoutineForSwerveDrive(SysIdTypeOfTest type, int port, SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants[] modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
-        configureSysIdBindings(new CommandXboxController(1),type);
+        configureSysIdBindings(new CommandXboxController(port),type);
     }
     
-    public SysIdRoutineForSwerveDrive(SysIdTypeOfTest type, SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
-        this(type, driveTrainConstants, 0, modules);
+    public SysIdRoutineForSwerveDrive(SysIdTypeOfTest type, int port, SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+        this(type, port, driveTrainConstants, 0, modules);
     }
 
     private final SwerveRequest.SysIdSwerveTranslation translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
