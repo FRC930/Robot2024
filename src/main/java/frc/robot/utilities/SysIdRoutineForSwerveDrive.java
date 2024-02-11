@@ -22,15 +22,16 @@ import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 
 public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
 
-    public SysIdRoutineForSwerveDrive(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
+    public enum SysIdTypeOfTest {Translation, Steer, Rotation};
+
+    public SysIdRoutineForSwerveDrive(SysIdTypeOfTest type, SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants[] modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
-        configureSysIdBindings(new CommandXboxController(1));
+        configureSysIdBindings(new CommandXboxController(1),type);
     }
     
-    public SysIdRoutineForSwerveDrive(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
-        super(driveTrainConstants, modules);
-        configureSysIdBindings(new CommandXboxController(1));
+    public SysIdRoutineForSwerveDrive(SysIdTypeOfTest type, SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+        this(type, driveTrainConstants, 0, modules);
     }
 
     private final SwerveRequest.SysIdSwerveTranslation translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -77,48 +78,50 @@ public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
                 this));
 
     /* Both the sysid commands are specific to one particular sysid routine, change which one you're trying to characterize */
-    public Command sysIdQuasistaticTranslation(SysIdRoutine.Direction direction) {
-        // return m_SysIdRoutineSteer.quasistatic(direction);
-        return m_SysIdRoutineTranslation.quasistatic(direction);
-        // return m_SysIdRoutineRotation.quasistatic(direction);
+    public Command sysIdQuasistatic(SysIdTypeOfTest type, SysIdRoutine.Direction direction) {
+        switch (type) {
+            case Translation:
+                return m_SysIdRoutineTranslation.quasistatic(direction);        
+            case Steer:
+                return m_SysIdRoutineSteer.quasistatic(direction);
+            case Rotation:
+                return m_SysIdRoutineRotation.quasistatic(direction);
+            default:
+                return m_SysIdRoutineTranslation.quasistatic(direction);        
+        }
     }
-    public Command sysIdDynamicTranslation(SysIdRoutine.Direction direction) {
-        // return m_SysIdRoutineSteer.dynamic(direction);
-        return m_SysIdRoutineTranslation.dynamic(direction);
-        // return m_SysIdRoutineRotation.dynamic(direction);
-    }
-    public Command sysIdQuasistaticSteer(SysIdRoutine.Direction direction) {
-        return m_SysIdRoutineSteer.quasistatic(direction);
-    }
-    public Command sysIdDynamicSteer(SysIdRoutine.Direction direction) {
-        return m_SysIdRoutineSteer.dynamic(direction);
-    }
-    public Command sysIdQuasistaticRotation(SysIdRoutine.Direction direction) {
-        return m_SysIdRoutineRotation.quasistatic(direction);
-    }
-    public Command sysIdDynamicRotation(SysIdRoutine.Direction direction) {
-        return m_SysIdRoutineRotation.dynamic(direction);
+    public Command sysIdDynamic(SysIdTypeOfTest type, SysIdRoutine.Direction direction) {
+        switch (type) {
+            case Translation:
+                return m_SysIdRoutineTranslation.dynamic(direction);        
+            case Steer:
+                return m_SysIdRoutineSteer.dynamic(direction);
+            case Rotation:
+                return m_SysIdRoutineRotation.dynamic(direction);
+            default:
+                return m_SysIdRoutineTranslation.dynamic(direction);        
+        }
     }
 
-    public void configureSysIdBindings(CommandXboxController controller) {
+    public void configureSysIdBindings(CommandXboxController controller, SysIdTypeOfTest type) {
         /* Bindings for drivetrain characterization */
         /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
         controller.back().and(
         controller.y()
         )
-        .whileTrue(sysIdDynamicTranslation(Direction.kForward));
+        .whileTrue(sysIdDynamic(type, Direction.kForward));
         controller.back().and(
         controller.x()
         )
-        .whileTrue(sysIdDynamicTranslation(Direction.kReverse));
+        .whileTrue(sysIdDynamic(type, Direction.kReverse));
         controller.start().and(
         controller.y()
         )
-        .whileTrue(sysIdQuasistaticTranslation(Direction.kForward));
+        .whileTrue(sysIdQuasistatic(type, Direction.kForward));
         controller.start().and(
         controller.x()
         )
-        .whileTrue(sysIdQuasistaticTranslation(Direction.kReverse));
+        .whileTrue(sysIdQuasistatic(type, Direction.kReverse));
 
 
         /* Manually stop logging with left bumper after we're done with the tests */
