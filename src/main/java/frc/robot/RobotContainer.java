@@ -133,11 +133,11 @@ public class RobotContainer {
     //--PID AND FF CONSTANTS--\\
     private final Slot0Configs shootingElevatorS0C = 
       new Slot0Configs()
-        .withKP(12)//TODO: Configure ALL
-        .withKI(0)
+        .withKP(0.0)//12
+        .withKI(0.0)
         .withKD(0)
         .withKA(0)
-        .withKG(0.5)
+        .withKG(0.0)//0.5
         .withKS(0)
         .withKV(0);
 
@@ -178,10 +178,11 @@ public class RobotContainer {
         .withKD(0) 
         .withKV(0);
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
-
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.0, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
+    // private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0));
     // ks overcomes friction on the turret
-    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0, 0); 
+    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.0, 0.0, 0.0); 
+    // private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0, 0); 
 
     
     //--MOTION MAGIC CONSTANTS--\\
@@ -213,8 +214,8 @@ public class RobotContainer {
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
-        ? new ElevatorIORobot(14, 15, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(14, 15, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
+        ? new ElevatorIORobot(3, 4, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
+        : new ElevatorIOSim(3, 4, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
 
     public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
@@ -234,8 +235,8 @@ public class RobotContainer {
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(3, 1, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC));
+        Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(3, 1, shooterS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(15, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
