@@ -15,8 +15,8 @@ import frc.robot.IOs.TimeOfFlightIO;
  * This subsystem controls the indexer
  */
 public class IndexerSubsystem extends SubsystemBase {
-    private TalonRollerIO roller;
-    private TimeOfFlightIO tof;
+    private TalonRollerIO m_rollerIO;
+    private TimeOfFlightIO m_sensorIO;
 
     /**
      * <h3>IndexerSubsystem</h3>
@@ -26,8 +26,8 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param ToF TimeOfFlightIORobot (Physical) or TimeOfFlightIOSim (Simulation) for indexer sensor
      */
     public IndexerSubsystem(TalonRollerIO motor, TimeOfFlightIO ToF) {
-        roller = motor;
-        tof = ToF;
+        m_rollerIO = motor;
+        m_sensorIO = ToF;
 
         motor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
         
@@ -38,7 +38,7 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param speed PercentOutput speed to apply
      */
     public void setSpeed(double speed) {
-        roller.setSpeed(speed);
+        m_rollerIO.setSpeed(speed);
     }
 
     /**
@@ -54,7 +54,7 @@ public class IndexerSubsystem extends SubsystemBase {
      * @return current velocity of indexer as reported by the Talon
      */
     public double getSpeed() {
-        return roller.getSpeed();
+        return m_rollerIO.getSpeed();
     }
 
     /**
@@ -62,7 +62,7 @@ public class IndexerSubsystem extends SubsystemBase {
      * @return current applied voltage to Talon
      */
     public double getVoltage() {
-        return roller.getVoltage();
+        return m_rollerIO.getVoltage();
     }
 
     /**
@@ -70,7 +70,7 @@ public class IndexerSubsystem extends SubsystemBase {
      * @return value of indexer sensor
      */
     public boolean getSensor() {
-        return tof.get();
+        return m_sensorIO.get();
     }
 
     public StartEndCommand getTestCommand() {
@@ -82,6 +82,7 @@ public class IndexerSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Sensor", getSensor());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/SensorRange", m_sensorIO.getRange());
     }
 
     public InstantCommand newSetSpeedCommand(double speed) {

@@ -10,4 +10,9 @@ public interface TimeOfFlightIO {
      * @return value of sensor
      */
     public boolean get();
+    /**
+     * <h3>getRange</h3>
+     * @return detected range in milimeters if robot is real, otherwise, returns -1
+     */
+    public double getRange();
 }
