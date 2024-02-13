@@ -109,6 +109,7 @@ public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
         controller.x()
         )
         .whileTrue(sysIdDynamic(type, Direction.kReverse));
+
         controller.start().and(
         controller.y()
         )
