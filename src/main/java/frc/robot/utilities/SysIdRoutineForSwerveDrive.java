@@ -1,13 +1,19 @@
 package frc.robot.utilities;
 
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -33,12 +39,30 @@ public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
     private final SwerveRequest.SysIdSwerveRotation rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
     private final SwerveRequest.SysIdSwerveSteerGains steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
 
+    public Measure<Velocity<Voltage>> m_rampRate =  null;
+    public Measure<Voltage> m_volts = Volts.of(7);
+    public SysIdTypeOfTest m_type = SysIdTypeOfTest.Translation;
+
+    // NOT USED YET
+    public SysIdRoutineForSwerveDrive withType(SysIdTypeOfTest type) {
+            this.m_type = type;
+            return this;
+    }
+    public SysIdRoutineForSwerveDrive withRampRate(Measure<Velocity<Voltage>> rampRate) {
+            this.m_rampRate = rampRate;
+            return this;
+    }
+    public SysIdRoutineForSwerveDrive withVolts(Measure<Voltage> volts) {
+            this.m_volts = volts;
+            return this;
+    }
+
     /* Use one of these sysidroutines for your particular test */
     private SysIdRoutine m_SysIdRoutineTranslation =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                null,
-                Volts.of(7),
+                m_rampRate,
+                m_volts,
                 null,
                 (state)->SignalLogger.writeString("state", state.toString())
             ),
@@ -50,8 +74,8 @@ public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
     private SysIdRoutine m_SysIdRoutineRotation =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                null,
-                Volts.of(7),
+                m_rampRate,
+                m_volts,
                 null,
                 (state)->SignalLogger.writeString("state", state.toString())
             ),
@@ -62,8 +86,8 @@ public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
     private SysIdRoutine m_SysIdRoutineSteer =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                null,
-                Volts.of(7),
+                m_rampRate,
+                m_volts,
                 null,
                 (state)->SignalLogger.writeString("state", state.toString())
             ),
