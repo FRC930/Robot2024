@@ -85,7 +85,7 @@ public class RobotContainer {
     private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
-    private static final double PERCENT_SPEED = 0.6;
+    private static final double PERCENT_SPEED = 1.0;
 
     private static final String CANBUS = "rio";
 
