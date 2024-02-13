@@ -163,11 +163,11 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(0) 
+        .withKP(1) // Very slow
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
-        .withKG(0) // 15- unsure, if we go to 18, it jumps and skips gears
+        .withKG(0.45) // MotionMagic voltage
         .withKS(0) 
         .withKV(0);
     
@@ -204,9 +204,9 @@ public class RobotContainer {
 
     private final MotionMagicConfigs pivotMMC =
       new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(80)
-        .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4);
+        .withMotionMagicCruiseVelocity(0.25)
+        .withMotionMagicExpo_kV(0)
+        .withMotionMagicExpo_kA(0);
 
     private final MotionMagicConfigs shooterMMC =
       new MotionMagicConfigs()
