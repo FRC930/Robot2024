@@ -163,7 +163,7 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(1) // Very slow
+        .withKP(36.0) // Very slow
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
@@ -204,7 +204,8 @@ public class RobotContainer {
 
     private final MotionMagicConfigs pivotMMC =
       new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(0.25)
+        .withMotionMagicAcceleration(18)
+        .withMotionMagicCruiseVelocity(11.0)
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
 
