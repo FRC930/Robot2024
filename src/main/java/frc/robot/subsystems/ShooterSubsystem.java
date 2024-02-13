@@ -114,5 +114,23 @@ public class ShooterSubsystem extends SubsystemBase{
     public InstantCommand newSetSpeedsCommand(double leftSpeed, double rightSpeed) {
         return new InstantCommand(() -> setSpeed(leftSpeed, rightSpeed), this);
     }
+
+    public InstantCommand shootTo(ShooterAction target) {
+        return newSetSpeedsCommand(target.leftWheelSpeed, target.rightWheelSpeed);
+    }
+
+    enum ShooterAction {
+        SPEAKER(0.7,0.8),
+        AMP(-0.3,-0.3),
+        EJECT(0.2,0.2);
+        
+        public final double leftWheelSpeed;
+        public final double rightWheelSpeed;
+
+        private ShooterAction(double leftSpeed, double rightSpeed) {
+            leftWheelSpeed = leftSpeed;
+            rightWheelSpeed = rightSpeed;
+        }
+    }
 }
 
