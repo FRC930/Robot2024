@@ -204,8 +204,8 @@ public class RobotContainer {
 
     private final MotionMagicConfigs pivotMMC =
       new MotionMagicConfigs()
-        .withMotionMagicAcceleration(18)
-        .withMotionMagicCruiseVelocity(11.0)
+        .withMotionMagicAcceleration(3.0) //18
+        .withMotionMagicCruiseVelocity(4.0)//11
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
 
