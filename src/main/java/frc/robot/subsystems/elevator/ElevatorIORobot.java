@@ -45,14 +45,14 @@ public class ElevatorIORobot implements TalonPosIO {
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
-       // leftElevatorFollower.getConfigurator().apply(cfg);
+        // Phoenix6Utility.setTalonFxConfiguration(leftElevatorFollower, cfg);
         Phoenix6Utility.setTalonFxConfiguration(rightElevatorMaster, cfg);
-        // rightElevatorMaster.getConfigurator().apply(cfg);
       //  leftElevatorFollower.setNeutralMode(NeutralModeValue.Brake);
         rightElevatorMaster.setNeutralMode(NeutralModeValue.Brake);
         rightElevatorMaster.setInverted(false);
 
-      //  leftElevatorFollower.setControl(new Follower(rightElevatorMaster.getDeviceID(), true));
+    //    Phoenix6Utility.applyConfigAndRetry(leftElevatorFollower, 
+    //         () -> leftElevatorFollower.setControl(new Follower(rightElevatorMaster.getDeviceID(), true)));
         Phoenix6Utility.applyConfigAndRetry(rightElevatorMaster, 
             () -> rightElevatorMaster.setControl(m_request.withPosition(0).withSlot(0)));
     }

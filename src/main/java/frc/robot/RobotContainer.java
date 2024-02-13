@@ -227,8 +227,8 @@ public class RobotContainer {
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(5, CANBUS, 67.12675, pivotS0C, pivotMMC)
-        : new PivotIOSim(5, CANBUS, 67.12675, pivotS0C, pivotMMC));
+        ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
+        : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC));
 
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(

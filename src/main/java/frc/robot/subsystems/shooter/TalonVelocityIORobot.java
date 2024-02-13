@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.IOs.TalonVelocityIO;
+import frc.robot.utilities.Phoenix6Utility;
 
 public class TalonVelocityIORobot implements TalonVelocityIO{
     private double gearRatio;
@@ -29,7 +30,6 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         // m_request = new MotionMagicVelocityTorqueCurrentFOC(0,0,true,0,0,true,false,false); //The request that will be sent to the motor- Commented it out because of not working in testing
         m_request = new VelocityTorqueCurrentFOC(0.0,0.0,0.0,0,true,false,true); //The request that will be sent to the motor
         
-
         TalonFXConfiguration cfg = new TalonFXConfiguration(); //Creates a new blank TalonFX congfiguration that will be applied to the motors in a bit
         cfg.withSlot0(config); // The PID and FF configs
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this
@@ -40,11 +40,11 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         // cfg.TorqueCurrent.PeakForwardTorqueCurrent = 40;
         // cfg.TorqueCurrent.PeakReverseTorqueCurrent = -40;
 
-        m_motor.getConfigurator().apply(cfg); //Applies the configuration to the motor
+        Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg); //Applies the configuration to the motor
 
         m_motor.setNeutralMode(NeutralModeValue.Coast); //Makes the motor continue rotating even when it is told to brake (its velocity is set to 0)
 
-        m_motor.setControl(m_request.withVelocity(0).withSlot(0));
+        Phoenix6Utility.applyConfigAndRetry(m_motor, () -> m_motor.setControl(m_request.withVelocity(0).withSlot(0)));
 
         // if(initReal) {
         //     m_motor.setControl(m_request.withVelocity(0).withSlot(0));
@@ -64,7 +64,9 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     */
     @Override
     public void setSpeed(double speed,double acceleration) {
-        m_motor.setControl(m_request.withVelocity(speed).withAcceleration(acceleration).withSlot(0));
+        Phoenix6Utility.applyConfigAndNoRetry(
+            m_motor,
+            () -> m_motor.setControl(m_request.withVelocity(speed).withAcceleration(acceleration).withSlot(0)));
     }
     /**
     * <h3>setSpeed</h3>
@@ -72,7 +74,9 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     */
     @Override
     public void setSpeed(double speed) {
-        m_motor.setControl(m_request.withVelocity(speed).withSlot(0));
+        Phoenix6Utility.applyConfigAndNoRetry(
+            m_motor,
+            () -> m_motor.setControl(m_request.withVelocity(speed).withSlot(0)));
     }
 
     /**
