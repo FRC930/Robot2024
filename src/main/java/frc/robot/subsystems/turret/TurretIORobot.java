@@ -18,14 +18,14 @@ public class TurretIORobot implements TalonTurretIO{
     private DutyCycleEncoder m_encoder;
     private VoltageOut m_outputRequest;
 
-    public TurretIORobot(int motorID, int encoderID, String canbus, double offset) {
+    public TurretIORobot(int motorID, int encoderID, String canbus, double gearRatio, double degreesOffset) {
         m_motor = new TalonFX(motorID, canbus);
 
         m_outputRequest = new VoltageOut(0.0);
 
         m_encoder = new DutyCycleEncoder(encoderID);
 
-        m_encoder.setPositionOffset(offset);
+        m_encoder.setPositionOffset(degreesOffset / 360); // We set offset in degrees, while encoder takes rotations
 
         Phoenix6Utility.resetTalonFxFactoryDefaults(m_motor);
 

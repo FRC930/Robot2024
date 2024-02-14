@@ -15,8 +15,9 @@ import frc.robot.IOs.TalonTurretIO;
  */
 public class TurretSubsystem extends SubsystemBase{
 
-    private static final double TURRET_MIN_POS = 0.0;
-    private static final double TURRET_MAX_POSITION = 360.0;
+    private static final double VIEW_CHANGE = 180;
+    private static final double TURRET_MIN_POS = -170.0;
+    private static final double TURRET_MAX_POS = 170.0;
 
     private final TalonTurretIO m_io;
 
@@ -41,19 +42,11 @@ public class TurretSubsystem extends SubsystemBase{
 
     /**
      * <h3>setPosition</h3>
-     * Sets target position
+     * Sets target position, with applied deadbands to avoid wrapping, and with offset
+     * @param position Desired position on [-180, 180], with 0 being straight forward/stow
      */
     public void setPosition(double position) {
-        m_target = position;
-    }
-
-    public void setSpeed(double speed) { // TODO remove
-        if (getPosition() <= TURRET_MIN_POS && speed < 0) {
-        speed = 0;
-        } else if (getPosition() >= TURRET_MAX_POSITION && speed > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
-        speed = 0;
-        }
-        m_io.setSpeed(speed);
+        m_target = MathUtil.clamp(position, TURRET_MIN_POS, TURRET_MAX_POS) + VIEW_CHANGE;
     }
 
     /**
@@ -62,7 +55,7 @@ public class TurretSubsystem extends SubsystemBase{
      * @return The angle in degrees from 0
      */
     public double getPosition() {
-        return m_io.getDegrees();
+        return m_io.getDegrees() - VIEW_CHANGE;
     }
 
     /**
@@ -81,14 +74,14 @@ public class TurretSubsystem extends SubsystemBase{
     public void setVoltage(double volts) {
         if (getPosition() <= TURRET_MIN_POS && volts < 0) {
         volts = 0;
-        } else if (getPosition() >= TURRET_MAX_POSITION && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
+        } else if (getPosition() >= TURRET_MAX_POS && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
         volts = 0;
         }
         m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
     }
 
     public double getTarget() {
-        return m_target;
+        return m_target - VIEW_CHANGE;
     }
 
     @Override
