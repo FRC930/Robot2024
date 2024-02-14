@@ -25,7 +25,7 @@ public class TurretIORobot implements TalonTurretIO{
 
         m_encoder = new DutyCycleEncoder(encoderID);
 
-        m_encoder.setPositionOffset(offset);
+        m_encoder.setPositionOffset(offset/360.0);
 
         Phoenix6Utility.resetTalonFxFactoryDefaults(m_motor);
 

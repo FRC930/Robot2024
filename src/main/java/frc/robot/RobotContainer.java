@@ -94,7 +94,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 0;
-    private static final double TURRET_OFFSET = 0.0;
+    private static final double TURRET_OFFSET = 100.0;
 
    //#region positions
     private static final double STOW_TURRET_POS = 0.0;
@@ -103,8 +103,8 @@ public class RobotContainer {
     private static final double AMP_ELEVATOR_POS = 10.0;
     
     private static final double STOW_PIVOT_POS = 0.0;
-    private static final double AMP_PIVOT_POS = 90.0;
-    private static final double INTAKE_PIVOT_POS = 90.0;
+    private static final double AMP_PIVOT_POS = 45.0;
+    private static final double INTAKE_PIVOT_POS = 45.0;
 
     private static final double LEFT_SHOOTER_SPEAKER_SPEED = 0.7;
     private static final double RIGHT_SHOOTER_SPEAKER_SPEED = 0.8;
@@ -181,10 +181,10 @@ public class RobotContainer {
         .withKG(0)
         .withKS(4.0); 
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.0, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
     // private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0));
     // ks overcomes friction on the turret
-    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.0, 0.0, 0.0); 
+    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0.0, 0.0); 
     // private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0, 0); 
 
     
