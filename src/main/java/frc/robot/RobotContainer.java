@@ -64,6 +64,7 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -295,10 +296,10 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
+            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(squareInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED)) // Drive forward with
                                                                                               // negative Y (forward)
-                .withVelocityY(negateBasedOnAlliance(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
-                .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                .withVelocityY(negateBasedOnAlliance(squareInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
+                .withRotationalRate(squareInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 .withDeadband(MaxSpeed * JOYSTICK_DEADBAND)
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
@@ -392,7 +393,7 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
     }
-  
+
   @Deprecated
   private void configureCoDriverBindingsForTesting() {
     //#region Test Commands
@@ -521,7 +522,17 @@ public class RobotContainer {
          return joystickValue*-1;
       }
     }
+
     return joystickValue;
+  }
+
+  /**
+   * 
+   * @param d Joystick value
+   * @return squares values to reduce the usage of small inputs
+   */
+  private double squareInput(double d) {
+    return Math.copySign(d * d, d);
   }
 
   public void simulationPeriodic() {
