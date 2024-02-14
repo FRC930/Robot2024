@@ -107,7 +107,7 @@ public class RobotContainer {
     private static final double AMP_PIVOT_POS = 90.0;
     private static final double INTAKE_PIVOT_POS = 90.0;
 
-    private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-front");
+    private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
     //#endregion
 
     //Use max speed from tuner constants from webpage
@@ -412,8 +412,8 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (UseLimeLightAprilTag) {  
-      updateVisionOdometry("front");
-      updateVisionOdometry("back");
+      updateVisionOdometry("limelight-front");
+      updateVisionOdometry("limelight-back");
     }
   }
 
@@ -424,10 +424,10 @@ public class RobotContainer {
    */
   public void updateVisionOdometry(String limeLightName) {
       boolean useResult = true;
-      Results lastResult = LimelightHelpers.getLatestResults("limelight-" + limeLightName).targetingResults;
+      Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
       if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
           if (lastResult.targets_Fiducials.length == 1) {
-              if (LimelightHelpers.getTA("limelight-" + limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
+              if (LimelightHelpers.getTA(limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
                 useResult = true;
               } else {
                 useResult = false;
