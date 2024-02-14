@@ -16,8 +16,8 @@ import frc.robot.IOs.TalonTurretIO;
 public class TurretSubsystem extends SubsystemBase{
 
     private static final double VIEW_CHANGE = 180;
-    private static final double TURRET_MIN_POS = -170.0;
-    private static final double TURRET_MAX_POS = 170.0;
+    private static final double TURRET_MIN_POS = -30.0;
+    private static final double TURRET_MAX_POS = 30.0;
 
     private final TalonTurretIO m_io;
 
