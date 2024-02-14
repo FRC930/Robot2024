@@ -12,8 +12,6 @@ import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.TestIndexerCommand;
-import frc.robot.commands.TestShooterCommand;
 import frc.robot.commands.TurretAutoAimCommand;
 import frc.robot.commands.TurretLimeLightAimCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
@@ -52,6 +50,7 @@ import frc.robot.utilities.LimelightHelpers.Results;
 import java.util.Optional;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -70,7 +69,12 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -86,7 +90,7 @@ public class RobotContainer {
     private final boolean UseLimeLightAprilTag = false; 
 
     private static final double POV_PERCENT_SPEED = 1.0;
-    private static final double JOYSTICK_DEADBAND = 0.1;
+    private static final double JOYSTICK_DEADBAND = 0.75;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
     private static final double PERCENT_SPEED = 0.6;
 
@@ -95,7 +99,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 0;
-    private static final double TURRET_OFFSET = 0.0;
+    private static final double TURRET_OFFSET = 100.0;
 
    //#region positions
     private static final double STOW_TURRET_POS = 0.0;
@@ -104,29 +108,41 @@ public class RobotContainer {
     private static final double AMP_ELEVATOR_POS = 10.0;
     
     private static final double STOW_PIVOT_POS = 0.0;
-    private static final double AMP_PIVOT_POS = 90.0;
-    private static final double INTAKE_PIVOT_POS = 90.0;
+    private static final double AMP_PIVOT_POS = 45.0;
+    private static final double INTAKE_PIVOT_POS = 45.0;
+
+    private static final double LEFT_SHOOTER_SPEAKER_SPEED = 0.7;
+    private static final double RIGHT_SHOOTER_SPEAKER_SPEED = 0.8;
+    private static final double INDEXER_SPEAKER_SPEED = 0.5;
+
+    private static final double LEFT_SHOOTER_AMP_SPEED = -0.3;
+    private static final double RIGHT_SHOOTER_AMP_SPEED = -0.3;
+    private static final double INDEXER_AMP_SPEED = 0.2;
+
+    private static final double LEFT_SHOOTER_EJECT_SPEED = 0.2;
+    private static final double RIGHT_SHOOTER_EJECT_SPEED = 0.2;
+    private static final double INDEXER_EJECT_SPEED = 0.2;
+
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
     //#endregion
 
     //Use max speed from tuner constants from webpage
     final double MaxSpeed = TunerConstants.kMaxSpeed;
-    final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
+    final double MaxAngularRate = Math.PI; // TODO increace -- Half a rotation per second max angular velocity  
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
     private StartInTeleopUtility m_StartInTeleopUtility = new StartInTeleopUtility(drivetrain::seedFieldRelative);
 
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-        //TODO LOOK AT Generated version -- .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
     //--PID AND FF CONSTANTS--\\
     private final Slot0Configs shootingElevatorS0C = 
       new Slot0Configs()
-        .withKP(12)//TODO: Configure ALL
-        .withKI(0)
+        .withKP(12.0)
+        .withKI(0.0)
         .withKD(0)
         .withKA(0)
         .withKG(0.5)
@@ -135,7 +151,7 @@ public class RobotContainer {
 
     private final Slot0Configs shootingS0CSimulation = 
       new Slot0Configs()
-        .withKP(1)//TODO: Configure ALL
+        .withKP(1)
         .withKI(0)
         .withKD(0)
         .withKA(0)
@@ -155,34 +171,36 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(0) //TODO: Configure
+        .withKP(36.0)
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
-        .withKG(0) 
+        .withKG(0.45) // MotionMagic voltage
         .withKS(0) 
         .withKV(0);
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(0) 
+        .withKP(30.0) 
         .withKI(0) 
         .withKD(0) 
-        .withKV(0);
+        .withKG(0)
+        .withKS(4.0); 
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0)); //TODO: Set good vals
-
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
     // ks overcomes friction on the turret
-    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0, 0); 
+    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0.0, 0.0); 
 
     
     //--MOTION MAGIC CONSTANTS--\\
     
     private final MotionMagicConfigs shootingElevatorMMC = 
+    // We used motion magic voltage when tuning
       new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4);
+        .withMotionMagicAcceleration(1.0)
+        .withMotionMagicCruiseVelocity(10.0)
+        .withMotionMagicExpo_kV(1.0)
+        .withMotionMagicExpo_kA(4.0);
     
     private final MotionMagicConfigs climbingMMC = 
       new MotionMagicConfigs()
@@ -191,10 +209,11 @@ public class RobotContainer {
         .withMotionMagicExpo_kA(4);
 
     private final MotionMagicConfigs pivotMMC =
-      new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(80)
-        .withMotionMagicExpo_kV(1)
-        .withMotionMagicExpo_kA(4);
+      new MotionMagicConfigs() // Currently set slow
+        .withMotionMagicAcceleration(3.0) //18.0 fast values (but slam at zero set point)
+        .withMotionMagicCruiseVelocity(4.0)//11.0 fast values (but slam at zero set point)
+        .withMotionMagicExpo_kV(0)
+        .withMotionMagicExpo_kA(0);
 
     private final MotionMagicConfigs shooterMMC =
       new MotionMagicConfigs()
@@ -211,8 +230,8 @@ public class RobotContainer {
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
-        ? new ElevatorIORobot(14, 15, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(14, 15, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
+        ? new ElevatorIORobot(3, 4, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
+        : new ElevatorIOSim(3, 4, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
 
     public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
       Robot.isReal()
@@ -221,8 +240,8 @@ public class RobotContainer {
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(5, CANBUS, 1, pivotS0C, pivotMMC)
-        : new PivotIOSim(5, CANBUS, 1, pivotS0C, pivotMMC));
+        ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
+        : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC));
 
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
@@ -232,12 +251,12 @@ public class RobotContainer {
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new TalonVelocityIORobot(3, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(3, 1, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(4, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(4, 1, shooterS0C, shooterMMC));
+        Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 1, shooterS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(15, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 1, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
-        Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
+        Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
@@ -245,7 +264,7 @@ public class RobotContainer {
         Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName) : new RollerMotorIOSim(19, TunerConstants.kCANbusName),
         Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName) : new RollerMotorIOSim(7, TunerConstants.kCANbusName),
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
-        Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
+        Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
     MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
     
@@ -272,6 +291,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureCoDriverBindingsForTesting();
     configureDriverBindings();
+    configureNamedCommands();
     portForwardCameras();
     // set our own visionMeasurementDeviations
     drivetrain.setVisionMeasurementStdDevs(visionSTDsDevs);
@@ -289,10 +309,10 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
+            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED)) // Drive forward with
                                                                                               // negative Y (forward)
-                .withVelocityY(negateBasedOnAlliance(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
-                .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                .withVelocityY(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
+                .withRotationalRate(cubeInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 .withDeadband(JOYSTICK_DEADBAND)
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
@@ -304,8 +324,14 @@ public class RobotContainer {
     
     //m_shootingElevatorSubsystem.setDefaultCommand(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, 0.0));
 
-    //TODO make not run if there isn't a note in the indexer
-   m_turretSubsystem.setDefaultCommand(new TurretAutoAimCommand(m_turretSubsystem));
+    //TODO make not run if there isn't a note in the indexer. uncomment when we get to testing this
+    // m_turretSubsystem.setDefaultCommand(
+    //   new ConditionalCommand(
+    //     new TurretAutoAimCommand(m_turretSubsystem),
+    //     new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS), 
+    //     m_indexerSubsystem::getSensor));
+    
+  
           
     //#region Other Buttons
 
@@ -325,6 +351,15 @@ public class RobotContainer {
       .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
         .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS)));
 
+    m_driverController.x()
+      .whileTrue(
+        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
+        .raceWith(new WaitCommand(1.0))
+        .andThen(
+          new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)
+          .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
+        )
+      ); //TODO review values and code
     //#endregion
     
     //#region POV controls
@@ -347,6 +382,16 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
+
+    // m_driverController.leftTrigger()
+    //   .whileTrue(
+    //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_EJECT_SPEED, RIGHT_SHOOTER_EJECT_SPEED)
+    //     .raceWith(new WaitCommand(1.0))
+    //     .andThen(
+    //       new IndexerCommand(m_indexerSubsystem, INDEXER_EJECT_SPEED)
+    //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
+    //     )
+    //   ); //TODO review values and code
     
     //TODO Test
     m_driverController.rightTrigger().whileTrue(
@@ -358,7 +403,7 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
     }
-  
+
   @Deprecated
   private void configureCoDriverBindingsForTesting() {
     //#region Test Commands
@@ -366,16 +411,49 @@ public class RobotContainer {
     m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
-    m_coDriverController.y().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
-
+    // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
     m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
-
+    m_coDriverController.y().whileTrue(new InstantCommand(()->m_pivotSubsystem.setPosition(0.0)));
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
 
     m_coDriverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
 
+  }
+
+  private void configureNamedCommands(){
+    NamedCommands.registerCommand("aimAndShoot", 
+        new TurretLimeLightAimCommand(m_turretSubsystem)
+        .andThen(
+          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
+          .raceWith(new WaitCommand(1.0))
+          .andThen(
+            new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED))
+          .andThen(new WaitCommand(0.25))
+          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0)
+            .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
+        ));
+    NamedCommands.registerCommand("intake", new IntakeCommand(m_intakeSubsystem, -.15));
+    NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(m_pivotSubsystem, AMP_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, AMP_ELEVATOR_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS))));
+    NamedCommands.registerCommand("stow", new SetPivotPositionCommand(m_pivotSubsystem, STOW_PIVOT_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, STOW_ELEVATOR_POS))
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, STOW_TURRET_POS)));
+    NamedCommands.registerCommand("ampShoot", 
+      new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
+          .raceWith(new WaitCommand(1.0))
+          .andThen(
+            new IndexerCommand(m_indexerSubsystem, INDEXER_AMP_SPEED))
+          .andThen(new WaitCommand(0.25))
+          .andThen(new IndexerCommand(m_indexerSubsystem, 0.0)
+            .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)))
+          );
+    NamedCommands.registerCommand("stopIntake", new IntakeCommand(m_intakeSubsystem, 0)
+      .until(() -> true));
   }
 
   /**
@@ -459,7 +537,18 @@ public class RobotContainer {
          return joystickValue*-1;
       }
     }
+
     return joystickValue;
+  }
+
+  /**
+   * 
+   * @param d Joystick value
+   * @return squares values to reduce the usage of small inputs
+   */
+  private double cubeInput(double d) {
+    // return Math.copySign(d * d, d);
+    return (d * d *d);
   }
 
   public void simulationPeriodic() {

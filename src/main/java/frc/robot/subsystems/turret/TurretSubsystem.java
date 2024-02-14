@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonTurretIO;
 /**
@@ -112,4 +113,7 @@ public class TurretSubsystem extends SubsystemBase{
         Logger.recordOutput(this.getClass().getSimpleName() + "/Rotations",m_io.getMechRotations());
     }
 
+    public InstantCommand newSetPosCommand(double pos) {
+        return new InstantCommand(() -> setPosition(pos), this);
+    }
 }

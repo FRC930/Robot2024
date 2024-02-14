@@ -22,9 +22,9 @@ public final class Phoenix6Utility {
      * @return
      */
     public static StatusCode resetTalonFxFactoryDefaults(TalonFX talon) {
-        return setTalonFxConfiguration(talon, new TalonFXConfiguration());
+        return setTalonFxConfiguration(talon, new TalonFXConfiguration(), false);
     }
-    
+
     /**
      * Applies cfg to talon with retry
      * @param talon talon to apply config to
@@ -32,6 +32,20 @@ public final class Phoenix6Utility {
      * @return
      */
     public static StatusCode setTalonFxConfiguration(TalonFX talon, TalonFXConfiguration cfg) {
+        return setTalonFxConfiguration(talon, cfg, true);
+    }
+    
+    /**
+     * Applies cfg to talon with retry
+     * @param talon talon to apply config to
+     * @param cfg Talon configuration to apply
+     * @param resetFacDefs whether to reset factory defaults or not
+     * @return
+     */
+    public static StatusCode setTalonFxConfiguration(TalonFX talon, TalonFXConfiguration cfg, boolean resetFacDefs) {
+        if (resetFacDefs) {
+            resetTalonFxFactoryDefaults(talon);
+        }
         return applyConfigAndRetry(talon, () -> talon.getConfigurator().apply(cfg));
     }
 
@@ -60,7 +74,7 @@ public final class Phoenix6Utility {
         do{
             finalCode = toApply.get();
         } while (!finalCode.isOK() && --triesLeftOver > 0);
-        if(finalCode.isOK()) {
+        if(!finalCode.isOK()) {
             DriverStation.reportWarning(
                 String.format("Unable to configure device %s: %s", device.getDeviceID(), finalCode.toString()), 
                 true);

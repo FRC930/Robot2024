@@ -25,4 +25,10 @@ public class SetTurretPositionCommandTest extends SetTurretPositionCommand {
     public void initialize() {
         m_turret.setPosition(SmartDashboard.getNumber("TurretSetPosition", 0.0));
     }
+    
+    @Override
+    public void end(boolean interrupted) {
+        /// Dont want turret to return back to 0 after setting position even after releasing button during testing phase
+    }
+
 }
