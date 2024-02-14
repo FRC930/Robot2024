@@ -21,4 +21,8 @@ public class TimeOfFlightIORobot implements TimeOfFlightIO {
     public boolean get() {
         return m_sensor.getRange() < m_dist;
     }
+    
+    public double getRange() {
+        return m_sensor.getRange();
+    }
 }

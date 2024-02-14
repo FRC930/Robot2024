@@ -1,5 +1,7 @@
 package frc.robot.IOs;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 public interface TalonVelocityIO {
     /**
      * <h3>runSim</h3>
@@ -34,7 +36,11 @@ public interface TalonVelocityIO {
     * @return The current voltage of the right motor
     */
     double getTargetVelocity();
-
+     /**
+     * <h1>getTalon</h1> 
+     * @return the talonFX controller of this roller.
+     */
+    public TalonFX getTalon();
     /**
     * <h3>stop</h3>
     * This sets the shooter's speed to 0

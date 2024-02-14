@@ -27,7 +27,7 @@ public class PivotIOSim extends PivotIORobot {
     public PivotIOSim(int id, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
         super(id, canbus, gearRatio, config, mmConfigs);
         // m_ArmSim = new SingleJointedArmSim(DCMotor.getKrakenX60Foc(0), gearRatio, gearRatio, gearRatio, gearRatio, gearRatio, false, gearRatio);
-        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
+        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), gearRatio,0.001);
     }
     
     // @Override

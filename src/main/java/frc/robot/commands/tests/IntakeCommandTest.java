@@ -23,7 +23,7 @@ public class IntakeCommandTest extends IntakeCommand {
 
     @Override
     public void initialize() {
-        m_intake.setIntakeSpeed(MathUtil.clamp(SmartDashboard.getNumber("IntakeMotor", 0.0)/100,-1,1));
+        m_intake.setSpeed(MathUtil.clamp(SmartDashboard.getNumber("IntakeMotor", 0.0)/100,-1,1));
     }
 
     @Override

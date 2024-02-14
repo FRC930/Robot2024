@@ -40,22 +40,4 @@ public class TalonVelocityIOSim extends TalonVelocityIORobot {
         double supplyVoltage = 12 - m_motor.getSimState().getSupplyCurrent() * kMotorResistance;
         m_motor.getSimState().setSupplyVoltage(supplyVoltage);
     }
-
-    // /**
-    // * <h3>setSpeed</h3>
-    // * @param speed the speed the wheel will be set to
-    // */
-    // @Override
-    // public void setSpeed(double speed,double acceleration) {
-    //     m_motor.setControl(m_simRequest.withVelocity(speed).withSlot(0));
-    // }
-
-    // /**
-    // * <h3>getTargetVelocity</h3>
-    // * @return The current voltage of the right motor
-    // */
-    // @Override
-    // public double getTargetVelocity() {
-    //     return ((MotionMagicVelocityVoltage) m_motor.getAppliedControl()).Velocity;
-    // }
 }

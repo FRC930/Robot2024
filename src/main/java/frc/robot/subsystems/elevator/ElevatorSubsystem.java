@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonPosIO;
@@ -67,5 +68,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + m_elevatorName + "/Height", getHeight());
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + m_elevatorName + "/SetPoint", m_io.getTarget());
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + m_elevatorName + "/Voltage", m_io.getVoltage());
+    }
+
+    public InstantCommand newSetPosCommand(double pos) {
+        return new InstantCommand(() -> setTargetHeight(pos), this);
     }
 }

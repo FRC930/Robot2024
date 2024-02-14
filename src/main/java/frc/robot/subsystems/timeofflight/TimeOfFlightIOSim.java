@@ -18,4 +18,9 @@ public class TimeOfFlightIOSim implements TimeOfFlightIO {
     public boolean get() {
         return m_sensor.get();
     }
+
+    @Override
+    public double getRange() {
+        return -1;
+    }
 }

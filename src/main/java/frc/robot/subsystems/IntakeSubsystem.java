@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
@@ -42,14 +44,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
         Phoenix6Utility.applyConfigAndRetry(m_followerMotor.getTalon(), 
             () -> m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), true)));
-        Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", 0);
+        Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", 0.0);
     }
 
     /**
     * <h3>setIntakeSpeed</h3>
     * @param speed the speed the motor will be set to
     */
-    public void setIntakeSpeed(double speed) {
+    public void setSpeed(double speed) {
         m_leaderMotor.setSpeed(speed);
     }
 
@@ -58,7 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
     * This sets the intake's speed to 0
     */
     public void stop() {
-        setIntakeSpeed(0);
+        setSpeed(0);
     }
 
     /**
@@ -92,6 +94,11 @@ public class IntakeSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/IntookenYet", getSensor());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", m_leaderMotor.getTalon().get());
+    }
+
+    public InstantCommand newSetSpeedCommand(double speed) {
+        return new InstantCommand(() -> setSpeed(speed), this);
     }
 }
 

@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.882905765811533,
+        "y": 6.9956624528633675
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.9026396514331494,
+        "y": 6.581250854809402
+      },
+      "isLocked": false,
+      "linkedName": "TopWing"
+    },
+    {
+      "anchor": {
+        "x": 2.882905765811533,
+        "y": 5.555088802485297
+      },
+      "prevControl": {
+        "x": 2.8927727086223407,
+        "y": 5.969500400539262
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CenterWing"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Robot2024",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}
