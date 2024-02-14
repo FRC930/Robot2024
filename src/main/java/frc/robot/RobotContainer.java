@@ -67,6 +67,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -245,7 +246,7 @@ public class RobotContainer {
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
-        Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
+        Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
@@ -253,7 +254,7 @@ public class RobotContainer {
         Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName) : new RollerMotorIOSim(19, TunerConstants.kCANbusName),
         Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName) : new RollerMotorIOSim(7, TunerConstants.kCANbusName),
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
-        Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
+        Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
     MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
     
@@ -296,10 +297,10 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(squareInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED)) // Drive forward with
+            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED)) // Drive forward with
                                                                                               // negative Y (forward)
-                .withVelocityY(negateBasedOnAlliance(squareInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
-                .withRotationalRate(squareInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                .withVelocityY(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
+                .withRotationalRate(cubeInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 .withDeadband(MaxSpeed * JOYSTICK_DEADBAND)
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
             // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
@@ -398,15 +399,15 @@ public class RobotContainer {
   private void configureCoDriverBindingsForTesting() {
     //#region Test Commands
 
-    m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
+    // m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
     m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
     m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
-
+    m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
     m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
-
+    m_coDriverController.y().whileTrue(new InstantCommand(()->m_pivotSubsystem.setPosition(0.0)));
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
 
@@ -531,8 +532,9 @@ public class RobotContainer {
    * @param d Joystick value
    * @return squares values to reduce the usage of small inputs
    */
-  private double squareInput(double d) {
-    return Math.copySign(d * d, d);
+  private double cubeInput(double d) {
+    // return Math.copySign(d * d, d);
+    return (d * d *d);
   }
 
   public void simulationPeriodic() {

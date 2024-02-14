@@ -25,4 +25,7 @@ public class SetPivotPositionCommandTest extends SetPivotPositionCommand {
     public void initialize() {
         m_pivot.setPosition(SmartDashboard.getNumber("PivotSetPosition", 0.0));
     }
+    @Override
+    public void end(boolean interrupted) {
+    }
 }
