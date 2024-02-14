@@ -41,13 +41,7 @@ public class SysIdRoutineForSwerveDrive extends SwerveDrivetrainSubsystem {
 
     public Measure<Velocity<Voltage>> m_rampRate =  null;
     public Measure<Voltage> m_volts = Volts.of(7);
-    public SysIdTypeOfTest m_type = SysIdTypeOfTest.Translation;
 
-    // NOT USED YET
-    public SysIdRoutineForSwerveDrive withType(SysIdTypeOfTest type) {
-            this.m_type = type;
-            return this;
-    }
     public SysIdRoutineForSwerveDrive withRampRate(Measure<Velocity<Voltage>> rampRate) {
             this.m_rampRate = rampRate;
             return this;
