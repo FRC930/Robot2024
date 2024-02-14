@@ -204,6 +204,7 @@ public class RobotContainer {
     //--VisionSTDsDevConstants--\\
     // TODO configure for april tag confidence level 
     //https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/mechanisms/swerve/SwerveDrivetrain.html#setVisionMeasurementStdDev
+    // Implement visionSTDsDevs into our code with default values
     private Matrix<N3, N1> visionSTDsDevs = VecBuilder.fill(0.9, 0.9, 0.9);
   
     //--SUBSYSTEMS--\\

@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 
+/**
+ * Gives the robot an odometry position when it starts in teleop if it doesn' already have a position
+ */
 public class StartInTeleopUtility {
     private AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private Consumer<Pose2d> m_ResetPose;
@@ -26,18 +29,31 @@ public class StartInTeleopUtility {
 
     private boolean m_isFirstTime = false;
 
+    /**
+     * Resets the robots position.
+     * @param resetPose
+     */
     public StartInTeleopUtility(Consumer<Pose2d> resetPose) {
         m_ResetPose = resetPose;
     }
 
+    /**
+     * Lets us know that we have run in autonomous
+     */
     public void updateAutonomous() {
         m_HasRunAutonomous = true;
     }
 
+    /**
+     * lets us know that we have seen april tags
+     */
     public void updateTags() {
         m_HasSeenTags = true;
     }
     
+    /**
+     *Sets the robot position based on the alliance if there is one.
+     */
     public void setRobotPositionBasedOnAlliance() {
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
         if (optionalAlliance.isPresent()){
@@ -49,11 +65,14 @@ public class StartInTeleopUtility {
                 temp = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
                 pose = new Pose2d(temp.getX() + 2.0, temp.getY(), temp.getRotation());
             }
+            
             m_ResetPose.accept(pose);
-
         }
     }
 
+    /**
+     * Create a trigger and waits to update the alliance position when it is available
+     */
     public void createTriggerForSimulation() {
         if(m_checkIfAllianceChangedTrigger == null) {
             m_checkIfAllianceChangedTrigger = new Trigger(()-> checkIsAlliancePresent())
@@ -61,6 +80,12 @@ public class StartInTeleopUtility {
         }
     }
 
+    /**
+     * 
+     * Returns the alliance
+     * 
+     * @return
+     */
     private boolean checkIsAlliancePresent() {
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
         if (m_isFirstTime) {
@@ -70,6 +95,9 @@ public class StartInTeleopUtility {
         return optionalAlliance.isPresent();
     }
 
+    /**
+     * If auto hasn't been run and the robot hasn't seen april tags, it will then update the odoemtry when it enters teleop
+     */
     public void updateStartingPosition() {
         if (m_HasRunAutonomous == false && m_HasSeenTags == false) {
             if(Robot.isReal()) {

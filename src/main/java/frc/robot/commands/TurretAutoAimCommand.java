@@ -29,7 +29,8 @@ public class TurretAutoAimCommand extends Command{
     private double ty; //target y
     private double rx; //robot x
     private double ry; //robot y
-    /**
+    
+    /** Aims the turret to the speaker apriltags based on the current alliance.
      * Constructor
      * @param turretSubsystem the subsystem that controls the turret.
      */
