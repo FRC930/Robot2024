@@ -124,7 +124,7 @@ public class RobotContainer {
 
     //Use max speed from tuner constants from webpage
     final double MaxSpeed = TunerConstants.kMaxSpeed;
-    final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
+    final double MaxAngularRate = Math.PI; // TODO increace -- Half a rotation per second max angular velocity  
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
@@ -134,17 +134,17 @@ public class RobotContainer {
     //--PID AND FF CONSTANTS--\\
     private final Slot0Configs shootingElevatorS0C = 
       new Slot0Configs()
-        .withKP(12.0)//12
+        .withKP(12.0)
         .withKI(0.0)
         .withKD(0)
         .withKA(0)
-        .withKG(0.5)//0.5
+        .withKG(0.5)
         .withKS(0)
         .withKV(0);
 
     private final Slot0Configs shootingS0CSimulation = 
       new Slot0Configs()
-        .withKP(1)//TODO: Configure ALL
+        .withKP(1)
         .withKI(0)
         .withKD(0)
         .withKA(0)
@@ -164,7 +164,7 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(36.0) // Very slow
+        .withKP(36.0)
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
@@ -181,10 +181,8 @@ public class RobotContainer {
         .withKS(4.0); 
 
     private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
-    // private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0, 0, new Constraints(0, 0));
     // ks overcomes friction on the turret
     private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0.0, 0.0); 
-    // private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0, 0); 
 
     
     //--MOTION MAGIC CONSTANTS--\\
@@ -204,16 +202,16 @@ public class RobotContainer {
         .withMotionMagicExpo_kA(4);
 
     private final MotionMagicConfigs pivotMMC =
-      new MotionMagicConfigs()
-        .withMotionMagicAcceleration(3.0) //18
-        .withMotionMagicCruiseVelocity(4.0)//11
+      new MotionMagicConfigs() // Currently set slow
+        .withMotionMagicAcceleration(3.0) //18.0 fast values (but slam at zero set point)
+        .withMotionMagicCruiseVelocity(4.0)//11.0 fast values (but slam at zero set point)
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
 
     private final MotionMagicConfigs shooterMMC =
       new MotionMagicConfigs()
         .withMotionMagicAcceleration(0)
-        .withMotionMagicJerk(0); //TODO set vals
+        .withMotionMagicJerk(0);
 
     //--SUBSYSTEMS--\\
 
