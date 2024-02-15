@@ -52,6 +52,6 @@ public class TurretIOSim extends TurretIORobot {
 
     @Override
     public double getMechRotations() {
-        return ((Units.radiansToRotations(m_motorSim.getAngularPositionRad()) / m_gearRatio) % 1.0) + (m_offset/360); // Mod rotations by 1 to simulate absolute encoder
+        return ((Units.radiansToRotations(m_motorSim.getAngularPositionRad()) / m_gearRatio) % 1.0) + Units.degreesToRotations(m_offset); // Mod rotations by 1 to simulate absolute encoder
     }
 }

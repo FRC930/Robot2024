@@ -4,6 +4,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.IOs.TalonTurretIO;
 import frc.robot.utilities.Phoenix6Utility;
@@ -25,7 +26,7 @@ public class TurretIORobot implements TalonTurretIO{
 
         m_encoder = new DutyCycleEncoder(encoderID);
 
-        m_encoder.setPositionOffset(degreesOffset / 360.0); // We set offset in degrees, while encoder takes rotations
+        m_encoder.setPositionOffset(Units.degreesToRotations(degreesOffset)); // We set offset in degrees, while encoder takes rotations
 
         Phoenix6Utility.resetTalonFxFactoryDefaults(m_motor);
 
@@ -63,13 +64,16 @@ public class TurretIORobot implements TalonTurretIO{
 
     @Override
     public double getDegrees() {
-        return getMechRotations() * 360; // Multiply by 360 to convert from rotations to degrees in 1:1 gear ratio 
-        // TODO: Verify conversion
+        return Units.rotationsToDegrees(getMechRotations());
     }
 
     @Override
     public double getMechRotations() {
-        return m_encoder.get();
+        double position = m_encoder.getAbsolutePosition() - m_encoder.getPositionOffset();
+        if (position < 0.0) { // Change negative values to wrap around back to 0.0-1.0
+            position += 1.0;
+        }
+        return position;
     }
     
 }

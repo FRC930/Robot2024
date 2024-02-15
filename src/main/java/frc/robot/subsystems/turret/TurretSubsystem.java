@@ -15,9 +15,10 @@ import frc.robot.IOs.TalonTurretIO;
  */
 public class TurretSubsystem extends SubsystemBase{
 
-    private static final double VIEW_CHANGE = 180;
-    private static final double TURRET_MIN_POS = -30.0;
+    private static final double VIEW_CHANGE = 180.0;
+    private static final double TURRET_MIN_POS = -60.0;
     private static final double TURRET_MAX_POS = 30.0;
+    public static final double STOW_POS = -45.0;
 
     private final TalonTurretIO m_io;
 
@@ -25,7 +26,8 @@ public class TurretSubsystem extends SubsystemBase{
 
     private final SimpleMotorFeedforward m_ff;
 
-    private double m_target = 0;
+    private double m_target = 0.0;
+    private boolean m_isPosSet = false; // Safety check so turret doesn't try to move to 0 before a value is set
 
 
     /**
@@ -46,7 +48,8 @@ public class TurretSubsystem extends SubsystemBase{
      * @param position Desired position on [-180, 180], with 0 being straight forward/stow
      */
     public void setPosition(double position) {
-        m_target = MathUtil.clamp(position, TURRET_MIN_POS, TURRET_MAX_POS) + VIEW_CHANGE;
+        m_target = MathUtil.clamp(position, TURRET_MIN_POS, TURRET_MAX_POS);
+        m_isPosSet = true;
     }
 
     /**
@@ -81,25 +84,27 @@ public class TurretSubsystem extends SubsystemBase{
     }
 
     public double getTarget() {
-        return m_target - VIEW_CHANGE;
+        return m_target;
     }
 
     @Override
     public void periodic() {
-        double currentDegrees = m_io.getDegrees();
+        if (m_isPosSet) { // Only run if position has been set already
+            double currentDegrees = getPosition();
 
-        // Set up PID controller
-        double effort = m_pid.calculate(currentDegrees, m_target);
-        
-        //Set up Feed Forward
-        double feedforward = m_ff.calculate(Units.degreesToRadians(currentDegrees), Units.degreesToRadians(m_io.getSpeed()));
+            // Set up PID controller
+            double effort = m_pid.calculate(currentDegrees, m_target);
+            
+            //Set up Feed Forward
+            double feedforward = m_ff.calculate(Units.degreesToRadians(currentDegrees), Units.degreesToRadians(m_io.getSpeed()));
 
-        effort += feedforward;
+            effort += feedforward;
 
-        m_io.setVoltage(effort);
+            m_io.setVoltage(effort);
+        }
 
         m_io.runSim();
-        Logger.recordOutput(this.getClass().getSimpleName() + "/TargetDegrees", m_target);
+        Logger.recordOutput(this.getClass().getSimpleName() + "/TargetDegrees", getTarget());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity",getVelocity());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Degrees",getPosition());

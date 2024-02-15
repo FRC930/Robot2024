@@ -94,10 +94,10 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 0;
-    private static final double TURRET_OFFSET = 100.0;
+    private static final double TURRET_OFFSET = 281.87;
 
    //#region positions
-    private static final double STOW_TURRET_POS = 0.0;
+    private static final double STOW_TURRET_POS = TurretSubsystem.STOW_POS;
 
     private static final double STOW_ELEVATOR_POS = 0.0;
     private static final double AMP_ELEVATOR_POS = 10.0;
