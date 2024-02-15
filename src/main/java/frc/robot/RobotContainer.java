@@ -44,7 +44,9 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
+import frc.robot.utilities.SpeakerScoreUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
+import frc.robot.utilities.SpeakerScoreUtility.Target;
 
 import java.util.Optional;
 
@@ -106,9 +108,13 @@ public class RobotContainer {
     private static final double PIVOT_AMP_POS = 45.0;
     private static final double PIVOT_INTAKE_POS = 45.0;
 
-    private static final double LEFT_SHOOTER_SPEAKER_SPEED = 0.7;
-    private static final double RIGHT_SHOOTER_SPEAKER_SPEED = 0.8;
+    //#region SPEAKER SCORE CONSTANTS
+    private static final double[] LEFT_SHOOTER_SPEAKER_SPEEDS = {0.85, 0.7, 0.7};
+    private static final double[] RIGHT_SHOOTER_SPEAKER_SPEEDS = {0.85, 0.7, 0.7};
     private static final double INDEXER_SPEAKER_SPEED = 0.5;
+
+    private static final double[] PIVOT_PIVOT_POSITIONS = {31.0, 33.0, 40.0};
+    //#endregion
 
     private static final double LEFT_SHOOTER_AMP_SPEED = -0.3;
     private static final double RIGHT_SHOOTER_AMP_SPEED = -0.3;
@@ -261,6 +267,8 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
     MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
+
+    SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility();
     
     SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -328,10 +336,7 @@ public class RobotContainer {
           new Pose2d(0, 5.55, new Rotation2d(0.0))), 
         new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS), 
         m_indexerSubsystem::getSensor));
-    
-  
           
-
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     // //TODO Test
     // //AMP position button
@@ -347,7 +352,6 @@ public class RobotContainer {
     //     .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS)))
     //   .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_STOW_POS)
     //     .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_STOW_POS)));
-
     // m_driverController.x()
     //   .whileTrue(
     //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
@@ -357,6 +361,10 @@ public class RobotContainer {
     //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
     //     )
     //   ); //TODO review values and code
+
+    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far));
+    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium));
+    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close));
 
     m_driverController.back().whileTrue(
       new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_CLIMB_POS)
@@ -398,13 +406,23 @@ public class RobotContainer {
         .until(() -> m_indexerSubsystem.getSensor())// Ends intake when note is detected in indexer
       ); 
 
-    // Speaker score button
+    // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
-      new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
-        .alongWith(new WaitCommand(1.0).andThen(
-          new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)))
+      new ConditionalCommand(
+        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[0], RIGHT_SHOOTER_SPEAKER_SPEEDS[0])
+          .alongWith(m_pivotSubsystem.newSetPosCommand(PIVOT_PIVOT_POSITIONS[0])),
+        new ConditionalCommand(
+          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[1], RIGHT_SHOOTER_SPEAKER_SPEEDS[1])
+            .alongWith(m_pivotSubsystem.newSetPosCommand(PIVOT_PIVOT_POSITIONS[1])),
+          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[2], RIGHT_SHOOTER_SPEAKER_SPEEDS[2])
+            .alongWith(m_pivotSubsystem.newSetPosCommand(PIVOT_PIVOT_POSITIONS[2])),
+          () -> m_speakerUtil.isMedium()
+        ),
+        () -> m_speakerUtil.isFar()
       )
-      .onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0).alongWith(m_indexerSubsystem.newSetSpeedCommand(0.0)));
+      .alongWith(new WaitCommand(1.0).andThen(new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)))
+    )
+    .onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0).alongWith(m_indexerSubsystem.newSetSpeedCommand(0.0)));
 
     // Amp score button
     m_driverController.rightBumper().and(m_driverController.rightTrigger()).whileTrue(
@@ -442,7 +460,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("aimAndShoot", 
         new TurretLimeLightAimCommand(m_turretSubsystem)
         .andThen(
-          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
+          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[0], RIGHT_SHOOTER_SPEAKER_SPEEDS[0])
           .raceWith(new WaitCommand(1.0))
           .andThen(
             new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED))
