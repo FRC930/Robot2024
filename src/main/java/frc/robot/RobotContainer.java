@@ -96,7 +96,7 @@ public class RobotContainer {
     private final boolean UseLimeLightAprilTag = false; 
 
     private static final double POV_PERCENT_SPEED = 1.0;
-    private static final double JOYSTICK_DEADBAND = 0.75;
+    private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
     private static final double PERCENT_SPEED = 0.6;
 
@@ -315,13 +315,6 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            // drivetrain.applyRequest(() -> drive.withVelocityX(squareInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED) // Drive forward with
-            //                                                                                   // negative Y (forward)
-            //     .withVelocityY(squareInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED) // Drive left with negative X (left)
-            //     .withRotationalRate(squareInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            //     .withDeadband(JOYSTICK_DEADBAND)
-            //     .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
-            // // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
             drivetrain.applyRequest( // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive
                             () -> {  
                                 DoubleSupplier xSupplier = m_driverController::getLeftY;   
@@ -330,9 +323,9 @@ public class RobotContainer {
                                    
                                 // Apply deadband
                                 double linearMagnitude = MathUtil.applyDeadband(
-                                                Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), 0.1);
+                                                Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), JOYSTICK_DEADBAND);
                                 Rotation2d linearDirection =
-                                        new Rotation2d(-xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                                        new Rotation2d(-xSupplier.getAsDouble(), -ySupplier.getAsDouble());
 
                                 // Square values
                                 linearMagnitude = linearMagnitude * linearMagnitude;
@@ -344,7 +337,7 @@ public class RobotContainer {
                                                 .getTranslation();
                                                 
                                 // Squaring the omega value and applying a deadband 
-                                double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), 0.1);
+                                double omega = MathUtil.applyDeadband(-omegaSupplier.getAsDouble(), JOYSTICK_ROTATIONAL_DEADBAND);
                                 omega = Math.copySign(omega * omega, omega);
 
 
@@ -352,7 +345,7 @@ public class RobotContainer {
                                     .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
                                     .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
                               }
-            ));
+              ));
 
     // m_intakeSubsystem.setDefaultCommand(
     //   new IntakeCommand(m_intakeSubsystem, -.15)
