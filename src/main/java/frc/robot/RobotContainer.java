@@ -94,10 +94,10 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 0;
-    private static final double TURRET_OFFSET = 100.0;
+    private static final double TURRET_OFFSET = 281.87;
 
    //#region positions
-    private static final double STOW_TURRET_POS = 0.0;
+    private static final double STOW_TURRET_POS = TurretSubsystem.STOW_POS;
 
     private static final double STOW_ELEVATOR_POS = 0.0;
     private static final double AMP_ELEVATOR_POS = 10.0;
@@ -233,8 +233,8 @@ public class RobotContainer {
     // TODO: Figure out real motor and encoder id
     private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
       Robot.isReal()
-        ? new TurretIORobot(6, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET)
-        : new TurretIOSim(6, TURRET_ENCODER_DIO, CANBUS, TURRET_OFFSET), 
+        ? new TurretIORobot(6, TURRET_ENCODER_DIO, CANBUS, 40, TURRET_OFFSET)
+        : new TurretIOSim(6, TURRET_ENCODER_DIO, CANBUS, 40, TURRET_OFFSET), 
         turretPID, turretFF);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(

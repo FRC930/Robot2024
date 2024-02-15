@@ -15,8 +15,10 @@ import frc.robot.IOs.TalonTurretIO;
  */
 public class TurretSubsystem extends SubsystemBase{
 
-    private static final double TURRET_MIN_POS = 0.0;
-    private static final double TURRET_MAX_POSITION = 360.0;
+    private static final double VIEW_CHANGE = 180.0;
+    private static final double TURRET_MIN_POS = -60.0;
+    private static final double TURRET_MAX_POS = 30.0;
+    public static final double STOW_POS = -45.0;
 
     private final TalonTurretIO m_io;
 
@@ -24,7 +26,8 @@ public class TurretSubsystem extends SubsystemBase{
 
     private final SimpleMotorFeedforward m_ff;
 
-    private double m_target = 0;
+    private double m_target = 0.0;
+    private boolean m_isPosSet = false; // Safety check so turret doesn't try to move to 0 before a value is set
 
 
     /**
@@ -41,19 +44,12 @@ public class TurretSubsystem extends SubsystemBase{
 
     /**
      * <h3>setPosition</h3>
-     * Sets target position
+     * Sets target position, with applied deadbands to avoid wrapping, and with offset
+     * @param position Desired position on [-180, 180], with 0 being straight forward/stow
      */
     public void setPosition(double position) {
-        m_target = position;
-    }
-
-    public void setSpeed(double speed) { // TODO remove
-        if (getPosition() <= TURRET_MIN_POS && speed < 0) {
-        speed = 0;
-        } else if (getPosition() >= TURRET_MAX_POSITION && speed > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
-        speed = 0;
-        }
-        m_io.setSpeed(speed);
+        m_target = MathUtil.clamp(position, TURRET_MIN_POS, TURRET_MAX_POS);
+        m_isPosSet = true;
     }
 
     /**
@@ -62,7 +58,7 @@ public class TurretSubsystem extends SubsystemBase{
      * @return The angle in degrees from 0
      */
     public double getPosition() {
-        return m_io.getDegrees();
+        return m_io.getDegrees() - VIEW_CHANGE;
     }
 
     /**
@@ -81,7 +77,7 @@ public class TurretSubsystem extends SubsystemBase{
     public void setVoltage(double volts) {
         if (getPosition() <= TURRET_MIN_POS && volts < 0) {
         volts = 0;
-        } else if (getPosition() >= TURRET_MAX_POSITION && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
+        } else if (getPosition() >= TURRET_MAX_POS && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
         volts = 0;
         }
         m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
@@ -93,20 +89,22 @@ public class TurretSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        double currentDegrees = m_io.getDegrees();
+        if (m_isPosSet) { // Only run if position has been set already
+            double currentDegrees = getPosition();
 
-        // Set up PID controller
-        double effort = m_pid.calculate(currentDegrees, m_target);
-        
-        //Set up Feed Forward
-        double feedforward = m_ff.calculate(Units.degreesToRadians(currentDegrees), Units.degreesToRadians(m_io.getSpeed()));
+            // Set up PID controller
+            double effort = m_pid.calculate(currentDegrees, m_target);
+            
+            //Set up Feed Forward
+            double feedforward = m_ff.calculate(Units.degreesToRadians(currentDegrees), Units.degreesToRadians(m_io.getSpeed()));
 
-        effort += feedforward;
+            effort += feedforward;
 
-        m_io.setVoltage(effort);
+            m_io.setVoltage(effort);
+        }
 
         m_io.runSim();
-        Logger.recordOutput(this.getClass().getSimpleName() + "/TargetDegrees", m_target);
+        Logger.recordOutput(this.getClass().getSimpleName() + "/TargetDegrees", getTarget());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity",getVelocity());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Degrees",getPosition());
