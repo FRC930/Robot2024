@@ -34,7 +34,7 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        m_io.setTarget(MathUtil.clamp(angle,0,180));
+        m_io.setTarget(MathUtil.clamp(angle,0.0,90.0));
         
     }
 
@@ -78,7 +78,7 @@ public class PivotSubsystem extends SubsystemBase{
     public void periodic() {
         m_io.runSim();
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Velocity", getVelocity());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Height", getPosition());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Angle", getPosition());
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/SetPoint", getSetPoint());
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Voltage", m_io.getVoltage());
         
