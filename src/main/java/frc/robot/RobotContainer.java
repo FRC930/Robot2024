@@ -309,9 +309,9 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED)) // Drive forward with
+            drivetrain.applyRequest(() -> drive.withVelocityX(cubeInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED) // Drive forward with
                                                                                               // negative Y (forward)
-                .withVelocityY(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
+                .withVelocityY(cubeInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED) // Drive left with negative X (left)
                 .withRotationalRate(cubeInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 .withDeadband(JOYSTICK_DEADBAND)
                 .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
@@ -519,26 +519,6 @@ public class RobotContainer {
               drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
           }
       }
-  }
-
-  /**
-   * Checks whether alliance is red or blue so that teleop has correct facing controls IE: negate joystick value
-   * 
-   * @param joystickValue
-   * @return negative or positive coordinate values depending on what alliance robot is on
-   */
-  public double negateBasedOnAlliance(double joystickValue) {
-    Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
-    //if on red alliance, return as negative
-    //if on blue alliance, return as positive
-    if (optionalAlliance.isPresent()){
-      Alliance alliance = optionalAlliance.get();
-      if (alliance == Alliance.Red) {
-         return joystickValue*-1;
-      }
-    }
-
-    return joystickValue;
   }
 
   /**

@@ -27,7 +27,7 @@ public class StartInTeleopUtility {
 
     private Trigger m_checkIfAllianceChangedTrigger = null;
 
-    private boolean m_isFirstTime = false;
+    private boolean m_isFirstTime = true;
 
     /**
      * Resets the robots position.
