@@ -548,14 +548,6 @@ public class RobotContainer {
       }
   }
 
-  /**
-   * 
-   * @param d Joystick value
-   * @return squares values to reduce the usage of small inputs
-   */
-  private double squareInput(double d) {
-    return Math.copySign(d * d, d);
-  }
 
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
