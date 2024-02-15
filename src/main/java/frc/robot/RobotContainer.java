@@ -48,6 +48,7 @@ import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -55,12 +56,16 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -71,6 +76,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -309,13 +315,43 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(cubeInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED) // Drive forward with
-                                                                                              // negative Y (forward)
-                .withVelocityY(cubeInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED) // Drive left with negative X (left)
-                .withRotationalRate(cubeInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
-                .withDeadband(JOYSTICK_DEADBAND)
-                .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
-            // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
+            // drivetrain.applyRequest(() -> drive.withVelocityX(squareInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED) // Drive forward with
+            //                                                                                   // negative Y (forward)
+            //     .withVelocityY(squareInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED) // Drive left with negative X (left)
+            //     .withRotationalRate(squareInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            //     .withDeadband(JOYSTICK_DEADBAND)
+            //     .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
+            // // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
+            drivetrain.applyRequest( // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive
+                            () -> {  
+                                DoubleSupplier xSupplier = m_driverController::getLeftY;   
+                                DoubleSupplier ySupplier = m_driverController::getLeftX;
+                                DoubleSupplier omegaSupplier = m_driverController::getRightX;       
+                                   
+                                // Apply deadband
+                                double linearMagnitude = MathUtil.applyDeadband(
+                                                Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), 0.1);
+                                Rotation2d linearDirection =
+                                        new Rotation2d(-xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+                                // Square values
+                                linearMagnitude = linearMagnitude * linearMagnitude;
+
+                                // Calculate new linear velocity
+                                Translation2d linearVelocity =
+                                        new Pose2d(new Translation2d(), linearDirection)
+                                                .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+                                                .getTranslation();
+                                                
+                                // Squaring the omega value and applying a deadband 
+                                double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), 0.1);
+                                omega = Math.copySign(omega * omega, omega);
+
+
+                                  return drive.withVelocityX(linearVelocity.getX() * MaxSpeed * PERCENT_SPEED)
+                                    .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
+                                    .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
+                              }
             ));
 
     // m_intakeSubsystem.setDefaultCommand(
@@ -526,9 +562,8 @@ public class RobotContainer {
    * @param d Joystick value
    * @return squares values to reduce the usage of small inputs
    */
-  private double cubeInput(double d) {
-    // return Math.copySign(d * d, d);
-    return (d * d *d);
+  private double squareInput(double d) {
+    return Math.copySign(d * d, d);
   }
 
   public void simulationPeriodic() {
@@ -538,5 +573,5 @@ public class RobotContainer {
   public void teleopInit() {
     m_StartInTeleopUtility.updateStartingPosition();
   }
-
 }
+
