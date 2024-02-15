@@ -408,9 +408,7 @@ public class RobotContainer {
 
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
-    m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
+    // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     // m_driverController.leftTrigger()
     //   .whileTrue(
