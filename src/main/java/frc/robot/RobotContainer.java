@@ -37,7 +37,7 @@ public class RobotContainer {
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
     // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
-    final double MaxSpeed = Units.feetToMeters(16.2); //13.6); //  meters per second desired top speed
+    final double MaxSpeed = TunerConstants.kMaxSpeed; 
     final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
