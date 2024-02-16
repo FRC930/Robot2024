@@ -24,7 +24,7 @@ public class SetTurretPositionCommand extends Command {
 
     @Override
     public void initialize() {
-        m_turret.setPosition(m_turretPos);
+        m_turret.setTarget(m_turretPos);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SetTurretPositionCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        m_turret.setPosition(0);
+        m_turret.setTarget(0);
     }
 
 }

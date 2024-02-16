@@ -81,7 +81,7 @@ public class TurretAutoAimCommand extends Command{
         SmartDashboard.putNumber("AutoAim/DesiredHeading", m_DesiredHeading);
 
         // actually moves the robots turret to the desired position
-        m_TurretSubsystem.setPosition(m_DesiredHeading);
+        m_TurretSubsystem.setTarget(m_DesiredHeading);
     }
 
     // Makes it so that this command never ends.

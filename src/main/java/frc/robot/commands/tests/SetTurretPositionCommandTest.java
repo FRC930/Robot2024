@@ -23,7 +23,7 @@ public class SetTurretPositionCommandTest extends SetTurretPositionCommand {
 
     @Override
     public void initialize() {
-        m_turret.setPosition(SmartDashboard.getNumber("TurretSetPosition", 0.0));
+        m_turret.setTarget(SmartDashboard.getNumber("TurretSetPosition", 0.0));
     }
     
     @Override

@@ -49,7 +49,7 @@ public class TurretSubsystem extends SubsystemBase{
      * Sets target position, with applied deadbands to avoid wrapping, and with offset
      * @param position Desired position on [-180, 180], with 0 being straight forward/stow
      */
-    public void setPosition(double position) {
+    public void setTarget(double position) {
         m_target = MathUtil.clamp(position, TURRET_MIN_POS, TURRET_MAX_POS);
         m_isPosSet = true;
     }
@@ -111,5 +111,19 @@ public class TurretSubsystem extends SubsystemBase{
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity",getVelocity());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Degrees",getPosition());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Rotations",m_io.getMechRotations());
+    }
+    
+    public InstantCommand newSetPosCommand(double pos) {
+        return new InstantCommand(() -> setTarget(pos), this);
+    }
+
+    public boolean atSetpoint(double deadband) {
+        double pos = getPosition();
+        double target = getTarget();
+        return MathUtil.applyDeadband(target - pos, deadband) == 0.0;
+    }
+
+    public Command newWaitUntilSetpointCommand(double seconds, double deadband) {
+        return new WaitCommand(seconds).until(() -> atSetpoint(deadband)); // Not dependent on subsystem because can run parralel with set position
     }
 }
