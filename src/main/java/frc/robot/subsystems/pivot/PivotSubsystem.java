@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.utilities.SpeakerScoreUtility;
 
 /**
  * <h3>PivotSubsystem</h3>
@@ -88,6 +89,10 @@ public class PivotSubsystem extends SubsystemBase{
 
     public Command newSetPosCommand(double pos) {
         return new InstantCommand(() -> setPosition(pos), this);
+    }
+
+    public Command newSetPosCommand(SpeakerScoreUtility speakerUtil) {
+        return new InstantCommand(() -> setPosition(speakerUtil.getPivotAngle()), this);
     }
 
     public boolean atSetpoint(double deadband) {

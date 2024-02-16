@@ -4,6 +4,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonVelocityIO;
+import frc.robot.utilities.SpeakerScoreUtility;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -112,11 +113,15 @@ public class ShooterSubsystem extends SubsystemBase{
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/SetPoint" ,getRightTargetVelocity());
     }
 
-    public InstantCommand newSetSpeedsCommand(double leftSpeed, double rightSpeed) {
+    public Command newSetSpeedsCommand(double leftSpeed, double rightSpeed) {
         return new InstantCommand(() -> setSpeed(leftSpeed, rightSpeed), this);
     }
 
-    public InstantCommand shootTo(ShooterAction target) {
+    public Command newSetSpeedsCommand(SpeakerScoreUtility speakerUtil) {
+        return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getLeftShooterSpeed()), this);
+    }
+
+    public Command shootTo(ShooterAction target) {
         return newSetSpeedsCommand(target.leftWheelSpeed, target.rightWheelSpeed);
     }
 

@@ -4,9 +4,13 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Robot;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
 
@@ -85,8 +89,26 @@ public class IndexerSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/SensorRange", m_sensorIO.getRange());
     }
 
-    public InstantCommand newSetSpeedCommand(double speed) {
+    public Command newSetSpeedCommand(double speed) {
         return new InstantCommand(() -> setSpeed(speed), this);
+    }
+
+    public Command newUntilNoteFoundCommand() {
+        if(Robot.isReal()) {
+            return new InstantCommand()
+                .until(() -> getSensor());  // DO not set subsystem since just getting sensor value
+        } else {
+            return new WaitCommand(.1);
+        }
+    }
+
+    public Command newUnlessNoteFoundCommand() {
+        if(Robot.isReal()) {
+            return new InstantCommand()
+                .unless(() -> getSensor());  // DO not set subsystem since just getting sensor value
+        } else {
+            return new WaitCommand(.1);
+        }
     }
 
 

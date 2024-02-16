@@ -262,7 +262,15 @@ public class RobotContainer {
     SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     Telemetry logger = new Telemetry(MaxSpeed);
     
-    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, m_LimeLightDetectionUtility);
+    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, 
+      m_LimeLightDetectionUtility, 
+      m_turretSubsystem, 
+      m_shooterSubsystem, 
+      m_indexerSubsystem, 
+      m_climbingElevatorSubsystem, 
+      m_speakerUtil, 
+      m_intakeSubsystem, 
+      m_pivotSubsystem);
 
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
@@ -338,29 +346,6 @@ public class RobotContainer {
         m_indexerSubsystem::getSensor));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    // //TODO Test
-    // //AMP position button
-    // m_driverController.y()
-    //   .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_AMP_POS)
-    //     .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_AMP_POS)
-    //     .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS))))
-    //   .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_STOW_POS)
-    //     .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_STOW_POS)));
-    // // //TODO Test
-    // m_driverController.b()
-    //   .whileTrue(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_INTAKE_POS)
-    //     .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS)))
-    //   .onFalse(new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_STOW_POS)
-    //     .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_STOW_POS)));
-    // m_driverController.x()
-    //   .whileTrue(
-    //     new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEED, RIGHT_SHOOTER_SPEAKER_SPEED)
-    //     .raceWith(new WaitCommand(1.0))
-    //     .andThen(
-    //       new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)
-    //       .until(()->!m_indexerSubsystem.getSensor() || m_driverController.getHID().getXButtonReleased())
-    //     )
-    //   ); //TODO review values and code
 
     m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far));
     m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium));
@@ -390,21 +375,21 @@ public class RobotContainer {
 
     // Eject shooter button
     m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem));
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
     
     // Intake button TODO Test
-    m_driverController.leftBumper().whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem)); 
+    m_driverController.leftBumper().whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)); 
 
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
-        CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_climbingElevatorSubsystem, m_indexerSubsystem)// TODO
+        CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem)// TODO
     )
-    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem));
+    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
 
     // Amp score button
     m_driverController.rightBumper().and(m_driverController.rightTrigger())
-      .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_climbingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem));
+      .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_shootingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
