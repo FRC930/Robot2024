@@ -280,7 +280,6 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureCoDriverBindingsForTesting();
     configureDriverBindings();
-    configureNamedCommands();
     portForwardCameras();
     // set our own visionMeasurementDeviations
     drivetrain.setVisionMeasurementStdDevs(visionSTDsDevs);
@@ -368,7 +367,7 @@ public class RobotContainer {
     m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close));
 
     m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
-      .onFalse(CommandFactoryUtility.createElevatorStowCommand(m_shootingElevatorSubsystem));
+      .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
     
     //#region POV controls
     // m_driverController.pov(0).whileTrue(
@@ -398,25 +397,13 @@ public class RobotContainer {
 
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
-      new ConditionalCommand(
-        new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[0], RIGHT_SHOOTER_SPEAKER_SPEEDS[0])
-          .alongWith(m_pivotSubsystem.newSetPosCommand(PIVOT_PIVOT_POSITIONS[0])),
-        new ConditionalCommand(
-          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[1], RIGHT_SHOOTER_SPEAKER_SPEEDS[1])
-            .alongWith(m_pivotSubsystem.newSetPosCommand(PIVOT_PIVOT_POSITIONS[1])),
-          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[2], RIGHT_SHOOTER_SPEAKER_SPEEDS[2])
-            .alongWith(m_pivotSubsystem.newSetPosCommand(PIVOT_PIVOT_POSITIONS[2])),
-          () -> m_speakerUtil.isMedium()
-        ),
-        () -> m_speakerUtil.isFar()
-      )
-      .alongWith(new WaitCommand(1.0).andThen(new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED)))
+        CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_climbingElevatorSubsystem, m_indexerSubsystem)// TODO
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem));
 
     // Amp score button
     m_driverController.rightBumper().and(m_driverController.rightTrigger())
-      .whileTrue(CommandFactoryUtility.createAmpShootCommand(m_shooterSubsystem, m_indexerSubsystem))
+      .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_climbingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
       .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem));
     //#endregion 
 
@@ -441,28 +428,6 @@ public class RobotContainer {
 
     m_coDriverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
 
-  }
-
-  private void configureNamedCommands(){
-    NamedCommands.registerCommand("aimAndShoot", 
-        new TurretLimeLightAimCommand(m_turretSubsystem)
-        .andThen(
-          new ShooterCommand(m_shooterSubsystem,LEFT_SHOOTER_SPEAKER_SPEEDS[0], RIGHT_SHOOTER_SPEAKER_SPEEDS[0])
-          .raceWith(new WaitCommand(1.0))
-          .andThen(
-            new IndexerCommand(m_indexerSubsystem, INDEXER_SPEAKER_SPEED))
-          .andThen(new WaitCommand(0.25))
-          .andThen(m_indexerSubsystem.newSetSpeedCommand(0.0)
-            .alongWith(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0)))
-        ));
-    NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem));
-    NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_AMP_POS)
-        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_AMP_POS)
-        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS))));
-    NamedCommands.registerCommand("ampShoot", 
-      CommandFactoryUtility.createAmpShootCommand(m_shooterSubsystem, m_indexerSubsystem)
-        .andThen(new WaitCommand(0.5).andThen(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem)))
-    );
   }
 
   /**

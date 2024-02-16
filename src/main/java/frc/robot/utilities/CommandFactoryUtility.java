@@ -1,6 +1,7 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -95,4 +96,17 @@ public final class CommandFactoryUtility {
     public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
         return new SetElevatorPositionCommand(elevator, ELEVATOR_CLIMB_POS);
     }
+
+    public static Command createStowElevatorCommand(ElevatorSubsystem elevator) {
+        return new SetElevatorPositionCommand(elevator, ELEVATOR_STOW_POS);
+    }
+
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, ElevatorSubsystem pivot, IndexerSubsystem indexer) {
+        return 
+            new ShooterCommand(shooter,speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed())
+              .alongWith(pivot.newSetPosCommand(speakerUtil.getPivotAngle()))
+          .alongWith(new WaitCommand(1.0).andThen(new IndexerCommand(indexer, INDEXER_SPEAKER_SPEED)));
+          // TODO waituntilangle/speeds
+    }
+
 }

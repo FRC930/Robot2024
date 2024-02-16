@@ -8,9 +8,24 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
+import frc.robot.commands.SetElevatorPositionCommand;
+import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.SetTurretPositionCommand;
+import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.TurretLimeLightAimCommand;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
+import frc.robot.utilities.SpeakerScoreUtility;
 
 public class AutoCommandManager {
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -25,7 +40,7 @@ public class AutoCommandManager {
     public Command getAutoManagerSelected(){
         return m_chooser.getSelected();
     }
-    public void configureNamedCommands(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility gamePieceUtility) { //TODO update all of the x and y positions for each of the alliance colors (don't do center line points)
+    public void configureNamedCommands(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility gamePieceUtility, TurretSubsystem m_turretSubsystem, ShooterSubsystem m_shooterSubsystem, IndexerSubsystem m_indexerSubsystem, ElevatorSubsystem m_shootingElevatorSubsystem, SpeakerScoreUtility m_speakerUtil, IntakeSubsystem m_intakeSubsystem, PivotSubsystem m_pivotSubsystem) { //TODO update all of the x and y positions for each of the alliance colors (don't do center line points)
       NamedCommands.registerCommand("AllianceTopNote", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
           new Pose2d(2.9, 7.0, new Rotation2d(0.0)), new Pose2d(13.68, 7.0, new Rotation2d(0.0))));
       NamedCommands.registerCommand("AllianceMidNote", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
@@ -42,5 +57,21 @@ public class AutoCommandManager {
           new Pose2d(8.29, 5.78, new Rotation2d(0.0))));
       NamedCommands.registerCommand("MidLineLevel5", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
           new Pose2d(8.29, 7.44, new Rotation2d(0.0))));
+          NamedCommands.registerCommand("aimAndShoot", 
+        new TurretLimeLightAimCommand(m_turretSubsystem) 
+        //TODO: Set speaker shooting position
+        .andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_shootingElevatorSubsystem, m_indexerSubsystem))
+          .andThen(m_indexerSubsystem.newSetSpeedCommand(0.0)
+            .alongWith(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0)))
+        ));
+    NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem));
+    NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(m_pivotSubsystem, PIVOT_AMP_POS)
+        .alongWith(new SetElevatorPositionCommand(m_shootingElevatorSubsystem, ELEVATOR_AMP_POS)
+        .alongWith(new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS))));
+    NamedCommands.registerCommand("ampShoot", 
+      CommandFactoryUtility.createAmpScoreCommand(m_shootingElevatorSubsystem, null, m_shooterSubsystem, m_indexerSubsystem)
+        .andThen(new WaitCommand(0.5).andThen(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem)))
+    );
+    
     }
 }
