@@ -171,12 +171,12 @@ public class MechanismViewer {
 
     public void periodic() {
         // Updates position of mechanisms
-        m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getHeight()+0.2));
-        m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTargetHeight()+0.2));
+        m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getPosition()+0.2));
+        m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTarget()+0.2));
         m_pivotControl.setAngle(-90+m_pivot.getPosition());
-        m_pivotControlTarget.setAngle(-90+m_pivot.getSetPoint());
-        m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getHeight())+0.2);
-        m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTargetHeight())+0.2);
+        m_pivotControlTarget.setAngle(-90+m_pivot.getTarget());
+        m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getPosition())+0.2);
+        m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTarget())+0.2);
         m_turretControl.setAngle(m_turret.getPosition());
         m_turretControlTarget.setAngle(m_turret.getTarget());
        

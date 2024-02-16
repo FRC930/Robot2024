@@ -3,8 +3,10 @@ package frc.robot.subsystems.pivot;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
 
 /**
@@ -43,7 +45,7 @@ public class PivotSubsystem extends SubsystemBase{
      * Gets the angle that the subsystem is currently trying to turn to
      * @param angle The angle in degrees from the horizontal
      */
-    public double getSetPoint() {
+    public double getTarget() {
         return m_io.getTarget();
     }
 
@@ -79,12 +81,22 @@ public class PivotSubsystem extends SubsystemBase{
         m_io.runSim();
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Velocity", getVelocity());
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Angle", getPosition());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/SetPoint", getSetPoint());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/SetPoint", getTarget());
         Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Voltage", m_io.getVoltage());
         
     }
 
-    public InstantCommand newSetPosCommand(double pos) {
+    public Command newSetPosCommand(double pos) {
         return new InstantCommand(() -> setPosition(pos), this);
+    }
+
+    public boolean atSetpoint(double deadband) {
+        double pos = getPosition();
+        double target = getTarget();
+        return MathUtil.applyDeadband(target - pos, deadband) == 0.0;
+    }
+
+    public Command newWaitUntilSetpointCommand(double seconds, double deadband) {
+        return new WaitCommand(seconds).until(() -> atSetpoint(deadband)); // Not dependent on subsystem because can run parralel with set position
     }
 }

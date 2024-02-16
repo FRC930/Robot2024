@@ -23,7 +23,7 @@ public class SetElevatorPositionCommandTest extends SetElevatorPositionCommand {
 
     @Override
     public void initialize() {
-        m_elevator.setTargetHeight(SmartDashboard.getNumber("ElevatorSetPosition", 0.0));
+        m_elevator.setTarget(SmartDashboard.getNumber("ElevatorSetPosition", 0.0));
     }
 
 }
