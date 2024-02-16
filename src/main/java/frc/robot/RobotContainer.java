@@ -45,10 +45,12 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.SpeakerScoreUtility;
+import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
 import frc.robot.utilities.SpeakerScoreUtility.Target;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -56,10 +58,18 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
@@ -68,6 +78,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -87,7 +98,7 @@ public class RobotContainer {
     private final boolean UseLimeLightAprilTag = false; 
 
     private static final double POV_PERCENT_SPEED = 1.0;
-    private static final double JOYSTICK_DEADBAND = 0.75;
+    private static final double JOYSTICK_DEADBAND = 0.1;
     private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1;
     private static final double PERCENT_SPEED = 1.0;
 
@@ -132,15 +143,17 @@ public class RobotContainer {
     private static final double ELEVATOR_CLIMB_POS = 10.0;
 
 
-    private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-front");
+    private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
     //#endregion
 
     //Use max speed from tuner constants from webpage
     final double MaxSpeed = TunerConstants.kMaxSpeed;
-    final double MaxAngularRate = Math.PI; // TODO increace -- Half a rotation per second max angular velocity  
+    final double MaxAngularRate = 1.5 * Math.PI; // 3/4 a rotation per second max angular velocity  
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
+    private StartInTeleopUtility m_StartInTeleopUtility = new StartInTeleopUtility(drivetrain::seedFieldRelative);
+
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
@@ -224,8 +237,14 @@ public class RobotContainer {
     private final MotionMagicConfigs shooterMMC =
       new MotionMagicConfigs()
         .withMotionMagicAcceleration(0)
-        .withMotionMagicJerk(0);
-
+        .withMotionMagicJerk(0); //TODO set vals
+    
+    //--VisionSTDsDevConstants--\\
+    // TODO configure for april tag confidence level 
+    //https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/mechanisms/swerve/SwerveDrivetrain.html#setVisionMeasurementStdDev
+    // Implement visionSTDsDevs into our code with default values
+    private Matrix<N3, N1> visionSTDsDevs = VecBuilder.fill(0.9, 0.9, 0.9);
+  
     //--SUBSYSTEMS--\\
 
     public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
@@ -295,6 +314,8 @@ public class RobotContainer {
     configureDriverBindings();
     configureNamedCommands();
     portForwardCameras();
+    // set our own visionMeasurementDeviations
+    drivetrain.setVisionMeasurementStdDevs(visionSTDsDevs);
   }
 
   /**
@@ -309,14 +330,37 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftY()) * MaxSpeed * PERCENT_SPEED)) // Drive forward with
-                                                                                              // negative Y (forward)
-                .withVelocityY(negateBasedOnAlliance(cubeInput(-m_driverController.getLeftX()) * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
-                .withRotationalRate(cubeInput(-m_driverController.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
-                .withDeadband(JOYSTICK_DEADBAND)
-                .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
-            // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
-            ));
+            drivetrain.applyRequest( // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive
+                            () -> {  
+                                DoubleSupplier xSupplier = m_driverController::getLeftY;   
+                                DoubleSupplier ySupplier = m_driverController::getLeftX;
+                                DoubleSupplier omegaSupplier = m_driverController::getRightX;       
+                                   
+                                // Apply deadband
+                                double linearMagnitude = MathUtil.applyDeadband(
+                                                Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), JOYSTICK_DEADBAND);
+                                Rotation2d linearDirection =
+                                        new Rotation2d(-xSupplier.getAsDouble(), -ySupplier.getAsDouble());
+
+                                // Square values
+                                linearMagnitude = linearMagnitude * linearMagnitude;
+
+                                // Calculate new linear velocity
+                                Translation2d linearVelocity =
+                                        new Pose2d(new Translation2d(), linearDirection)
+                                                .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+                                                .getTranslation();
+                                                
+                                // Squaring the omega value and applying a deadband 
+                                double omega = MathUtil.applyDeadband(-omegaSupplier.getAsDouble(), JOYSTICK_ROTATIONAL_DEADBAND);
+                                omega = Math.copySign(omega * omega, omega);
+
+
+                                  return drive.withVelocityX(linearVelocity.getX() * MaxSpeed * PERCENT_SPEED)
+                                    .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
+                                    .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
+                              }
+              ));
 
     m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, INTAKE_REJECT_SPEED));
     
@@ -330,10 +374,7 @@ public class RobotContainer {
 
     m_turretSubsystem.setDefaultCommand(
       new ConditionalCommand(
-        new TurretAutoAimCommand(
-          m_turretSubsystem, 
-          new Pose2d(16.53, 5.55, new Rotation2d(0.0)), 
-          new Pose2d(0, 5.55, new Rotation2d(0.0))), 
+        new TurretAutoAimCommand(m_turretSubsystem), 
         new SetTurretPositionCommand(m_turretSubsystem, TURRET_STOW_POS), 
         m_indexerSubsystem::getSensor));
           
@@ -388,8 +429,6 @@ public class RobotContainer {
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
     // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    // m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
 
     // Eject shooter button
     m_driverController.leftTrigger().whileTrue(
@@ -491,7 +530,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_autoManager.getAutoManagerSelected();
+    Command autoCommand = m_autoManager.getAutoManagerSelected();
+    if (autoCommand != null) {
+        m_StartInTeleopUtility.updateAutonomous();
+    }
+    return autoCommand;
   }
 
   public void robotPeriodic() {
@@ -514,8 +557,8 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (UseLimeLightAprilTag) {  
-      updateVisionOdometry("front");
-      updateVisionOdometry("back");
+      updateVisionOdometry("limelight-front");
+      updateVisionOdometry("limelight-back");
     }
   }
 
@@ -526,10 +569,10 @@ public class RobotContainer {
    */
   public void updateVisionOdometry(String limeLightName) {
       boolean useResult = true;
-      Results lastResult = LimelightHelpers.getLatestResults("limelight-" + limeLightName).targetingResults;
+      Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
       if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
           if (lastResult.targets_Fiducials.length == 1) {
-              if (LimelightHelpers.getTA("limelight-" + limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
+              if (LimelightHelpers.getTA(limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
                 useResult = true;
               } else {
                 useResult = false;
@@ -539,43 +582,19 @@ public class RobotContainer {
           }
 
           if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
+              m_StartInTeleopUtility.updateTags();
               drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
           }
       }
   }
 
-  /**
-   * Checks whether alliance is red or blue so that teleop has correct facing controls IE: negate joystick value
-   * 
-   * @param joystickValue
-   * @return negative or positive coordinate values depending on what alliance robot is on
-   */
-  public double negateBasedOnAlliance(double joystickValue) {
-    Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
-    //if on red alliance, return as negative
-    //if on blue alliance, return as positive
-    if (optionalAlliance.isPresent()){
-      Alliance alliance = optionalAlliance.get();
-      if (alliance == Alliance.Red) {
-         return joystickValue*-1;
-      }
-    }
-
-    return joystickValue;
-  }
-
-  /**
-   * 
-   * @param d Joystick value
-   * @return squares values to reduce the usage of small inputs
-   */
-  private double cubeInput(double d) {
-    // return Math.copySign(d * d, d);
-    return (d * d *d);
-  }
 
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
   }
 
+  public void teleopInit() {
+    m_StartInTeleopUtility.updateStartingPosition();
+  }
 }
+
