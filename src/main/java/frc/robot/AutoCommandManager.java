@@ -13,7 +13,7 @@ import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.SetTurretPositionCommand;
-import frc.robot.commands.TurretLimeLightAimCommand;
+import frc.robot.commands.TurretRefineCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -87,7 +87,7 @@ public class AutoCommandManager {
 
         NamedCommands.registerCommand("aimAndShoot", 
             // TODO TurretLimeLightAimCommand not exiting (temp waittimeout)
-            new TurretLimeLightAimCommand(turret).withTimeout(.2)
+            new TurretRefineCommand(turret).withTimeout(.2)
                 //TODO: Set speaker shooting position
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
                 // TODO need to wait for it to be shoot

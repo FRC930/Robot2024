@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 
-public class TurretLimeLightAimCommand extends Command{
+public class TurretRefineCommand extends Command{
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-turret");
     
@@ -14,7 +14,7 @@ public class TurretLimeLightAimCommand extends Command{
     private double m_AprilTagAngle;
     private double m_DeadBand = 1.0;
 
-    public TurretLimeLightAimCommand(TurretSubsystem turretSubsystem) {
+    public TurretRefineCommand(TurretSubsystem turretSubsystem) {
         m_TurretSubsystem = turretSubsystem;
         addRequirements(m_TurretSubsystem);
     }
