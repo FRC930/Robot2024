@@ -351,8 +351,8 @@ public class RobotContainer {
     m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium));
     m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close));
 
-    m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
-      .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
+    // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
+    //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
     
     //#region POV controls
     // m_driverController.pov(0).whileTrue(
@@ -387,9 +387,9 @@ public class RobotContainer {
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
 
     // Amp score button
-    m_driverController.rightBumper().and(m_driverController.rightTrigger())
-      .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_shootingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
+    // m_driverController.rightBumper().and(m_driverController.rightTrigger())
+    //   .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_shootingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
+    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
