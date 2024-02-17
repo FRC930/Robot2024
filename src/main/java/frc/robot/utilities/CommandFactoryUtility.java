@@ -50,7 +50,7 @@ public final class CommandFactoryUtility {
 
     private static final double SHOOTER_WAIT_TIME = 1.0;
 
-    private static final double AFTER_SHOOT_TIMEOUT = 0.5;
+    private static final double AFTER_SHOOT_TIMEOUT = 2.0;
 
     //TODO review values and code
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
@@ -103,7 +103,7 @@ public final class CommandFactoryUtility {
 
     // TODO trap shot
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
-        return new TurretRefineCommand(turret).withTimeout(.2) // TODO does not command does not end???
+        return new TurretRefineCommand(turret).withTimeout(2.0) // TODO does not command does not end???
             .andThen(shooter.newSetSpeedsCommand(speakerUtil))
             .andThen(pivot.newSetPosCommand(speakerUtil))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_WAIT_TIME)

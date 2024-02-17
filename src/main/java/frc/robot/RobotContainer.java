@@ -176,7 +176,8 @@ public class RobotContainer {
         .withKG(0)
         .withKS(4.0); 
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0.0, 0.0, new Constraints(45.0, 0.0)); //TODO: Set good vals
+        // 0.26 kp. Set to 0.1 for testing
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.1, 0.0, 0.0, new Constraints(0.1, 0.0)); //TODO: Set good vals
     // ks overcomes friction on the turret
     private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0.0, 0.0); 
 
