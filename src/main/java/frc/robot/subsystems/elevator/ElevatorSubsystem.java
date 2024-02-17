@@ -20,6 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private TalonPosIO m_io; // IO for real or simulated robot
     private String m_elevatorName; // Hashcode to differentiate between the two elevatorss in debugging
 
+    public static final double ELEVATOR_DEADBAND = 2.0;
     /**
      * <h3>ElevatorSubsystem</h3>
      * Creates a subsystem representing the elevator on the robot.
@@ -79,13 +80,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         return new InstantCommand(() -> setTarget(pos), this);
     }
 
-    public boolean atSetpoint(double deadband) {
+    public boolean atSetpoint() {
         double pos = getPosition();
         double target = getTarget();
-        return MathUtil.applyDeadband(target - pos, deadband) == 0.0;
+        return MathUtil.applyDeadband(target - pos, ELEVATOR_DEADBAND) == 0.0;
     }
 
-    public Command newWaitUntilSetpointCommand(double seconds, double deadband) {
-        return new WaitCommand(seconds).until(() -> atSetpoint(deadband)); // Not dependent on subsystem because can run parralel with set position
+    public Command newWaitUntilSetpointCommand(double seconds) {
+        return new WaitCommand(seconds).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
     }
 }

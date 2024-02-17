@@ -43,13 +43,12 @@ public final class CommandFactoryUtility {
     public static final double ELEVATOR_CLIMB_POS = 8.0;
 
     public static final double PIVOT_WAIT_TIME = 1.0;
-    public static final double PIVOT_DEADBAND = 2.0;
 
     public static final double ELEVATOR_WAIT_TIME = 1.0;
-    public static final double ELEVATOR_DEADBAND = 2.0;
 
     public static final double TURRET_WAIT_TIME = 1.0;
-    public static final double TURRET_DEADBAND = 2.0;
+
+    private static final double SHOOTER_WAIT_TIME = 1.0;
 
     private static final double AFTER_SHOOT_TIMEOUT = 0.5;
 
@@ -73,7 +72,7 @@ public final class CommandFactoryUtility {
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
         return indexer.newUnlessNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
-            .until(() -> turret.atSetpoint(TURRET_DEADBAND))
+            .until(() -> turret.atSetpoint())
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand()); // Dont stop intake until note found
@@ -83,9 +82,9 @@ public final class CommandFactoryUtility {
         return elevator.newSetPosCommand(ELEVATOR_AMP_POS)
                     .andThen(pivot.newSetPosCommand(PIVOT_AMP_POS))
                     .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
-                    .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_WAIT_TIME, ELEVATOR_DEADBAND)
-                                .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_WAIT_TIME, PIVOT_DEADBAND))
-                                // TODO: Another alongWith for shooter speed wait until
+                    .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_WAIT_TIME)
+                                .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_WAIT_TIME))
+                                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_WAIT_TIME))
                                 )
                     .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
                     .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
@@ -107,8 +106,8 @@ public final class CommandFactoryUtility {
         return new TurretLimeLightAimCommand(turret).withTimeout(.2) // TODO does not command does not end???
             .andThen(shooter.newSetSpeedsCommand(speakerUtil))
             .andThen(pivot.newSetPosCommand(speakerUtil))
-            .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_WAIT_TIME, PIVOT_DEADBAND)
-                                // TODO: Another alongWith for shooter speed wait until
+            .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_WAIT_TIME)
+                    .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_WAIT_TIME))
                     )
             .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
             .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
