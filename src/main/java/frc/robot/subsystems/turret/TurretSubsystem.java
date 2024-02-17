@@ -29,8 +29,9 @@ public class TurretSubsystem extends SubsystemBase{
 
     private final SimpleMotorFeedforward m_ff;
 
-    private double m_target = 0.0;
-    private boolean m_isPosSet = false; // Safety check so turret doesn't try to move to 0 before a value is set
+    private double m_target;
+    private boolean m_isPosSet; // Safety check so turret doesn't try to move to 0 before a value is set
+    private boolean m_isTurretLocked;
 
 
     /**
@@ -43,6 +44,10 @@ public class TurretSubsystem extends SubsystemBase{
         m_io = io;
         m_pid = pid;
         m_ff = ff;
+
+        m_target = 0.0;
+        m_isPosSet = false;
+        m_isTurretLocked = false;
     }
 
     /**
@@ -130,5 +135,13 @@ public class TurretSubsystem extends SubsystemBase{
 
     public Command newMoveTurretCommand(double speed) {
         return new InstantCommand(() -> m_io.setSpeed(speed), this);
+    }
+
+    public void toggleTurretLock() {
+        m_isTurretLocked = !m_isTurretLocked;
+    }
+
+    public boolean getTurretLock() {
+        return m_isTurretLocked;
     }
 }

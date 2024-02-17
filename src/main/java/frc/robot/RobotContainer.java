@@ -255,14 +255,14 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
+    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
 
-    SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility();
+    private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility();
     
-    SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    Telemetry logger = new Telemetry(MaxSpeed);
+    private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private Telemetry logger = new Telemetry(MaxSpeed);
     
     private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, 
       m_LimeLightDetectionUtility, 
@@ -347,7 +347,7 @@ public class RobotContainer {
       new ConditionalCommand(
         new TurretAimCommand(m_turretSubsystem), 
         new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-        m_indexerSubsystem::getSensor));
+        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
@@ -398,6 +398,8 @@ public class RobotContainer {
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    m_driverController.pov(0).onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
   }
   
   @Deprecated
@@ -417,9 +419,6 @@ public class RobotContainer {
     //#endregion
 
     m_coDriverController.rightBumper().whileTrue(new TurretRefineCommand(m_turretSubsystem));
-
-    m_coDriverController.pov(90).whileTrue(m_turretSubsystem.newMoveTurretCommand(TURRET_MANUAL_SPEED));
-    m_coDriverController.pov(270).whileTrue(m_turretSubsystem.newMoveTurretCommand(-TURRET_MANUAL_SPEED));
 
   }
 
