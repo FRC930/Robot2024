@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
- import edu.wpi.first.wpilibj2.command.Command;
+ import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
 import frc.robot.utilities.SpeakerScoreUtility;
 
@@ -15,6 +17,8 @@ import org.littletonrobotics.junction.Logger;
 public class ShooterSubsystem extends SubsystemBase{
     private TalonVelocityIO IO_Left;
     private TalonVelocityIO IO_Right;
+
+    private final double VELOCITY_DEADBAND = 0.2;
 
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
         IO_Left = LeftIO;
@@ -137,6 +141,14 @@ public class ShooterSubsystem extends SubsystemBase{
             leftWheelSpeed = leftSpeed;
             rightWheelSpeed = rightSpeed;
         }
+    }
+
+    public boolean atSetpoint() {
+        return MathUtil.applyDeadband(getRightTargetVelocity() - getRightMotorSpeed(), VELOCITY_DEADBAND) == 0.0 && MathUtil.applyDeadband(getLeftTargetVelocity() - getLeftMotorSpeed(),VELOCITY_DEADBAND) == 0.0;
+    }
+
+    public Command newWaitUntilSetpointCommand(double timeout) {
+        return new WaitCommand(timeout).until(() -> atSetpoint());
     }
 }
 

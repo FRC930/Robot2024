@@ -21,6 +21,7 @@ public class TurretSubsystem extends SubsystemBase{
     private static final double TURRET_MIN_POS = -160.0;//137.0
     private static final double TURRET_MAX_POS = 110.0;//115.0
     public static final double STOW_POS = 0.0;
+    public static final double TURRET_DEADBAND = 2.0;
 
     private final TalonTurretIO m_io;
 
@@ -28,8 +29,9 @@ public class TurretSubsystem extends SubsystemBase{
 
     private final SimpleMotorFeedforward m_ff;
 
-    private double m_target = 0.0;
-    private boolean m_isPosSet = false; // Safety check so turret doesn't try to move to 0 before a value is set
+    private double m_target;
+    private boolean m_isPosSet; // Safety check so turret doesn't try to move to 0 before a value is set
+    private boolean m_isTurretLocked;
 
 
     /**
@@ -42,6 +44,10 @@ public class TurretSubsystem extends SubsystemBase{
         m_io = io;
         m_pid = pid;
         m_ff = ff;
+
+        m_target = 0.0;
+        m_isPosSet = false;
+        m_isTurretLocked = true;
     }
 
     /**
@@ -117,13 +123,25 @@ public class TurretSubsystem extends SubsystemBase{
         return new InstantCommand(() -> setTarget(pos), this);
     }
 
-    public boolean atSetpoint(double deadband) {
+    public boolean atSetpoint() {
         double pos = getPosition();
         double target = getTarget();
-        return MathUtil.applyDeadband(target - pos, deadband) == 0.0;
+        return MathUtil.applyDeadband(target - pos, TURRET_DEADBAND) == 0.0;
     }
 
-    public Command newWaitUntilSetpointCommand(double seconds, double deadband) {
-        return new WaitCommand(seconds).until(() -> atSetpoint(deadband)); // Not dependent on subsystem because can run parralel with set position
+    public Command newWaitUntilSetpointCommand(double seconds) {
+        return new WaitCommand(seconds).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
+    }
+
+    public Command newMoveTurretCommand(double speed) {
+        return new InstantCommand(() -> m_io.setSpeed(speed), this);
+    }
+
+    public void toggleTurretLock() {
+        m_isTurretLocked = !m_isTurretLocked;
+    }
+
+    public boolean getTurretLock() {
+        return m_isTurretLocked;
     }
 }

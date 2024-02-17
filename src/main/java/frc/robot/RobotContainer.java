@@ -12,8 +12,8 @@ import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.TurretAutoAimCommand;
-import frc.robot.commands.TurretLimeLightAimCommand;
+import frc.robot.commands.TurretAimCommand;
+import frc.robot.commands.TurretRefineCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
 import frc.robot.commands.tests.SetElevatorPositionCommandTest;
@@ -109,6 +109,8 @@ public class RobotContainer {
 
     private static final int TURRET_ENCODER_DIO = 0;
     private static final double TURRET_OFFSET = 321.9; //TODO: if negative value, add 360
+
+    private static final double TURRET_MANUAL_SPEED = 0.2;
 
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
@@ -253,14 +255,14 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
+    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
 
-    SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility();
+    private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility();
     
-    SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    Telemetry logger = new Telemetry(MaxSpeed);
+    private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private Telemetry logger = new Telemetry(MaxSpeed);
     
     private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, 
       m_LimeLightDetectionUtility, 
@@ -336,22 +338,23 @@ public class RobotContainer {
                                     .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
                               }
               ));
+
+    //m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
+
+    //m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
     
-    //TODO: sussex put back in      
-    // m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
-    
-    //TODO: sussex put back in
-    // m_turretSubsystem.setDefaultCommand(
-    //   new ConditionalCommand(
-    //     new TurretAutoAimCommand(m_turretSubsystem), 
-    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-    //     m_indexerSubsystem::getSensor));
+    m_turretSubsystem.setDefaultCommand(
+      new ConditionalCommand(
+        new TurretAimCommand(m_turretSubsystem), 
+        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far));
-    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium));
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close));
+    // Sets the desired positions for the speaker
+    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); // Sets desired target to far
+    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); // Sets desired target to medium
+    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); // Sets desired target to close
 
     // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
     //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
@@ -395,6 +398,8 @@ public class RobotContainer {
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    m_driverController.pov(0).onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
   }
   
   @Deprecated
@@ -413,7 +418,7 @@ public class RobotContainer {
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
 
-    m_coDriverController.rightBumper().whileTrue(new TurretLimeLightAimCommand(m_turretSubsystem));
+    m_coDriverController.rightBumper().whileTrue(new TurretRefineCommand(m_turretSubsystem));
 
   }
 
