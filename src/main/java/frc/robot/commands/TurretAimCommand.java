@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import java.sql.Driver;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,7 +13,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
 //Automatically aims the turret to one of the speakers based on the alliance.
-public class TurretAutoAimCommand extends Command{
+public class TurretAimCommand extends Command{
     private TurretSubsystem m_TurretSubsystem;
     private Pose2d m_BlueTargetPose;
     private Pose2d m_RedTargetPose;
@@ -34,7 +33,7 @@ public class TurretAutoAimCommand extends Command{
      * Constructor
      * @param turretSubsystem the subsystem that controls the turret.
      */
-    public TurretAutoAimCommand(TurretSubsystem turretSubsystem) {
+    public TurretAimCommand(TurretSubsystem turretSubsystem) {
         m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         m_TargetPose = m_BlueTargetPose;

@@ -3,7 +3,7 @@ package frc.robot.utilities;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
-import frc.robot.commands.TurretLimeLightAimCommand;
+import frc.robot.commands.TurretRefineCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -104,7 +104,7 @@ public final class CommandFactoryUtility {
 
     // TODO trap shot
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
-        return new TurretLimeLightAimCommand(turret).withTimeout(.2) // TODO does not command does not end???
+        return new TurretRefineCommand(turret).withTimeout(.2) // TODO does not command does not end???
             .andThen(shooter.newSetSpeedsCommand(speakerUtil))
             .andThen(pivot.newSetPosCommand(speakerUtil))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_WAIT_TIME, PIVOT_DEADBAND)
