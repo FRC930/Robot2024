@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.895312713703395,
-        "y": 4.292120122701755
+        "x": 6.55340849143237,
+        "y": 4.716398663566559
       },
       "isLocked": false,
       "linkedName": "TopMidCenter"
     },
     {
       "anchor": {
-        "x": 3.0013090795412376,
-        "y": 4.9532052910259665
+        "x": 4.885895156405699,
+        "y": 4.834801977296262
       },
       "prevControl": {
-        "x": 5.951524979973037,
-        "y": 4.351321779566637
+        "x": 6.513940720189134,
+        "y": 4.331587893945019
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

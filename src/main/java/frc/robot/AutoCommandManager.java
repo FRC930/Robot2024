@@ -24,6 +24,7 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
+import frc.robot.utilities.SpeakerScoreUtility.Target;
 
 public class AutoCommandManager {
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -63,7 +64,7 @@ public class AutoCommandManager {
         TurretSubsystem turret, 
         ShooterSubsystem shooter, 
         IndexerSubsystem indexer, 
-        ElevatorSubsystem elavator, 
+        ElevatorSubsystem elevator, 
         SpeakerScoreUtility speakerUtil, 
         IntakeSubsystem intake, 
         PivotSubsystem pivot) { 
@@ -85,22 +86,19 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("MidLineLevel5", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(8.29, 7.44, new Rotation2d(0.0))));
 
+        NamedCommands.registerCommand("setFar", speakerUtil.setDesiredTargetCommand(Target.far));
+        NamedCommands.registerCommand("setMid", speakerUtil.setDesiredTargetCommand(Target.medium));
+        NamedCommands.registerCommand("setClose", speakerUtil.setDesiredTargetCommand(Target.close));
         NamedCommands.registerCommand("aimAndShoot", 
             // TODO TurretLimeLightAimCommand not exiting (temp waittimeout)
             new TurretRefineCommand(turret).withTimeout(.2)
-                //TODO: Set speaker shooting position
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
-                // TODO need to wait for it to be shoot
-                .andThen(indexer.newSetSpeedCommand(0.0)
-                    .alongWith(shooter.newSetSpeedsCommand(0.0, 0.0)))
-                );
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator))
+        );
         NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
-        NamedCommands.registerCommand("ampPosition", new SetPivotPositionCommand(pivot, CommandFactoryUtility.PIVOT_AMP_POS)
-            .alongWith(new SetElevatorPositionCommand(elavator, CommandFactoryUtility.ELEVATOR_AMP_POS)
-            .alongWith(new SetTurretPositionCommand(turret, CommandFactoryUtility.TURRET_STOW_POS))));
-        NamedCommands.registerCommand("ampShoot", 
-        CommandFactoryUtility.createAmpScoreCommand(elavator, pivot, shooter, indexer)
-            .andThen(new WaitCommand(0.5).andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elavator)))
+        NamedCommands.registerCommand("ampScore", 
+        CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)
+            .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator))
         );    
     }
 }

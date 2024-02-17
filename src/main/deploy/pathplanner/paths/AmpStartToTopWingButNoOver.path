@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.882905765811533,
-        "y": 6.9956624528633675
+        "x": 1.5706023719739761,
+        "y": 7.005529395674177
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9026396514331494,
-        "y": 6.581250854809402
+        "x": 1.5032956956391186,
+        "y": 7.0247598746269935
       },
       "isLocked": false,
-      "linkedName": "TopWing"
+      "linkedName": "AmpStart"
     },
     {
       "anchor": {
-        "x": 2.882905765811533,
-        "y": 5.555088802485297
+        "x": 2.9026396514331507,
+        "y": 6.9956624528633675
       },
       "prevControl": {
-        "x": 2.8927727086223407,
-        "y": 5.969500400539262
+        "x": 2.2908096302179826,
+        "y": 6.9956624528633675
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterWing"
+      "linkedName": "TopWingExact"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0.0
+  },
   "useDefaultConstraints": true
 }

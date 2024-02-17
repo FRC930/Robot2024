@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.912506594243253,
-        "y": 6.304976456112108
+        "x": 4.964830698892168,
+        "y": 6.314843398917567
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.1656083312166965,
-        "y": 6.37404505578143
+        "x": 6.129129950567596,
+        "y": 6.314843398917567
       },
       "isLocked": false,
       "linkedName": "WingLine1"
@@ -20,8 +20,8 @@
         "y": 5.772161544322099
       },
       "prevControl": {
-        "x": 6.987553975107983,
-        "y": 6.06816982864636
+        "x": 6.46460600613509,
+        "y": 5.69322600183662
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

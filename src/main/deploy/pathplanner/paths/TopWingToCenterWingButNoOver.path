@@ -4,31 +4,53 @@
     {
       "anchor": {
         "x": 2.9026396514331507,
-        "y": 5.545221859674489
+        "y": 6.9956624528633675
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.9026396514331507,
-        "y": 5.1297544341817956
+        "y": 6.9956624528633675
       },
       "isLocked": false,
-      "linkedName": "CenterWing"
+      "linkedName": "TopWingExact"
     },
     {
       "anchor": {
         "x": 2.9026396514331507,
-        "y": 4.114515152107228
+        "y": 6.304976456106759
       },
       "prevControl": {
         "x": 2.9026396514331507,
-        "y": 4.627975535826589
+        "y": 6.404976456106759
+      },
+      "nextControl": {
+        "x": 2.9026396514331507,
+        "y": 6.20497645610676
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.9026396514331507,
+        "y": 5.545221859674489
+      },
+      "prevControl": {
+        "x": 2.9026396514331507,
+        "y": 5.959750904690725
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BottomWingNote"
+      "linkedName": "CenterWing"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -90.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,7 +67,7 @@
   "reversed": false,
   "folder": "Robot2024",
   "previewStartingState": {
-    "rotation": -90.0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2745940876497153,
-      "y": 6.9956624528633675
+      "x": 1.5706023719739761,
+      "y": 7.005529395674177
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "setClose"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stow"
+            "name": "aimAndShoot"
           }
         },
         {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "AmpStartToTopWing"
+                  "pathName": "AmpStartToTopWingButNoOver"
                 }
               }
             ]
@@ -45,19 +45,13 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "setMid"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stow"
           }
         },
         {
@@ -73,7 +67,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TopWingToCenterWing"
+                  "pathName": "TopWingToCenterWingButNoOver"
                 }
               }
             ]
@@ -82,19 +76,13 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "setMid"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stow"
           }
         },
         {
@@ -119,19 +107,13 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "setMid"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stow"
           }
         }
       ]

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2745940876497153,
+      "x": 1.5607354291631679,
       "y": 6.9956624528633675
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "setClose"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stow"
+            "name": "aimAndShoot"
           }
         },
         {
@@ -43,12 +43,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "TopCenterToWingLine1"
@@ -57,13 +51,13 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "setFar"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stow"
+            "name": "aimAndShoot"
           }
         },
         {
@@ -86,12 +80,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "TopMidCenterToWingLine2"
@@ -100,13 +88,13 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "setFar"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stow"
+            "name": "aimAndShoot"
           }
         },
         {
@@ -126,12 +114,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
           }
         }
       ]

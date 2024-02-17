@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.2745940876497153,
-      "y": 6.9956624528633675
-    },
-    "rotation": 0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -14,13 +8,13 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "setClose"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stow"
+            "name": "aimAndShoot"
           }
         },
         {
@@ -45,19 +39,13 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "setMid"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stow"
           }
         }
       ]

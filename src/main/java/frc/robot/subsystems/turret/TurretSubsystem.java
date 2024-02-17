@@ -129,8 +129,8 @@ public class TurretSubsystem extends SubsystemBase{
         return MathUtil.applyDeadband(target - pos, TURRET_DEADBAND) == 0.0;
     }
 
-    public Command newWaitUntilSetpointCommand(double seconds) {
-        return new WaitCommand(seconds).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
+    public Command newWaitUntilSetpointCommand(double timeout) {
+        return new WaitCommand(timeout).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
     }
 
     public Command newMoveTurretCommand(double speed) {

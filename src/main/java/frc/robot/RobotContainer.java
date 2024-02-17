@@ -352,9 +352,9 @@ public class RobotContainer {
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // Sets the desired positions for the speaker
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); // Sets desired target to far
-    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); // Sets desired target to medium
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); // Sets desired target to close
+    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); // Far pillar of stage
+    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); // Close pillar of stage
+    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); // Wing Note Line shooting position
 
     // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
     //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
@@ -399,7 +399,7 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    m_driverController.pov(0).onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+    m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
   }
   
   @Deprecated
