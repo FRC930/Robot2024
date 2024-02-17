@@ -18,9 +18,9 @@ import frc.robot.IOs.TalonTurretIO;
 public class TurretSubsystem extends SubsystemBase{
 
     private static final double VIEW_CHANGE = 180.0;
-    private static final double TURRET_MIN_POS = -60.0;
-    private static final double TURRET_MAX_POS = 30.0;
-    public static final double STOW_POS = -45.0;
+    private static final double TURRET_MIN_POS = -160.0;//137.0
+    private static final double TURRET_MAX_POS = 110.0;//115.0
+    public static final double STOW_POS = 0.0;
 
     private final TalonTurretIO m_io;
 
@@ -76,14 +76,14 @@ public class TurretSubsystem extends SubsystemBase{
         return m_io.getVoltage();
     }
 
-    public void setVoltage(double volts) {
-        if (getPosition() <= TURRET_MIN_POS && volts < 0) {
-        volts = 0;
-        } else if (getPosition() >= TURRET_MAX_POS && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
-        volts = 0;
-        }
-        m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
-    }
+    // public void setVoltage(double volts) {
+    //     if (getPosition() <= TURRET_MIN_POS && volts < 0) {
+    //     volts = 0;
+    //     } else if (getPosition() >= TURRET_MAX_POS && volts > 0) { // TODO: TEST AND SWITCH EFFORTS POS/NEG IF SOFT LIMITS NOT WORKING
+    //     volts = 0;
+    //     }
+    //     m_io.setVoltage(MathUtil.clamp(volts, -12, 12));
+    // }
 
     public double getTarget() {
         return m_target;

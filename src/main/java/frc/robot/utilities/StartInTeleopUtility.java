@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -59,11 +61,11 @@ public class StartInTeleopUtility {
         if (optionalAlliance.isPresent()){
         Alliance alliance = optionalAlliance.get();
             if (alliance == Alliance.Red) {
-                temp = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
-                pose = new Pose2d(temp.getX() - 2.0, temp.getY(), temp.getRotation());
+                temp = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();//.rotateBy(Rotation2d.fromDegrees(180.0));
+                pose = new Pose2d(temp.getX() - 2.0, temp.getY(), temp.getRotation().plus(Rotation2d.fromDegrees(180.0)));
             } else {
                 temp = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
-                pose = new Pose2d(temp.getX() + 2.0, temp.getY(), temp.getRotation());
+                pose = new Pose2d(temp.getX() + 2.0, temp.getY(), temp.getRotation().plus(Rotation2d.fromDegrees(180.0)));
             }
             
             m_ResetPose.accept(pose);

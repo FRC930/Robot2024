@@ -108,7 +108,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 0;
-    private static final double TURRET_OFFSET = 281.87;
+    private static final double TURRET_OFFSET = 321.9; //TODO: if negative value, add 360
 
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
@@ -174,7 +174,7 @@ public class RobotContainer {
         .withKG(0)
         .withKS(4.0); 
 
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0.0, 0.0, new Constraints(0.0, 0.0)); //TODO: Set good vals
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.26, 0.0, 0.0, new Constraints(45.0, 0.0)); //TODO: Set good vals
     // ks overcomes friction on the turret
     private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0.0, 0.0); 
 
@@ -336,14 +336,16 @@ public class RobotContainer {
                                     .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
                               }
               ));
-
-    m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
     
-    m_turretSubsystem.setDefaultCommand(
-      new ConditionalCommand(
-        new TurretAutoAimCommand(m_turretSubsystem), 
-        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-        m_indexerSubsystem::getSensor));
+    //TODO: sussex put back in      
+    // m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
+    
+    //TODO: sussex put back in
+    // m_turretSubsystem.setDefaultCommand(
+    //   new ConditionalCommand(
+    //     new TurretAutoAimCommand(m_turretSubsystem), 
+    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+    //     m_indexerSubsystem::getSensor));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 

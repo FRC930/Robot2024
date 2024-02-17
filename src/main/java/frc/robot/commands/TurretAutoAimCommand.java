@@ -4,6 +4,7 @@ import java.sql.Driver;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,7 +58,7 @@ public class TurretAutoAimCommand extends Command{
         }
         // gets the robots position, and gets the robots heading.
         m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
-        m_CurrentRobotHeading = RobotOdometryUtility.getInstance().getRobotOdometry().getRotation().getDegrees();
+        m_CurrentRobotHeading = m_CurrentPose.getRotation().getDegrees();
         // logs the robot heding
         SmartDashboard.putNumber("AutoAim/RobotHeading", m_CurrentRobotHeading);
         
@@ -75,13 +76,15 @@ public class TurretAutoAimCommand extends Command{
 
         // calculates how far we need to rotate the turret to get to the desired position based on:
         // robots turret heading - the robots base heading
-        m_DesiredHeading = Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading;
+        m_DesiredHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading, 360);
 
         //Logs the desired heading
+        SmartDashboard.putNumber("AutoAim/Math", Math.toDegrees(Math.atan2(ty - ry, tx - rx)));
         SmartDashboard.putNumber("AutoAim/DesiredHeading", m_DesiredHeading);
 
         // actually moves the robots turret to the desired position
-        m_TurretSubsystem.setTarget(m_DesiredHeading);
+        // TODO sussex back in
+        //m_TurretSubsystem.setTarget(m_DesiredHeading);
     }
 
     // Makes it so that this command never ends.
