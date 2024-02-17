@@ -47,7 +47,7 @@ public class TurretSubsystem extends SubsystemBase{
 
         m_target = 0.0;
         m_isPosSet = false;
-        m_isTurretLocked = false;
+        m_isTurretLocked = true;
     }
 
     /**
