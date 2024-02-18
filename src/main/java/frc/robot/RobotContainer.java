@@ -120,7 +120,7 @@ public class RobotContainer {
 
     //Use max speed from tuner constants from webpage
     final double MaxSpeed = TunerConstants.kMaxSpeed;
-    final double MaxAngularRate = 1.5 * Math.PI; // 3/4 a rotation per second max angular velocity  
+    final double MaxAngularRate = 2.0 * Math.PI; // 1 rotation per second max angular velocity  
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
