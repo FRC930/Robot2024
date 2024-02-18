@@ -53,6 +53,8 @@ import frc.robot.utilities.SpeakerScoreUtility.Target;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -96,7 +98,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-    private final boolean UseLimeLightAprilTag = false; 
+    private final boolean UseLimeLightAprilTag = true; 
 
     private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -483,6 +485,7 @@ public class RobotContainer {
 
           if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
               m_StartInTeleopUtility.updateTags();
+              Logger.recordOutput("LimeLightOdometry/Pose", lastResult.getBotPose2d_wpiBlue());
               drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
           }
       }
