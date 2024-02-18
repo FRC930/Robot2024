@@ -19,7 +19,7 @@ public final class CommandFactoryUtility {
     public static final double ELEVATOR_STOW_POS = 0.0;
     public static final double ELEVATOR_AMP_POS = 8.0;
     
-    public static final double PIVOT_STOW_POS = 0.0;
+    public static final double PIVOT_STOW_POS = 10.0;
     public static final double PIVOT_AMP_POS = 45.0;
     public static final double PIVOT_INTAKE_POS = 45.0;
 

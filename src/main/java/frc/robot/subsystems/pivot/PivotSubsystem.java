@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
 
 /**
@@ -31,6 +32,8 @@ public class PivotSubsystem extends SubsystemBase{
     public PivotSubsystem(TalonPosIO io) {
         m_io = io;
         pivotName = "" + this.hashCode();
+        //Setting stow pos on robot startup
+        setPosition(CommandFactoryUtility.PIVOT_STOW_POS);
     }
 
     /**
