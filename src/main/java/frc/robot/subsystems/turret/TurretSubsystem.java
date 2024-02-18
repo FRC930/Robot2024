@@ -108,7 +108,7 @@ public class TurretSubsystem extends SubsystemBase{
 
             effort += feedforward;
 
-            m_io.setVoltage(effort);
+            // m_io.setVoltage(effort); // commented for safety, turret is stuck at -141.89999 TODO: Find encoder issue
         }
 
         m_io.runSim();

@@ -109,7 +109,7 @@ public class RobotContainer {
 
     //--DIO IDS--\\
 
-    private static final int TURRET_ENCODER_DIO = 0;
+    private static final int TURRET_ENCODER_DIO = 1;
     private static final double TURRET_OFFSET = 321.9; //TODO: if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
@@ -342,15 +342,15 @@ public class RobotContainer {
                               }
               ));
 
-    //m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
+    // m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
 
-    //m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
+    // m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
     
-    m_turretSubsystem.setDefaultCommand(
-      new ConditionalCommand(
-        new TurretAimCommand(m_turretSubsystem), 
-        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
+    // m_turretSubsystem.setDefaultCommand(
+    //   new ConditionalCommand(
+    //     new TurretAimCommand(m_turretSubsystem), 
+    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+    //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
@@ -386,7 +386,10 @@ public class RobotContainer {
       .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
     
     // Intake button TODO Test
-    m_driverController.leftBumper().whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)); 
+    m_driverController.leftBumper().whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem)
+          .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
+      ;
 
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
@@ -402,7 +405,7 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    m_driverController.pov(0).onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+    // m_driverController.pov(0).onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
   }
   
   @Deprecated

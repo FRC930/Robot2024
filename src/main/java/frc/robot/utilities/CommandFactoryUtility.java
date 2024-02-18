@@ -1,6 +1,7 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretRefineCommand;
@@ -72,10 +73,12 @@ public final class CommandFactoryUtility {
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
         return indexer.newUnlessNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
-            .until(() -> turret.atSetpoint())
+            // .andThen(turret.newWaitUntilSetpointCommand(TURRET_WAIT_TIME))
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
-            .andThen(indexer.newUntilNoteFoundCommand()); // Dont stop intake until note found
+            .andThen(indexer.newUntilNoteFoundCommand())
+            .andThen(intake.newSetSpeedCommand(0.0))
+            .andThen(indexer.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
     public static Command createAmpScoreCommand(ElevatorSubsystem elevator, PivotSubsystem pivot, ShooterSubsystem shooter, IndexerSubsystem indexer) {
@@ -103,7 +106,7 @@ public final class CommandFactoryUtility {
 
     // TODO trap shot
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
-        return new TurretRefineCommand(turret).withTimeout(2.0) // TODO does not command does not end???
+        return new PrintCommand("Shooting!!!!")//new TurretRefineCommand(turret).withTimeout(2.0) // TODO does not command does not end???
             .andThen(shooter.newSetSpeedsCommand(speakerUtil))
             .andThen(pivot.newSetPosCommand(speakerUtil))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_WAIT_TIME)
