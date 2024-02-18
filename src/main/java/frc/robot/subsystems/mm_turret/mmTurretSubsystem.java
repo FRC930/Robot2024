@@ -24,7 +24,6 @@ public class mmTurretSubsystem extends SubsystemBase{
     private static final double VIEW_CHANGE = 180.0;
     private static final double TURRET_MIN_POS = -160.0;//137.0
     private static final double TURRET_MAX_POS = 110.0;//115.0
-    public static final double STOW_POS = 0.0;
     public static final double TURRET_DEADBAND = 2.0;
     private boolean m_isTurretLocked;
 
@@ -46,7 +45,7 @@ public class mmTurretSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        m_io.setTarget(MathUtil.clamp(angle,TURRET_MIN_POS,TURRET_MAX_POS));
+        m_io.setTarget(MathUtil.clamp(angle,TURRET_MIN_POS,TURRET_MAX_POS) + VIEW_CHANGE);
     }
 
     /**
@@ -55,7 +54,7 @@ public class mmTurretSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public double getTarget() {
-        return m_io.getTarget();
+        return m_io.getTarget() - VIEW_CHANGE;
     }
 
     /**
