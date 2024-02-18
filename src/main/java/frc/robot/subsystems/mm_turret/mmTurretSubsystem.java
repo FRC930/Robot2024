@@ -21,7 +21,7 @@ public class mmTurretSubsystem extends SubsystemBase{
 
     private final String turretName;
 
-    private static final double VIEW_CHANGE = 180.0;
+    private static final double VIEW_CHANGE = 0.0;
     private static final double TURRET_MIN_POS = -160.0;//137.0
     private static final double TURRET_MAX_POS = 110.0;//115.0
     public static final double TURRET_DEADBAND = 2.0;

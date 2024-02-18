@@ -113,7 +113,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 1;
-    private static final double TURRET_OFFSET = 193.0; // -167.0 //TODO: if negative value, add 360
+    private static final double TURRET_OFFSET = 0.0;// 193.0; // -167.0 //TODO: if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
@@ -377,11 +377,11 @@ public class RobotContainer {
 
     // m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
     
-    m_turretSubsystem.setDefaultCommand(
-      new ConditionalCommand(
-        new TurretAimCommand(m_turretSubsystem), 
-        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
+    // m_turretSubsystem.setDefaultCommand(
+    //   new ConditionalCommand(
+    //     new TurretAimCommand(m_turretSubsystem), 
+    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+    //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
