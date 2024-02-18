@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
@@ -24,8 +25,8 @@ public class TurretRefineCommand extends Command{
         m_TurretPosition = m_TurretSubsystem.getPosition();
         m_AprilTagAngle = m_LimeLightDetectionUtility.get_tx();
 
-        SmartDashboard.putNumber("TurretAim/TX", m_AprilTagAngle);
-        SmartDashboard.putBoolean("TurretAim/isFinished", (Math.abs(m_AprilTagAngle) <= m_DeadBand) && (m_AprilTagAngle != 0.0));
+        Logger.recordOutput("TurretAim/TX", m_AprilTagAngle);
+        Logger.recordOutput("TurretAim/isFinished", (Math.abs(m_AprilTagAngle) <= m_DeadBand) && (m_AprilTagAngle != 0.0));
 
         m_TurretSubsystem.setTarget(m_TurretPosition + m_AprilTagAngle);
     }
