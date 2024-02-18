@@ -24,22 +24,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "AmpStartToTopCenter"
-                }
-              }
-            ]
+            "pathName": "AmpStartToTopCenter"
           }
         },
         {
@@ -61,22 +48,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "WingLine1ToTopMidCenter"
-                }
-              }
-            ]
+            "pathName": "WingLine1ToTopMidCenter"
           }
         },
         {
@@ -98,22 +72,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "WingLine2ToMidCenter"
-                }
-              }
-            ]
+            "pathName": "WingLine2ToMidCenter"
           }
         }
       ]

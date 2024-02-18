@@ -18,22 +18,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "AmpStartToTopWing"
-                }
-              }
-            ]
+            "pathName": "AmpStartToTopWing"
           }
         },
         {
