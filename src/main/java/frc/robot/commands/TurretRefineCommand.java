@@ -2,19 +2,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 
 public class TurretRefineCommand extends Command{
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-turret");
     
-    private TurretSubsystem m_TurretSubsystem;
+    private mmTurretSubsystem m_TurretSubsystem;
     private double m_TurretPosition;
     private double m_AprilTagAngle;
     private double m_DeadBand = 1.0;
 
-    public TurretRefineCommand(TurretSubsystem turretSubsystem) {
+    public TurretRefineCommand(mmTurretSubsystem turretSubsystem) {
         m_TurretSubsystem = turretSubsystem;
         addRequirements(m_TurretSubsystem);
     }
@@ -27,7 +27,7 @@ public class TurretRefineCommand extends Command{
         SmartDashboard.putNumber("TurretAim/TX", m_AprilTagAngle);
         SmartDashboard.putBoolean("TurretAim/isFinished", (Math.abs(m_AprilTagAngle) <= m_DeadBand) && (m_AprilTagAngle != 0.0));
 
-        m_TurretSubsystem.setTarget(m_TurretPosition + m_AprilTagAngle);
+        m_TurretSubsystem.setPosition(m_TurretPosition + m_AprilTagAngle);
     }
 
     @Override

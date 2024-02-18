@@ -10,12 +10,12 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 
 public final class CommandFactoryUtility {
 
     //#region positions
-    public static final double TURRET_STOW_POS = TurretSubsystem.STOW_POS;
+    public static final double TURRET_STOW_POS = mmTurretSubsystem.STOW_POS;
 
     public static final double ELEVATOR_STOW_POS = 0.0;
     public static final double ELEVATOR_AMP_POS = 8.0;
@@ -70,7 +70,7 @@ public final class CommandFactoryUtility {
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS));
     }
 
-    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
+    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
         return indexer.newUnlessNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
             .andThen(turret.newWaitUntilSetpointCommand(TURRET_WAIT_TIME))
@@ -105,7 +105,7 @@ public final class CommandFactoryUtility {
     }
 
     // TODO trap shot
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
         return new TurretRefineCommand(turret).withTimeout(2.0)
             .andThen(shooter.newSetSpeedsCommand(speakerUtil))
             .andThen(pivot.newSetPosCommand(speakerUtil))

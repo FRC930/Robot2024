@@ -19,8 +19,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
@@ -30,7 +30,7 @@ public class AutoCommandManager {
 
     public AutoCommandManager(SwerveDrivetrainSubsystem drivetrain, 
         LimeLightDetectionUtility gamePieceUtility,
-        TurretSubsystem turret, 
+        mmTurretSubsystem turret, 
         ShooterSubsystem shooter, 
         IndexerSubsystem indexer, 
         ElevatorSubsystem elevator, 
@@ -60,7 +60,7 @@ public class AutoCommandManager {
 
     public void configureNamedCommands(SwerveDrivetrainSubsystem drivetrain, 
         LimeLightDetectionUtility gamePieceUtility, 
-        TurretSubsystem turret, 
+        mmTurretSubsystem turret, 
         ShooterSubsystem shooter, 
         IndexerSubsystem indexer, 
         ElevatorSubsystem elavator, 
