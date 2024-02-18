@@ -47,7 +47,7 @@ public final class CommandFactoryUtility {
 
     public static final double ELEVATOR_WAIT_TIME = 1.0;
 
-    public static final double TURRET_WAIT_TIME = 0.25;
+    public static final double TURRET_WAIT_TIME = 1.0;
 
     private static final double SHOOTER_WAIT_TIME = 1.0;
 

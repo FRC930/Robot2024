@@ -47,7 +47,7 @@ public class mmTurretIORobot implements TalonPosIO{
         m_motor.setInverted(false); //with metal gears it was not inverted 
 
         // Zeros motor encoder using through bore
-        m_encoder.setPositionOffset(encoderOffset);
+        m_encoder.setPositionOffset(Units.degreesToRotations(encoderOffset));
 
         Phoenix6Utility.applyConfigAndRetry(m_motor,
             () -> m_motor.getConfigurator().setPosition(m_encoder.getAbsolutePosition()));
