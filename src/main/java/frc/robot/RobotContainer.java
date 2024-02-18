@@ -52,6 +52,7 @@ import frc.robot.utilities.SpeakerScoreUtility.Target;
 
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -307,37 +308,13 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest( // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive
-                            () -> {  
-                                DoubleSupplier xSupplier = m_driverController::getLeftY;   
-                                DoubleSupplier ySupplier = m_driverController::getLeftX;
-                                DoubleSupplier omegaSupplier = m_driverController::getRightX;       
-                                   
-                                // Apply deadband
-                                double linearMagnitude = MathUtil.applyDeadband(
-                                                Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), JOYSTICK_DEADBAND);
-                                Rotation2d linearDirection =
-                                        new Rotation2d(-xSupplier.getAsDouble(), -ySupplier.getAsDouble());
-
-                                // Square values
-                                linearMagnitude = linearMagnitude * linearMagnitude;
-
-                                // Calculate new linear velocity
-                                Translation2d linearVelocity =
-                                        new Pose2d(new Translation2d(), linearDirection)
-                                                .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
-                                                .getTranslation();
-                                                
-                                // Squaring the omega value and applying a deadband 
-                                double omega = MathUtil.applyDeadband(-omegaSupplier.getAsDouble(), JOYSTICK_ROTATIONAL_DEADBAND);
-                                omega = Math.copySign(omega * omega, omega);
-
-
-                                  return drive.withVelocityX(linearVelocity.getX() * MaxSpeed * PERCENT_SPEED)
-                                    .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
-                                    .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
-                              }
-              ));
+            // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
+            drivetrain.applyRequest(
+              joystickDriveWithDeadband(
+                m_driverController::getLeftY,
+                m_driverController::getLeftX,
+                m_driverController::getRightX)
+            ));
 
     //m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
 
@@ -400,6 +377,48 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
 
     m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+  }
+
+  /** 
+   * <h3>joystickDriveWithDeadband</h3>
+   * Applies deadband to joystick values and returns a request for drivetrain
+   * 
+   * <b>Code originally from team number 1091 to help deal with deadband on joystick for swerve drive</b>
+   * @param xSupplier supplier for joystick's x axis
+   * @param ySupplier supplier for joystick's y axis
+   * @param omegaSupplier supplier for omega
+   * @return request for drivetrain
+   */
+  private Supplier<SwerveRequest> joystickDriveWithDeadband(DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
+    return () -> {  
+        double xValue = xSupplier.getAsDouble();   
+        double yValue = ySupplier.getAsDouble();
+        double omegaValue = omegaSupplier.getAsDouble();       
+           
+        // Apply deadband
+        double linearMagnitude = MathUtil.applyDeadband(
+                        Math.hypot(xValue, yValue), JOYSTICK_DEADBAND);
+        Rotation2d linearDirection =
+                new Rotation2d(-xValue, -yValue);
+
+        // Square values
+        linearMagnitude = linearMagnitude * linearMagnitude;
+
+        // Calculate new linear velocity
+        Translation2d linearVelocity =
+                new Pose2d(new Translation2d(), linearDirection)
+                        .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+                        .getTranslation();
+                        
+        // Squaring the omega value and applying a deadband 
+        double omega = MathUtil.applyDeadband(-omegaValue, JOYSTICK_ROTATIONAL_DEADBAND);
+        omega = Math.copySign(omega * omega, omega);
+
+
+        return drive.withVelocityX(linearVelocity.getX() * MaxSpeed * PERCENT_SPEED)
+          .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
+          .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
+      };
   }
   
   @Deprecated
