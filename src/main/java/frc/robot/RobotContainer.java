@@ -98,7 +98,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-    private final boolean UseLimeLightAprilTag = true; 
+    private final boolean UseLimeLightAprilTag = true;
+    private final boolean VISION_UPDATE_ODOMETRY = true;
 
     private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -495,7 +496,9 @@ public class RobotContainer {
           if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
               m_StartInTeleopUtility.updateTags();
               Logger.recordOutput("LimeLightOdometry/Pose", lastResult.getBotPose2d_wpiBlue());
-              drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
+              if (VISION_UPDATE_ODOMETRY) {
+                drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
+              }
           }
       }
   }
