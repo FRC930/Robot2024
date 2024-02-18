@@ -15,7 +15,7 @@ import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 public final class CommandFactoryUtility {
 
     //#region positions
-    public static final double TURRET_STOW_POS = mmTurretSubsystem.STOW_POS;
+    public static final double TURRET_STOW_POS = 180.0;
 
     public static final double ELEVATOR_STOW_POS = 0.0;
     public static final double ELEVATOR_AMP_POS = 8.0;

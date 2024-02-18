@@ -271,7 +271,7 @@ public class RobotContainer {
     private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(
         Robot.isReal()
           ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
-          : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET));
+          : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,180.0));
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 1, shooterS0C, shooterMMC) ,
@@ -377,11 +377,11 @@ public class RobotContainer {
 
     // m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
     
-    // m_turretSubsystem.setDefaultCommand(
-    //   new ConditionalCommand(
-    //     new TurretAimCommand(m_turretSubsystem), 
-    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-    //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
+    m_turretSubsystem.setDefaultCommand(
+      new ConditionalCommand(
+        new TurretAimCommand(m_turretSubsystem), 
+        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
