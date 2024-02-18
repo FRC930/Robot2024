@@ -179,9 +179,15 @@ public class RobotContainer {
         .withKS(4.0); 
 
         // 0.26 kp. Set to 0.1 for testing
-    private final ProfiledPIDController turretPID = new ProfiledPIDController(0.1, 0.0, 0.0, new Constraints(0.1, 0.0)); //TODO: Set good vals
+    private final ProfiledPIDController turretPID = new ProfiledPIDController(
+      // 0.1, 0.0, 0.0, new Constraints(0.1, 0.0) 
+      0, 0, 0, new Constraints(0.0, 0.0) // zero'd values for safety, we dont want turret to move
+    ); //TODO: Set good vals
     // ks overcomes friction on the turret
-    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(0.375, 0.0, 0.0); 
+    private final SimpleMotorFeedforward turretFF = new SimpleMotorFeedforward(
+      // 0.375, 0.0, 0.0
+      0, 0, 0 // zero'd values for safety, we dont want turret to move
+    ); 
 
     
     //--MOTION MAGIC CONSTANTS--\\
