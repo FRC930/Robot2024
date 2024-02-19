@@ -52,9 +52,7 @@ public class mmTurretIORobot implements TalonPosIO{
         // Zeros motor encoder using through bore
         m_encoder.setPositionOffset(Units.degreesToRotations(encoderOffset));
 
-        // if(!Robot.isReal()) {
-        //     configure();
-        // } // else disableInit() will run the configuration (delaying so bore encoder can has time to start up)
+        // configure() will run the configuration in disableInit() (delaying so bore encoder can has time to start up)
     }
 
     @Override
