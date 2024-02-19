@@ -147,8 +147,8 @@ public class TunerConstants {
     // SysId  drivetrain (uses codriver control to run tests)
     public static final SwerveDrivetrainSubsystem DriveTrain = new SysIdRoutineForSwerveDrive(SysIdTypeOfTest.Translation, 1, DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight)
-                .withRampRate(Volts.of(1).per(Seconds.of(1)))
-                .withVolts(Volts.of(5));
+                .withRampRate(Volts.of(0.5).per(Seconds.of(1)))
+                .withVolts(Volts.of(4));
 //     public static final SwerveDrivetrainSubsystem DriveTrain = new SwerveDrivetrainSubsystem(DrivetrainConstants, FrontLeft,
 //             FrontRight, BackLeft, BackRight);
 }
