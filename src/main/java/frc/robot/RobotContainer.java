@@ -519,7 +519,8 @@ public class RobotContainer {
 
           if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
               m_StartInTeleopUtility.updateTags();
-              Logger.recordOutput("LimeLightOdometry/Pose", lastResult.getBotPose2d_wpiBlue());
+              Logger.recordOutput("LimeLightOdometry/" + limeLightName, lastResult.targets_Fiducials[0].fiducialID);
+              Logger.recordOutput("LimeLightOdometry/" + limeLightName, lastResult.getBotPose2d_wpiBlue());              
               if (VISION_UPDATE_ODOMETRY) {
                 drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
               }
