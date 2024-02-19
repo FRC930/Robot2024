@@ -1,21 +1,21 @@
 package frc.robot.commands;
 
-import java.sql.Driver;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.utilities.RobotOdometryUtility;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
 //Automatically aims the turret to one of the speakers based on the alliance.
-public class TurretAutoAimCommand extends Command{
-    private TurretSubsystem m_TurretSubsystem;
+public class TurretAimCommand extends Command{
+    private mmTurretSubsystem m_TurretSubsystem;
     private Pose2d m_BlueTargetPose;
     private Pose2d m_RedTargetPose;
     private Pose2d m_TargetPose;
@@ -34,7 +34,7 @@ public class TurretAutoAimCommand extends Command{
      * Constructor
      * @param turretSubsystem the subsystem that controls the turret.
      */
-    public TurretAutoAimCommand(TurretSubsystem turretSubsystem) {
+    public TurretAimCommand(mmTurretSubsystem turretSubsystem) {
         m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         m_TargetPose = m_BlueTargetPose;
@@ -57,7 +57,7 @@ public class TurretAutoAimCommand extends Command{
         }
         // gets the robots position, and gets the robots heading.
         m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
-        m_CurrentRobotHeading = RobotOdometryUtility.getInstance().getRobotOdometry().getRotation().getDegrees();
+        m_CurrentRobotHeading = m_CurrentPose.getRotation().getDegrees();
         // logs the robot heding
         SmartDashboard.putNumber("AutoAim/RobotHeading", m_CurrentRobotHeading);
         
@@ -75,13 +75,15 @@ public class TurretAutoAimCommand extends Command{
 
         // calculates how far we need to rotate the turret to get to the desired position based on:
         // robots turret heading - the robots base heading
-        m_DesiredHeading = Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading;
+        m_DesiredHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading, 360);
 
         //Logs the desired heading
+        SmartDashboard.putNumber("AutoAim/Math", Math.toDegrees(Math.atan2(ty - ry, tx - rx)));
         SmartDashboard.putNumber("AutoAim/DesiredHeading", m_DesiredHeading);
 
         // actually moves the robots turret to the desired position
-        m_TurretSubsystem.setPosition(m_DesiredHeading);
+        // TODO sussex back in
+        //m_TurretSubsystem.setTarget(m_DesiredHeading);
     }
 
     // Makes it so that this command never ends.

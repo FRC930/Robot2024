@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.turret.TurretSubsystem;
 
 /**
  * <h3>MechanismViewer</h3>
@@ -37,7 +37,7 @@ public class MechanismViewer {
     private PivotSubsystem m_pivot;
     private ElevatorSubsystem m_shootingElevator;
     private ElevatorSubsystem m_climbingElevator;
-    private TurretSubsystem m_turret;
+    private mmTurretSubsystem m_turret;
 
     /**
      * <h3>MechanismViewer</h3>
@@ -48,7 +48,7 @@ public class MechanismViewer {
      * @param climbingElevator Elevator subsystem used for endgame
      * @param turret Turret subsystem
      */
-    public MechanismViewer(PivotSubsystem pivot,ElevatorSubsystem shootingElevator, ElevatorSubsystem climbingElevator, TurretSubsystem turret) {
+    public MechanismViewer(PivotSubsystem pivot,ElevatorSubsystem shootingElevator, ElevatorSubsystem climbingElevator, mmTurretSubsystem turret) {
         m_pivot = pivot;
         m_shootingElevator = shootingElevator;
         m_climbingElevator = climbingElevator;
@@ -171,12 +171,12 @@ public class MechanismViewer {
 
     public void periodic() {
         // Updates position of mechanisms
-        m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getHeight()+0.2));
-        m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTargetHeight()+0.2));
+        m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getPosition()+0.2));
+        m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTarget()+0.2));
         m_pivotControl.setAngle(-90+m_pivot.getPosition());
-        m_pivotControlTarget.setAngle(-90+m_pivot.getSetPoint());
-        m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getHeight())+0.2);
-        m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTargetHeight())+0.2);
+        m_pivotControlTarget.setAngle(-90+m_pivot.getTarget());
+        m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getPosition())+0.2);
+        m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTarget())+0.2);
         m_turretControl.setAngle(m_turret.getPosition());
         m_turretControlTarget.setAngle(m_turret.getTarget());
        

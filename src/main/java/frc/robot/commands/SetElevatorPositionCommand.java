@@ -16,7 +16,7 @@ public class SetElevatorPositionCommand extends Command {
     
     @Override
     public void initialize() {
-        m_elevator.setTargetHeight(m_targetPos);
+        m_elevator.setTarget(m_targetPos);
     }
 
     @Override

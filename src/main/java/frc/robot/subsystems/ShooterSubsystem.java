@@ -1,8 +1,12 @@
 package frc.robot.subsystems;
 
- import edu.wpi.first.wpilibj2.command.InstantCommand;
+ import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
+import frc.robot.utilities.SpeakerScoreUtility;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -13,6 +17,8 @@ import org.littletonrobotics.junction.Logger;
 public class ShooterSubsystem extends SubsystemBase{
     private TalonVelocityIO IO_Left;
     private TalonVelocityIO IO_Right;
+
+    private final double VELOCITY_DEADBAND = 2.0;
 
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
         IO_Left = LeftIO;
@@ -111,8 +117,38 @@ public class ShooterSubsystem extends SubsystemBase{
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/SetPoint" ,getRightTargetVelocity());
     }
 
-    public InstantCommand newSetSpeedsCommand(double leftSpeed, double rightSpeed) {
+    public Command newSetSpeedsCommand(double leftSpeed, double rightSpeed) {
         return new InstantCommand(() -> setSpeed(leftSpeed, rightSpeed), this);
+    }
+
+    public Command newSetSpeedsCommand(SpeakerScoreUtility speakerUtil) {
+        return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed()), this);
+    }
+
+    public Command shootTo(ShooterAction target) {
+        return newSetSpeedsCommand(target.leftWheelSpeed, target.rightWheelSpeed);
+    }
+
+    enum ShooterAction {
+        SPEAKER(0.7,0.8),
+        AMP(-0.3,-0.3),
+        EJECT(0.2,0.2);
+        
+        public final double leftWheelSpeed;
+        public final double rightWheelSpeed;
+
+        private ShooterAction(double leftSpeed, double rightSpeed) {
+            leftWheelSpeed = leftSpeed;
+            rightWheelSpeed = rightSpeed;
+        }
+    }
+
+    public boolean atSetpoint() {
+        return MathUtil.applyDeadband(getRightTargetVelocity() - getRightMotorSpeed(), VELOCITY_DEADBAND) == 0.0 && MathUtil.applyDeadband(getLeftTargetVelocity() - getLeftMotorSpeed(),VELOCITY_DEADBAND) == 0.0;
+    }
+
+    public Command newWaitUntilSetpointCommand(double timeout) {
+        return new WaitCommand(timeout).until(() -> atSetpoint());
     }
 }
 

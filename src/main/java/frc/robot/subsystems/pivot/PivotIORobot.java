@@ -74,4 +74,10 @@ public class PivotIORobot implements TalonPosIO{
     public double getTarget() {
         return Units.rotationsToDegrees(((MotionMagicVoltage)m_motor.getAppliedControl()).Position);
     }
+
+    @Override
+    public void configure() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'configure'");
+    }
 }
