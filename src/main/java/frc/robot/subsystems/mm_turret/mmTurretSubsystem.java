@@ -89,6 +89,7 @@ public class mmTurretSubsystem extends SubsystemBase{
         m_io.runSim();
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity", getVelocity());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Angle", getPosition());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/MathedAngle", Math.IEEEremainder(getPosition(), 360.0));
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", getTarget());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", m_io.getVoltage());
         

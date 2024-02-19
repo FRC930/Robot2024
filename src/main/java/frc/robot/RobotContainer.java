@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.IOs.TalonPosIO;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
@@ -113,7 +114,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 1;
-    private static final double TURRET_OFFSET = 0.0;// 193.0; // -167.0 //TODO: if negative value, add 360
+    private static final double TURRET_OFFSET = 13.7;// 193.0; // -167.0 //TODO: if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
@@ -268,10 +269,11 @@ public class RobotContainer {
     //     : new TurretIOSim(6, TURRET_ENCODER_DIO, CANBUS, 40, TURRET_OFFSET), 
     //     turretPID, turretFF);
 
-    private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(
-        Robot.isReal()
-          ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
-          : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,180.0));
+    private final TalonPosIO m_turretIO = Robot.isReal()
+    ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
+    : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,0.0);
+
+    private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(m_turretIO);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 1, shooterS0C, shooterMMC) ,
@@ -534,6 +536,11 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_StartInTeleopUtility.updateStartingPosition();
+  }
+
+  // Configures
+  public void disabledInit() {
+    m_turretIO.configure();
   }
 }
 
