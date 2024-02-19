@@ -1,12 +1,13 @@
 package frc.robot.subsystems.mm_turret;
 
 
+import java.util.Map;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -51,16 +52,18 @@ public class mmTurretIORobot implements TalonPosIO{
         // Zeros motor encoder using through bore
         m_encoder.setPositionOffset(Units.degreesToRotations(encoderOffset));
 
-        // configure();
-        
+        // if(!Robot.isReal()) {
+        //     configure();
+        // } // else disableInit() will run the configuration (delaying so bore encoder can has time to start up)
     }
 
     @Override
     public void configure() {
+        // TODO WHAT IF ENCODER DISCONNECTED OR BROKEN (INFINITE LOOP!!!!)
         try {
             while(!m_encoder.isConnected()) {
                 Thread.sleep(10);
-                System.out.println("****************************AJGAIGJADIGJAEDGJAUGEAG******************************************************************************");
+                System.out.println("****************************DUTY CYCLE ENCODER NOT RUNNING******************************************************************************");
             } 
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -99,6 +102,7 @@ public class mmTurretIORobot implements TalonPosIO{
 
     @Override
     public double getPos() {
+        // TODO remove logging that is not needed
         Logger.recordOutput("mmTurretSubsystem/ChangedAbsoluteDegrees", Units.rotationsToDegrees(m_encoder.getAbsolutePosition() - m_encoder.getPositionOffset()));
         Logger.recordOutput("mmTurretSubsystem/MathedAbsoluteDegrees", Math.IEEEremainder(Units.rotationsToDegrees(m_encoder.getAbsolutePosition() - m_encoder.getPositionOffset()), 360.0));
         Logger.recordOutput("mmTurretSubsystem/InitialAbsoluteDegrees", Units.rotationsToDegrees(m_encoder.getAbsolutePosition()));
@@ -124,6 +128,12 @@ public class mmTurretIORobot implements TalonPosIO{
 
     @Override
     public double getTarget() {
-        return Units.rotationsToDegrees(((MotionMagicVoltage)m_motor.getAppliedControl()).Position);
+        // Position configuration may not be available yet, so allow for Position not being available yet
+        Map<String, String> map = m_motor.getAppliedControl().getControlInfo();
+        String position = map.get("Position");
+        if(position == null) {
+            position = "0.0";
+        }
+        return Units.rotationsToDegrees(Double.valueOf(position));
     }
 }

@@ -101,6 +101,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
+    // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
+    private boolean m_subsystemsConfigured = false;
+
     private final boolean UseLimeLightAprilTag = true;
     private final boolean VISION_UPDATE_ODOMETRY = true;
 
@@ -540,7 +543,11 @@ public class RobotContainer {
 
   // Configures
   public void disabledInit() {
-    m_turretIO.configure();
+    // Only configure once
+    if(!m_subsystemsConfigured) {
+      m_turretIO.configure();
+      m_subsystemsConfigured = true;
+    }
   }
 }
 
