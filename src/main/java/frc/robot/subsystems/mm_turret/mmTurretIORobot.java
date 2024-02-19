@@ -74,9 +74,14 @@ public class mmTurretIORobot implements TalonPosIO{
         Logger.recordOutput("mmTurretSubsystem/Offset",
                 Units.rotationsToDegrees(offset));
 
-        double position = Units.degreesToRotations(Math.IEEEremainder(Units.rotationsToDegrees(absolutePos - offset),360.0));
-
-        // double position = Math.IEEEremainder(absolutePos - offset, 1.0);
+        // The same
+        // double position = Units.degreesToRotations(Math.IEEEremainder(Units.rotationsToDegrees(absolutePos - offset),360.0));
+        double position = Math.IEEEremainder(absolutePos - offset, 1.0);
+        
+        // double position = 
+        //     (absolutePos - offset > 0.5) // Change negative values to wrap around back to 0.0-1.0
+        //         ? absolutePos - offset - 1.0
+        //         : absolutePos - offset;
 
 
 
