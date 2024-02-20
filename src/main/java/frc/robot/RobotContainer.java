@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.IOs.TalonPosIO;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
@@ -100,7 +101,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-    private final boolean UseLimeLightAprilTag = true;
+    // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
+    private boolean m_subsystemsConfigured = false;
+
+    private final boolean UseLimeLightAprilTag = false;
     private final boolean VISION_UPDATE_ODOMETRY = true;
 
     private static final double POV_PERCENT_SPEED = 1.0;
@@ -113,7 +117,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 1;
-    private static final double TURRET_OFFSET = 193.0; // -167.0 //TODO: if negative value, add 360
+    private static final double TURRET_OFFSET = 13.7;// 193.0; // -167.0 //TODO: if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
@@ -183,12 +187,12 @@ public class RobotContainer {
 
     private final Slot0Configs turretS0C =
       new Slot0Configs()
-        .withKP(0.0)
+        .withKP(175.0)
         .withKI(0.0) 
         .withKD(0.0) 
         .withKA(0.0) 
         .withKG(0.0) // MotionMagic voltage
-        .withKS(0.0) 
+        .withKS(0.35) 
         .withKV(0.0);
 
         // 0.26 kp. Set to 0.1 for testing
@@ -233,8 +237,8 @@ public class RobotContainer {
 
     private final MotionMagicConfigs turretMMC =
       new MotionMagicConfigs() // Currently set slow
-        .withMotionMagicAcceleration(0.0) 
-        .withMotionMagicCruiseVelocity(0.0)
+        .withMotionMagicAcceleration(10.0) 
+        .withMotionMagicCruiseVelocity(0.5)
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
     
@@ -268,10 +272,11 @@ public class RobotContainer {
     //     : new TurretIOSim(6, TURRET_ENCODER_DIO, CANBUS, 40, TURRET_OFFSET), 
     //     turretPID, turretFF);
 
-    private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(
-        Robot.isReal()
-          ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
-          : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,180.0));
+    private final TalonPosIO m_turretIO = Robot.isReal()
+    ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
+    : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,0.0);
+
+    private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(m_turretIO);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 1, shooterS0C, shooterMMC) ,
@@ -377,11 +382,11 @@ public class RobotContainer {
 
     // m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
     
-    m_turretSubsystem.setDefaultCommand(
-      new ConditionalCommand(
-        new TurretAimCommand(m_turretSubsystem), 
-        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
+    // m_turretSubsystem.setDefaultCommand(
+    //   new ConditionalCommand(
+    //     new TurretAimCommand(m_turretSubsystem), 
+    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+    //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
           
     // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
@@ -535,6 +540,15 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_StartInTeleopUtility.updateStartingPosition();
+  }
+
+  // Configures
+  public void disabledInit() {
+    // Only configure once
+    if(!m_subsystemsConfigured) {
+      m_turretIO.configure();
+      m_subsystemsConfigured = true;
+    }
   }
 }
 

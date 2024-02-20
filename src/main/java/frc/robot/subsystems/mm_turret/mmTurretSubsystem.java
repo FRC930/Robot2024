@@ -3,6 +3,7 @@ package frc.robot.subsystems.mm_turret;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +22,7 @@ public class mmTurretSubsystem extends SubsystemBase{
 
     private final String turretName;
 
-    private static final double VIEW_CHANGE = 180.0;
+    private static final double VIEW_CHANGE = 0.0;
     private static final double TURRET_MIN_POS = -160.0;//137.0
     private static final double TURRET_MAX_POS = 110.0;//115.0
     public static final double TURRET_DEADBAND = 2.0;
@@ -45,7 +46,9 @@ public class mmTurretSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        m_io.setTarget(MathUtil.clamp(angle,TURRET_MIN_POS,TURRET_MAX_POS) + VIEW_CHANGE);
+        double clampedPosition = MathUtil.clamp(angle,TURRET_MIN_POS,TURRET_MAX_POS) + VIEW_CHANGE;
+        Logger.recordOutput(this.getClass().getSimpleName() + "/ClampedPosition", clampedPosition);
+        m_io.setTarget(clampedPosition);
     }
 
     /**
@@ -89,6 +92,7 @@ public class mmTurretSubsystem extends SubsystemBase{
         m_io.runSim();
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity", getVelocity());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Angle", getPosition());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/MathedAngle", Math.IEEEremainder(getPosition(), 360.0));
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", getTarget());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", m_io.getVoltage());
         

@@ -88,6 +88,13 @@ public class ElevatorIORobot implements TalonPosIO {
     @Override
     public double getTarget() {
         return ((MotionMagicExpoVoltage) rightElevatorMaster.getAppliedControl()).Position;
+    }
+
+
+    @Override
+    public void configure() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'configure'");
     }  
 }
 
