@@ -3,6 +3,7 @@ package frc.robot.subsystems.mm_turret;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,7 +46,9 @@ public class mmTurretSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        m_io.setTarget(MathUtil.clamp(angle,TURRET_MIN_POS,TURRET_MAX_POS) + VIEW_CHANGE);
+        double clampedPosition = MathUtil.clamp(angle,TURRET_MIN_POS,TURRET_MAX_POS) + VIEW_CHANGE;
+        Logger.recordOutput(this.getClass().getSimpleName() + "/ClampedPosition", clampedPosition);
+        m_io.setTarget(clampedPosition);
     }
 
     /**
