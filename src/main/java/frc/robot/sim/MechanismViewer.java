@@ -177,8 +177,10 @@ public class MechanismViewer {
         m_pivotControlTarget.setAngle(-90+m_pivot.getTarget());
         m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getPosition())+0.2);
         m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTarget())+0.2);
-        m_turretControl.setAngle(m_turret.getPosition());
-        m_turretControlTarget.setAngle(m_turret.getTarget());
+        // Mech2d is counter-clockwise positive so negate values
+        // https://github.com/wpilibsuite/frc-docs/blob/stable/source/docs/software/dashboards/glass/mech2d-widget.rst#id5
+        m_turretControl.setAngle(-m_turret.getPosition());
+        m_turretControlTarget.setAngle(-m_turret.getTarget());
        
 
         // Logs to advantage kit
