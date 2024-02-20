@@ -28,7 +28,7 @@ public class mmTurretIOSim extends mmTurretIORobot {
         super(id, encoderID, canbus, gearRatio, config, mmConfigs,encoderOffset);
         // m_ArmSim = new SingleJointedArmSim(DCMotor.getKrakenX60Foc(0), gearRatio, gearRatio, gearRatio, gearRatio, gearRatio, false, gearRatio);
         // TODO Simulation appear to work better with gearratio = 1
-        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), gearRatio,0.001);
+        m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1,0.001);
     }
     
     // @Override

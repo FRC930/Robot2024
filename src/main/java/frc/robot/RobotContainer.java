@@ -104,7 +104,7 @@ public class RobotContainer {
     // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
     private boolean m_subsystemsConfigured = false;
 
-    private final boolean UseLimeLightAprilTag = true;
+    private final boolean UseLimeLightAprilTag = false;
     private final boolean VISION_UPDATE_ODOMETRY = true;
 
     private static final double POV_PERCENT_SPEED = 1.0;
@@ -187,12 +187,12 @@ public class RobotContainer {
 
     private final Slot0Configs turretS0C =
       new Slot0Configs()
-        .withKP(0.0)
+        .withKP(175.0)
         .withKI(0.0) 
         .withKD(0.0) 
         .withKA(0.0) 
         .withKG(0.0) // MotionMagic voltage
-        .withKS(0.0) 
+        .withKS(0.35) 
         .withKV(0.0);
 
         // 0.26 kp. Set to 0.1 for testing
@@ -237,8 +237,8 @@ public class RobotContainer {
 
     private final MotionMagicConfigs turretMMC =
       new MotionMagicConfigs() // Currently set slow
-        .withMotionMagicAcceleration(0.0) 
-        .withMotionMagicCruiseVelocity(0.0)
+        .withMotionMagicAcceleration(10.0) 
+        .withMotionMagicCruiseVelocity(0.5)
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
     
