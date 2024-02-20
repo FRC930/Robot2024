@@ -83,7 +83,7 @@ public class TurretAimCommand extends Command{
 
         // actually moves the robots turret to the desired position
         // TODO sussex back in
-        //m_TurretSubsystem.setTarget(m_DesiredHeading);
+        m_TurretSubsystem.setPosition(m_DesiredHeading);
     }
 
     // Makes it so that this command never ends.
