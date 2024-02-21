@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -23,6 +24,19 @@ public class ElevatorIORobot implements TalonPosIO {
     private final double maxHeight;
 
     private final MotionMagicExpoVoltage m_request;
+
+
+    private final double Position = 0;
+    private final double Velocity = 0;
+    private final double Acceleration = 0;
+    private final double Jerk = 0;
+    private final boolean EnableFOC = false;
+    private final double FeedForward = 0;
+    private final int Slot = 0;
+    private final boolean OverrideBrakeDurNeutral = false;
+    private final boolean LimitForwardMotion = false;
+    private final boolean LimitReverseMotion = false;
+    private DynamicMotionMagicVoltage pullConfig = new DynamicMotionMagicVoltage(Position, Velocity, Acceleration, Jerk, EnableFOC, FeedForward, Slot, OverrideBrakeDurNeutral, LimitForwardMotion, LimitReverseMotion);
 
     /**
      * <h3>ElevatorIORobot</h3> 
@@ -68,6 +82,11 @@ public class ElevatorIORobot implements TalonPosIO {
     public void setTarget(double height) {
         Phoenix6Utility.applyConfigAndRetry(rightElevatorMaster, 
             () -> rightElevatorMaster.setControl(m_request.withPosition(MathUtil.clamp((height),0,maxHeight)).withSlot(0)));
+    }
+
+    public void setPull(double height) {
+        Phoenix6Utility.applyConfigAndRetry(rightElevatorMaster, 
+            () -> rightElevatorMaster.setControl(pullConfig.withPosition(MathUtil.clamp((height),0,maxHeight))));
     }
 
     @Override

@@ -106,6 +106,10 @@ public class RobotContainer {
 
     private final boolean UseLimeLightAprilTag = false;
     private final boolean VISION_UPDATE_ODOMETRY = true;
+    
+    //The position we want the eleveator to move to.
+    private final double ENDGAME_TARGET_POSITION = 0.0;
+    private final double ENDGAME_DEFAULT_POSITION = 0.0;
 
     private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -426,7 +430,10 @@ public class RobotContainer {
       .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem)
           .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
       ;
-
+    
+    m_driverController.start().whileTrue(m_climbingElevatorSubsystem.newSetPosCommand(ENDGAME_TARGET_POSITION))
+      .onFalse(m_climbingElevatorSubsystem.newPullCommand(ENDGAME_DEFAULT_POSITION))
+      ;
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
         CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem)// TODO

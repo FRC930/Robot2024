@@ -80,6 +80,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         return new InstantCommand(() -> setTarget(pos), this);
     }
 
+    public InstantCommand newPullCommand(double pos) {
+        return new InstantCommand(() -> setTarget(pos), this);
+    }
+
     public boolean atSetpoint() {
         double pos = getPosition();
         double target = getTarget();
