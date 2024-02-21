@@ -1,5 +1,6 @@
 package frc.robot.utilities;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
@@ -80,6 +81,25 @@ public final class Phoenix6Utility {
                 true);
         }
         return finalCode;
+    }
+
+    /**
+     * Get position from controller so dont have to explicitly cast applied controller (could have had runtime casting error when switch controllers)
+     * @param motor
+     * @param defaultPosition
+     * @return
+     */
+    public static double getPositionFromController(ParentDevice motor, double defaultPosition) {
+        // Position configuration may not be available yet, so allow for Position not being available yet
+        Map<String, String> map = motor.getAppliedControl().getControlInfo();
+        String positionString = map.get("Position");
+        double position= defaultPosition; // If controller is not available delayed configurations
+        if(positionString != null) {
+            position = Double.valueOf(positionString);
+        }
+        return position;
+        // This is to eliminate calls like this and possible casting errors when switch controllers
+        // return (MotionMagicExpoVoltage) rightElevatorMaster.getAppliedControl()).Position
     }
 
 }

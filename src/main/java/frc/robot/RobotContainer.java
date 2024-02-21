@@ -43,8 +43,6 @@ import frc.robot.subsystems.shooter.TalonVelocityIORobot;
 import frc.robot.subsystems.shooter.TalonVelocityIOSim;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
-import frc.robot.subsystems.turret.TurretIORobot;
-import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
@@ -100,9 +98,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
-    // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
-    private boolean m_subsystemsConfigured = false;
 
     private final boolean UseLimeLightAprilTag = true;
     private final boolean VISION_UPDATE_ODOMETRY = true;
@@ -324,6 +319,11 @@ public class RobotContainer {
   private final CommandXboxController m_coDriverController =
       new CommandXboxController(OperatorConstants.kCoDriverControllerPort);
 
+  // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
+  private boolean m_subsystemsConfigured = false;
+  private boolean m_TeleopInitalized = false; // only want some things to initialze once
+
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -538,14 +538,18 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    m_StartInTeleopUtility.updateStartingPosition();
+    if(!m_TeleopInitalized) {
+      // Only want to initialize starting position once (if teleop multiple times dont reset pose again)
+      m_StartInTeleopUtility.updateStartingPosition(); 
+      m_TeleopInitalized = true;
+    }
   }
 
   // Configures
   public void disabledInit() {
     // Only configure once
     if(!m_subsystemsConfigured) {
-      m_turretIO.configure();
+      m_turretIO.delayedConfigure();
       m_subsystemsConfigured = true;
     }
   }
