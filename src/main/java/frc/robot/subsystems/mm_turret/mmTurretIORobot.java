@@ -52,12 +52,13 @@ public class mmTurretIORobot implements TalonPosIO{
         // Zeros motor encoder using through bore
         m_encoder.setPositionOffset(Units.degreesToRotations(encoderOffset));
 
-        // configure() will run the configuration in disableInit() (delaying so bore encoder can has time to start up)
+        // delayedConfigure() will run the configuration in disableInit() (delaying so bore encoder can has time to start up)
     }
 
     @Override
-    public void configure() {
+    public void delayedConfigure() {
         // TODO WHAT IF ENCODER DISCONNECTED OR BROKEN (INFINITE LOOP!!!!)
+        // DISABLE TURRET given it could tear apart wiring for turret.
         try {
             while(!m_encoder.isConnected()) {
                 Thread.sleep(10);
@@ -67,26 +68,8 @@ public class mmTurretIORobot implements TalonPosIO{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        double absolutePos = m_encoder.getAbsolutePosition();
-        double offset = m_encoder.getPositionOffset();
-
-        Logger.recordOutput("mmTurretSubsystem/AbsolutePosition",
-                Units.rotationsToDegrees(absolutePos));
-        Logger.recordOutput("mmTurretSubsystem/Offset",
-                Units.rotationsToDegrees(offset));
-
-        // The same
-        // double position = Units.degreesToRotations(Math.IEEEremainder(Units.rotationsToDegrees(absolutePos - offset),360.0));
-        double position = Math.IEEEremainder(absolutePos - offset, 1.0);
+        double position = getAbsoluteEncoderPosition();
         
-        // double position = 
-        //     (absolutePos - offset > 0.5) // Change negative values to wrap around back to 0.0-1.0
-        //         ? absolutePos - offset - 1.0
-        //         : absolutePos - offset;
-
-
-
-
         Phoenix6Utility.applyConfigAndRetry(m_motor,
             () -> m_motor.getConfigurator().setPosition(position));
             
@@ -94,17 +77,29 @@ public class mmTurretIORobot implements TalonPosIO{
         Phoenix6Utility.applyConfigAndRetry(m_motor,
             () -> m_motor.setControl(m_request.withPosition(Units.degreesToRotations(CommandFactoryUtility.TURRET_STOW_POS)).withSlot(0)));
     }
+
+    /**
+     * 
+     * @return number of rotations in the range of -.5 to .5
+     */
+    private double getAbsoluteEncoderPosition() {
+        double absolutePos = m_encoder.getAbsolutePosition();
+        double offset = m_encoder.getPositionOffset();
+
+        Logger.recordOutput("mmTurretSubsystem/SeededAbsoluteEncoderAngle",
+                Units.rotationsToDegrees(absolutePos-offset));
+
+        // Normalize value to -0.5 to 0.5  (Negative half rotation/Position half rotation)
+        double position = Math.IEEEremainder(absolutePos - offset, 1.0);
+        return position;
+    }
     
     @Override
     public void runSim() {}
 
     @Override
     public double getPos() {
-        // TODO remove logging that is not needed
-        Logger.recordOutput("mmTurretSubsystem/ChangedAbsoluteDegrees", Units.rotationsToDegrees(m_encoder.getAbsolutePosition() - m_encoder.getPositionOffset()));
-        Logger.recordOutput("mmTurretSubsystem/MathedAbsoluteDegrees", Math.IEEEremainder(Units.rotationsToDegrees(m_encoder.getAbsolutePosition() - m_encoder.getPositionOffset()), 360.0));
-        Logger.recordOutput("mmTurretSubsystem/InitialAbsoluteDegrees", Units.rotationsToDegrees(m_encoder.getAbsolutePosition()));
-
+        getAbsoluteEncoderPosition(); // Don't use absolute encoder position, but want to log it.
         return Units.rotationsToDegrees(m_motor.getPosition().getValue());
     }
 
@@ -126,12 +121,8 @@ public class mmTurretIORobot implements TalonPosIO{
 
     @Override
     public double getTarget() {
-        // Position configuration may not be available yet, so allow for Position not being available yet
-        Map<String, String> map = m_motor.getAppliedControl().getControlInfo();
-        String position = map.get("Position");
-        if(position == null) {
-            position = "0.0";
-        }
-        return Units.rotationsToDegrees(Double.valueOf(position));
+        double position = Phoenix6Utility.getPositionFromController(m_motor, 0.0);        
+        return Units.rotationsToDegrees(position);
     }
+
 }

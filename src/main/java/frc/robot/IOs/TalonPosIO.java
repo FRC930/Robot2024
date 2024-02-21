@@ -48,5 +48,5 @@ public interface TalonPosIO {
     default double getPeriod() {
         return 0.02;
     }
-    public void configure();
+    public void delayedConfigure();
 }
