@@ -104,7 +104,7 @@ public class RobotContainer {
     // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
     private boolean m_subsystemsConfigured = false;
 
-    private final boolean UseLimeLightAprilTag = false;
+    private final boolean UseLimeLightAprilTag = true;
     private final boolean VISION_UPDATE_ODOMETRY = true;
 
     private static final double POV_PERCENT_SPEED = 1.0;
@@ -387,8 +387,8 @@ public class RobotContainer {
     //     new TurretAimCommand(m_turretSubsystem), 
     //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
     //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
-          
-    // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+       
+        // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // Sets the desired positions for the speaker
     m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); // Sets desired target to far
@@ -514,7 +514,7 @@ public class RobotContainer {
       if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
           if (lastResult.targets_Fiducials.length == 1) {
               if (LimelightHelpers.getTA(limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
-                useResult = true;
+                useResult = false;
               } else {
                 useResult = false;
               }
