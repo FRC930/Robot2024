@@ -85,10 +85,10 @@ public class PivotSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         m_io.runSim();
-        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Velocity", getVelocity());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Angle", getPosition());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/SetPoint", getTarget());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/" + pivotName + "/Voltage", m_io.getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity", getVelocity());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Angle", getPosition());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", getTarget());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", m_io.getVoltage());
         
     }
 

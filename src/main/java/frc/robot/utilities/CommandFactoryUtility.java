@@ -20,7 +20,7 @@ public final class CommandFactoryUtility {
     public static final double ELEVATOR_STOW_POS = 0.0;
     public static final double ELEVATOR_AMP_POS = 8.0;
     
-    public static final double PIVOT_STOW_POS = 10.0;
+    public static final double PIVOT_STOW_POS = 0.0;
     public static final double PIVOT_AMP_POS = 45.0;
     public static final double PIVOT_INTAKE_POS = 45.0;
 
@@ -36,10 +36,10 @@ public final class CommandFactoryUtility {
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 0.2;
     public static final double INDEXER_EJECT_SPEED = 0.2;
 
-    public static final double INTAKE_SPEED = 0.6;
+    public static final double INTAKE_SPEED = 0.8;
     public static final double INTAKE_REJECT_SPEED = -0.15;
 
-    public static final double INDEXER_INTAKE_SPEED = 0.2;
+    public static final double INDEXER_INTAKE_SPEED = 0.8;
 
     public static final double ELEVATOR_CLIMB_POS = 8.0;
 
