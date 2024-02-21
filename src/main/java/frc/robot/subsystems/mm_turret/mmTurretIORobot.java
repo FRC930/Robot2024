@@ -125,4 +125,10 @@ public class mmTurretIORobot implements TalonPosIO{
         return Units.rotationsToDegrees(position);
     }
 
+    @Override
+    public void setPull(double position) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPull'");
+    }
+
 }
