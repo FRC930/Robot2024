@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Robot;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
@@ -95,8 +96,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command newUntilNoteFoundCommand() {
         if(Robot.isReal()) {
-            return new InstantCommand()
-                .until(() -> getSensor());  // DO not set subsystem since just getting sensor value
+            return new WaitUntilCommand(() -> getSensor());  // DO not set subsystem since just getting sensor value
         } else {
             return new WaitCommand(.1);
         }
@@ -104,8 +104,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command newUnlessNoteFoundCommand() {
         if(Robot.isReal()) {
-            return new InstantCommand()
-                .unless(() -> getSensor());  // DO not set subsystem since just getting sensor value
+            return new WaitUntilCommand(() -> !getSensor());  // DO not set subsystem since just getting sensor value
         } else {
             return new WaitCommand(.1);
         }

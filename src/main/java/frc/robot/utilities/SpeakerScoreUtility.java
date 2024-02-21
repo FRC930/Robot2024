@@ -18,9 +18,9 @@ public class SpeakerScoreUtility {
     static final private int FAR_ROW = 2;
     private final double[][] SHOOTING_CONSTANTS = 
     {
-        {0.7, 0.7, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
-        {0.7, 0.7, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
-        {0.85, 0.85, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
+        {70.0, 70.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
+        {70.0, 70.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
+        {85.0, 85.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
 
 

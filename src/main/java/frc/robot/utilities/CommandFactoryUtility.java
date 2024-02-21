@@ -1,6 +1,7 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretRefineCommand;
@@ -9,17 +10,17 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 
 public final class CommandFactoryUtility {
 
     //#region positions
-    public static final double TURRET_STOW_POS = TurretSubsystem.STOW_POS;
+    public static final double TURRET_STOW_POS = 0.0;
 
     public static final double ELEVATOR_STOW_POS = 0.0;
     public static final double ELEVATOR_AMP_POS = 8.0;
     
-    public static final double PIVOT_STOW_POS = 0.0;
+    public static final double PIVOT_STOW_POS = 10.0;
     public static final double PIVOT_AMP_POS = 45.0;
     public static final double PIVOT_INTAKE_POS = 45.0;
 
@@ -50,7 +51,7 @@ public final class CommandFactoryUtility {
 
     private static final double SHOOTER_TIMEOUT = 1.0;
 
-    private static final double AFTER_SHOOT_TIMEOUT = 0.5;
+    private static final double AFTER_SHOOT_TIMEOUT = 2.0;
 
     //TODO review values and code
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
@@ -68,16 +69,18 @@ public final class CommandFactoryUtility {
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS));
     }
 
-    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
+    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
         return indexer.newUnlessNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
-            .until(() -> turret.atSetpoint())
+            .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
-            .andThen(indexer.newUntilNoteFoundCommand()); // Dont stop intake until note found
+            .andThen(indexer.newUntilNoteFoundCommand())
+            .andThen(intake.newSetSpeedCommand(0.0))
+            .andThen(indexer.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
-    public static Command createAmpScoreCommand(ElevatorSubsystem elevator, PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
+    public static Command createAmpScoreCommand(ElevatorSubsystem elevator, PivotSubsystem pivot, mmTurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
         return elevator.newSetPosCommand(ELEVATOR_AMP_POS)
                     .andThen(pivot.newSetPosCommand(PIVOT_AMP_POS))
                     .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
@@ -102,8 +105,8 @@ public final class CommandFactoryUtility {
     }
 
     // TODO trap shot
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
-        return new TurretRefineCommand(turret).withTimeout(.2) // TODO does not command does not end???
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
+        return new TurretRefineCommand(turret).withTimeout(2.0)
             .andThen(shooter.newSetSpeedsCommand(speakerUtil))
             .andThen(pivot.newSetPosCommand(speakerUtil))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)

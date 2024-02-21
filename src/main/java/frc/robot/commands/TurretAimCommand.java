@@ -8,14 +8,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.utilities.RobotOdometryUtility;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
 //Automatically aims the turret to one of the speakers based on the alliance.
 public class TurretAimCommand extends Command{
-    private TurretSubsystem m_TurretSubsystem;
+    private mmTurretSubsystem m_TurretSubsystem;
     private Pose2d m_BlueTargetPose;
     private Pose2d m_RedTargetPose;
     private Pose2d m_TargetPose;
@@ -34,7 +34,7 @@ public class TurretAimCommand extends Command{
      * Constructor
      * @param turretSubsystem the subsystem that controls the turret.
      */
-    public TurretAimCommand(TurretSubsystem turretSubsystem) {
+    public TurretAimCommand(mmTurretSubsystem turretSubsystem) {
         m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         m_TargetPose = m_BlueTargetPose;
@@ -83,7 +83,7 @@ public class TurretAimCommand extends Command{
 
         // actually moves the robots turret to the desired position
         // TODO sussex back in
-        //m_TurretSubsystem.setTarget(m_DesiredHeading);
+        m_TurretSubsystem.setPosition(m_DesiredHeading);
     }
 
     // Makes it so that this command never ends.

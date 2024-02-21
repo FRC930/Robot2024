@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 
 /**
  * <h3>SetTurretPositionCommand</h3>
@@ -9,14 +9,14 @@ import frc.robot.subsystems.turret.TurretSubsystem;
  */
 public class SetTurretPositionCommand extends Command {
 
-    protected TurretSubsystem m_turret;
+    protected mmTurretSubsystem m_turret;
     private double m_turretPos;
     
     /**
     * <h3>SetTurretPositionCommand</h3>
     * Constructs a command to set the turrets position.
     */
-    public SetTurretPositionCommand(TurretSubsystem turretSubsystem, double turretPosition) {
+    public SetTurretPositionCommand(mmTurretSubsystem turretSubsystem, double turretPosition) {
         m_turret = turretSubsystem;
         m_turretPos = turretPosition;
         addRequirements(turretSubsystem);
@@ -24,7 +24,7 @@ public class SetTurretPositionCommand extends Command {
 
     @Override
     public void initialize() {
-        m_turret.setTarget(m_turretPos);
+        m_turret.setPosition(m_turretPos);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SetTurretPositionCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        m_turret.setTarget(0);
+        m_turret.setPosition(0);
     }
 
 }

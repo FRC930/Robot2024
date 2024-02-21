@@ -18,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private TalonVelocityIO IO_Left;
     private TalonVelocityIO IO_Right;
 
-    private final double VELOCITY_DEADBAND = 0.2;
+    private final double VELOCITY_DEADBAND = 2.0;
 
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
         IO_Left = LeftIO;
@@ -122,7 +122,7 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public Command newSetSpeedsCommand(SpeakerScoreUtility speakerUtil) {
-        return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getLeftShooterSpeed()), this);
+        return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed()), this);
     }
 
     public Command shootTo(ShooterAction target) {
