@@ -431,8 +431,8 @@ public class RobotContainer {
           .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
       ;
     
-    m_driverController.start().whileTrue(m_climbingElevatorSubsystem.newSetPosCommand(ENDGAME_TARGET_POSITION))
-      .onFalse(m_climbingElevatorSubsystem.newPullCommand(ENDGAME_DEFAULT_POSITION))
+    m_driverController.start().whileTrue(m_shootingElevatorSubsystem.newSetPosCommand(ENDGAME_TARGET_POSITION))
+      .onFalse(m_shootingElevatorSubsystem.newPullCommand(ENDGAME_DEFAULT_POSITION))
       ;
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
