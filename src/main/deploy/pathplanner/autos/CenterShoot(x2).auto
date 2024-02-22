@@ -30,6 +30,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "TopCenterToWingLine1"
@@ -51,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "WingLine1ToTopMidCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
           }
         },
         {

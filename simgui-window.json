@@ -18,7 +18,7 @@
       "DockNode  ID=0x0000000B Parent=0x0000000C SizeRef=185,194 Selected=0xD58031C5",
       "DockNode    ID=0x0000000D Parent=0x0000000F SizeRef=337,69 Selected=0x423D30E0",
       "DockNode      ID=0x00000010 Parent=0x00000009 SizeRef=282,395 Selected=0xC8493FD8",
-      "DockNode        ID=0x0000000E Pos=0,483 Size=937,228 Selected=0x2D9B9756",
+      "DockNode        ID=0x0000000E Pos=0,483 Size=937,228 Selected=0x48913727",
       "DockNode        ID=0x00000011 Pos=2,711 Size=937,278 Split=X",
       "DockNode      ID=0x00000012 Parent=0x00000011 SizeRef=231,278 Selected=0x6AE6D891",
       "DockNode      ID=0x00000013 Parent=0x00000011 SizeRef=743,278 Selected=0x138219D4"

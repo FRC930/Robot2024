@@ -2,17 +2,20 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.SetTurretPositionCommand;
+import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -47,7 +50,14 @@ public class AutoCommandManager {
             speakerUtil, 
             intake, 
             pivot);
-        m_chooser = AutoBuilder.buildAutoChooser();
+        //m_chooser = AutoBuilder.buildAutoChooser();
+        PathPlannerAuto centerShootCommand = new PathPlannerAuto("CenterShoot(x2)");
+        PathPlannerAuto wingShootCommand = new PathPlannerAuto("WingShoot(x3)");
+        
+        m_chooser.setDefaultOption("None", null);
+        m_chooser.addOption("CenterShoot(x2)", centerShootCommand);
+        m_chooser.addOption("WingShoot(x3)", wingShootCommand);
+
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
 
@@ -91,14 +101,17 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("setClose", speakerUtil.setDesiredTargetCommand(Target.close));
         NamedCommands.registerCommand("aimAndShoot", 
             // TODO TurretLimeLightAimCommand not exiting (temp waittimeout)
-            new TurretRefineCommand(turret).withTimeout(.2)
+            new TurretAimCommand(turret).withTimeout(2.0)
+                .andThen(new TurretRefineCommand(turret).withTimeout(.2))
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );
         NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
         NamedCommands.registerCommand("ampScore", 
-        CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)
-            .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator))
+            CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );    
+        NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
+            
     }
 }

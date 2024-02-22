@@ -17,22 +17,6 @@
     {
       "anchor": {
         "x": 2.9026396514331507,
-        "y": 6.304976456106759
-      },
-      "prevControl": {
-        "x": 2.9026396514331507,
-        "y": 6.404976456106759
-      },
-      "nextControl": {
-        "x": 2.9026396514331507,
-        "y": 6.20497645610676
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.9026396514331507,
         "y": 5.545221859674489
       },
       "prevControl": {
@@ -44,18 +28,12 @@
       "linkedName": "CenterWing"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": -90.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.15,
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -79,8 +57,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0,
-    "rotateFast": false
+    "rotation": 90.0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Robot2024",

@@ -44,13 +44,9 @@ public final class CommandFactoryUtility {
     public static final double ELEVATOR_CLIMB_POS = 8.0;
 
     public static final double PIVOT_TIMEOUT = 1.0;
-
     public static final double ELEVATOR_TIMEOUT = 1.0;
-
     public static final double TURRET_TIMEOUT = 1.0;
-
     private static final double SHOOTER_TIMEOUT = 1.0;
-
     private static final double AFTER_SHOOT_TIMEOUT = 2.0;
 
     //TODO review values and code
@@ -63,11 +59,13 @@ public final class CommandFactoryUtility {
     }
 
     //TODO review values and code
-    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot, ElevatorSubsystem elevator) {
+    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot, ElevatorSubsystem elevator, mmTurretSubsystem turret) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
             .alongWith(elevator.newSetPosCommand(ELEVATOR_STOW_POS))
-            .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS));
+            .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
+            .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
+    
 
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
         return indexer.newUnlessNoteFoundCommand()  // make sure no note is found

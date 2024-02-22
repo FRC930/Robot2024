@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0,
+    "rotation": 90.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
   "previewStartingState": {
-    "rotation": -90.0,
+    "rotation": 90.86138289073676,
     "velocity": 0
   },
   "useDefaultConstraints": true
