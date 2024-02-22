@@ -241,6 +241,16 @@ public class RobotContainer {
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
     
+    public static final double TURRET_REFINE_COMMAND_VELOCITY = 0.5;
+    public static final double TURRET_REFINE_COMMAND_ACCELERATION = 10.0;
+    public static final double TURRET_REFINE_COMMAND_JERK = 0;
+    public static final boolean TURRET_REFINE_COMMAND_ENABLEFOC = false;
+    public static final double TURRET_REFINE_COMMAND_FEED_FORWARD = 0;
+    public static final int TURRET_REFINE_COMMAND_SLOT = 0;
+    public static final boolean TURRET_REFINE_COMMAND_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean TURRET_REFINE_COMMAND_LIMIT_FORWARD_MOTION = false;
+    public static final boolean TURRET_REFINE_COMMAND_LIMIT_REVERSE_MOTION = false;
+
     //--VisionSTDsDevConstants--\\
     // TODO configure for april tag confidence level 
     //https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/mechanisms/swerve/SwerveDrivetrain.html#setVisionMeasurementStdDev

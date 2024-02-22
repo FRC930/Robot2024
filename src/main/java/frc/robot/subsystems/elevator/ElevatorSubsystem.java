@@ -46,7 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @param targetHeight The height the robot will try to move to
      */
     public void setPull(double targetHeight) {
-        m_io.setPull(targetHeight);
+        m_io.setRefinedTarget(targetHeight);
     }
 
 

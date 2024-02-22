@@ -84,7 +84,7 @@ public class PivotIORobot implements TalonPosIO{
     }
 
     @Override
-    public void setPull(double position) {
+    public void setRefinedTarget(double position) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setPull'");
     }

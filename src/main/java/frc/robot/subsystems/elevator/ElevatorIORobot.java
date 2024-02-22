@@ -88,7 +88,7 @@ public class ElevatorIORobot implements TalonPosIO {
      * @param Height
      */
     @Override
-    public void setPull(double height) {
+    public void setRefinedTarget(double height) {
         Phoenix6Utility.applyConfigAndRetry(rightElevatorMaster, 
             () -> rightElevatorMaster.setControl(pullConfig.withPosition(MathUtil.clamp((height),0,maxHeight))));
     }

@@ -118,4 +118,8 @@ public class mmTurretSubsystem extends SubsystemBase{
     public boolean getTurretLock() {
         return m_isTurretLocked;
     }
+
+    public void setRefinedTarget(double position) {
+        m_io.setRefinedTarget(position);
+    }
 }

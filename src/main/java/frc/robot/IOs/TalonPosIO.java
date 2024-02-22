@@ -46,7 +46,7 @@ public interface TalonPosIO {
      * Sets the position that the mechanism is moving towards, uses different PID's
      * @param position The target
      */
-    public void setPull(double position);
+    public void setRefinedTarget(double position);
     /**
      * <h3>getPeriod</h3>
      * @return

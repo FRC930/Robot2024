@@ -27,7 +27,7 @@ public class TurretRefineCommand extends Command{
         SmartDashboard.putNumber("TurretAim/TX", m_AprilTagAngle);
         SmartDashboard.putBoolean("TurretAim/isFinished", (Math.abs(m_AprilTagAngle) <= m_DeadBand) && (m_AprilTagAngle != 0.0));
 
-        m_TurretSubsystem.setPosition(m_TurretPosition + m_AprilTagAngle);
+        m_TurretSubsystem.setRefinedTarget(m_TurretPosition + m_AprilTagAngle);
     }
 
     @Override
