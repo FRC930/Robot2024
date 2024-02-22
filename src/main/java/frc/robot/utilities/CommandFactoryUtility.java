@@ -107,8 +107,8 @@ public final class CommandFactoryUtility {
     // TODO trap shot
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
         return new TurretRefineCommand(turret).withTimeout(2.0)
-            .andThen(shooter.newSetSpeedsCommand(speakerUtil))
-            .andThen(pivot.newSetPosCommand(speakerUtil))
+            .andThen(shooter.newCalcAndSetSpeedsCommand()) //.andThen(shooter.newSetSpeedsCommand(speakerUtil))
+            .andThen(pivot.newCalcAndSetPosCommand()) //.andThen(pivot.newSetPosCommand(speakerUtil))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
                     .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
                     )

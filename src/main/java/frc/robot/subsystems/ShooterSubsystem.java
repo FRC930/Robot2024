@@ -125,6 +125,11 @@ public class ShooterSubsystem extends SubsystemBase{
         return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed()), this);
     }
 
+    public Command newCalcAndSetSpeedsCommand() {
+        double speed = SpeakerScoreUtility.computeShooterSpeed(SpeakerScoreUtility.inchesToSpeaker());
+        return new InstantCommand(() -> setSpeed(speed, speed));
+    }
+
     public Command shootTo(ShooterAction target) {
         return newSetSpeedsCommand(target.leftWheelSpeed, target.rightWheelSpeed);
     }
