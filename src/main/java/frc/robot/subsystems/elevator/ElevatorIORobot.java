@@ -10,7 +10,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import frc.robot.RobotContainer;
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.Phoenix6Utility;
 
 /**
@@ -26,16 +28,16 @@ public class ElevatorIORobot implements TalonPosIO {
     private final MotionMagicExpoVoltage m_request;
 
 
-    private final double Position = 0;
-    private final double Velocity = 0;
-    private final double Acceleration = 0;
-    private final double Jerk = 0;
-    private final boolean EnableFOC = false;
-    private final double FeedForward = 0;
-    private final int Slot = 0;
-    private final boolean OverrideBrakeDurNeutral = false;
-    private final boolean LimitForwardMotion = false;
-    private final boolean LimitReverseMotion = false;
+    private final double Position = CommandFactoryUtility.ELEVATOR_STOW_POS;
+    private final double Velocity = RobotContainer.ENDGAME_ELEVATOR_VELOCITY;
+    private final double Acceleration = RobotContainer.ENDGAME_ELEVATOR_ACCELERATION;
+    private final double Jerk = RobotContainer.ENDGAME_ELEVATOR_JERK;
+    private final boolean EnableFOC = RobotContainer.ENDGAME_ELEVATOR_ENABLEFOC;
+    private final double FeedForward = RobotContainer.ENDGAME_ELEVATOR_FEEDFORWARD;
+    private final int Slot = RobotContainer.ENDGAME_ELEVATOR_SLOT;
+    private final boolean OverrideBrakeDurNeutral = RobotContainer.ENDGAME_ELEVATOR_OVERRIDEBRAKEDURNEUTRAL;
+    private final boolean LimitForwardMotion = RobotContainer.ENDGAME_ELEVATOR_LIMITFORWARDMOTION;
+    private final boolean LimitReverseMotion = RobotContainer.ENDGAME_ELEVATOR_LIMITREVERSEMOTION;
     private DynamicMotionMagicVoltage pullConfig = new DynamicMotionMagicVoltage(Position, Velocity, Acceleration, Jerk, EnableFOC, FeedForward, Slot, OverrideBrakeDurNeutral, LimitForwardMotion, LimitReverseMotion);
 
     /**
