@@ -396,11 +396,11 @@ public class RobotContainer {
 
     // Eject shooter button
     m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
     
     // Intake button TODO Test
     m_driverController.leftBumper().whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem)
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem)
           .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
       ;
 
@@ -408,7 +408,7 @@ public class RobotContainer {
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
         CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem)// TODO
     )
-    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
+    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
 
     // Amp score button
     // m_driverController.rightBumper().and(m_driverController.rightTrigger())
