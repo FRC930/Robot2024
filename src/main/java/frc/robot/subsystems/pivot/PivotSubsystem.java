@@ -19,8 +19,6 @@ public class PivotSubsystem extends SubsystemBase{
 
     private final TalonPosIO m_io;
 
-    private final String pivotName;
-
     public static final double PIVOT_DEADBAND = 2.0;
 
     /**
@@ -31,7 +29,6 @@ public class PivotSubsystem extends SubsystemBase{
      */
     public PivotSubsystem(TalonPosIO io) {
         m_io = io;
-        pivotName = "" + this.hashCode();
         //Setting stow pos on robot startup
         setPosition(CommandFactoryUtility.PIVOT_STOW_POS);
     }
@@ -98,6 +95,12 @@ public class PivotSubsystem extends SubsystemBase{
 
     public Command newSetPosCommand(SpeakerScoreUtility speakerUtil) {
         return new InstantCommand(() -> setPosition(speakerUtil.getPivotAngle()), this);
+    }
+
+    public Command newCalcAndSetPosCommand() {
+        return new InstantCommand(
+            () -> setPosition(SpeakerScoreUtility.computePivotAngle(SpeakerScoreUtility.inchesToSpeaker())), this
+        );
     }
 
     public boolean atSetpoint() {
