@@ -106,12 +106,12 @@ public final class CommandFactoryUtility {
 
     // TODO trap shot
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
-        return new TurretRefineCommand(turret).withTimeout(2.0)
-            .andThen(shooter.newCalcAndSetSpeedsCommand()) //.andThen(shooter.newSetSpeedsCommand(speakerUtil))
+        return shooter.newCalcAndSetSpeedsCommand() //shooter.newSetSpeedsCommand(speakerUtil)
             .andThen(pivot.newCalcAndSetPosCommand()) //.andThen(pivot.newSetPosCommand(speakerUtil))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
-                    .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-                    )
+                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+                )
+            .andThen(new TurretRefineCommand(turret).withTimeout(2.0))
             .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
             .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
