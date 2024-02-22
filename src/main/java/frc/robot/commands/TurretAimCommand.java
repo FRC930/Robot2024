@@ -36,7 +36,9 @@ public class TurretAimCommand extends Command{
      */
     public TurretAimCommand(mmTurretSubsystem turretSubsystem) {
         m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
+        m_RedTargetPose = new Pose2d(m_RedTargetPose.getX() + 0.5, m_RedTargetPose.getY(), m_RedTargetPose.getRotation());
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
+        m_BlueTargetPose = new Pose2d(m_BlueTargetPose.getX() - 0.5, m_BlueTargetPose.getY(), m_BlueTargetPose.getRotation());
         m_TargetPose = m_BlueTargetPose;
 
         m_TurretSubsystem = turretSubsystem;
