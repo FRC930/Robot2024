@@ -51,6 +51,7 @@ import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
 import frc.robot.utilities.SpeakerScoreUtility.Target;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
@@ -98,9 +99,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
-    private final boolean UseLimeLightAprilTag = true;
+    private final boolean USE_LIMELIGHT_APRIL_TAG = true;
     private final boolean VISION_UPDATE_ODOMETRY = true;
+    
+    //The position we want the eleveator to move to.
+    private final double ENDGAME_TARGET_POSITION = 0.0;
+    private final double ENDGAME_DEFAULT_POSITION = 0.0;
 
     private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -237,6 +241,26 @@ public class RobotContainer {
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
     
+    public static final double TURRET_REFINE_COMMAND_VELOCITY = 0.5;
+    public static final double TURRET_REFINE_COMMAND_ACCELERATION = 10.0;
+    public static final double TURRET_REFINE_COMMAND_JERK = 0.0;
+    public static final boolean TURRET_REFINE_COMMAND_ENABLEFOC = false;
+    public static final double TURRET_REFINE_COMMAND_FEED_FORWARD = 0.0;
+    public static final int TURRET_REFINE_COMMAND_SLOT = 0;
+    public static final boolean TURRET_REFINE_COMMAND_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean TURRET_REFINE_COMMAND_LIMIT_FORWARD_MOTION = false;
+    public static final boolean TURRET_REFINE_COMMAND_LIMIT_REVERSE_MOTION = false;
+
+    public static final boolean ENDGAME_ELEVATOR_ENABLEFOC = false;
+    public static final double ENDGAME_ELEVATOR_JERK = 0.0;
+    public static final double ENDGAME_ELEVATOR_ACCELERATION = 1.0;
+    public static final double ENDGAME_ELEVATOR_VELOCITY = 10.0;
+    public static final boolean ENDGAME_ELEVATOR_OVERRIDEBRAKEDURNEUTRAL = false;
+    public static final int ENDGAME_ELEVATOR_SLOT = 0;
+    public static final double ENDGAME_ELEVATOR_FEEDFORWARD = 0.0;
+    public static final boolean ENDGAME_ELEVATOR_LIMITFORWARDMOTION = false;
+    public static final boolean ENDGAME_ELEVATOR_LIMITREVERSEMOTION = false;
+
     //--VisionSTDsDevConstants--\\
     // TODO configure for april tag confidence level 
     //https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/mechanisms/swerve/SwerveDrivetrain.html#setVisionMeasurementStdDev
@@ -426,7 +450,10 @@ public class RobotContainer {
       .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem)
           .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
       ;
-
+    
+    m_driverController.start().whileTrue(m_shootingElevatorSubsystem.newSetPosCommand(ENDGAME_TARGET_POSITION))
+      .onFalse(m_shootingElevatorSubsystem.newPullCommand(ENDGAME_DEFAULT_POSITION))
+      ;
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
         CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem)// TODO
@@ -497,7 +524,7 @@ public class RobotContainer {
    * Update all vision
    */
   public void updateAllVision() {
-    if (UseLimeLightAprilTag) {  
+    if (USE_LIMELIGHT_APRIL_TAG) {  
       updateVisionOdometry("limelight-front");
       updateVisionOdometry("limelight-back");
     }
@@ -509,29 +536,98 @@ public class RobotContainer {
    * @param limeLightName
    */
   public void updateVisionOdometry(String limeLightName) {
-      boolean useResult = true;
       Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
-      if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
-          if (lastResult.targets_Fiducials.length == 1) {
-              if (LimelightHelpers.getTA(limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
-                useResult = false;
-              } else {
-                useResult = false;
-              }
-          } else {
-              useResult = true;
-          }
 
-          if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
-              m_StartInTeleopUtility.updateTags();
-              Logger.recordOutput("LimeLightOdometry/Pose", lastResult.getBotPose2d_wpiBlue());
-              if (VISION_UPDATE_ODOMETRY) {
-                drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
+      if (isValidResult(lastResult)) { //Verifies that the Tags are valid, have values, and are between IDs 1 and 16
+          int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
+
+          //We use the percentage of the screen (TA) as a reference to distance
+          if (idArray.length > 1) { //If the Limelight sees more than one Tag
+              double area = 100.0; //Defaults to not using Tags
+              /**
+               * We sort by distances based on the groups of Tags because the Source Tags are farther apart than the Speaker Tags.
+               * This makes the TA value bigger at the same distance away from the Tags.
+              */
+              if ((arrayContainsPair(idArray, 1, 2)) || (arrayContainsPair(idArray, 9, 10))) { //If the Limelight sees Source Tags
+                  area = 0.6;//Source
+              } else if ((arrayContainsPair(idArray, 3, 4)) || (arrayContainsPair(idArray, 7, 8))) { //If the Limelight sees Speaker Tags
+                  area = 0.35; //Speaker
+              } else { //If the Limelight sees more than two tags
+                  area = 0.0; //Any
+              }
+                        
+              if (LimelightHelpers.getTA(limeLightName) > area) {
+                m_StartInTeleopUtility.updateTags();
+                
+                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
+                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
+
+                if (VISION_UPDATE_ODOMETRY) {
+                    drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
+                }
               }
           }
       }
   }
 
+  /**
+   * 
+   * Validates that the results the Limelight got are what we want to use
+   * 
+   * @param result The raw JSON dump from the Limelight
+   * @return Boolean that says if we want to use our results
+   */
+  private boolean isValidResult(Results result) {
+      return result.valid && result.targets_Fiducials.length > 0 &&
+              result.targets_Fiducials[0].fiducialID >= 1 && result.targets_Fiducials[0].fiducialID <= 16;
+  }
+
+  /**
+   * 
+   * Returns a new array that contains all of the IDs that the Limelight sees
+   * 
+   * @param result The raw JSON dump from the Limelight
+   * @return An array that contains all of the IDs that the Limelight sees
+   */
+  private int[] createAprilTagIDArray(Results result) {
+      int[] idArray = new int[result.targets_Fiducials.length];
+      for (int i = 0; i < result.targets_Fiducials.length; i++) {
+          idArray[i] = (int) result.targets_Fiducials[i].fiducialID;
+      }
+
+      return idArray;
+  }
+
+  /**
+   * 
+   * Determines if both of the IDs are in the array
+   * 
+   * @param array An Array that contains all of the April Tag IDs
+   * @param value1 ID number 1
+   * @param value2 ID number 2
+   * @return Boolean that returns if the two numbers are in the array
+   */
+  private boolean arrayContainsPair(int[] array, int value1, int value2) {
+      return arrayContains(array, value1) && arrayContains(array, value2);
+  }
+
+  /**
+   * 
+   * Determines if the array contains a specific number
+   * 
+   * @param array An Array that contains all of the April Tag IDs
+   * @param value ID value that is being checked
+   * @return boolean that says if the number is in the array
+   */
+  private boolean arrayContains(int[] array, int value) {
+      for (int i : array) {
+          if (i == value) {
+              return true;
+          }
+      }
+
+      return false;
+  }
 
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
