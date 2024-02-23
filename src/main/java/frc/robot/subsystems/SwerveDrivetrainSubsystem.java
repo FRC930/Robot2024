@@ -124,7 +124,8 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
         if (getState().ModuleStates != null) {
             Logger.recordOutput("Drivetrain/rotationVelocity", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
             Logger.recordOutput("Drivetrain/XVelocity", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
-            Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+            Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);            
+            Logger.recordOutput("Drivetrain/Pose", getState().Pose);
             
             Logger.recordOutput("Drivetrain/Pigeon2Yaw", getPigeon2().getAngle());
             Logger.recordOutput("Drivetrain/Pose2DYaw", getState().Pose.getRotation().getDegrees());
