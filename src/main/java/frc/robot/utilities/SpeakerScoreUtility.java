@@ -128,8 +128,8 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        double coefficient = 51.4;
-        double exponent = -0.00503 * distance;
+        double coefficient = 43.7;
+        double exponent = -0.00354 * distance;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         }
