@@ -531,6 +531,7 @@ public class RobotContainer {
   public void robotPeriodic() {
     updateAllVision();
     m_mechViewer.periodic();
+    Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", SpeakerScoreUtility.inchesToSpeaker());
   }
 
   /*
