@@ -400,6 +400,9 @@ public class RobotContainer {
     //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
     
     //#region POV controls
+
+    //m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+
     // m_driverController.pov(0).whileTrue(
     //   drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
     //   ));
@@ -445,7 +448,6 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
   }
 
   /** 
