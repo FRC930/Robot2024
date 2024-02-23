@@ -242,8 +242,8 @@ public class RobotContainer {
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
     
-    public static final double TURRET_REFINE_COMMAND_VELOCITY = 0.5;
-    public static final double TURRET_REFINE_COMMAND_ACCELERATION = 10.0;
+    public static final double TURRET_REFINE_COMMAND_VELOCITY = 0.1;
+    public static final double TURRET_REFINE_COMMAND_ACCELERATION = 1.0;
     public static final double TURRET_REFINE_COMMAND_JERK = 0.0;
     public static final boolean TURRET_REFINE_COMMAND_ENABLEFOC = false;
     public static final double TURRET_REFINE_COMMAND_FEED_FORWARD = 0.0;
@@ -383,11 +383,11 @@ public class RobotContainer {
 
     // m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
     
-    // m_turretSubsystem.setDefaultCommand(
-    //   new ConditionalCommand(
-        // new TurretAimCommand(m_turretSubsystem),
-    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-    //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
+    m_turretSubsystem.setDefaultCommand(
+      new ConditionalCommand(
+        new TurretAimCommand(m_turretSubsystem),
+        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 

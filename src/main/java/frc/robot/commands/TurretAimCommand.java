@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +16,9 @@ import edu.wpi.first.apriltag.AprilTagFields;
 
 //Automatically aims the turret to one of the speakers based on the alliance.
 public class TurretAimCommand extends Command{
+
+    private static final double AIM_OFFSET = Units.inchesToMeters(12.0); // May be dynamic
+
     private mmTurretSubsystem m_TurretSubsystem;
     private Pose2d m_BlueTargetPose;
     private Pose2d m_RedTargetPose;
@@ -36,9 +40,9 @@ public class TurretAimCommand extends Command{
      */
     public TurretAimCommand(mmTurretSubsystem turretSubsystem) {
         m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
-        m_RedTargetPose = new Pose2d(m_RedTargetPose.getX() + 0.5, m_RedTargetPose.getY(), m_RedTargetPose.getRotation());
+        m_RedTargetPose = new Pose2d(m_RedTargetPose.getX() + 0.5, m_RedTargetPose.getY() - AIM_OFFSET, m_RedTargetPose.getRotation());
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
-        m_BlueTargetPose = new Pose2d(m_BlueTargetPose.getX() - 0.5, m_BlueTargetPose.getY(), m_BlueTargetPose.getRotation());
+        m_BlueTargetPose = new Pose2d(m_BlueTargetPose.getX() - 0.5, m_BlueTargetPose.getY() + AIM_OFFSET, m_BlueTargetPose.getRotation());
         m_TargetPose = m_BlueTargetPose;
 
         m_TurretSubsystem = turretSubsystem;
