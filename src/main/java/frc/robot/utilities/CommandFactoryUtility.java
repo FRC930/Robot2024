@@ -61,6 +61,7 @@ public final class CommandFactoryUtility {
     //TODO review values and code
     public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot, ElevatorSubsystem elevator, mmTurretSubsystem turret) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
+            .alongWith(indexer.newSetSpeedCommand(0.0))
             .alongWith(elevator.newSetPosCommand(ELEVATOR_STOW_POS))
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
