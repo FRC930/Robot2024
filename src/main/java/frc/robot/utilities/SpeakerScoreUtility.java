@@ -23,6 +23,9 @@ public class SpeakerScoreUtility {
     static final private int PIVOT_ANGLE_SPEED_COLUMN = 3;
     static final private int EVELATOR_HEIGHT_COLUMN = 4;   // TODO not need given all at 0.0 
 
+    static final private double FIXED_ANGLE_BUMPER_SHOT_DISTANCE = 40.0; //In inches
+    private static final double FIXED_ANGLE_BUMPER_SHOT = 56.0;
+
     static final private double COMPUTED_SHOOT_SPEED = 140.0;
 
     static final private int CLOSE_ROW = 0;
@@ -34,6 +37,7 @@ public class SpeakerScoreUtility {
         {140.0, 140.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
         {140.0, 140.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
+    
 
 
     public enum Target{
@@ -126,6 +130,9 @@ public class SpeakerScoreUtility {
     public static double computePivotAngle(double distance) {
         double coefficient = 51.4;
         double exponent = -0.00503 * distance;
+        if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
+            return FIXED_ANGLE_BUMPER_SHOT;
+        }
         return coefficient * Math.exp(exponent);
     }
 
