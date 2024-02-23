@@ -15,39 +15,39 @@ import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 public final class CommandFactoryUtility {
 
     //#region positions
-    public static final double TURRET_STOW_POS = 0.0;
+    public static final double TURRET_STOW_POS = 0.0;/*Deg*/
 
     public static final double ELEVATOR_STOW_POS = 0.0;
     public static final double ELEVATOR_AMP_POS = 8.0;
     
-    public static final double PIVOT_STOW_POS = 0.0;
-    public static final double PIVOT_AMP_POS = 45.0;
-    public static final double PIVOT_INTAKE_POS = 45.0;
+    public static final double PIVOT_STOW_POS = 0.0;/*Deg*/
+    public static final double PIVOT_AMP_POS = 45.0;/*Deg*/
+    public static final double PIVOT_INTAKE_POS = 45.0;/*Deg*/
 
     //#region SPEAKER SCORE CONSTANTS
-    public static final double INDEXER_SPEAKER_SPEED = 0.9;
+    public static final double INDEXER_SPEAKER_SPEED = 0.9;/*Value*/
     //#endregion
 
-    public static final double LEFT_SHOOTER_AMP_SPEED = -0.3;
-    public static final double RIGHT_SHOOTER_AMP_SPEED = -0.3;
-    public static final double INDEXER_AMP_SPEED = 0.2;
+    public static final double LEFT_SHOOTER_AMP_SPEED = -40.0;      /*Rot/s*/
+    public static final double RIGHT_SHOOTER_AMP_SPEED = -40.0;     /*Rot/s*/
+    public static final double INDEXER_AMP_SPEED = 0.2;             /*Value*/
 
-    public static final double LEFT_SHOOTER_EJECT_SPEED = 0.2;
-    public static final double RIGHT_SHOOTER_EJECT_SPEED = 0.2;
-    public static final double INDEXER_EJECT_SPEED = 0.2;
+    public static final double LEFT_SHOOTER_EJECT_SPEED = 40.0;     /*Rot/s*/
+    public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
+    public static final double INDEXER_EJECT_SPEED = 0.2;           /*Value*/
 
-    public static final double INTAKE_SPEED = 0.8;
-    public static final double INTAKE_REJECT_SPEED = -0.15;
+    public static final double INTAKE_SPEED = 0.8;                  /*Value*/
+    public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
 
-    public static final double INDEXER_INTAKE_SPEED = 0.8;
+    public static final double INDEXER_INTAKE_SPEED = 0.8;          /*Value*/
 
     public static final double ELEVATOR_CLIMB_POS = 8.0;
 
-    public static final double PIVOT_TIMEOUT = 1.0;
-    public static final double ELEVATOR_TIMEOUT = 1.0;
-    public static final double TURRET_TIMEOUT = 1.0;
-    private static final double SHOOTER_TIMEOUT = 1.0;
-    private static final double AFTER_SHOOT_TIMEOUT = 2.0;
+    public static final double PIVOT_TIMEOUT = 1.0;                 /*sec*/
+    public static final double ELEVATOR_TIMEOUT = 1.0;              /*sec*/
+    public static final double TURRET_TIMEOUT = 1.0;                /*sec*/
+    private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
+    private static final double AFTER_SHOOT_TIMEOUT = 2.0;          /*sec*/
 
     //TODO review values and code
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {

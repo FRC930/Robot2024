@@ -70,7 +70,7 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     }
     /**
     * <h3>setSpeed</h3>
-    * @param speed the speed the wheel will be set to
+    * @param speed the speed in the wheel will be set to in rot/s
     */
     @Override
     public void setSpeed(double speed) {

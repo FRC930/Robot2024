@@ -23,14 +23,16 @@ public class SpeakerScoreUtility {
     static final private int PIVOT_ANGLE_SPEED_COLUMN = 3;
     static final private int EVELATOR_HEIGHT_COLUMN = 4;   // TODO not need given all at 0.0 
 
+    static final private double COMPUTED_SHOOT_SPEED = 170.0;
+
     static final private int CLOSE_ROW = 0;
     static final private int MEDIUM_ROW = 1;
     static final private int FAR_ROW = 2;
     private final static double[][] SHOOTING_CONSTANTS = 
     {
-        {70.0, 70.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
-        {70.0, 70.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
-        {85.0, 85.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
+        {140.0, 140.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
+        {140.0, 140.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
+        {170.0, 170.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
 
 
@@ -128,7 +130,7 @@ public class SpeakerScoreUtility {
     }
 
     public static double computeShooterSpeed(double distance) {
-        return 85.0;
+        return COMPUTED_SHOOT_SPEED;
     }
 
 }
