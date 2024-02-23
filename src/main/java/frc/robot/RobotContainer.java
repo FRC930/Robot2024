@@ -51,6 +51,7 @@ import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
 import frc.robot.utilities.SpeakerScoreUtility.Target;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
@@ -98,8 +99,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
-    private final boolean UseLimeLightAprilTag = true;
     private final boolean VISION_UPDATE_ODOMETRY = true;
     
     //The position we want the eleveator to move to.
@@ -524,7 +523,7 @@ public class RobotContainer {
    * Update all vision
    */
   public void updateAllVision() {
-    if (UseLimeLightAprilTag) {  
+    if (VISION_UPDATE_ODOMETRY) {  
       updateVisionOdometry("limelight-front");
       updateVisionOdometry("limelight-back");
     }
@@ -536,30 +535,65 @@ public class RobotContainer {
    * @param limeLightName
    */
   public void updateVisionOdometry(String limeLightName) {
-      boolean useResult = true;
       Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
-      if (lastResult.valid && lastResult.targets_Fiducials.length > 0 && lastResult.targets_Fiducials[0].fiducialID != 0) {
-          if (lastResult.targets_Fiducials.length == 1) {
-              if (LimelightHelpers.getTA(limeLightName) > 0.27) { //The robot must be close to use only one April Tag at a time
-                useResult = false;
-              } else {
-                useResult = false;
-              }
-          } else {
-              useResult = true;
-          }
 
-          if (useResult) { //Always update odometry through blue alliance because blue origin is always (0,0)
-              m_StartInTeleopUtility.updateTags();
-              Logger.recordOutput("LimeLightOdometry/" + limeLightName, lastResult.targets_Fiducials[0].fiducialID);
-              Logger.recordOutput("LimeLightOdometry/" + limeLightName, lastResult.getBotPose2d_wpiBlue());              
-              if (VISION_UPDATE_ODOMETRY) {
-                drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp()); 
+      if (isValidResult(lastResult)) { //Verifies that the Tags are valid, have values, and are between IDs 1 and 16
+          int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
+
+          //We use the percentage of the screen (TA) as a reference to distance
+          if (idArray.length > 1) { //If the Limelight sees more than one Tag
+              double area = 100.0; //Defaults to not using Tags
+              /**
+               * We sort by distances based on the groups of Tags because the Source Tags are farther apart than the Speaker Tags.
+               * This makes the TA value bigger at the same distance away from the Tags.
+              */
+              if ((arrayContainsPair(idArray, 1, 2)) || (arrayContainsPair(idArray, 9, 10))) { //If the Limelight sees Source Tags
+                  area = 0.6;//Source
+              } else if ((arrayContainsPair(idArray, 3, 4)) || (arrayContainsPair(idArray, 7, 8))) { //If the Limelight sees Speaker Tags
+                  area = 0.35; //Speaker
+              } else { //If the Limelight sees more than two tags
+                  area = 0.0; //Any
+              }
+                        
+              if (LimelightHelpers.getTA(limeLightName) > area) {
+                m_StartInTeleopUtility.updateTags();
+                
+                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
+                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
+
+                drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
               }
           }
       }
   }
 
+  private boolean isValidResult(Results result) {
+      return result.valid && result.targets_Fiducials.length > 0 &&
+              result.targets_Fiducials[0].fiducialID >= 1 && result.targets_Fiducials[0].fiducialID <= 16;
+  }
+
+  private int[] createAprilTagIDArray(Results result) {
+      int[] idArray = new int[result.targets_Fiducials.length];
+      for (int i = 0; i < result.targets_Fiducials.length; i++) {
+          idArray[i] = (int) result.targets_Fiducials[i].fiducialID;
+      }
+
+      return idArray;
+  }
+
+  private boolean arrayContainsPair(int[] array, int value1, int value2) {
+      return arrayContains(array, value1) && arrayContains(array, value2);
+  }
+
+  private boolean arrayContains(int[] array, int value) {
+      for (int i : array) {
+          if (i == value) {
+              return true;
+          }
+      }
+
+      return false;
+  }
 
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
