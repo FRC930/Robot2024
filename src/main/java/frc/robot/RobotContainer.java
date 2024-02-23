@@ -99,6 +99,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+    private final boolean USE_LIMELIGHT_APRIL_TAG = true;
     private final boolean VISION_UPDATE_ODOMETRY = true;
     
     //The position we want the eleveator to move to.
@@ -523,7 +524,7 @@ public class RobotContainer {
    * Update all vision
    */
   public void updateAllVision() {
-    if (VISION_UPDATE_ODOMETRY) {  
+    if (USE_LIMELIGHT_APRIL_TAG) {  
       updateVisionOdometry("limelight-front");
       updateVisionOdometry("limelight-back");
     }
@@ -561,7 +562,9 @@ public class RobotContainer {
                 Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
                 Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
 
-                drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
+                if (VISION_UPDATE_ODOMETRY) {
+                    drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
+                }
               }
           }
       }
