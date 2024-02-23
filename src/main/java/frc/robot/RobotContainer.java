@@ -275,10 +275,10 @@ public class RobotContainer {
         ? new ElevatorIORobot(3, 4, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
         : new ElevatorIOSim(3, 4, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
 
-    public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
-      Robot.isReal()
-        ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
-        : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
+    // public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
+    //   Robot.isReal()
+    //     ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
+    //     : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
@@ -314,7 +314,7 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
+    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem); // TODO: 2 Shooting elevators given
 
     private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility();
     
@@ -328,7 +328,7 @@ public class RobotContainer {
       m_turretSubsystem, 
       m_shooterSubsystem, 
       m_indexerSubsystem, 
-      m_climbingElevatorSubsystem, 
+      m_shootingElevatorSubsystem, 
       m_speakerUtil, 
       m_intakeSubsystem, 
       m_pivotSubsystem);
@@ -505,7 +505,7 @@ public class RobotContainer {
     // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
     m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
       .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem));
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
     m_coDriverController.y().whileTrue(new InstantCommand(()->m_pivotSubsystem.setPosition(0.0)));
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
