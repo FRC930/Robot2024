@@ -570,11 +570,25 @@ public class RobotContainer {
       }
   }
 
+  /**
+   * 
+   * Validates that the results the Limelight got are what we want to use
+   * 
+   * @param result The raw JSON dump from the Limelight
+   * @return Boolean that says if we want to use our results
+   */
   private boolean isValidResult(Results result) {
       return result.valid && result.targets_Fiducials.length > 0 &&
               result.targets_Fiducials[0].fiducialID >= 1 && result.targets_Fiducials[0].fiducialID <= 16;
   }
 
+  /**
+   * 
+   * Returns a new array that contains all of the IDs that the Limelight sees
+   * 
+   * @param result The raw JSON dump from the Limelight
+   * @return An array that contains all of the IDs that the Limelight sees
+   */
   private int[] createAprilTagIDArray(Results result) {
       int[] idArray = new int[result.targets_Fiducials.length];
       for (int i = 0; i < result.targets_Fiducials.length; i++) {
@@ -584,10 +598,27 @@ public class RobotContainer {
       return idArray;
   }
 
+  /**
+   * 
+   * Determines if both of the IDs are in the array
+   * 
+   * @param array An Array that contains all of the April Tag IDs
+   * @param value1 ID number 1
+   * @param value2 ID number 2
+   * @return Boolean that returns if the two numbers are in the array
+   */
   private boolean arrayContainsPair(int[] array, int value1, int value2) {
       return arrayContains(array, value1) && arrayContains(array, value2);
   }
 
+  /**
+   * 
+   * Determines if the array contains a specific number
+   * 
+   * @param array An Array that contains all of the April Tag IDs
+   * @param value ID value that is being checked
+   * @return boolean that says if the number is in the array
+   */
   private boolean arrayContains(int[] array, int value) {
       for (int i : array) {
           if (i == value) {
