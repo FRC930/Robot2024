@@ -169,17 +169,17 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(36.0)
+        .withKP(55.0)
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
-        .withKG(0.45) // MotionMagic voltage
+        .withKG(0.35) // MotionMagic voltage
         .withKS(0) 
         .withKV(0);
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(30.0) 
+        .withKP(35.0)  // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -352,7 +352,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    // configureCoDriverBindingsForTesting();
+    configureCoDriverBindingsForTesting();
     configureDriverBindings();
     portForwardCameras();
     // set our own visionMeasurementDeviations
@@ -503,7 +503,9 @@ public class RobotContainer {
     m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
     // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
-    m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
+    m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
+      .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem));
     m_coDriverController.y().whileTrue(new InstantCommand(()->m_pivotSubsystem.setPosition(0.0)));
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
