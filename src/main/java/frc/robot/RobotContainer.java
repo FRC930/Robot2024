@@ -242,21 +242,21 @@ public class RobotContainer {
     
     public static final double TURRET_REFINE_COMMAND_VELOCITY = 0.5;
     public static final double TURRET_REFINE_COMMAND_ACCELERATION = 10.0;
-    public static final double TURRET_REFINE_COMMAND_JERK = 0;
+    public static final double TURRET_REFINE_COMMAND_JERK = 0.0;
     public static final boolean TURRET_REFINE_COMMAND_ENABLEFOC = false;
-    public static final double TURRET_REFINE_COMMAND_FEED_FORWARD = 0;
+    public static final double TURRET_REFINE_COMMAND_FEED_FORWARD = 0.0;
     public static final int TURRET_REFINE_COMMAND_SLOT = 0;
     public static final boolean TURRET_REFINE_COMMAND_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
     public static final boolean TURRET_REFINE_COMMAND_LIMIT_FORWARD_MOTION = false;
     public static final boolean TURRET_REFINE_COMMAND_LIMIT_REVERSE_MOTION = false;
 
     public static final boolean ENDGAME_ELEVATOR_ENABLEFOC = false;
-    public static final double ENDGAME_ELEVATOR_JERK = 0;
-    public static final double ENDGAME_ELEVATOR_ACCELERATION = 0;
-    public static final double ENDGAME_ELEVATOR_VELOCITY = 0;
+    public static final double ENDGAME_ELEVATOR_JERK = 0.0;
+    public static final double ENDGAME_ELEVATOR_ACCELERATION = 1.0;
+    public static final double ENDGAME_ELEVATOR_VELOCITY = 10.0;
     public static final boolean ENDGAME_ELEVATOR_OVERRIDEBRAKEDURNEUTRAL = false;
     public static final int ENDGAME_ELEVATOR_SLOT = 0;
-    public static final double ENDGAME_ELEVATOR_FEEDFORWARD = 0;
+    public static final double ENDGAME_ELEVATOR_FEEDFORWARD = 0.0;
     public static final boolean ENDGAME_ELEVATOR_LIMITFORWARDMOTION = false;
     public static final boolean ENDGAME_ELEVATOR_LIMITREVERSEMOTION = false;
 
