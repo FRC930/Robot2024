@@ -19,8 +19,6 @@ public class PivotSubsystem extends SubsystemBase{
 
     private final TalonPosIO m_io;
 
-    private final String pivotName;
-
     public static final double PIVOT_DEADBAND = 2.0;
 
     /**
@@ -31,7 +29,6 @@ public class PivotSubsystem extends SubsystemBase{
      */
     public PivotSubsystem(TalonPosIO io) {
         m_io = io;
-        pivotName = "" + this.hashCode();
         //Setting stow pos on robot startup
         setPosition(CommandFactoryUtility.PIVOT_STOW_POS);
     }
@@ -100,13 +97,19 @@ public class PivotSubsystem extends SubsystemBase{
         return new InstantCommand(() -> setPosition(speakerUtil.getPivotAngle()), this);
     }
 
+    public Command newCalcAndSetPosCommand() {
+        return new InstantCommand(
+            () -> setPosition(SpeakerScoreUtility.computePivotAngle(SpeakerScoreUtility.inchesToSpeaker())), this
+        );
+    }
+
     public boolean atSetpoint() {
         double pos = getPosition();
         double target = getTarget();
         return MathUtil.applyDeadband(target - pos, PIVOT_DEADBAND) == 0.0;
     }
 
-    public Command newWaitUntilSetpointCommand(double seconds) {
-        return new WaitCommand(seconds).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
+    public Command newWaitUntilSetpointCommand(double timeout) {
+        return new WaitCommand(timeout).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
     }
 }

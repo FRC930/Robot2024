@@ -67,8 +67,8 @@ public class TurretRefineCommand extends Command{
         m_TurretPosition = m_TurretSubsystem.getPosition();
         m_AprilTagAngle = m_LimeLightDetectionUtility.get_tx();
 
-        SmartDashboard.putNumber("TurretAim/TX", m_AprilTagAngle);
-        SmartDashboard.putBoolean("TurretAim/isFinished", (Math.abs(m_AprilTagAngle) <= m_DeadBand) && (m_AprilTagAngle != 0.0));
+        Logger.recordOutput("TurretAim/TX", m_AprilTagAngle);
+        Logger.recordOutput("TurretAim/isFinished", (Math.abs(m_AprilTagAngle) <= m_DeadBand) && (m_AprilTagAngle != 0.0));
 
         double Offset = 0.0;
         if ((Math.hypot(m_CurrentPose.getX() - m_TargetPose.getX(), m_CurrentPose.getY() - m_TargetPose.getY()) <= DISTANCE_FROM_SPEAKER) &&

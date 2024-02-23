@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2745940876497153,
-        "y": 6.9956624528633675
+        "x": 1.5706023719739761,
+        "y": 7.005529395674177
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8666106563048679,
-        "y": 6.985795510054054
+        "x": 2.162701159443282,
+        "y": 7.005529395674177
       },
       "isLocked": false,
       "linkedName": "AmpStart"
     },
     {
       "anchor": {
-        "x": 2.882905765811533,
+        "x": 2.9618413082980024,
         "y": 6.9956624528633675
       },
       "prevControl": {
-        "x": 2.271155311541394,
-        "y": 6.985795510052559
+        "x": 2.3500112870828342,
+        "y": 6.9956624528633675
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.0,
     "maxAcceleration": 1.0,
@@ -39,11 +57,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

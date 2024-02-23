@@ -13,7 +13,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
@@ -97,9 +96,9 @@ public class LimeLightIntakeCommand extends Command {
 
         m_distance = distanceToTarget();
         
-        SmartDashboard.putNumber("GamePiece/LimeLightDistance", m_distance);
-        SmartDashboard.putNumber("GamePiece/Xpos", m_SwerveDrive.getState().Pose.getX());
-        SmartDashboard.putNumber("GamePiece/Ypos", m_SwerveDrive.getState().Pose.getY());
+        // SmartDashboard.putNumber("GamePiece/LimeLightDistance", m_distance);
+        // SmartDashboard.putNumber("GamePiece/Xpos", m_SwerveDrive.getState().Pose.getX());
+        // SmartDashboard.putNumber("GamePiece/Ypos", m_SwerveDrive.getState().Pose.getY());
         
         //Creates the trapezoid profile using the given information
         m_goal = new TrapezoidProfile.State(m_distance, 0.0); //sets the desired state to be the total distance away
@@ -115,12 +114,12 @@ public class LimeLightIntakeCommand extends Command {
         m_strafe = m_direction * MathUtil.clamp(pid.calculate(m_LimeLight.get_tx(), 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
         m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
-        SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
-        SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
-        SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
-        SmartDashboard.putNumber("GamePiece/distanceLeft", distanceToTarget());
-        SmartDashboard.putNumber("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
+        // SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
+        // SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
+        // SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
+        // SmartDashboard.putNumber("GamePiece/distanceLeft", distanceToTarget());
+        // SmartDashboard.putNumber("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
+        // SmartDashboard.putNumber("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
 
         m_TimeElapsed += 0.02; //increases the timer  by 20 milliseconds
 
@@ -138,9 +137,9 @@ public class LimeLightIntakeCommand extends Command {
     @Override
     public boolean isFinished() {
         if (profile.isFinished(m_TimeElapsed)) {
-            SmartDashboard.putNumber("GamePiece/ElapsedTime", m_TimeElapsed);
-            SmartDashboard.putNumber("GamePiece/EndXpos", m_SwerveDrive.getState().Pose.getX());
-            SmartDashboard.putNumber("GamePiece/EndYpos", m_SwerveDrive.getState().Pose.getY());
+            // SmartDashboard.putNumber("GamePiece/ElapsedTime", m_TimeElapsed);
+            // SmartDashboard.putNumber("GamePiece/EndXpos", m_SwerveDrive.getState().Pose.getX());
+            // SmartDashboard.putNumber("GamePiece/EndYpos", m_SwerveDrive.getState().Pose.getY());
             return true;
         } else {
         // return MathUtil.applyDeadband(distanceToTarget(), 0.025, 1.0) == 0;

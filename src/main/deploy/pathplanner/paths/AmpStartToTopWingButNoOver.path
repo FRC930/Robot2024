@@ -8,40 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.985013970027942,
-        "y": 6.719388054160726
+        "x": 1.5032956956391186,
+        "y": 7.0247598746269935
       },
       "isLocked": false,
       "linkedName": "AmpStart"
     },
     {
       "anchor": {
-        "x": 3.050643793595281,
-        "y": 6.354311170160802
+        "x": 2.9026396514331507,
+        "y": 6.9956624528633675
       },
       "prevControl": {
-        "x": 2.2127530703290894,
-        "y": 6.2913118676595845
-      },
-      "nextControl": {
-        "x": 4.362947187432837,
-        "y": 6.452980598268889
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.28012348332389,
-        "y": 7.429807936538951
-      },
-      "prevControl": {
-        "x": 5.053633184189446,
-        "y": 7.597545964322698
+        "x": 2.2908096302179826,
+        "y": 6.9956624528633675
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TopCenter"
+      "linkedName": "TopWingExact"
     }
   ],
   "rotationTargets": [],
@@ -49,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.6,
+      "waypointRelativePos": 0.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -80,7 +64,7 @@
   "folder": "Robot2024",
   "previewStartingState": {
     "rotation": 180.0,
-    "velocity": 0
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2745940876497153,
-      "y": 6.9956624528633675
+      "x": 1.5706023719739761,
+      "y": 7.005529395674177
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,38 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stow"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "AmpStartToTopWing"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "name": "setClose"
           }
         },
         {
@@ -55,34 +24,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "stow"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "TopWingToCenterWing"
-                }
-              }
-            ]
+            "pathName": "AmpStartToTopWingButNoOver"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "setMid"
           }
         },
         {
@@ -92,34 +42,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "stow"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterWingToBottomWing"
-                }
-              }
-            ]
+            "pathName": "TopWingToCenterWingButNoOver"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "setMid"
           }
         },
         {
@@ -129,9 +60,21 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "CenterWingToBottomWing"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "stow"
+            "name": "setMid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
           }
         }
       ]

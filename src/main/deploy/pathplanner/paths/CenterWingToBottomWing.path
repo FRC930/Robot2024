@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.882905765811533,
-        "y": 5.555088802485297
+        "x": 2.9026396514331507,
+        "y": 5.545221859674489
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8533049373791073,
-        "y": 5.1406772044313325
+        "x": 2.9026396514331507,
+        "y": 5.1297544341817956
       },
       "isLocked": false,
       "linkedName": "CenterWing"
     },
     {
       "anchor": {
-        "x": 2.784236337703446,
-        "y": 4.1046482092964185
+        "x": 2.9026396514331507,
+        "y": 4.114515152107228
       },
       "prevControl": {
-        "x": 2.803970223325064,
-        "y": 4.617729235458472
+        "x": 2.9026396514331507,
+        "y": 4.627975535826589
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.0,
     "maxAcceleration": 1.0,
@@ -39,11 +57,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 90.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 90.86138289073676,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

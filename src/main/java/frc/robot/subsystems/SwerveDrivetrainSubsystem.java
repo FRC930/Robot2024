@@ -127,12 +127,12 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
             Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);            
             Logger.recordOutput("Drivetrain/Pose", getState().Pose);
             
-            SmartDashboard.putNumber("Pigeon2Yaw", getPigeon2().getAngle());
-            SmartDashboard.putNumber("Pose2DYaw", getState().Pose.getRotation().getDegrees());
+            Logger.recordOutput("Drivetrain/Pigeon2Yaw", getPigeon2().getAngle());
+            Logger.recordOutput("Drivetrain/Pose2DYaw", getState().Pose.getRotation().getDegrees());
             
             for (int i = 0; i < 4; i++) {
-                SmartDashboard.putNumber("SwerveWheelSpeed" + i, getState().ModuleStates[i].speedMetersPerSecond);
-                SmartDashboard.putNumber("SwerveWheelAngle" + i, getState().ModuleStates[i].angle.getDegrees());
+                Logger.recordOutput("Drivetrain/SwerveWheelSpeed/" + i, getState().ModuleStates[i].speedMetersPerSecond);
+                Logger.recordOutput("Drivetrain/SwerveWheelAngle/" + i, getState().ModuleStates[i].angle.getDegrees());
             }
         }
     }

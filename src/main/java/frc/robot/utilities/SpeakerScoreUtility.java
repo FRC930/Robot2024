@@ -1,5 +1,15 @@
 package frc.robot.utilities;
 
+import java.util.Optional;
+
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -13,14 +23,16 @@ public class SpeakerScoreUtility {
     static final private int PIVOT_ANGLE_SPEED_COLUMN = 3;
     static final private int EVELATOR_HEIGHT_COLUMN = 4;   // TODO not need given all at 0.0 
 
+    static final private double COMPUTED_SHOOT_SPEED = 140.0;
+
     static final private int CLOSE_ROW = 0;
     static final private int MEDIUM_ROW = 1;
     static final private int FAR_ROW = 2;
-    private final double[][] SHOOTING_CONSTANTS = 
+    private final static double[][] SHOOTING_CONSTANTS = 
     {
-        {70.0, 70.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
-        {70.0, 70.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
-        {85.0, 85.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
+        {140.0, 140.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
+        {140.0, 140.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
+        {140.0, 140.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
 
 
@@ -84,6 +96,41 @@ public class SpeakerScoreUtility {
             default:
                 return CLOSE_ROW;
         }
+    }
+
+    public static double inchesToSpeaker() {
+        AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+        Pose2d m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
+        Pose2d m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
+        Pose2d m_TargetPose = m_BlueTargetPose;
+
+        // If there is an alliance present it sets the target pose based on the alliance; otherwise defaults to blue.
+        Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+        if (optionalAlliance.isPresent()){
+        Alliance alliance = optionalAlliance.get();
+            if (alliance == Alliance.Red) {
+                m_TargetPose = m_RedTargetPose;
+            } else {
+                m_TargetPose = m_BlueTargetPose;
+            }
+        }
+        // gets the robots position, and gets the robots heading.
+        Pose2d m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
+
+        double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY()));
+        Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", distance);
+        return distance;
+    }
+
+    public static double computePivotAngle(double distance) {
+        double coefficient = 51.4;
+        double exponent = -0.00503 * distance;
+        return coefficient * Math.exp(exponent);
+    }
+
+    public static double computeShooterSpeed(double distance) {
+        return COMPUTED_SHOOT_SPEED;
     }
 
 }

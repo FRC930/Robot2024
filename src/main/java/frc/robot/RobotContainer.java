@@ -54,6 +54,7 @@ import frc.robot.utilities.SpeakerScoreUtility.Target;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -298,8 +299,8 @@ public class RobotContainer {
     private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(m_turretIO);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new TalonVelocityIORobot(14, 1, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 1, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(15, 1, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 1, shooterS0C, shooterMMC));
+        Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(15, 0.5, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 0.5, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
@@ -370,37 +371,13 @@ public class RobotContainer {
   private void configureDriverBindings() {
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest( // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive
-                            () -> {  
-                                DoubleSupplier xSupplier = m_driverController::getLeftY;   
-                                DoubleSupplier ySupplier = m_driverController::getLeftX;
-                                DoubleSupplier omegaSupplier = m_driverController::getRightX;       
-                                   
-                                // Apply deadband
-                                double linearMagnitude = MathUtil.applyDeadband(
-                                                Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), JOYSTICK_DEADBAND);
-                                Rotation2d linearDirection =
-                                        new Rotation2d(-xSupplier.getAsDouble(), -ySupplier.getAsDouble());
-
-                                // Square values
-                                linearMagnitude = linearMagnitude * linearMagnitude;
-
-                                // Calculate new linear velocity
-                                Translation2d linearVelocity =
-                                        new Pose2d(new Translation2d(), linearDirection)
-                                                .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
-                                                .getTranslation();
-                                                
-                                // Squaring the omega value and applying a deadband 
-                                double omega = MathUtil.applyDeadband(-omegaSupplier.getAsDouble(), JOYSTICK_ROTATIONAL_DEADBAND);
-                                omega = Math.copySign(omega * omega, omega);
-
-
-                                  return drive.withVelocityX(linearVelocity.getX() * MaxSpeed * PERCENT_SPEED)
-                                    .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
-                                    .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
-                              }
-              ));
+            // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
+            drivetrain.applyRequest(
+              joystickDriveWithDeadband(
+                m_driverController::getLeftY,
+                m_driverController::getLeftX,
+                m_driverController::getRightX)
+            ));
 
     // m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
 
@@ -408,21 +385,24 @@ public class RobotContainer {
     
     // m_turretSubsystem.setDefaultCommand(
     //   new ConditionalCommand(
-    //     new TurretAimCommand(m_turretSubsystem), 
+        // new TurretAimCommand(m_turretSubsystem),
     //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
     //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // Sets the desired positions for the speaker
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); // Sets desired target to far
-    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); // Sets desired target to medium
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); // Sets desired target to close
+    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); // Far pillar of stage
+    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); // Close pillar of stage
+    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); // Wing Note Line shooting position
 
     // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
     //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
     
     //#region POV controls
+
+    //m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+
     // m_driverController.pov(0).whileTrue(
     //   drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
     //   ));
@@ -443,11 +423,11 @@ public class RobotContainer {
 
     // Eject shooter button
     m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
     
     // Intake button TODO Test
     m_driverController.leftBumper().whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem)
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem)
           .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
       ;
     
@@ -458,7 +438,7 @@ public class RobotContainer {
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
         CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem)// TODO
     )
-    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
+    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
 
     // Amp score button
     // m_driverController.rightBumper().and(m_driverController.rightTrigger())
@@ -468,7 +448,48 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    // m_driverController.pov(0).onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+  }
+
+  /** 
+   * <h3>joystickDriveWithDeadband</h3>
+   * Applies deadband to joystick values and returns a request for drivetrain
+   * 
+   * <b>Code originally from team number 1091 to help deal with deadband on joystick for swerve drive</b>
+   * @param xSupplier supplier for joystick's x axis
+   * @param ySupplier supplier for joystick's y axis
+   * @param omegaSupplier supplier for omega
+   * @return request for drivetrain
+   */
+  private Supplier<SwerveRequest> joystickDriveWithDeadband(DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
+    return () -> {  
+        double xValue = xSupplier.getAsDouble();   
+        double yValue = ySupplier.getAsDouble();
+        double omegaValue = omegaSupplier.getAsDouble();       
+           
+        // Apply deadband
+        double linearMagnitude = MathUtil.applyDeadband(
+                        Math.hypot(xValue, yValue), JOYSTICK_DEADBAND);
+        Rotation2d linearDirection =
+                new Rotation2d(-xValue, -yValue);
+
+        // Square values
+        linearMagnitude = linearMagnitude * linearMagnitude;
+
+        // Calculate new linear velocity
+        Translation2d linearVelocity =
+                new Pose2d(new Translation2d(), linearDirection)
+                        .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+                        .getTranslation();
+                        
+        // Squaring the omega value and applying a deadband 
+        double omega = MathUtil.applyDeadband(-omegaValue, JOYSTICK_ROTATIONAL_DEADBAND);
+        omega = Math.copySign(omega * omega, omega);
+
+
+        return drive.withVelocityX(linearVelocity.getX() * MaxSpeed * PERCENT_SPEED)
+          .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
+          .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
+      };
   }
   
   @Deprecated

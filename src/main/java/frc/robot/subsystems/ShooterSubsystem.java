@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
  import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,8 +40,8 @@ public class ShooterSubsystem extends SubsystemBase{
 
     /**
     * <h3>setSpeed</h3>
-    * @param leftSpeed the speed the left wheel will be set to
-    * @param rightSpeed the speed the right wheel will be set to
+    * @param leftSpeed the speed the left wheel will be set to in rot/s
+    * @param rightSpeed the speed the right wheel will be set to in rot/s 
     */
     public void setSpeed(double leftSpeed, double rightSpeed) {
         IO_Left.setSpeed(leftSpeed);
@@ -123,6 +124,11 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public Command newSetSpeedsCommand(SpeakerScoreUtility speakerUtil) {
         return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed()), this);
+    }
+
+    public Command newCalcAndSetSpeedsCommand() {
+        double speed = SpeakerScoreUtility.computeShooterSpeed(SpeakerScoreUtility.inchesToSpeaker());
+        return new InstantCommand(() -> setSpeed(speed, speed));
     }
 
     public Command shootTo(ShooterAction target) {
