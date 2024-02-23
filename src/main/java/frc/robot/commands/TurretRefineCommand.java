@@ -17,6 +17,10 @@ import frc.robot.utilities.RobotOdometryUtility;
 
 public class TurretRefineCommand extends Command{
 
+    private static final double Y_DELTA_DISTANCE = 0.5; //Meters above or below the Speaker April Tags
+    private static final double ANGLE_OFFSET = 5.0; //Degrees
+    private static final double DISTANCE_FROM_SPEAKER = 4.0; //Meters
+
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-turret");
     
     private mmTurretSubsystem m_TurretSubsystem;
@@ -34,9 +38,7 @@ public class TurretRefineCommand extends Command{
 
     public TurretRefineCommand(mmTurretSubsystem turretSubsystem) {
         m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
-        m_RedTargetPose = new Pose2d(m_RedTargetPose.getX() + 0.5, m_RedTargetPose.getY(), m_RedTargetPose.getRotation());
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
-        m_BlueTargetPose = new Pose2d(m_BlueTargetPose.getX() - 0.5, m_BlueTargetPose.getY(), m_BlueTargetPose.getRotation());
         m_TargetPose = m_BlueTargetPose;
 
         m_TurretSubsystem = turretSubsystem;
@@ -69,15 +71,15 @@ public class TurretRefineCommand extends Command{
         SmartDashboard.putBoolean("TurretAim/isFinished", (Math.abs(m_AprilTagAngle) <= m_DeadBand) && (m_AprilTagAngle != 0.0));
 
         double Offset = 0.0;
-        if ((Math.hypot(m_CurrentPose.getX() - m_TargetPose.getX(), m_CurrentPose.getY() - m_TargetPose.getY()) <= 4.0) &&
-                ((m_CurrentPose.getY() > m_TargetPose.getY() + 0.5) ||
-                (m_CurrentPose.getY() < m_TargetPose.getY() - 0.5))) {
+        if ((Math.hypot(m_CurrentPose.getX() - m_TargetPose.getX(), m_CurrentPose.getY() - m_TargetPose.getY()) <= DISTANCE_FROM_SPEAKER) &&
+                ((m_CurrentPose.getY() > m_TargetPose.getY() + Y_DELTA_DISTANCE) ||
+                (m_CurrentPose.getY() < m_TargetPose.getY() - Y_DELTA_DISTANCE))) {
                 
             if ((isBlue && (m_CurrentPose.getY() < m_TargetPose.getY()))   || 
                 (!isBlue && !(m_CurrentPose.getY() < m_TargetPose.getY())) ) {
-                Offset = 5.0; //TODO figure out Offset values
+                Offset = ANGLE_OFFSET; //TODO figure out Offset values
             } else {
-                Offset = -5.0;
+                Offset = -ANGLE_OFFSET;
             }
 
         }
