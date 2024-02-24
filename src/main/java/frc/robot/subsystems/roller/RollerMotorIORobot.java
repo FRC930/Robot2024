@@ -1,5 +1,6 @@
 package frc.robot.subsystems.roller;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.IOs.TalonRollerIO;
@@ -15,7 +16,14 @@ public class RollerMotorIORobot implements TalonRollerIO {
 
     public RollerMotorIORobot(int id, String canbus) {
         m_motor = new TalonFX(id, canbus);
-        Phoenix6Utility.resetTalonFxFactoryDefaults(m_motor);
+        TalonFXConfiguration cfg = new TalonFXConfiguration();
+
+         // cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
+        // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
+        // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
+
+        Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg);
+
     }
 
     @Override

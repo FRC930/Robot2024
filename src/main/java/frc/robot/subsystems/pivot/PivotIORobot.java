@@ -37,7 +37,11 @@ public class PivotIORobot implements TalonPosIO{
         cfg.withSlot0(config.withGravityType(GravityTypeValue.Arm_Cosine)); // PID/FF configs
         cfg.withMotionMagic(mmConfigs); // Motion magic configs
         cfg.Feedback.SensorToMechanismRatio = gearRatio; // Applies gear ratio
-        
+
+        // cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
+        // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
+        // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
+
         Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg);
         m_motor.setNeutralMode(NeutralModeValue.Brake); // Enables brake mode
         m_motor.setInverted(false); //with metal gears it was not inverted 

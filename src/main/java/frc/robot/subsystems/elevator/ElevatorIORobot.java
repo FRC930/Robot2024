@@ -59,6 +59,9 @@ public class ElevatorIORobot implements TalonPosIO {
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.withSlot0(config.withGravityType(GravityTypeValue.Elevator_Static));
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this
+        // cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
+        // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
+        // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
         // Phoenix6Utility.setTalonFxConfiguration(leftElevatorFollower, cfg);
