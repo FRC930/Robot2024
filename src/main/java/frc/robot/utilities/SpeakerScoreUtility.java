@@ -23,6 +23,12 @@ public class SpeakerScoreUtility {
     static final private int PIVOT_ANGLE_SPEED_COLUMN = 3;
     static final private int EVELATOR_HEIGHT_COLUMN = 4;   // TODO not need given all at 0.0 
 
+    static final private double FIXED_ANGLE_BUMPER_SHOT_DISTANCE = 43.0; //In inches
+    private static final double FIXED_ANGLE_BUMPER_SHOT = 56.0;
+
+    private final static double LINEAR_DISTANCE_FAR = 132.0 - 4.0; //subracting 4 inches to make sure 11 feet uses linear
+    private static final double LINEAR_DISTANCE_CLOSE = 84.0 - 4.0; //subracting 4 inches to make sure 7 feet uses linear
+
     static final private double COMPUTED_SHOOT_SPEED = 140.0;
 
     static final private int CLOSE_ROW = 0;
@@ -34,6 +40,8 @@ public class SpeakerScoreUtility {
         {140.0, 140.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
         {140.0, 140.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
+    private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
+    
 
 
     public enum Target{
@@ -118,15 +126,24 @@ public class SpeakerScoreUtility {
         // gets the robots position, and gets the robots heading.
         Pose2d m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
 
-        double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY()));
+        double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY())) - DISTANCE_OFFSET_TO_CENTER_OF_ROBOT;
         Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", distance);
         return distance;
     }
 
     public static double computePivotAngle(double distance) {
-        double coefficient = 51.4;
-        double exponent = -0.00503 * distance;
-        return coefficient * Math.exp(exponent);
+        double coefficient = 43.7;
+        double exponent = -0.00354 * distance;
+        if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
+            return FIXED_ANGLE_BUMPER_SHOT;
+        } else if (distance >= LINEAR_DISTANCE_FAR) {
+            return (-0.05 * distance) + 32.7 + 0.5; // 0.5 (inches) is a fudge factor
+        } else if (distance >= LINEAR_DISTANCE_CLOSE) {
+            return (-0.115 * distance) + 40.9 + 2.0; // 2.0 (inches) is a fudge factor
+        } else {
+            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 2.0; // 2.0 (inches) is a fudge factor
+        }
+        // return coefficient * Math.exp(exponent);
     }
 
     public static double computeShooterSpeed(double distance) {

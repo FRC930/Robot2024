@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.generated.TunerConstants;
 import frc.robot.utilities.RobotOdometryUtility;
 
 /**
@@ -70,8 +71,8 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
             (speeds)->this.setControl(autoRequest.withSpeeds(speeds)),// Consumer of ChassisSpeeds to drive the robot
             new HolonomicPathFollowerConfig(
                 new PIDConstants(1.6, 0, 0), // TODO: Config
-                new PIDConstants(1, 0, 0), // TODO: Config
-                4.15, // Meters  // TODO get set to correct value
+                new PIDConstants(5.0, 0, 0), // TODO: Config
+                TunerConstants.kSpeedAt12VoltsMps, // Meters  // TODO get set to correct value
                 Units.inchesToMeters(11.0), // TODO determine 
                 new ReplanningConfig(),
                 0.004),

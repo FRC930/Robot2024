@@ -169,17 +169,17 @@ public class RobotContainer {
 
     private final Slot0Configs pivotS0C =
       new Slot0Configs()
-        .withKP(36.0)
+        .withKP(55.0)
         .withKI(0) 
         .withKD(0) 
         .withKA(0) 
-        .withKG(0.45) // MotionMagic voltage
+        .withKG(0.35) // MotionMagic voltage
         .withKS(0) 
         .withKV(0);
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(30.0) 
+        .withKP(35.0)  // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -242,8 +242,8 @@ public class RobotContainer {
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
     
-    public static final double TURRET_REFINE_COMMAND_VELOCITY = 0.5;
-    public static final double TURRET_REFINE_COMMAND_ACCELERATION = 10.0;
+    public static final double TURRET_REFINE_COMMAND_VELOCITY = 0.1;
+    public static final double TURRET_REFINE_COMMAND_ACCELERATION = 1.0;
     public static final double TURRET_REFINE_COMMAND_JERK = 0.0;
     public static final boolean TURRET_REFINE_COMMAND_ENABLEFOC = false;
     public static final double TURRET_REFINE_COMMAND_FEED_FORWARD = 0.0;
@@ -275,10 +275,10 @@ public class RobotContainer {
         ? new ElevatorIORobot(3, 4, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
         : new ElevatorIOSim(3, 4, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
 
-    public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
-      Robot.isReal()
-        ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
-        : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
+    // public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
+    //   Robot.isReal()
+    //     ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
+    //     : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
@@ -314,7 +314,7 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_climbingElevatorSubsystem, m_turretSubsystem);
+    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem); // TODO: 2 Shooting elevators given
 
     private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility();
     
@@ -328,7 +328,7 @@ public class RobotContainer {
       m_turretSubsystem, 
       m_shooterSubsystem, 
       m_indexerSubsystem, 
-      m_climbingElevatorSubsystem, 
+      m_shootingElevatorSubsystem, 
       m_speakerUtil, 
       m_intakeSubsystem, 
       m_pivotSubsystem);
@@ -352,7 +352,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    // configureCoDriverBindingsForTesting();
+    configureCoDriverBindingsForTesting();
     configureDriverBindings();
     portForwardCameras();
     // set our own visionMeasurementDeviations
@@ -383,11 +383,11 @@ public class RobotContainer {
 
     // m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
     
-    // m_turretSubsystem.setDefaultCommand(
-    //   new ConditionalCommand(
-        // new TurretAimCommand(m_turretSubsystem),
-    //     new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-    //     () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
+    m_turretSubsystem.setDefaultCommand(
+      new ConditionalCommand(
+        new TurretAimCommand(m_turretSubsystem),
+        new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
+        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
@@ -503,7 +503,9 @@ public class RobotContainer {
     m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
     // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
-    m_coDriverController.a().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 90));
+    m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
+      .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
     m_coDriverController.y().whileTrue(new InstantCommand(()->m_pivotSubsystem.setPosition(0.0)));
     m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
     //#endregion
@@ -529,6 +531,7 @@ public class RobotContainer {
   public void robotPeriodic() {
     updateAllVision();
     m_mechViewer.periodic();
+    Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", SpeakerScoreUtility.inchesToSpeaker());
   }
 
   /*

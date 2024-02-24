@@ -19,7 +19,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private TalonVelocityIO IO_Left;
     private TalonVelocityIO IO_Right;
 
-    private final double VELOCITY_DEADBAND = 2.0;
+    private final double VELOCITY_DEADBAND = 10.0;
 
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
         IO_Left = LeftIO;
