@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2203329399526117,
-        "y": 4.087081954477746
+        "x": 1.536525526688713,
+        "y": 5.527514849608872
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1530262636177542,
-        "y": 4.1063124334305625
+        "x": 2.1286243141580186,
+        "y": 5.527514849608872
       },
       "isLocked": false,
-      "linkedName": "AmpStart"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 2.9066934025451485,
+        "y": 5.539225686154655
       },
       "prevControl": {
-        "x": 2.2908096302179826,
-        "y": 6.9956624528633675
+        "x": 2.2948633813299804,
+        "y": 5.539225686154655
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TopWingExact"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.4,
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -64,7 +64,7 @@
   "folder": "Robot2024",
   "previewStartingState": {
     "rotation": 180.0,
-    "velocity": 0.0
+    "velocity": 0
   },
   "useDefaultConstraints": true
 }
