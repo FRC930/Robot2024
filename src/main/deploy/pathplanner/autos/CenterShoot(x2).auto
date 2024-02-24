@@ -1,0 +1,97 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.5607354291631679,
+      "y": 6.9956624528633675
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "setClose"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpStartToTopCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopCenterToWingLine1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setFar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WingLine1ToTopMidCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopMidCenterToWingLine2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setFar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WingLine2ToMidCenter"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Robot2024",
+  "choreoAuto": false
+}

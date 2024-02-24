@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.41726639009093575,
-      "y": 7.0
+      "x": 2.9026396514331507,
+      "y": 6.9956624528633675
     },
     "rotation": 180.0
   },
@@ -14,24 +14,18 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TestGamepieceDetection"
+            "pathName": "TopWingToCenterWingButNoOver"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DownTestGamepieceDetection"
+            "name": "stopIntake"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Robot2024",
   "choreoAuto": false
 }
