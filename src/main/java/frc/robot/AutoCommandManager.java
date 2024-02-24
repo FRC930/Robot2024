@@ -52,11 +52,13 @@ public class AutoCommandManager {
             pivot);
         //m_chooser = AutoBuilder.buildAutoChooser();
         PathPlannerAuto centerShootCommand = new PathPlannerAuto("CenterShoot(x2)");
-        PathPlannerAuto wingShootCommand = new PathPlannerAuto("WingShoot(x3)");
+        PathPlannerAuto wingShoot3Command = new PathPlannerAuto("WingShoot(x3)");
+        PathPlannerAuto wingShoot1Command = new PathPlannerAuto("WingShoot(x1)");
         
         m_chooser.setDefaultOption("None", null);
         m_chooser.addOption("CenterShoot(x2)", centerShootCommand);
-        m_chooser.addOption("WingShoot(x3)", wingShootCommand);
+        m_chooser.addOption("WingShoot(x3)", wingShoot3Command);
+        m_chooser.addOption("WingShoot(x1)", wingShoot1Command);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
