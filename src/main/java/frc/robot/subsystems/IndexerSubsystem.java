@@ -98,7 +98,7 @@ public class IndexerSubsystem extends SubsystemBase {
         if(Robot.isReal()) {
             return new WaitUntilCommand(() -> getSensor());  // DO not set subsystem since just getting sensor value
         } else {
-            return new WaitCommand(.1);
+            return new WaitCommand(.5);
         }
     }
 

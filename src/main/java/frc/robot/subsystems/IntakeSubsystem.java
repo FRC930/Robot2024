@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_leaderMotor.getTalon().setInverted(true);
 
         Phoenix6Utility.applyConfigAndRetry(m_followerMotor.getTalon(), 
-            () -> m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), true)));
+            () -> m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), false)));
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", 0.0);
     }
 

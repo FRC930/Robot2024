@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5607354291631679,
-      "y": 6.9956624528633675
+      "x": 1.5833688728718391,
+      "y": 6.354311170160802
     },
     "rotation": 180.0
   },
@@ -32,7 +32,7 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "aim"
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "aim"
           }
         },
         {
@@ -87,6 +87,12 @@
           "type": "path",
           "data": {
             "pathName": "WingLine2ToMidCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         }
       ]

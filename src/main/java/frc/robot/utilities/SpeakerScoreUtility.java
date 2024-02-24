@@ -132,8 +132,9 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        double coefficient = 43.7;
-        double exponent = -0.00354 * distance;
+        double exponent = -0.152665;
+        double h = 19.5834;
+        double k = 19.5854;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
@@ -143,7 +144,8 @@ public class SpeakerScoreUtility {
         } else {
             return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 2.0; // 2.0 (inches) is a fudge factor
         }
-        // return coefficient * Math.exp(exponent);
+        // Untested shot angle model. Distances sourced from testing on 4/23. Source graph: https://www.desmos.com/calculator/me4nlqffa5
+        // return Math.exp(exponent * (distance - 4 - h)) + k;
     }
 
     public static double computeShooterSpeed(double distance) {

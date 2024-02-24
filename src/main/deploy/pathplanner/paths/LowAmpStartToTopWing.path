@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.598159963794963,
-        "y": 5.7500207439787205
+        "x": 1.5599471997802752,
+        "y": 4.098792791023527
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.87144497190341,
-        "y": 4.69425786322318
+        "x": 2.152045987249581,
+        "y": 4.098792791023527
       },
       "isLocked": false,
-      "linkedName": "TopMidCenter"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.393969643859401,
-        "y": 4.766310474133074
+        "x": 2.894982565999367,
+        "y": 4.1
       },
       "prevControl": {
-        "x": 6.337968510459132,
-        "y": 3.677202675375393
+        "x": 2.283152544784199,
+        "y": 4.1
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "WingLine2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.25,
+      "name": "Intake",
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "aim"
+                "name": "intake"
               }
             }
           ]

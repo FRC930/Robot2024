@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.5599471997802752,
+      "y": 7.014791090923124
+    },
+    "rotation": 180.0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -20,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AmpStartToTopWing"
+            "pathName": "TopAmpStartToTopWing"
           }
         },
         {
@@ -33,12 +39,6 @@
           "type": "named",
           "data": {
             "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
           }
         }
       ]
