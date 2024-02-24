@@ -32,7 +32,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aim"
+            "name": "stopIntake"
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aim"
+            "name": "stopIntake"
           }
         },
         {

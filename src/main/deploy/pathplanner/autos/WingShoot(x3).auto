@@ -32,6 +32,12 @@
         {
           "type": "named",
           "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "setMid"
           }
         },
@@ -50,6 +56,12 @@
         {
           "type": "named",
           "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "setMid"
           }
         },
@@ -63,6 +75,12 @@
           "type": "path",
           "data": {
             "pathName": "CenterWingToBottomWing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         },
         {

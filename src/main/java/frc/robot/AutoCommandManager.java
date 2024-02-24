@@ -51,11 +51,13 @@ public class AutoCommandManager {
             intake, 
             pivot);
         //m_chooser = AutoBuilder.buildAutoChooser();
+        PathPlannerAuto rotationTest = new PathPlannerAuto("RotationTest");
         PathPlannerAuto centerShootCommand = new PathPlannerAuto("CenterShoot(x2)");
         PathPlannerAuto wingShoot3Command = new PathPlannerAuto("WingShoot(x3)");
         PathPlannerAuto wingShoot1Command = new PathPlannerAuto("WingShoot(x1)");
         
         m_chooser.setDefaultOption("None", null);
+        m_chooser.setDefaultOption("RotationTest", rotationTest);
         m_chooser.addOption("CenterShoot(x2)", centerShootCommand);
         m_chooser.addOption("WingShoot(x3)", wingShoot3Command);
         m_chooser.addOption("WingShoot(x1)", wingShoot1Command);
@@ -101,10 +103,8 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("setFar", speakerUtil.setDesiredTargetCommand(Target.far));
         NamedCommands.registerCommand("setMid", speakerUtil.setDesiredTargetCommand(Target.medium));
         NamedCommands.registerCommand("setClose", speakerUtil.setDesiredTargetCommand(Target.close));
-        NamedCommands.registerCommand("aimAndShoot", 
-            // TODO TurretLimeLightAimCommand not exiting (temp waittimeout)
+        NamedCommands.registerCommand("aimAndShoot",
             new TurretAimCommand(turret).withTimeout(2.0)
-                .andThen(new TurretRefineCommand(turret).withTimeout(.2))
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );
@@ -114,6 +114,10 @@ public class AutoCommandManager {
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );    
         NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
+        NamedCommands.registerCommand("stopIntake", 
+            intake.newSetSpeedCommand(0.0)
+                .andThen(indexer.newSetSpeedCommand(0.0))
+        );
             
     }
 }
