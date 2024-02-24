@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2203329399526117,
-        "y": 4.087081954477746
+        "x": 1.5833688728718391,
+        "y": 6.354311170160802
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6347445380065777,
-        "y": 3.800940612964295
+        "x": 2.3328624118018553,
+        "y": 6.358984244359359
       },
       "isLocked": false,
-      "linkedName": "AmpStart"
+      "linkedName": null
     },
     {
       "anchor": {
