@@ -101,7 +101,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     private final boolean USE_LIMELIGHT_APRIL_TAG = true;
-    private final boolean VISION_UPDATE_ODOMETRY = false;
+    private final boolean VISION_UPDATE_ODOMETRY = true;
     
     //The position we want the eleveator to move to.
     private final double ENDGAME_TARGET_POSITION = 0.0;
