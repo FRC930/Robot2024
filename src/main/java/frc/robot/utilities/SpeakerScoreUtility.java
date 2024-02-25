@@ -40,7 +40,7 @@ public class SpeakerScoreUtility {
         {140.0, 140.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
         {140.0, 140.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
-    private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 12.0; //11.5
+    private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
     
 
 
@@ -137,7 +137,7 @@ public class SpeakerScoreUtility {
         double exponent = -0.152665;
         double h = 19.5834;
         double k = 19.5854;
-        double angleOffset = 3.0;
+        double angleOffset = 0.0; // 3.0;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {

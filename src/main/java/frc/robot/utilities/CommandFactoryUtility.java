@@ -34,7 +34,7 @@ public final class CommandFactoryUtility {
 
     public static final double LEFT_SHOOTER_EJECT_SPEED = 40.0;     /*Rot/s*/
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
-    public static final double INDEXER_EJECT_SPEED = 0.2;           /*Value*/
+    public static final double INDEXER_EJECT_SPEED = -0.2;          /*Value*/
 
     public static final double INTAKE_SPEED = 0.6;                  /*Value*/
     public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
@@ -75,9 +75,9 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
-            .andThen(new WaitCommand(0.2)) // Debounce on the intake, we're stopping too quickly
-            .andThen(indexer.newSetSpeedCommand(-0.1))
-            .andThen(new WaitCommand(1.0))
+            .andThen(new WaitCommand(0.2)) // Wait on the intake, we're stopping too quickly
+            // .andThen(indexer.newSetSpeedCommand(-0.1))
+            // .andThen(new WaitCommand(1.0))
             .andThen(intake.newSetSpeedCommand(0.0))
             .andThen(indexer.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
