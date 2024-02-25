@@ -39,7 +39,7 @@ public final class CommandFactoryUtility {
     public static final double INTAKE_SPEED = 0.4;                  /*Value*/
     public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
 
-    public static final double INDEXER_INTAKE_SPEED = 0.8;          /*Value*/
+    public static final double INDEXER_INTAKE_SPEED = 0.6;          /*Value*/
 
     public static final double ELEVATOR_CLIMB_POS = 8.0;
 
