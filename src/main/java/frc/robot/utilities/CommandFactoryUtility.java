@@ -47,7 +47,7 @@ public final class CommandFactoryUtility {
     public static final double ELEVATOR_TIMEOUT = 1.0;              /*sec*/
     public static final double TURRET_TIMEOUT = 1.0;                /*sec*/
     private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
-    private static final double AFTER_SHOOT_TIMEOUT = 2.0;          /*sec*/
+    private static final double AFTER_SHOOT_TIMEOUT = 0.5;          /*sec*/
 
     private static final double INDEXER_REVERSE_SPEED = -0.1;       /*value*/
 

@@ -30,6 +30,9 @@ import frc.robot.utilities.SpeakerScoreUtility;
 import frc.robot.utilities.SpeakerScoreUtility.Target;
 
 public class AutoCommandManager {
+
+    private static final double TURRET_PREAIM_TIMEOUT = 0.5;
+    
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     public AutoCommandManager(SwerveDrivetrainSubsystem drivetrain, 
@@ -108,10 +111,15 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("setMid", speakerUtil.setDesiredTargetCommand(Target.medium));
         NamedCommands.registerCommand("setClose", speakerUtil.setDesiredTargetCommand(Target.close));
         NamedCommands.registerCommand("aimAndShoot",
-            new TurretAimCommand(turret).withTimeout(2.0)
+            new TurretAimCommand(turret).withTimeout(TURRET_PREAIM_TIMEOUT)
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );
+        NamedCommands.registerCommand("shoot",
+            CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+        );
+        NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
         NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
         NamedCommands.registerCommand("ampScore", 
             CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)

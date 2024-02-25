@@ -30,18 +30,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aim"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "TopCenterToWingLine1"
@@ -56,25 +44,13 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "WingLine1ToTopMidCenter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aim"
           }
         },
         {
@@ -92,7 +68,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "shoot"
           }
         },
         {
