@@ -47,12 +47,12 @@ public final class CommandFactoryUtility {
     public static final double PIVOT_TIMEOUT = 1.0;                 /*sec*/
     public static final double ELEVATOR_TIMEOUT = 1.0;              /*sec*/
     public static final double TURRET_TIMEOUT = 1.0;                /*sec*/
-    private static final double SHOOTER_TIMEOUT = 0.5;              /*sec*/
+    private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
 
     private static final double INDEXER_REVERSE_SPEED = -0.1;       /*value*/
 
-    private static final double TURRET_PREAIM_TIMEOUT = 0.5;       /*sec*/
+    private static final double TURRET_PREAIM_TIMEOUT = 0.5;        /*sec*/
 
     //TODO review values and code
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
@@ -115,9 +115,16 @@ public final class CommandFactoryUtility {
     }
 
     // TODO trap shot
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle) {
+        Command command = null;
+        if (pivotAngle == null) {
+            command = pivot.newCalcAndSetPosCommand(); //.andThen(pivot.newSetPosCommand(speakerUtil))
+        } else {
+            command = pivot.newSetPosCommand(pivotAngle);
+        }
+
         return shooter.newCalcAndSetSpeedsCommand() //shooter.newSetSpeedsCommand(speakerUtil)
-            .andThen(pivot.newCalcAndSetPosCommand()) //.andThen(pivot.newSetPosCommand(speakerUtil))
+            .andThen(command)
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
                 )
@@ -125,6 +132,10 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
             .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
+    }
+
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
+        return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, null);
     }
 
     public static Command createTurretPreaimCommand(mmTurretSubsystem turret) {

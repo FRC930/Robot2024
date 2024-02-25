@@ -19,7 +19,7 @@ public class PivotSubsystem extends SubsystemBase{
 
     private final TalonPosIO m_io;
 
-    public static final double PIVOT_DEADBAND = 2.0;
+    public static final double PIVOT_DEADBAND = 0.5;
 
     /**
      * <h3>PivotSubsystem</h3>
