@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
+import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -50,6 +51,8 @@ public final class CommandFactoryUtility {
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
 
     private static final double INDEXER_REVERSE_SPEED = -0.1;       /*value*/
+
+    private static final double TURRET_PREAIM_TIMEOUT = 0.5;       /*sec*/
 
     //TODO review values and code
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
@@ -122,6 +125,11 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
             .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
+    }
+
+    public static Command createTurretPreaimCommand(mmTurretSubsystem turret) {
+        return new TurretAimCommand(turret)
+            .andThen(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
     }
 
 }

@@ -31,8 +31,6 @@ import frc.robot.utilities.SpeakerScoreUtility.Target;
 
 public class AutoCommandManager {
 
-    private static final double TURRET_PREAIM_TIMEOUT = 0.25;
-
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     public AutoCommandManager(SwerveDrivetrainSubsystem drivetrain, 
@@ -111,7 +109,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("setMid", speakerUtil.setDesiredTargetCommand(Target.medium));
         NamedCommands.registerCommand("setClose", speakerUtil.setDesiredTargetCommand(Target.close));
         NamedCommands.registerCommand("aimAndShoot",
-            new TurretAimCommand(turret).withTimeout(TURRET_PREAIM_TIMEOUT)
+            CommandFactoryUtility.createTurretPreaimCommand(turret)
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );
