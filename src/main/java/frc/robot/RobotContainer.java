@@ -101,7 +101,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     private final boolean USE_LIMELIGHT_APRIL_TAG = true;
-    private final boolean VISION_UPDATE_ODOMETRY = true;
+    private final boolean VISION_UPDATE_ODOMETRY = false;
     
     //The position we want the eleveator to move to.
     private final double ENDGAME_TARGET_POSITION = 0.0;
@@ -426,11 +426,10 @@ public class RobotContainer {
       .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
     
     // Intake button TODO Test
-    m_driverController.leftBumper().whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
-      .onFalse(m_indexerSubsystem.newSetSpeedCommand(-0.1)
-        .andThen(new WaitCommand(1.0))
-        .andThen(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem))
-          .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
+    m_driverController.leftBumper()
+      .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
+      .onFalse(CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem)
+        .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
       ;
     
     m_driverController.start().whileTrue(m_shootingElevatorSubsystem.newSetPosCommand(ENDGAME_TARGET_POSITION))

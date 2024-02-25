@@ -133,7 +133,7 @@ public class TunerConstants {
     private static final double kBackRightXPosInches = -9.375;
     private static final double kBackRightYPosInches = -11.5;
 
-    private static final double SwerveOffset = 2.0; //2.0;
+    private static final double SwerveOffset = 2.0; // This is due to the swerve modules shifting to the front of the robot
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
             kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches + SwerveOffset), kInvertLeftSide);

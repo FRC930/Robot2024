@@ -49,11 +49,11 @@ public final class CommandFactoryUtility {
     private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
     private static final double AFTER_SHOOT_TIMEOUT = 2.0;          /*sec*/
 
+    private static final double INDEXER_REVERSE_SPEED = -0.1;       /*value*/
+
     //TODO review values and code
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return shooter.newSetSpeedsCommand(LEFT_SHOOTER_EJECT_SPEED, RIGHT_SHOOTER_EJECT_SPEED)
-            .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-            .andThen(indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED))
+            return indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED)
             .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT));
     }
@@ -67,6 +67,12 @@ public final class CommandFactoryUtility {
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
     
+    public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
+        return indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
+            .andThen(new WaitCommand(1.0))
+            .andThen(intake.newSetSpeedCommand(0.0))
+            .andThen(indexer.newSetSpeedCommand(0.0));
+    }
 
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
         return indexer.newUnlessNoteFoundCommand()  // make sure no note is found
@@ -76,8 +82,7 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
             .andThen(new WaitCommand(0.2)) // Wait on the intake, we're stopping too quickly
-            // .andThen(indexer.newSetSpeedCommand(-0.1))
-            // .andThen(new WaitCommand(1.0))
+            // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
             .andThen(intake.newSetSpeedCommand(0.0))
             .andThen(indexer.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }

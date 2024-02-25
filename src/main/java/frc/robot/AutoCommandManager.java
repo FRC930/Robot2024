@@ -118,10 +118,7 @@ public class AutoCommandManager {
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );    
         NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
-        NamedCommands.registerCommand("stopIntake", 
-            intake.newSetSpeedCommand(0.0)
-                .andThen(indexer.newSetSpeedCommand(0.0))
-        );
+        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createStopIntakingCommand(intake, indexer));
             
     }
 }
