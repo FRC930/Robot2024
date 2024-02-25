@@ -40,7 +40,7 @@ public class SpeakerScoreUtility {
         {140.0, 140.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
         {140.0, 140.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
-    private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
+    private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 12.0; //11.5
     
 
 
@@ -126,8 +126,10 @@ public class SpeakerScoreUtility {
         // gets the robots position, and gets the robots heading.
         Pose2d m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
 
-        double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY())) - DISTANCE_OFFSET_TO_CENTER_OF_ROBOT;
+        double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY()))
+             - DISTANCE_OFFSET_TO_CENTER_OF_ROBOT;
         Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", distance);
+        Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distanceFeet", distance /12.0);
         return distance;
     }
 
@@ -135,14 +137,15 @@ public class SpeakerScoreUtility {
         double exponent = -0.152665;
         double h = 19.5834;
         double k = 19.5854;
+        double angleOffset = 3.0;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
-            return (-0.05 * distance) + 32.7 + 0.5; // 0.5 (inches) is a fudge factor
+            return (-0.05 * distance) + 32.7 + 0.5 + angleOffset; // 0.5 (inches) is a fudge factor
         } else if (distance >= LINEAR_DISTANCE_CLOSE) {
-            return (-0.115 * distance) + 40.9 + 2.0; // 2.0 (inches) is a fudge factor
+            return (-0.115 * distance) + 40.9 + 2.0 + angleOffset; // 2.0 (inches) is a fudge factor
         } else {
-            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 2.0; // 2.0 (inches) is a fudge factor
+            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 2.0 + angleOffset; // 2.0 (inches) is a fudge factor
         }
         // Untested shot angle model. Distances sourced from testing on 4/23. Source graph: https://www.desmos.com/calculator/me4nlqffa5
         // return Math.exp(exponent * (distance - 4 - h)) + k;
