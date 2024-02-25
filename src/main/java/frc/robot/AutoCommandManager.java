@@ -31,8 +31,8 @@ import frc.robot.utilities.SpeakerScoreUtility.Target;
 
 public class AutoCommandManager {
 
-    private static final double TURRET_PREAIM_TIMEOUT = 0.5;
-    
+    private static final double TURRET_PREAIM_TIMEOUT = 0.25;
+
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     public AutoCommandManager(SwerveDrivetrainSubsystem drivetrain, 
