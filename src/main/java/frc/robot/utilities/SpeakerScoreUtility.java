@@ -137,7 +137,7 @@ public class SpeakerScoreUtility {
         double exponent = -0.152665;
         double h = 19.5834;
         double k = 19.5854;
-        double angleOffset = 2.0; // 3.0;
+        double angleOffset = 3.0;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
@@ -149,6 +149,21 @@ public class SpeakerScoreUtility {
         }
         // Untested shot angle model. Distances sourced from testing on 4/23. Source graph: https://www.desmos.com/calculator/me4nlqffa5
         // return Math.exp(exponent * (distance - 4 - h)) + k;
+    }
+
+    public static double computePivotAngleInverseCos(double distance) {
+        // "Node" is shooting target, in middle of opening
+
+        double distanceCenterToNodeInches = 
+            distance + DISTANCE_OFFSET_TO_CENTER_OF_ROBOT /*distance from speaker to robot frame when shooting*/
+            + 0.0 /*inches from center of robot to the pivot point of shooter*/ 
+            - 4.0 /*we want to shoot into the middle of opening, not back wall*/;
+        double heightTurretToNodeInches = 
+            57.13 /*from documentation height of april tag in inches*/ 
+            + 24.0 /*height of node above april tag*/ 
+            - 13.0 /*height of shooter pivot point in inches*/;
+
+        return Units.radiansToDegrees(Math.atan(heightTurretToNodeInches / distanceCenterToNodeInches));
     }
 
     public static double computeShooterSpeed(double distance) {
