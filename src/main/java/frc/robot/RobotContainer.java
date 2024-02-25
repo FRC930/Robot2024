@@ -101,7 +101,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     private final boolean USE_LIMELIGHT_APRIL_TAG = true;
-    private final boolean VISION_UPDATE_ODOMETRY = false;
+    private boolean m_visionUpdatesOdometry = false;
     
     //The position we want the eleveator to move to.
     private final double ENDGAME_TARGET_POSITION = 0.0;
@@ -587,7 +587,7 @@ public class RobotContainer {
                 Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
                 Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
 
-                if (VISION_UPDATE_ODOMETRY) {
+                if (m_visionUpdatesOdometry) {
                     drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
                 }
               }
@@ -663,6 +663,7 @@ public class RobotContainer {
       // Only want to initialize starting position once (if teleop multiple times dont reset pose again)
       m_StartInTeleopUtility.updateStartingPosition(); 
       m_TeleopInitalized = true;
+      m_visionUpdatesOdometry = true;
     }
   }
 
