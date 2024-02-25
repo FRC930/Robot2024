@@ -129,7 +129,7 @@ public final class CommandFactoryUtility {
 
     public static Command createTurretPreaimCommand(mmTurretSubsystem turret) {
         return new TurretAimCommand(turret)
-            .andThen(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
     }
 
 }
