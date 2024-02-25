@@ -36,7 +36,7 @@ public final class CommandFactoryUtility {
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
     public static final double INDEXER_EJECT_SPEED = 0.2;           /*Value*/
 
-    public static final double INTAKE_SPEED = 0.4;                  /*Value*/
+    public static final double INTAKE_SPEED = 0.6;                  /*Value*/
     public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
 
     public static final double INDEXER_INTAKE_SPEED = 0.6;          /*Value*/
@@ -75,6 +75,9 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
+            // .andThen(new WaitCommand(INTAKE_DEBOUNCER_TIME)) // Debounce on the intake, we're stopping too quickly
+            .andThen(indexer.newSetSpeedCommand(-0.1))
+            .andThen(new WaitCommand(0.1))
             .andThen(intake.newSetSpeedCommand(0.0))
             .andThen(indexer.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
@@ -110,7 +113,7 @@ public final class CommandFactoryUtility {
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
                 )
-            .andThen(new TurretRefineCommand(turret).withTimeout(2.0))
+            // .andThen(new TurretRefineCommand(turret).withTimeout(2.0))
             .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
             .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
