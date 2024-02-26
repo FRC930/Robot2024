@@ -102,4 +102,23 @@ public final class Phoenix6Utility {
         // return (MotionMagicExpoVoltage) rightElevatorMaster.getAppliedControl()).Position
     }
 
+    /**
+     * Get velocity from controller so dont have to explicitly cast applied controller (could have had runtime casting error when switch controllers)
+     * @param motor
+     * @param defaultVelocity
+     * @return
+     */
+    public static double getVelocityFromController(ParentDevice motor, double defaultVelocity) {
+        // Velocity configuration may not be available yet, so allow for Velocity not being available yet
+        Map<String, String> map = motor.getAppliedControl().getControlInfo();
+        String velocityString = map.get("Velocity");
+        double velocity= defaultVelocity; // If controller is not available delayed configurations
+        if(velocityString != null) {
+            velocity = Double.valueOf(velocityString);
+        }
+        return velocity;
+        // This is to eliminate calls like this and possible casting errors when switch controllers
+        // return ((VelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
+    }
+
 }

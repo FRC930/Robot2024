@@ -5,8 +5,10 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -20,6 +22,10 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     protected TalonFX m_motor; 
 
     protected VelocityTorqueCurrentFOC m_request;
+
+    /* Keep a neutral out so we can disable the motor */
+    private final NeutralOut m_brake = new NeutralOut();
+
 
     protected TalonVelocityIORobot(int MotorID, double gearRatio,Slot0Configs config, MotionMagicConfigs mmConfigs, boolean initReal, MotionMagicVelocityVoltage simRequest) {
         m_motor = new TalonFX(MotorID); //Initializes the motor
@@ -68,9 +74,15 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     */
     @Override
     public void setSpeed(double speed,double acceleration) {
+        ControlRequest request;
+        if(speed == 0.0) {
+            request = m_brake;
+        } else {
+            request = m_request.withVelocity(speed).withAcceleration(acceleration).withSlot(0);
+        }
         Phoenix6Utility.applyConfigAndNoRetry(
             m_motor,
-            () -> m_motor.setControl(m_request.withVelocity(speed).withAcceleration(acceleration).withSlot(0)));
+            () -> m_motor.setControl(request));
     }
     /**
     * <h3>setSpeed</h3>
@@ -78,9 +90,15 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     */
     @Override
     public void setSpeed(double speed) {
+        ControlRequest request;
+        if(speed == 0.0) {
+            request = m_brake;
+        } else {
+            request = m_request.withVelocity(speed).withSlot(0);
+        }
         Phoenix6Utility.applyConfigAndNoRetry(
             m_motor,
-            () -> m_motor.setControl(m_request.withVelocity(speed).withSlot(0)));
+            () -> m_motor.setControl(request));
     }
 
     /**
@@ -108,7 +126,8 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     */
     @Override
     public double getTargetVelocity() {
-        return ((VelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
+        return Phoenix6Utility.getVelocityFromController(m_motor, 0.0);
+        // return ((VelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
     }
 
     @Override

@@ -19,6 +19,8 @@ public class PivotSubsystem extends SubsystemBase{
 
     private final TalonPosIO m_io;
 
+    private boolean m_reachedSetPoint = false;
+
     public static final double PIVOT_DEADBAND = 0.5;
 
     /**
@@ -39,8 +41,9 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        m_io.setTarget(MathUtil.clamp(angle,0.0,90.0));
-        
+        m_io.setTarget(MathUtil.clamp(angle,0.0,90.0));        
+        m_reachedSetPoint = false;
+        Logger.recordOutput(this.getClass().getSimpleName() + "/ReachedSetPoint", m_reachedSetPoint);
     }
 
     /**
@@ -104,9 +107,11 @@ public class PivotSubsystem extends SubsystemBase{
     }
 
     public boolean atSetpoint() {
-        double pos = getPosition();
-        double target = getTarget();
-        return MathUtil.applyDeadband(target - pos, PIVOT_DEADBAND) == 0.0;
+        double pos = getPosition(); 
+        double target = getTarget(); 
+        m_reachedSetPoint = MathUtil.applyDeadband(target - pos, PIVOT_DEADBAND) == 0.0;;
+        Logger.recordOutput(this.getClass().getSimpleName() + "/ReachedSetPoint", m_reachedSetPoint);
+        return m_reachedSetPoint;
     }
 
     public Command newWaitUntilSetpointCommand(double timeout) {

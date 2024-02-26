@@ -101,7 +101,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     private final boolean USE_LIMELIGHT_APRIL_TAG = true;
-    private boolean m_visionUpdatesOdometry = false;
+    private boolean m_visionUpdatesOdometry = true;
     
     //The position we want the eleveator to move to.
     private final double ENDGAME_TARGET_POSITION = 0.0;
@@ -179,7 +179,7 @@ public class RobotContainer {
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(35.0)  // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(55.0)  // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)

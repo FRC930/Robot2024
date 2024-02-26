@@ -29,16 +29,16 @@ public class SpeakerScoreUtility {
     private final static double LINEAR_DISTANCE_FAR = 132.0 - 4.0; //subracting 4 inches to make sure 11 feet uses linear
     private static final double LINEAR_DISTANCE_CLOSE = 84.0 - 4.0; //subracting 4 inches to make sure 7 feet uses linear
 
-    static final private double COMPUTED_SHOOT_SPEED = 140.0;
+    static final private double COMPUTED_SHOOT_SPEED = 135.0;
 
     static final private int CLOSE_ROW = 0;
     static final private int MEDIUM_ROW = 1;
     static final private int FAR_ROW = 2;
     private final static double[][] SHOOTING_CONSTANTS = 
     {
-        {140.0, 140.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
-        {140.0, 140.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
-        {140.0, 140.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
+        {135.0, 135.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
+        {135.0, 135.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
+        {135.0, 135.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
     };
     private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
     
