@@ -151,7 +151,7 @@ public class SpeakerScoreUtility {
         // return Math.exp(exponent * (distance - 4 - h)) + k;
     }
 
-    public static double computePivotAngleInverseCos(double distance) {
+    public static double computePivotAngleInverseTan(double distance) {
         // "Node" is shooting target, in middle of opening
 
         double distanceCenterToNodeInches = 
