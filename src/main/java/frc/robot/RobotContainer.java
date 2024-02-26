@@ -46,15 +46,18 @@ import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
+import frc.robot.utilities.PhotonUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
 import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
 import frc.robot.utilities.SpeakerScoreUtility.Target;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -101,6 +104,7 @@ public class RobotContainer {
 
     private final boolean UseLimeLightAprilTag = true;
     private final boolean VISION_UPDATE_ODOMETRY = true;
+    private final boolean UsePhotonVisionAprilTag = true;
 
     private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -501,6 +505,10 @@ public class RobotContainer {
       updateVisionOdometry("limelight-front");
       updateVisionOdometry("limelight-back");
     }
+
+    if (UsePhotonVisionAprilTag) {
+
+    }
   }
 
   /**
@@ -530,6 +538,15 @@ public class RobotContainer {
               }
           }
       }
+  }
+
+  public void updatePhotonVisionOdometry() {
+    List<EstimatedRobotPose> photonPoses = PhotonUtility.getEstimatedPoses(drivetrain.getState().Pose);
+    for(EstimatedRobotPose pose : photonPoses) {
+      if (pose.targetsUsed.size() > 1) {
+        drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+      }
+    }
   }
 
 
