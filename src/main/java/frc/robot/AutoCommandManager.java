@@ -127,7 +127,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createStopIntakingCommand(intake, indexer));
         NamedCommands.registerCommand("sideWingScore", 
             CommandFactoryUtility.createTurretPreaimCommand(turret)
-                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, 50.0))
+                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, 52.0))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );
     }

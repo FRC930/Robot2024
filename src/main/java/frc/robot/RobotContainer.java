@@ -526,6 +526,7 @@ public class RobotContainer {
     if (autoCommand != null) {
         m_StartInTeleopUtility.updateAutonomous();
     }
+    m_visionUpdatesOdometry = false; // Turns off vision updates for autonomous
     return autoCommand;
   }
 
