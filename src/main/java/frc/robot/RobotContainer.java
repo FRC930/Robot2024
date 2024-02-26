@@ -285,13 +285,6 @@ public class RobotContainer {
         ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
         : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC));
 
-    // TODO: Figure out real motor and encoder id
-    // private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(
-    //   Robot.isReal()
-    //     ? new TurretIORobot(6, TURRET_ENCODER_DIO, CANBUS, 40, TURRET_OFFSET)
-    //     : new TurretIOSim(6, TURRET_ENCODER_DIO, CANBUS, 40, TURRET_OFFSET), 
-    //     turretPID, turretFF);
-
     private final TalonPosIO m_turretIO = Robot.isReal()
     ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
     : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,0.0);
