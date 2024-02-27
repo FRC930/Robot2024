@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.281967377058862,
-        "y": 7.448092043117039
+        "y": 7.3426945142050055
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.5518136090583114,
-        "y": 7.2902209581494475
+        "y": 7.184823429237414
       },
       "isLocked": false,
       "linkedName": "TopCenter"
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Aim",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "parallel",
         "data": {
@@ -56,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.7,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

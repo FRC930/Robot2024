@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.790112242136038,
-        "y": 6.323851734722014
+        "x": 7.052329539751803,
+        "y": 6.358984244359359
       },
       "isLocked": false,
       "linkedName": "WingLine1"
     },
     {
       "anchor": {
-        "x": 8.281967377058862,
-        "y": 5.773442417070284
+        "x": 8.293678213604645,
+        "y": 5.422117320696838
       },
       "prevControl": {
-        "x": 6.279414327730226,
-        "y": 5.843707436344975
+        "x": 6.185727635363973,
+        "y": 5.375273974513712
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.7,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

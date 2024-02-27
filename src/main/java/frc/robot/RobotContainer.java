@@ -126,7 +126,7 @@ public class RobotContainer {
     //#endregion
 
     //Use max speed from tuner constants from webpage
-    final double MaxSpeed = TunerConstants.kMaxSpeed;
+    static final double MaxSpeed = TunerConstants.kMaxSpeed;
     final double MaxAngularRate = 2.0 * Math.PI; // 1 rotation per second max angular velocity  
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -437,6 +437,14 @@ public class RobotContainer {
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
 
+    m_driverController.rightTrigger()
+    .whileTrue(
+      new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController::getLeftY)
+      .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
+    .onFalse(
+      CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem)
+      .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
+    ;
     // Amp score button
     // m_driverController.rightBumper().and(m_driverController.rightTrigger())
     //   .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_shootingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
@@ -463,30 +471,39 @@ public class RobotContainer {
         double yValue = ySupplier.getAsDouble();
         double omegaValue = omegaSupplier.getAsDouble();       
            
-        // Apply deadband
-        double linearMagnitude = MathUtil.applyDeadband(
-                        Math.hypot(xValue, yValue), JOYSTICK_DEADBAND);
-        Rotation2d linearDirection =
-                new Rotation2d(-xValue, -yValue);
-
-        // Square values
-        linearMagnitude = linearMagnitude * linearMagnitude;
-
-        // Calculate new linear velocity
-        Translation2d linearVelocity =
-                new Pose2d(new Translation2d(), linearDirection)
-                        .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
-                        .getTranslation();
+        Translation2d linearVelocity = getLinearVelocity(xValue, yValue);
                         
         // Squaring the omega value and applying a deadband 
         double omega = MathUtil.applyDeadband(-omegaValue, JOYSTICK_ROTATIONAL_DEADBAND);
         omega = Math.copySign(omega * omega, omega);
 
 
-        return drive.withVelocityX(linearVelocity.getX() * MaxSpeed * PERCENT_SPEED)
-          .withVelocityY(linearVelocity.getY() * MaxSpeed * PERCENT_SPEED)
+        return drive.withVelocityX(scaleLinearVelocity(linearVelocity.getX()))
+          .withVelocityY(scaleLinearVelocity(linearVelocity.getY()))
           .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
       };
+  }
+
+  public static Translation2d getLinearVelocity(double xValue, double yValue) {
+    // Apply deadband
+    double linearMagnitude = MathUtil.applyDeadband(
+                    Math.hypot(xValue, yValue), JOYSTICK_DEADBAND);
+    Rotation2d linearDirection =
+            new Rotation2d(-xValue, -yValue);
+
+    // Square values
+    linearMagnitude = linearMagnitude * linearMagnitude;
+
+    // Calculate new linear velocity
+    Translation2d linearVelocity =
+            new Pose2d(new Translation2d(), linearDirection)
+                    .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+                    .getTranslation();
+    return linearVelocity;
+  }
+
+  public static double scaleLinearVelocity(double value) {
+    return value*MaxSpeed*PERCENT_SPEED;
   }
   
   @Deprecated
@@ -530,7 +547,7 @@ public class RobotContainer {
     updateAllVision();
     m_mechViewer.periodic();
     Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", SpeakerScoreUtility.inchesToSpeaker());
-    Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/inverseCosPivotAngleUnimplemented", 
+    Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/inverseTanPivotAngleUnimplemented", 
       SpeakerScoreUtility.computePivotAngleInverseTan(SpeakerScoreUtility.inchesToSpeaker()));
   }
 
