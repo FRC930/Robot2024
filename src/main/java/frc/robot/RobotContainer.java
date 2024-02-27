@@ -283,7 +283,10 @@ public class RobotContainer {
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
         ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
-        : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC));
+        : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC), 
+      Robot.isReal() 
+        ? new TimeOfFlightIORobot(15, 71) 
+        : new TimeOfFlightIOSim(15));
 
     private final TalonPosIO m_turretIO = Robot.isReal()
     ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)

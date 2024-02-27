@@ -2,13 +2,19 @@ package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.IOs.TimeOfFlightIO;
 import frc.robot.utilities.CommandFactoryUtility;
+import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
 
 /**
@@ -17,9 +23,18 @@ import frc.robot.utilities.SpeakerScoreUtility;
  */
 public class PivotSubsystem extends SubsystemBase{
 
+    private static final boolean ENABLE_REZEROING = false;
+
     private final TalonPosIO m_io;
+    private TimeOfFlightIO m_sensorIO;
 
     private boolean m_reachedSetPoint = false;
+
+    private boolean m_resetWhenSensorTriggered = false;
+    private boolean m_allowToBeReset = false;
+
+    Debouncer m_debouncer = new Debouncer(0.5, Debouncer.DebounceType.kRising);
+
 
     public static final double PIVOT_DEADBAND = 0.5;
 
@@ -29,8 +44,9 @@ public class PivotSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public PivotSubsystem(TalonPosIO io) {
+    public PivotSubsystem(TalonPosIO io, TimeOfFlightIO ToF) {
         m_io = io;
+        m_sensorIO = ToF;
         //Setting stow pos on robot startup
         setPosition(CommandFactoryUtility.PIVOT_STOW_POS);
     }
@@ -44,6 +60,19 @@ public class PivotSubsystem extends SubsystemBase{
         m_io.setTarget(MathUtil.clamp(angle,0.0,90.0));        
         m_reachedSetPoint = false;
         Logger.recordOutput(this.getClass().getSimpleName() + "/ReachedSetPoint", m_reachedSetPoint);
+        if (angle == 0.0){
+            m_resetWhenSensorTriggered = true;
+        }
+    }
+
+    public void resetMotorPosition() {
+        // reset motor
+        if(m_io instanceof PivotIORobot && ENABLE_REZEROING) {
+           TalonFX m_motor = ((PivotIORobot) m_io).m_motor;    
+           Phoenix6Utility.applyConfigAndNoRetry(m_motor,
+            () -> m_motor.getConfigurator().setPosition(0.0));
+            
+        }
     }
 
     /**
@@ -82,6 +111,15 @@ public class PivotSubsystem extends SubsystemBase{
 
    // }
 
+
+    /**
+     * <h3>getSensor</h3>
+     * @return value of indexer sensor
+     */
+    public boolean getSensor() {
+        return m_sensorIO.get();
+    }
+
     @Override
     public void periodic() {
         m_io.runSim();
@@ -89,6 +127,15 @@ public class PivotSubsystem extends SubsystemBase{
         Logger.recordOutput(this.getClass().getSimpleName() + "/Angle", getPosition());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", getTarget());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", m_io.getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LimitSwitch", getSensor());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LimitSwitchRange", m_sensorIO.getRange());
+        if(m_allowToBeReset && m_resetWhenSensorTriggered){
+            if(m_debouncer.calculate(getSensor())){ //TODO: Debounce value
+                m_allowToBeReset = false;
+                m_resetWhenSensorTriggered = false;
+                resetMotorPosition();
+            }
+        }
         
     }
 
@@ -109,7 +156,10 @@ public class PivotSubsystem extends SubsystemBase{
     public boolean atSetpoint() {
         double pos = getPosition(); 
         double target = getTarget(); 
-        m_reachedSetPoint = MathUtil.applyDeadband(target - pos, PIVOT_DEADBAND) == 0.0;;
+        m_reachedSetPoint = MathUtil.applyDeadband(target - pos, PIVOT_DEADBAND) == 0.0;
+        if (target > 0.0 && m_reachedSetPoint) { //TODO: doesn't work if atSetpoint never finishes
+            m_allowToBeReset = true;
+        }
         Logger.recordOutput(this.getClass().getSimpleName() + "/ReachedSetPoint", m_reachedSetPoint);
         return m_reachedSetPoint;
     }
