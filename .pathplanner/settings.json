@@ -12,8 +12,8 @@
   "autoFolders": [
     "Robot2024"
   ],
-  "defaultMaxVel": 3.7,
-  "defaultMaxAccel": 2.0,
+  "defaultMaxVel": 6.0,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

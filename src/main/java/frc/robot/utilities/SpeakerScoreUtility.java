@@ -137,7 +137,7 @@ public class SpeakerScoreUtility {
         double exponent = -0.152665;
         double h = 19.5834;
         double k = 19.5854;
-        double angleOffset = 4.0;
+        double angleOffset = 4.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
@@ -156,14 +156,14 @@ public class SpeakerScoreUtility {
 
         double distanceCenterToNodeInches = 
             distance + DISTANCE_OFFSET_TO_CENTER_OF_ROBOT /*distance from speaker to robot frame when shooting*/
-            + 7.5 /*inches from center of robot to the pivot point of shooter*/ 
+            + 8.0 /*inches from center of robot to the pivot point of shooter*/ 
             - 4.0 /*we want to shoot into the middle of opening, not back wall*/;
         double heightTurretToNodeInches = 
             57.13 /*from documentation height of april tag in inches*/ 
             + 24.0 /*height of node above april tag*/ 
-            - 15.5 /*height of shooter pivot point in inches*/;
+            - 12.5 /*height of shooter pivot point in inches*/;
 
-        return Units.radiansToDegrees(Math.atan(heightTurretToNodeInches / distanceCenterToNodeInches));
+        return Units.radiansToDegrees(Math.atan2(heightTurretToNodeInches, distanceCenterToNodeInches));
     }
 
     public static double computeShooterSpeed(double distance) {
