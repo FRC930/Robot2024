@@ -519,7 +519,7 @@ public class RobotContainer {
     if (autoCommand != null) {
         m_StartInTeleopUtility.updateAutonomous();
     }
-    m_visionUpdatesOdometry = false; // Turns off vision updates for autonomous
+    m_visionUpdatesOdometry = true; // Turns off vision updates for autonomous
     return autoCommand;
   }
 
@@ -584,7 +584,8 @@ public class RobotContainer {
                 Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
 
                 if (m_visionUpdatesOdometry) {
-                    drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), Timer.getFPGATimestamp());
+                    drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
+                      Timer.getFPGATimestamp() - (lastResult.latency_pipeline/1000.0) - (lastResult.latency_capture/1000.0));
                 }
               }
           }

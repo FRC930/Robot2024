@@ -53,7 +53,8 @@ public class AutoCommandManager {
             pivot);
         //m_chooser = AutoBuilder.buildAutoChooser();
         PathPlannerAuto rotationTest = new PathPlannerAuto("RotationTest");
-        PathPlannerAuto centerShootCommand = new PathPlannerAuto("CenterShoot(x2)");
+        PathPlannerAuto centerShootWCommand = new PathPlannerAuto("CenterShoot(x2)(W)");
+        PathPlannerAuto centerShootYCommand = new PathPlannerAuto("CenterShoot(x1)(Y)");
         PathPlannerAuto wingShoot3Command = new PathPlannerAuto("WingShoot(x3)");
         PathPlannerAuto topWingShootCommand = new PathPlannerAuto("TopWingShoot(x1)");
         PathPlannerAuto midWingShootCommand = new PathPlannerAuto("MidWingShoot(x1)");
@@ -61,7 +62,8 @@ public class AutoCommandManager {
         
         m_chooser.setDefaultOption("None", null);
         m_chooser.setDefaultOption("RotationTest", rotationTest);
-        m_chooser.addOption("CenterShoot(x2)", centerShootCommand);
+        m_chooser.addOption("WCenterShoot", centerShootWCommand);
+        m_chooser.addOption("YCenterShoot", centerShootYCommand);
         m_chooser.addOption("WingShoot(x3)", wingShoot3Command);
         m_chooser.addOption("TopWingShoot(x1)", topWingShootCommand);
         m_chooser.addOption("MidWingShoot(x1)", midWingShootCommand);
