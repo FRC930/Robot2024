@@ -527,7 +527,7 @@ public class RobotContainer {
     updateAllVision();
     m_mechViewer.periodic();
     Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", SpeakerScoreUtility.inchesToSpeaker());
-    Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/inverseCosPivotAngleUnimplemented", 
+    Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/inverseTanPivotAngleUnimplemented", 
       SpeakerScoreUtility.computePivotAngleInverseTan(SpeakerScoreUtility.inchesToSpeaker()));
   }
 
