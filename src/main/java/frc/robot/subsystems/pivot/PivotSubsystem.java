@@ -33,7 +33,7 @@ public class PivotSubsystem extends SubsystemBase{
     private boolean m_resetWhenSensorTriggered = false;
     private boolean m_allowToBeReset = false;
 
-    Debouncer m_debouncer = new Debouncer(0.5, Debouncer.DebounceType.kRising);
+    Debouncer m_debouncer = new Debouncer(1.0, Debouncer.DebounceType.kRising);
 
 
     public static final double PIVOT_DEADBAND = 0.5;
@@ -68,10 +68,11 @@ public class PivotSubsystem extends SubsystemBase{
     public void resetMotorPosition() {
         // reset motor
         if(m_io instanceof PivotIORobot && ENABLE_REZEROING) {
-           TalonFX m_motor = ((PivotIORobot) m_io).m_motor;    
-           Phoenix6Utility.applyConfigAndNoRetry(m_motor,
-            () -> m_motor.getConfigurator().setPosition(0.0));
-            
+            Logger.recordOutput(this.getClass().getSimpleName() + "/AngleWhenReset", getPosition());
+            Logger.recordOutput(this.getClass().getSimpleName() + "/LimitSwitchRangeWhenReset", m_sensorIO.getRange());
+            TalonFX m_motor = ((PivotIORobot) m_io).m_motor;    
+            Phoenix6Utility.applyConfigAndNoRetry(m_motor,
+                () -> m_motor.getConfigurator().setPosition(0.0));
         }
     }
 
