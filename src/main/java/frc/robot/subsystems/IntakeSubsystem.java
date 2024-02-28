@@ -94,6 +94,10 @@ public class IntakeSubsystem extends SubsystemBase {
         m_leaderMotor.runSim();
         m_followerMotor.runSim();
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LInputCurrent" ,m_leaderMotor.getInputCurrent());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/FInputCurrent" ,m_followerMotor.getInputCurrent());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LStatorCurrent" ,m_leaderMotor.getStatorCurrent());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/FStatorCurrent" ,m_followerMotor.getStatorCurrent());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/IntookenYet", getSensor());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", m_leaderMotor.getTalon().get());

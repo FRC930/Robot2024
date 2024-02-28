@@ -59,4 +59,14 @@ public class RollerMotorIORobot implements TalonRollerIO {
     public TalonFX getTalon() {
         return m_motor;
     }
+
+    @Override
+    public double getStatorCurrent() {
+        return m_motor.getStatorCurrent().getValue();
+    }
+
+    @Override
+    public double getInputCurrent() {
+        return m_motor.getSupplyCurrent().getValue();
+    }
 }

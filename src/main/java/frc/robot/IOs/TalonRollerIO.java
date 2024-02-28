@@ -43,4 +43,6 @@ public interface TalonRollerIO {
     default double getPeriod() {
         return 0.02;
     }
+    public double getStatorCurrent();
+    public double getInputCurrent();
 }
