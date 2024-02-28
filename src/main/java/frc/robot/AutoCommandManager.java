@@ -55,7 +55,7 @@ public class AutoCommandManager {
         PathPlannerAuto rotationTest = new PathPlannerAuto("RotationTest");
         PathPlannerAuto centerShootWCommand = new PathPlannerAuto("CenterShoot(x2)(W)");
         PathPlannerAuto centerShootYCommand = new PathPlannerAuto("CenterShoot(x1)(Y)");
-        PathPlannerAuto wingShoot3Command = new PathPlannerAuto("WingShoot(x3)");
+        PathPlannerAuto wingShoot3Command = new PathPlannerAuto("WingShoot(x3)(L)");
         PathPlannerAuto topWingShootCommand = new PathPlannerAuto("TopWingShoot(x1)");
         PathPlannerAuto midWingShootCommand = new PathPlannerAuto("MidWingShoot(x1)");
         PathPlannerAuto botWingShootCommand = new PathPlannerAuto("BotWingShoot(x1)");
@@ -64,7 +64,7 @@ public class AutoCommandManager {
         m_chooser.setDefaultOption("RotationTest", rotationTest);
         m_chooser.addOption("WCenterShoot", centerShootWCommand);
         m_chooser.addOption("YCenterShoot", centerShootYCommand);
-        m_chooser.addOption("WingShoot(x3)", wingShoot3Command);
+        m_chooser.addOption("LWingShoot", wingShoot3Command);
         m_chooser.addOption("TopWingShoot(x1)", topWingShootCommand);
         m_chooser.addOption("MidWingShoot(x1)", midWingShootCommand);
         m_chooser.addOption("BotWingShoot(x1)", botWingShootCommand);
