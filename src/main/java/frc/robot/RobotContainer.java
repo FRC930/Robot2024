@@ -288,7 +288,7 @@ public class RobotContainer {
         ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
         : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC), 
       Robot.isReal() 
-        ? new TimeOfFlightIORobot(15, 71) 
+        ? new TimeOfFlightIORobot(15, 45.0) 
         : new TimeOfFlightIOSim(15));
 
     private final TalonPosIO m_turretIO = Robot.isReal()

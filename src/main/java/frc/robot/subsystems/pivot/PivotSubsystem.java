@@ -23,7 +23,7 @@ import frc.robot.utilities.SpeakerScoreUtility;
  */
 public class PivotSubsystem extends SubsystemBase{
 
-    private static final boolean ENABLE_REZEROING = false;
+    private static final boolean ENABLE_REZEROING = true;
 
     private final TalonPosIO m_io;
     private TimeOfFlightIO m_sensorIO;
