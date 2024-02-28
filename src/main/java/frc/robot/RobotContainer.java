@@ -121,6 +121,9 @@ public class RobotContainer {
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
+    private static final double INTAKE_SUPPLY_CURRENT_LIMIT = 30.0;
+    private static final double INTAKE_STATOR_CURRENT_LIMIT = 150.0;
+
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
     //#endregion
@@ -305,8 +308,8 @@ public class RobotContainer {
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
         // TunerConstants.kCANbusName means same canivore as drivetrain
-        Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName) : new RollerMotorIOSim(19, TunerConstants.kCANbusName),
-        Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName) : new RollerMotorIOSim(7, TunerConstants.kCANbusName),
+        Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT) : new RollerMotorIOSim(19, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT),
+        Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT) : new RollerMotorIOSim(7, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT, INTAKE_SUPPLY_CURRENT_LIMIT),
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
