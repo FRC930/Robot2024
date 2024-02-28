@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5599471997802752,
-      "y": 4.098792791023527
+      "x": 1.4194171612308972,
+      "y": 4.1
     },
     "rotation": 180.0
   },
@@ -20,13 +20,19 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "sideWingScore"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "LowAmpStartToTopWing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         },
         {

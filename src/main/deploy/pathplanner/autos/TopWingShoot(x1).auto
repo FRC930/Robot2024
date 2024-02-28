@@ -20,13 +20,19 @@
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "sideWingScore"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "TopAmpStartToTopWing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         },
         {
