@@ -37,7 +37,7 @@ public class SpeakerScoreUtility {
     static final private int FAR_ROW = 2;
     private final static double[][] SHOOTING_CONSTANTS = 
     {
-        {135.0, 135.0, 0.9, 56.0, 0.0}, // "close" bumper shot
+        {135.0, 135.0, 0.9, FIXED_ANGLE_BUMPER_SHOT, 0.0}, // "close" bumper shot
         {135.0, 135.0, 0.9, computePivotAngle(100.0), 0.0}, // "medium" 100 inches in line with podium
         {135.0, 135.0, 0.9, computePivotAngle(185.0), 0.0} // "far" 185 inches back bumpers against pillar
     };

@@ -441,21 +441,29 @@ public class RobotContainer {
       ;
       
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
-      // new ConditionalCommand(
-        new RepeatCommand(CommandFactoryUtility.createPivotAndShooterSpeedCommand(m_shooterSubsystem, m_pivotSubsystem, null))
-      //   new InstantCommand(),
-      //   () -> true//m_speakerUtil.getAutoAim()
-      // )
+      new ConditionalCommand(
+        new RepeatCommand(CommandFactoryUtility.createPivotAndShooterSpeedCommand(m_shooterSubsystem, m_pivotSubsystem, null)),
+        new InstantCommand(),
+        () -> m_speakerUtil.getAutoAim()
+      )
     );
      
 
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
-        // new ConditionalCommand(
-          CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)
-          // CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, m_speakerUtil.getPivotAngle()),
-          // () -> true// m_speakerUtil.getAutoAim()
-        // )
+        new ConditionalCommand(
+          CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false),
+          new InstantCommand(
+            () -> {
+              double angle = m_speakerUtil.getPivotAngle();
+              double lspeed = m_speakerUtil.getLeftShooterSpeed();
+              double rspeed = m_speakerUtil.getRightShooterSpeed();
+              m_shooterSubsystem.setSpeed(lspeed, rspeed);
+              m_pivotSubsystem.setPosition(angle);
+            }
+          ),
+          () -> m_speakerUtil.getAutoAim()
+        )
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
 
