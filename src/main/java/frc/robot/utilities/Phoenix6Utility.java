@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -120,5 +121,9 @@ public final class Phoenix6Utility {
         // This is to eliminate calls like this and possible casting errors when switch controllers
         // return ((VelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
     }
+
+    // public static TalonFX setTalonCurrentLimits(TalonFX talon, double statorMax, double supplyMax) {
+    //     return applyConfigAndRetry(talon, ()-> {return new CurrentLimitsConfigs().withStatorCurrentLimit(statorMax).withSupplyCurrentLimit(supplyMax)});
+    // }
 
 }

@@ -7,9 +7,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
+import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 /**
  * <h3>ShooterSubsystem</h3>
@@ -25,6 +28,11 @@ public class ShooterSubsystem extends SubsystemBase{
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
         IO_Left = LeftIO;
         IO_Right = RightIO;
+
+        TalonFXConfiguration cfg = new TalonFXConfiguration();
+        cfg.CurrentLimits.StatorCurrentLimitEnable = true;
+        cfg.CurrentLimits.StatorCurrentLimit = 150.0;
+
         IO_Left.getTalon().setInverted(true); 
         IO_Right.getTalon().setInverted(false);
     }

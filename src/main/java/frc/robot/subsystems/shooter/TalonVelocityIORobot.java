@@ -43,12 +43,14 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
 
         // cfg.Voltage.PeakForwardVoltage = 8;
         // cfg.Voltage.PeakReverseVoltage = -8;
-        // cfg.TorqueCurrent.PeakForwardTorqueCurrent = 40;
-        // cfg.TorqueCurrent.PeakReverseTorqueCurrent = -40;
+        cfg.TorqueCurrent.PeakForwardTorqueCurrent = 150;
+        cfg.TorqueCurrent.PeakReverseTorqueCurrent = -150;
 
          // cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
         // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
         // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
+        cfg.CurrentLimits.StatorCurrentLimitEnable = true;
+        cfg.CurrentLimits.StatorCurrentLimit = 150.0;
 
         Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg); //Applies the configuration to the motor
 
