@@ -20,6 +20,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -39,6 +41,8 @@ import frc.robot.utilities.RobotOdometryUtility;
  */
 public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     private boolean hasAppliedOperatorPerspective = false;
+    private boolean usePredictedPose = true;
+
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
@@ -46,6 +50,7 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    private final double LOOKAHEAD = 0.1;
 
     public SwerveDrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -119,7 +124,6 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
     @Override
     public void periodic() {
         setDriverPerspective();
-        RobotOdometryUtility.getInstance().setRobotOdometry(getState().Pose);
 
         // validates ModuleStaes are populated by odometry thread before logging them
         if (getState().ModuleStates != null) {
@@ -127,6 +131,8 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
             Logger.recordOutput("Drivetrain/XVelocity", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
             Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);            
             Logger.recordOutput("Drivetrain/Pose", getState().Pose);
+
+            Logger.recordOutput("Drivetrain/OmegaVelocityRadians", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
             
             Logger.recordOutput("Drivetrain/Pigeon2Yaw", getPigeon2().getAngle());
             Logger.recordOutput("Drivetrain/Pose2DYaw", getState().Pose.getRotation().getDegrees());
@@ -134,6 +140,14 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
             for (int i = 0; i < 4; i++) {
                 Logger.recordOutput("Drivetrain/SwerveWheelSpeed/" + i, getState().ModuleStates[i].speedMetersPerSecond);
                 Logger.recordOutput("Drivetrain/SwerveWheelAngle/" + i, getState().ModuleStates[i].angle.getDegrees());
+            }
+            //Calculate our predicted FUUUUUUTURE position 
+            if(usePredictedPose) {
+                Pose2d predictedPose = getState().Pose.transformBy(new Transform2d(new Translation2d(getCurrentRobotChassisSpeeds().vxMetersPerSecond * LOOKAHEAD, getCurrentRobotChassisSpeeds().vyMetersPerSecond * LOOKAHEAD),new Rotation2d(getCurrentRobotChassisSpeeds().omegaRadiansPerSecond * LOOKAHEAD)));
+                Logger.recordOutput("Drivetrain/PredictedPose", predictedPose);
+                RobotOdometryUtility.getInstance().setRobotOdometry(predictedPose);
+            } else {
+                RobotOdometryUtility.getInstance().setRobotOdometry(getState().Pose);
             }
         }
     }
