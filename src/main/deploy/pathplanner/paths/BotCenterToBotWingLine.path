@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.27025654051308,
-        "y": 0.772915212021579
+        "y": 1.0305536160287727
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.982064520480323,
-        "y": 0.8431802313012069
+        "y": 1.1008186353084004
       },
       "isLocked": false,
       "linkedName": "BotCenter"
@@ -56,7 +56,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 6.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -72,5 +72,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

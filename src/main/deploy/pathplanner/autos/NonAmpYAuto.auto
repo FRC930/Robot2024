@@ -14,13 +14,19 @@
         {
           "type": "named",
           "data": {
-            "name": "sideWingScore"
+            "name": "aimAndShoot"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "BotAmpStartToBotWing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         },
         {
