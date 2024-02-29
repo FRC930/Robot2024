@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.894982565999367,
+        "y": 4.122214464115091
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7707422576043426,
+        "y": 2.5412515304345873
+      },
+      "isLocked": false,
+      "linkedName": "BotWing"
+    },
+    {
+      "anchor": {
+        "x": 5.061487326968947,
+        "y": 0.772915212021579
+      },
+      "prevControl": {
+        "x": 3.914631236627132,
+        "y": 1.0698690211279427
+      },
+      "nextControl": {
+        "x": 6.373101020096476,
+        "y": 0.43330095219391485
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.27025654051308,
+        "y": 0.772915212021579
+      },
+      "prevControl": {
+        "x": 7.4622088188541555,
+        "y": 0.5738309907432926
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BotCenter"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Robot2024",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

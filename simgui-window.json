@@ -1,7 +1,7 @@
 {
   "Docking": {
     "Data": [
-      "DockNode        ID=0x00000001 Pos=936,485 Size=658,509 Selected=0x3E90CA91",
+      "DockNode        ID=0x00000001 Pos=936,485 Size=658,509 Selected=0xAE1843CC",
       "DockNode        ID=0x00000002 Pos=625,21 Size=966,465 Split=X",
       "DockNode      ID=0x00000014 Parent=0x00000002 SizeRef=352,394 Split=X",
       "DockNode    ID=0x00000003 Parent=0x00000014 SizeRef=112,250 Split=Y Selected=0xFC69CE7F",
@@ -27,7 +27,7 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "1051",
+      "height": "991",
       "maximized": "1",
       "style": "0",
       "userScale": "2",
