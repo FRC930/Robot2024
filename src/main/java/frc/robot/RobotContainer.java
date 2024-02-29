@@ -612,7 +612,7 @@ public class RobotContainer {
       boolean resultIsGood = false;
 
       if (isValidResult(lastResult)) { //Verifies that the Tags are valid, have values, and are between IDs 1 and 16
-        if(lastResult.timestamp_RIOFPGA_capture > m_last_RIOFPGA_timestamp) {
+        // if(lastResult.timestamp_RIOFPGA_capture > m_last_RIOFPGA_timestamp) {
           int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
 
           //We use the percentage of the screen (TA) as a reference to distance
@@ -645,8 +645,8 @@ public class RobotContainer {
                 }
               }
           }
-          m_last_RIOFPGA_timestamp = lastResult.timestamp_RIOFPGA_capture;
-        }
+          // m_last_RIOFPGA_timestamp = lastResult.timestamp_RIOFPGA_capture;
+        // }
       }
        SmartDashboard.putBoolean(limeLightName + "/Updated", resultIsGood);
   }
