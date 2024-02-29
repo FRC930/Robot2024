@@ -5,7 +5,7 @@
       "x": 1.407706324685116,
       "y": 4.122214464115091
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aimAndShoot"
+            "name": "sideWingScore"
           }
         },
         {
@@ -32,13 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
+            "name": "aimAndShoot"
           }
         },
         {
@@ -51,12 +39,6 @@
           "type": "path",
           "data": {
             "pathName": "BotCenterToBotWingLine"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setMid"
           }
         },
         {
@@ -75,12 +57,6 @@
           "type": "path",
           "data": {
             "pathName": "LowCenterToWingLine"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setMid"
           }
         },
         {

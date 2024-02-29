@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "sideWingScore"
           }
         },
@@ -38,12 +32,6 @@
         {
           "type": "named",
           "data": {
-            "name": "setFar"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         },
@@ -57,12 +45,6 @@
           "type": "path",
           "data": {
             "pathName": "TopMidCenterToWingLine1Y"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setFar"
           }
         },
         {

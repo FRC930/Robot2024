@@ -25,10 +25,10 @@ public final class CommandFactoryUtility {
     public static final double TURRET_STOW_POS = 0.0;/*Deg*/
 
     public static final double ELEVATOR_STOW_POS = 0.0;
-    public static final double ELEVATOR_AMP_POS = 8.0;
+    public static final double ELEVATOR_AMP_POS = 0.0;
     
     public static final double PIVOT_STOW_POS = 0.0;/*Deg*/
-    public static final double PIVOT_AMP_POS = 45.0;/*Deg*/
+    public static final double PIVOT_AMP_POS = 0.0;/*Deg*/
     public static final double PIVOT_INTAKE_POS = 45.0;/*Deg*/
 
     //#region SPEAKER SCORE CONSTANTS
@@ -136,6 +136,7 @@ public final class CommandFactoryUtility {
             }
         return command;
     }
+    
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
         Command command = null;
         if (adjustPivot){
@@ -144,8 +145,6 @@ public final class CommandFactoryUtility {
             command = new InstantCommand();
         }
         
-
-
         return command 
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))

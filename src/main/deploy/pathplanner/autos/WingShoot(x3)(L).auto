@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "sideWingScore"
           }
         },
@@ -33,12 +27,6 @@
           "type": "named",
           "data": {
             "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setMid"
           }
         },
         {
@@ -62,12 +50,6 @@
         {
           "type": "named",
           "data": {
-            "name": "setMid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndShoot"
           }
         },
@@ -81,12 +63,6 @@
           "type": "named",
           "data": {
             "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setMid"
           }
         },
         {
