@@ -348,6 +348,7 @@ public class RobotContainer {
   // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
   private boolean m_subsystemsConfigured = false;
   private boolean m_TeleopInitalized = false; // only want some things to initialze once
+  private double m_last_RIOFPGA_timestamp = -1.0;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -583,9 +584,11 @@ public class RobotContainer {
    */
   public void updateVisionOdometry(String limeLightName) {
       Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
+      double fpgaTimestamp = Timer.getFPGATimestamp();
       boolean resultIsGood = false;
 
       if (isValidResult(lastResult)) { //Verifies that the Tags are valid, have values, and are between IDs 1 and 16
+        if(lastResult.timestamp_RIOFPGA_capture > m_last_RIOFPGA_timestamp) {
           int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
 
           //We use the percentage of the screen (TA) as a reference to distance
@@ -611,11 +614,15 @@ public class RobotContainer {
 
                 if (m_visionUpdatesOdometry) {
                     drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
-                    Timer.getFPGATimestamp() - (lastResult.latency_pipeline/1000.0) - (lastResult.latency_capture/1000.0));
+                    fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
+                      - (lastResult.latency_capture/1000.0) //
+                      - lastResult.latency_jsonParse /*already in millis*/); // Due to json parsing in getlatestresults
                     resultIsGood = true;
                 }
               }
           }
+          m_last_RIOFPGA_timestamp = lastResult.timestamp_RIOFPGA_capture;
+        }
       }
        SmartDashboard.putBoolean(limeLightName + "/Updated", resultIsGood);
   }
