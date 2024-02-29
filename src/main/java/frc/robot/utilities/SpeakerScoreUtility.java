@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 
 public class SpeakerScoreUtility {
 
@@ -20,7 +21,7 @@ public class SpeakerScoreUtility {
     static final private int LEFT_SPEED_COLUMN = 0;
     static final private int RIGHT_SPEED_COLUMN = 1;
     static final private int INDEXER_SPEED_COLUMN = 2;  // TODO not needed since never used different value
-    static final private int PIVOT_ANGLE_SPEED_COLUMN = 3;
+    static final private int PIVOT_ANGLE_COLUMN = 3;
     static final private int EVELATOR_HEIGHT_COLUMN = 4;   // TODO not need given all at 0.0 
 
     static final private double FIXED_ANGLE_BUMPER_SHOT_DISTANCE = 43.0; //In inches
@@ -36,29 +37,45 @@ public class SpeakerScoreUtility {
     static final private int FAR_ROW = 2;
     private final static double[][] SHOOTING_CONSTANTS = 
     {
-        {135.0, 135.0, 0.9, 40.0, 0.0}, // "close" 3' 7" from speaker bumper to front of frame
-        {135.0, 135.0, 0.9, 33.0, 0.0}, // "medium" 7' 8" from speaker bumper to front of frame
-        {135.0, 135.0, 0.9, 31.0, 0.0} // "far" 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
+        {135.0, 135.0, 0.9, 56.0, 0.0}, // "close" bumper shot
+        {135.0, 135.0, 0.9, computePivotAngle(100.0), 0.0}, // "medium" 100 inches in line with podium
+        {135.0, 135.0, 0.9, computePivotAngle(185.0), 0.0} // "far" 185 inches back bumpers against pillar
     };
     private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
     
+    private boolean m_useAutoAim = true;
 
+    private final mmTurretSubsystem m_turret;
 
     public enum Target{
-        close, // 3' 7" from speaker bumper to front of frame
-        medium, // 7' 8" from speaker bumper to front of frame
-        far // 12' 7" from speaker bumper to front of frame (ONLY WORKS WITH UNTRIMMED NOTES)
+        close,
+        medium,
+        far
     };
 
     private Target m_desiredTarget;
 
-    public SpeakerScoreUtility() {
+    public SpeakerScoreUtility(mmTurretSubsystem turret) {
         m_desiredTarget = Target.close;
+        m_turret = turret;
+
     }
 
     public void setDesiredTarget(Target target) {
+        if (m_useAutoAim) {
+            m_useAutoAim = false;
+            m_turret.enableTurretLock();
+        } else if (m_desiredTarget == target) {
+            m_useAutoAim = true;
+            m_turret.disableTurretLock();
+        }
+        Logger.recordOutput(this.getClass().getSimpleName()+"/UseAutoAim", m_useAutoAim);
         m_desiredTarget = target;
-        SmartDashboard.putString(this.getClass().getSimpleName()+"/DesiredTarget", target.toString());
+        Logger.recordOutput(this.getClass().getSimpleName()+"/DesiredTarget", target.toString());
+    }
+
+    public boolean getAutoAim() {
+        return m_useAutoAim;
     }
 
     public Target getDesiredTarget() {
@@ -90,7 +107,7 @@ public class SpeakerScoreUtility {
     }
 
     public double getPivotAngle() {
-        return SHOOTING_CONSTANTS[getRowForDesiredTarget()][PIVOT_ANGLE_SPEED_COLUMN];
+        return SHOOTING_CONSTANTS[getRowForDesiredTarget()][PIVOT_ANGLE_COLUMN];
     }
 
     private int getRowForDesiredTarget() {
