@@ -1,8 +1,13 @@
 package frc.robot.utilities;
 
+import java.util.function.ObjDoubleConsumer;
+
+import org.littletonrobotics.conduit.schema.CoreInputs;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretAimCommand;
@@ -122,16 +127,26 @@ public final class CommandFactoryUtility {
     }
 
     // TODO trap shot
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle) {
+    public static Command createPivotAndShooterSpeedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, Double pivotAngle) {
+        Command command = shooter.newCalcAndSetSpeedsCommand(); //shooter.newSetSpeedsCommand(speakerUtil)
+            if (pivotAngle == null) {
+                command = command.andThen(pivot.newCalcAndSetPosCommand()); //.andThen(pivot.newSetPosCommand(speakerUtil))
+            } else {
+                command = command.andThen(pivot.newSetPosCommand(pivotAngle));
+            }
+        return command;
+    }
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
         Command command = null;
-        if (pivotAngle == null) {
-            command = pivot.newCalcAndSetPosCommand(); //.andThen(pivot.newSetPosCommand(speakerUtil))
+        if (adjustPivot){
+            command = createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle);
         } else {
-            command = pivot.newSetPosCommand(pivotAngle);
+            command = new InstantCommand();
         }
+        
 
-        return shooter.newCalcAndSetSpeedsCommand() //shooter.newSetSpeedsCommand(speakerUtil)
-            .andThen(command)
+
+        return command 
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
                 )
@@ -140,6 +155,11 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
+
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle) {
+    {
+        return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, pivotAngle, true);
+    }}
 
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, null);
