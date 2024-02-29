@@ -186,11 +186,13 @@ public class RobotContainer {
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(55.0)  // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(45.0)  // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
-        .withKS(4.0); 
+        .withKS(4.0);
+
+    // 0.08 on kP and 0.0 on kS if using voltage
 
     private final Slot0Configs turretS0C =
       new Slot0Configs()
