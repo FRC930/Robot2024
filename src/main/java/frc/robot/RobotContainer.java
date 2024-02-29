@@ -312,8 +312,8 @@ public class RobotContainer {
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
         // TunerConstants.kCANbusName means same canivore as drivetrain
-        Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT) : new RollerMotorIOSim(19, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT),
-        Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT) : new RollerMotorIOSim(7, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT, INTAKE_SUPPLY_CURRENT_LIMIT),
+        Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName) : new RollerMotorIOSim(19, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT),
+        Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName) : new RollerMotorIOSim(7, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT, INTAKE_SUPPLY_CURRENT_LIMIT),
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
@@ -324,7 +324,7 @@ public class RobotContainer {
     private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private Telemetry logger = new Telemetry(MaxSpeed);
+    private Telemetry logger = new Telemetry(MaxSpeed); 
     
     private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, 
       m_LimeLightDetectionUtility, 
@@ -452,7 +452,7 @@ public class RobotContainer {
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
         new ConditionalCommand(
-          CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false),
+          new WaitCommand(0.2).andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
           new InstantCommand(
             () -> {
               double angle = m_speakerUtil.getPivotAngle();
