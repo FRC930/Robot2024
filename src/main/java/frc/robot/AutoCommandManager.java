@@ -59,6 +59,7 @@ public class AutoCommandManager {
         PathPlannerAuto topWingShootCommand = new PathPlannerAuto("TopWingShoot(x1)");
         PathPlannerAuto midWingShootCommand = new PathPlannerAuto("MidWingShoot(x1)");
         PathPlannerAuto botWingShootCommand = new PathPlannerAuto("BotWingShoot(x1)");
+        PathPlannerAuto NonAmpYCommand = new PathPlannerAuto("NonAmpYAuto");
         
         m_chooser.setDefaultOption("None", null);
         m_chooser.setDefaultOption("RotationTest", rotationTest);
@@ -68,6 +69,7 @@ public class AutoCommandManager {
         m_chooser.addOption("TopWingShoot(x1)", topWingShootCommand);
         m_chooser.addOption("MidWingShoot(x1)", midWingShootCommand);
         m_chooser.addOption("BotWingShoot(x1)", botWingShootCommand);
+        m_chooser.addOption("NonAmpYAuto", NonAmpYCommand);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }

@@ -115,6 +115,14 @@ public class mmTurretSubsystem extends SubsystemBase{
         m_isTurretLocked = !m_isTurretLocked;
     }
 
+    public void disableTurretLock() {
+        m_isTurretLocked = false;
+    }
+
+    public void enableTurretLock() {
+        m_isTurretLocked = true;
+    }
+
     public boolean getTurretLock() {
         return m_isTurretLocked;
     }
