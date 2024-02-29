@@ -1,6 +1,7 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
@@ -73,6 +74,9 @@ public final class CommandFactoryUtility {
     public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
         return indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
             .andThen(new WaitCommand(1.0))
+            .andThen(new InstantCommand(() -> 
+                {LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceOff("limelight-back");}))
             .andThen(intake.newSetSpeedCommand(0.0))
             .andThen(indexer.newSetSpeedCommand(0.0));
     }
@@ -84,6 +88,9 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
+            .andThen(new InstantCommand(() -> 
+                {LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceBlink("limelight-back");}))
             .andThen(new WaitCommand(0.2)) // Wait on the intake, we're stopping too quickly
             // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
             .andThen(intake.newSetSpeedCommand(0.0))
