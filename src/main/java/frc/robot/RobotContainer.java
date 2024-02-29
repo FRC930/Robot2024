@@ -83,6 +83,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -581,6 +583,7 @@ public class RobotContainer {
    */
   public void updateVisionOdometry(String limeLightName) {
       Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
+      boolean resultIsGood = false;
 
       if (isValidResult(lastResult)) { //Verifies that the Tags are valid, have values, and are between IDs 1 and 16
           int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
@@ -608,11 +611,13 @@ public class RobotContainer {
 
                 if (m_visionUpdatesOdometry) {
                     drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
-                      Timer.getFPGATimestamp() - (lastResult.latency_pipeline/1000.0) - (lastResult.latency_capture/1000.0));
+                    Timer.getFPGATimestamp() - (lastResult.latency_pipeline/1000.0) - (lastResult.latency_capture/1000.0));
+                    resultIsGood = true;
                 }
               }
           }
       }
+       SmartDashboard.putBoolean(limeLightName + "/Updated", resultIsGood);
   }
 
   /**
