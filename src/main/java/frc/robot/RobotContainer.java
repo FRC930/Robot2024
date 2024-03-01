@@ -186,11 +186,11 @@ public class RobotContainer {
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(0.2) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(35.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
-        .withKS(0.0); //4.0
+        .withKS(4.0); //4.0
 
     // 0.08 on kP and 0.0 on kS if using voltage
 
@@ -304,8 +304,8 @@ public class RobotContainer {
     private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(m_turretIO);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        14,
-        // Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterS0C, shooterMMC) ,
+        // 14,
+        Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterS0C, shooterMMC) ,
         Robot.isReal() ? new TalonVelocityIORobot(15, 0.5, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 0.5, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(

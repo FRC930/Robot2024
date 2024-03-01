@@ -1,6 +1,16 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "Talon FX (v6)[14]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[15]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX (v6)[20]": {
         "header": {
           "open": true

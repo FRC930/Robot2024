@@ -30,7 +30,7 @@ public class SpeakerScoreUtility {
     private final static double LINEAR_DISTANCE_FAR = 132.0 - 4.0; //subracting 4 inches to make sure 11 feet uses linear
     private static final double LINEAR_DISTANCE_CLOSE = 84.0 - 4.0; //subracting 4 inches to make sure 7 feet uses linear
 
-    static final private double COMPUTED_SHOOT_SPEED = 165.0;
+    static final private double COMPUTED_SHOOT_SPEED = 135.0;
 
     static final private int CLOSE_ROW = 0;
     static final private int MEDIUM_ROW = 1;

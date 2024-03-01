@@ -12,33 +12,27 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "setClose"
+            "pathName": "TopAmpToWhiteLine"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "sideWingScore"
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TopAmpStartToTopWing"
+            "pathName": "WhiteLineToTopNote"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setMid"
           }
         },
         {
