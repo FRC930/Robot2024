@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5,
-        "y": 2.7169140786213095
+        "x": 2.4031274310765443,
+        "y": 1.1945053276697124
       },
       "isLocked": false,
       "linkedName": "PillarNote"
@@ -20,8 +20,8 @@
         "y": 0.7612043754757987
       },
       "prevControl": {
-        "x": 5.658739990803805,
-        "y": 0.4918551349228246
+        "x": 5.799270029353182,
+        "y": 0.749493538930016
       },
       "nextControl": null,
       "isLocked": false,

@@ -275,7 +275,7 @@ public class RobotContainer {
     // TODO configure for april tag confidence level 
     //https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/mechanisms/swerve/SwerveDrivetrain.html#setVisionMeasurementStdDev
     // Implement visionSTDsDevs into our code with default values
-    private Matrix<N3, N1> visionSTDsDevs = VecBuilder.fill(0.9, 0.9, 0.9);
+    private Matrix<N3, N1> visionSTDsDevs = VecBuilder.fill(0.5, 0.5, 0.5);
   
     //--SUBSYSTEMS--\\
 
@@ -399,9 +399,9 @@ public class RobotContainer {
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // Sets the desired positions for the speaker
-    // m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
-    // m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
-    // m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
+    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
+    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
+    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
 
     // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
     //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
