@@ -12,15 +12,21 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "BotAmpStartToBotWing"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "sideWingScore"
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BotAmpStartToBotWing"
+            "pathName": "WhiteLineToPillar"
           }
         },
         {

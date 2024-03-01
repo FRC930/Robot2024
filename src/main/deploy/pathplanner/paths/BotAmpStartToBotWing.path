@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4077063246851163,
+        "x": 1.5077063246851161,
         "y": 4.122214464115091
       },
       "isLocked": false,
@@ -16,24 +16,24 @@
     },
     {
       "anchor": {
-        "x": 2.613922488900611,
+        "x": 2.0283806616115356,
         "y": 4.122214464115091
       },
       "prevControl": {
-        "x": 1.6139224889006112,
+        "x": 1.9283806616115355,
         "y": 4.122214464115091
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BotWing"
+      "linkedName": "OnWingLine"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.2,
+      "name": "Aim",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "aim"
               }
             }
           ]
