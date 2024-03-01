@@ -186,7 +186,7 @@ public class RobotContainer {
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(0.7) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(0.2) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -399,9 +399,9 @@ public class RobotContainer {
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // Sets the desired positions for the speaker
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
-    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
+    // m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
+    // m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
+    // m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
 
     // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
     //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
