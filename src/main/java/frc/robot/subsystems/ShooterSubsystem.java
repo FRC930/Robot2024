@@ -33,6 +33,9 @@ public class ShooterSubsystem extends SubsystemBase{
         IO_Left = LeftIO;
         IO_Right = RightIO;
 
+        IO_Left.getTalon().setInverted(true);
+        IO_Right.getTalon().setInverted(false);
+
         // Phoenix6Utility.resetTalonFxFactoryDefaults(m_leftMotor);
 
         // Phoenix6Utility.applyConfigAndRetry(m_leftMotor, 
