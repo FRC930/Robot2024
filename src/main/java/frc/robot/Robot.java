@@ -59,7 +59,7 @@ public class Robot extends LoggedRobot {
         break;
     }
     if (isReal()) {
-      String folder = "/media/sda1"; // default /U/logs not working
+      String folder = "/media/sda1/logs"; // default /U/logs not working
       WPILOGWriter writer = new WPILOGWriter(folder); // Log to a USB stick ("/media/sda1")
       File logFolder = new File(folder);
       if (!logFolder.exists()) {
