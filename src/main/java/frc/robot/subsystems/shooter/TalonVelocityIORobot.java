@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -21,7 +22,7 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
 
     protected TalonFX m_motor; 
 
-    protected VelocityTorqueCurrentFOC m_request;
+    protected VelocityVoltage m_request;
 
     /* Keep a neutral out so we can disable the motor */
     private final NeutralOut m_brake = new NeutralOut();
@@ -34,8 +35,9 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         
         
         // m_request = new MotionMagicVelocityTorqueCurrentFOC(0,0,true,0,0,true,false,false); //The request that will be sent to the motor- Commented it out because of not working in testing
-        m_request = new VelocityTorqueCurrentFOC(0.0,0.0,0.0,0,true,false,true); //The request that will be sent to the motor
-        
+        // m_request = new VelocityTorqueCurrentFOC(0.0,0.0,0.0,0,true,false,false); //The request that will be sent to the motor
+        m_request = new VelocityVoltage(0.0);
+
         TalonFXConfiguration cfg = new TalonFXConfiguration(); //Creates a new blank TalonFX congfiguration that will be applied to the motors in a bit
         cfg.withSlot0(config); // The PID and FF configs
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this

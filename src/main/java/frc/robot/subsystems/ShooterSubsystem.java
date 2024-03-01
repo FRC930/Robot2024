@@ -13,28 +13,31 @@ import frc.robot.utilities.SpeakerScoreUtility;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * <h3>ShooterSubsystem</h3>
  * This subsystem controls the shooter
  */
 public class ShooterSubsystem extends SubsystemBase{
+
     private TalonVelocityIO IO_Left;
     private TalonVelocityIO IO_Right;
 
     private final double VELOCITY_DEADBAND = 5.0;
     private boolean m_reachedSetPoint = false;
+    private TalonFX m_leftMotor;
 
-    public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
-        IO_Left = LeftIO;
+    public ShooterSubsystem(int leftID, TalonVelocityIO RightIO) { 
+        m_leftMotor = new TalonFX(leftID);
         IO_Right = RightIO;
 
-        TalonFXConfiguration cfg = new TalonFXConfiguration();
-        cfg.CurrentLimits.StatorCurrentLimitEnable = true;
-        cfg.CurrentLimits.StatorCurrentLimit = 150.0;
+        Phoenix6Utility.resetTalonFxFactoryDefaults(m_leftMotor);
 
-        IO_Left.getTalon().setInverted(true); 
-        IO_Right.getTalon().setInverted(false);
+        Phoenix6Utility.applyConfigAndRetry(m_leftMotor, 
+            () -> m_leftMotor.setControl(new Follower(IO_Right.getTalon().getDeviceID(), true)));
+        
     }
     
     /**
@@ -43,11 +46,11 @@ public class ShooterSubsystem extends SubsystemBase{
     * @param rightSpeed the speed the right wheel will be set to
     */
     public void setSpeed(double leftSpeed, double rightSpeed, Double leftAccel, Double rightAccel) {
-        if(leftAccel != null) {
-            IO_Left.setSpeed(leftSpeed, leftAccel);
-        } else {
-            IO_Left.setSpeed(leftSpeed);
-        }
+        // if(leftAccel != null) {
+        //     IO_Left.setSpeed(leftSpeed, leftAccel);
+        // } else {
+        //     IO_Left.setSpeed(leftSpeed);
+        // }
         if(rightAccel != null) {
             IO_Right.setSpeed(rightSpeed, rightAccel);    
         } else {
@@ -71,7 +74,7 @@ public class ShooterSubsystem extends SubsystemBase{
     * @return The current motor speed of the left wheel in rps
     */
     public double getLeftMotorSpeed() {
-        return IO_Left.getSpeed();
+        return m_leftMotor.get();
     }
 
     /**
@@ -87,7 +90,7 @@ public class ShooterSubsystem extends SubsystemBase{
     * @return The current voltage of the left motor
     */
     public double getLeftVoltage() {
-        return IO_Left.getVoltage();
+        return m_leftMotor.getMotorVoltage().getValueAsDouble();
     }
 
     /**
@@ -103,7 +106,7 @@ public class ShooterSubsystem extends SubsystemBase{
     * @return The current voltage of the right motor
     */
     public double getLeftTargetVelocity() {
-        return IO_Left.getTargetVelocity();
+        return getRightTargetVelocity();
     }
 
     /**
@@ -124,7 +127,6 @@ public class ShooterSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        IO_Left.runSim();
         IO_Right.runSim();
         
         Logger.recordOutput(this.getClass().getSimpleName() + "/LeftWheel/Velocity" ,getLeftMotorSpeed());
@@ -168,8 +170,8 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public boolean atSetpoint() {
-        m_reachedSetPoint = MathUtil.applyDeadband(getRightTargetVelocity() - getRightMotorSpeed(), VELOCITY_DEADBAND) == 0.0 
-            && MathUtil.applyDeadband(getLeftTargetVelocity() - getLeftMotorSpeed(),VELOCITY_DEADBAND) == 0.0;
+        m_reachedSetPoint = MathUtil.applyDeadband(getRightTargetVelocity() - getRightMotorSpeed(), VELOCITY_DEADBAND) == 0.0;
+            // && MathUtil.applyDeadband(getLeftTargetVelocity() - getLeftMotorSpeed(),VELOCITY_DEADBAND) == 0.0; // Left is following so no need to check
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/ReachedSetPoint" ,m_reachedSetPoint);
         return m_reachedSetPoint;
     }

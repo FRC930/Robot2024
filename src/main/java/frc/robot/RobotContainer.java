@@ -186,11 +186,11 @@ public class RobotContainer {
     
     private final Slot0Configs shooterS0C =
       new Slot0Configs()
-        .withKP(45.0)  // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(0.7) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
-        .withKS(4.0);
+        .withKS(0.0); //4.0
 
     // 0.08 on kP and 0.0 on kS if using voltage
 
@@ -304,7 +304,8 @@ public class RobotContainer {
     private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(m_turretIO);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-        Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterS0C, shooterMMC) ,
+        14,
+        // Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterS0C, shooterMMC) ,
         Robot.isReal() ? new TalonVelocityIORobot(15, 0.5, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 0.5, shooterS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
@@ -434,7 +435,7 @@ public class RobotContainer {
     // Intake button TODO Test
     m_driverController.leftBumper()
       .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
-      .onFalse(CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem)
+      .onFalse(CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem, m_shooterSubsystem)
         .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
       ;
     
@@ -474,7 +475,7 @@ public class RobotContainer {
       new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController::getLeftY)
       .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
     .onFalse(
-      CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem)
+      CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem, m_shooterSubsystem)
       .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
     ;
     // Amp score button
