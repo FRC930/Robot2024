@@ -455,7 +455,8 @@ public class RobotContainer {
     // Speaker score button TODO: TEST CHANGES
     m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
         new ConditionalCommand(
-          new WaitCommand(0.2).andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
+          new WaitCommand(0.2).until(() -> m_pivotSubsystem.getPosition()>0.0)
+            .andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
           new InstantCommand(
             () -> {
               double angle = m_speakerUtil.getPivotAngle();
@@ -464,7 +465,8 @@ public class RobotContainer {
               m_shooterSubsystem.setSpeed(lspeed, rspeed);
               m_pivotSubsystem.setPosition(angle);
             }
-          ),
+          ).andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false))
+          ,
           () -> m_speakerUtil.getAutoAim()
         )
     )
