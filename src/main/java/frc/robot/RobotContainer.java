@@ -355,6 +355,8 @@ public class RobotContainer {
   private boolean m_TeleopInitalized = false; // only want some things to initialze once
   private double m_last_RIOFPGA_timestamp = -1.0;
 
+  private int visioncounter = 0;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -645,6 +647,10 @@ public class RobotContainer {
         return;
       }
 
+      this.visioncounter++;
+
+      Logger.recordOutput("LimeLightOdometry/"+ limeLightName + "/UpdatCounts", this.visioncounter);
+
         m_StartInTeleopUtility.updateTags();
         int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
         Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
@@ -653,10 +659,10 @@ public class RobotContainer {
         if (m_visionUpdatesOdometry) {
             drivetrain.setVisionMeasurementStdDevs(
               VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-              drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
+              drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(),  
             fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
               - (lastResult.latency_capture/1000.0) //
-              - lastResult.latency_jsonParse /*already in millis*/); // Due to json parsing in getlatestresults
+              - lastResult.latency_jsonParse / 1000.0 /*already in millis*/); // Due to json parsing in getlatestresults
             SmartDashboard.putBoolean(limeLightName + "/Updated", true);
         }
     }
@@ -702,7 +708,7 @@ public class RobotContainer {
                     drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
                     fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
                       - (lastResult.latency_capture/1000.0) //
-                      - lastResult.latency_jsonParse /*already in millis*/); // Due to json parsing in getlatestresults
+                      - lastResult.latency_jsonParse / 1000.0/*already in millis*/); // Due to json parsing in getlatestresults
                     resultIsGood = true;
                 }
               }
