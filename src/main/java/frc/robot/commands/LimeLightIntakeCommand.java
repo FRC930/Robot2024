@@ -3,6 +3,8 @@ package frc.robot.commands;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
@@ -140,6 +142,7 @@ public class LimeLightIntakeCommand extends Command {
             m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
         } 
         
+        Logger.recordOutput("GamePiece/TX", m_LimeLight.get_tx());
         // SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
         // SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
         // SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
