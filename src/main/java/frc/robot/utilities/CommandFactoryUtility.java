@@ -76,11 +76,13 @@ public final class CommandFactoryUtility {
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
     
-    public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
+    public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer, ShooterSubsystem shooter) {
         return indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
+            .andThen(shooter.newSetSpeedsCommand(-10.0, -10.0))
             .andThen(new WaitCommand(0.25))
             .andThen(intake.newSetSpeedCommand(0.0))
             .andThen(indexer.newSetSpeedCommand(0.0))
+            .andThen(shooter.newSetSpeedsCommand(0.0, 0.0))
             .andThen(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
                 LimelightHelpers.setLEDMode_ForceOff("limelight-back");}));
