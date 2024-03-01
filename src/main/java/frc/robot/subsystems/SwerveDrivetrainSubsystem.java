@@ -96,6 +96,7 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
 
         PathPlannerLogging.setLogTargetPoseCallback((Pose2d targetPose) -> {
             pp_field2d.setRobotPose(targetPose);
+            Logger.recordOutput("PathPlanner/TargetPose", targetPose);
         });
     }
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
