@@ -95,7 +95,10 @@ public class SpeakerScoreUtility {
     } 
 
     public Command setDesiredTargetCommand(Target desiredTarget) {
-        return new InstantCommand(() -> setDesiredTarget(desiredTarget));
+        return new InstantCommand(() -> {
+            setDesiredTarget(desiredTarget);
+            m_turret.getCurrentCommand().cancel();
+        });
     }
 
     public double getLeftShooterSpeed() {                
