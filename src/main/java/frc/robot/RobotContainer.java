@@ -601,10 +601,67 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (USE_LIMELIGHT_APRIL_TAG) {  
-      updateVisionOdometry("limelight-front");
-      updateVisionOdometry("limelight-back");
+      // updateVisionOdometry("limelight-front");
+      // updateVisionOdometry("limelight-back");
+      updatePoseEstimatorWithVisionBotPose("limelight-front");
+      updatePoseEstimatorWithVisionBotPose("limelight-back");
     }
   }
+
+  public void updatePoseEstimatorWithVisionBotPose(String limeLightName) {
+    Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
+    // invalid LL data
+    if (lastResult.getBotPose2d_wpiBlue().getX() == 0.0) {
+      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
+      return;
+    }
+    double fpgaTimestamp = Timer.getFPGATimestamp();
+
+    // distance from current pose to vision estimated pose
+    Translation2d translation = drivetrain.getState().Pose.getTranslation();
+    double poseDifference = translation.getDistance(lastResult.getBotPose2d_wpiBlue().getTranslation());
+
+    if (lastResult.valid) {
+      double xyStds;
+      double degStds;
+      // multiple targets detected
+      if (lastResult.targets_Fiducials.length >= 2) {
+        xyStds = 0.1;
+        degStds = 6;
+      }
+      // 1 target with large area and close to estimated pose
+      else if (LimelightHelpers.getTA(limeLightName) > 0.8 && poseDifference < 0.5) {
+        xyStds = 1.0;
+        degStds = 12;
+      }
+      // 1 target farther away and estimated pose is close
+      else if (LimelightHelpers.getTA(limeLightName) > 0.1 && poseDifference < 0.3) {
+        xyStds = 2.0;
+        degStds = 30;
+      }
+      // conditions don't match to add a vision measurement
+      else {
+        SmartDashboard.putBoolean(limeLightName + "/Updated", false);
+        return;
+      }
+
+        m_StartInTeleopUtility.updateTags();
+        int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
+        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
+        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
+
+        if (m_visionUpdatesOdometry) {
+            drivetrain.setVisionMeasurementStdDevs(
+              VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+              drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
+            fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
+              - (lastResult.latency_capture/1000.0) //
+              - lastResult.latency_jsonParse /*already in millis*/); // Due to json parsing in getlatestresults
+            SmartDashboard.putBoolean(limeLightName + "/Updated", true);
+        }
+    }
+  }
+  
 
   /**
    * Prints limelight, and limelight name. If the last result was valid, and the length is bigger than 0.
