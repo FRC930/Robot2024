@@ -39,7 +39,7 @@ public class SpeakerScoreUtility {
     {
         {135.0, 135.0, 0.9, FIXED_ANGLE_BUMPER_SHOT, 0.0}, // "close" bumper shot
         {135.0, 135.0, 0.9, computePivotAngle(100.0), 0.0}, // "medium" 100 inches in line with podium
-        {135.0, 135.0, 0.9, computePivotAngle(185.0), 0.0} // "far" 185 inches back bumpers against pillar
+        {135.0, 135.0, 0.9, 27.45, 0.0} // "far" 185 inches back bumpers against pillar
     };
     private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
     
@@ -157,7 +157,7 @@ public class SpeakerScoreUtility {
         double exponent = -0.152665;
         double h = 19.5834;
         double k = 19.5854;
-        double angleOffset = 2.5;
+        double angleOffset = 4.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {

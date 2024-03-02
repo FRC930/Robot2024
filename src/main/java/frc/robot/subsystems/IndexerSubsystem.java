@@ -102,7 +102,7 @@ public class IndexerSubsystem extends SubsystemBase {
         }
     }
 
-    public Command newUnlessNoteFoundCommand() {
+    public Command newUntilNoNoteFoundCommand() {
         if(Robot.isReal()) {
             return new WaitUntilCommand(() -> !getSensor());  // DO not set subsystem since just getting sensor value
         } else {

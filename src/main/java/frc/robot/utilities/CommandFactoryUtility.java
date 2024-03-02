@@ -5,6 +5,7 @@ import java.util.function.ObjDoubleConsumer;
 import org.littletonrobotics.conduit.schema.CoreInputs;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -63,7 +64,7 @@ public final class CommandFactoryUtility {
     //TODO review values and code
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
             return indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED)
-            .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
+            .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT));
     }
 
@@ -77,24 +78,30 @@ public final class CommandFactoryUtility {
     }
     
     public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer, ShooterSubsystem shooter) {
-        return indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
+        return new ConditionalCommand(
+            indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
             // .andThen(shooter.newSetSpeedsCommand(-10.0, -10.0))
             .andThen(new WaitCommand(0.25))
             .andThen(intake.newSetSpeedCommand(0.0))
             .andThen(indexer.newSetSpeedCommand(0.0))
+            .andThen(intake.newSetJustIntookCommand(false))
             // .andThen(shooter.newSetSpeedsCommand(0.0, 0.0))
             .andThen(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceOff("limelight-back");}));
+                LimelightHelpers.setLEDMode_ForceOff("limelight-back");})),
+            new InstantCommand(),
+            () -> intake.getJustIntook()
+        );
     }
 
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
-        return indexer.newUnlessNoteFoundCommand()  // make sure no note is found
+        return indexer.newUntilNoNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
             .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
+            .andThen(intake.newSetJustIntookCommand(true))
             .andThen(new WaitCommand(0.0))
             .alongWith(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
@@ -115,7 +122,7 @@ public final class CommandFactoryUtility {
                                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
                                 )
                     .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
-                    .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
+                    .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
                     .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
@@ -157,7 +164,7 @@ public final class CommandFactoryUtility {
                 )
             // .andThen(new TurretRefineCommand(turret).withTimeout(2.0))
             .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
-            .andThen(indexer.newUnlessNoteFoundCommand()) // dont stop until note gone
+            .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 

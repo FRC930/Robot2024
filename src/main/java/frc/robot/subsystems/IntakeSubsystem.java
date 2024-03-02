@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
@@ -23,6 +24,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private TalonRollerIO m_followerMotor;
     private TimeOfFlightIO m_sensorL;
     private TimeOfFlightIO m_sensorR;
+
+    private boolean justIntook = false;
 
 
     /**
@@ -89,6 +92,18 @@ public class IntakeSubsystem extends SubsystemBase {
         return m_sensorL.get() || m_sensorR.get();
     }
 
+    public void setJustIntook(boolean set) {
+        justIntook = set;
+    }
+
+    public boolean getJustIntook() {
+        return justIntook;
+    }
+
+    public Command newSetJustIntookCommand(boolean set) {
+        return new InstantCommand(() -> setJustIntook(set));
+    }
+ 
     @Override
     public void periodic() {
         m_leaderMotor.runSim();
