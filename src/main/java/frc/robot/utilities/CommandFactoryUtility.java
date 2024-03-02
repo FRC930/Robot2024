@@ -138,6 +138,10 @@ public final class CommandFactoryUtility {
             }
         return command;
     }
+
+    public static Command createIntakeNoIndexerCommand(IntakeSubsystem intake){
+        return intake.newSetSpeedCommand(INTAKE_SPEED);
+    }
     
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
         Command command = null;

@@ -121,7 +121,11 @@ public class AutoCommandManager {
             CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
         );
+        NamedCommands.registerCommand("shootNoStow", 
+            CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
+        NamedCommands.registerCommand("intakeNoIndexer", 
+            CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
         NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
         NamedCommands.registerCommand("ampScore", 
             CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)
