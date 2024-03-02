@@ -23,18 +23,18 @@ import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 public final class CommandFactoryUtility {
 
     //#region positions
-    public static final double TURRET_STOW_POS = 0.0;/*Deg*/
+    public static final double TURRET_STOW_POS = 0.0;               /*Deg*/
 
-    public static final double ELEVATOR_STOW_POS = 0.0;
-    public static final double ELEVATOR_AMP_POS = 0.0;
+    public static final double ELEVATOR_STOW_POS = 0.0;             /*Deg*/
+    public static final double ELEVATOR_AMP_POS = 0.0;              /*Deg*/
     
-    public static final double PIVOT_STOW_POS = 0.0;/*Deg*/
-    public static final double PIVOT_AMP_POS = 0.0;/*Deg*/
-    public static final double PIVOT_INTAKE_POS = 45.0;/*Deg*/
+    public static final double PIVOT_STOW_POS = 0.0;                /*Deg*/
+    public static final double PIVOT_AMP_POS = 0.0;                 /*Deg*/
+    public static final double PIVOT_INTAKE_POS = 45.0;             /*Deg*/
 
-    //#region SPEAKER SCORE CONSTANTS
-    public static final double INDEXER_SPEAKER_SPEED = 0.9;/*Value*/
-    //#endregion
+    public static final double INDEXER_SPEAKER_SPEED = 0.9;         /*Value*/
+    public static final double INDEXER_INTAKE_SPEED = 0.7;          /*Value*/
+    public static final double INDEXER_REVERSE_SPEED = -0.2;       /*value*/
 
     public static final double LEFT_SHOOTER_AMP_SPEED = -40.0;      /*Rot/s*/
     public static final double RIGHT_SHOOTER_AMP_SPEED = -40.0;     /*Rot/s*/
@@ -46,8 +46,7 @@ public final class CommandFactoryUtility {
 
     public static final double INTAKE_SPEED = 0.6;                  /*Value*/
     public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
-
-    public static final double INDEXER_INTAKE_SPEED = 0.7;          /*Value*/
+    private static final double INTAKE_EJECT_SPEED = -0.4;          /*value*/
 
     public static final double ELEVATOR_CLIMB_POS = 8.0;
 
@@ -57,15 +56,15 @@ public final class CommandFactoryUtility {
     private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
 
-    private static final double INDEXER_REVERSE_SPEED = -0.2;       /*value*/
-
     private static final double TURRET_PREAIM_TIMEOUT = 0.5;        /*sec*/
 
+
     //TODO review values and code
-    public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
-            return indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED)
-            .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
-            .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT));
+    public static Command createEjectCommand(mmTurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
+            return turret.newSetPosCommand(TURRET_STOW_POS)
+                .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
+                .andThen(indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED))
+                .andThen(intake.newSetSpeedCommand(INTAKE_EJECT_SPEED));
     }
 
     //TODO review values and code

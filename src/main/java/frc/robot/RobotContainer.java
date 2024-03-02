@@ -431,8 +431,9 @@ public class RobotContainer {
     // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     // Eject shooter button
-    m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
+    m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem)
+            .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)));
     
     // Intake button TODO Test
     m_driverController.leftBumper()
