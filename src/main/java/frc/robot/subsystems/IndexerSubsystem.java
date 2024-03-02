@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -25,7 +26,7 @@ public class IndexerSubsystem extends SubsystemBase {
     private static final double M_HF_SENSOR_PERIOD = 0.01;
     private TalonRollerIO m_rollerIO;
     private TimeOfFlightIO m_sensorIO;
-    private Notifier m_sensorNotifier;
+    private Notifier stopIndexerNotifier;
 
     /**
      * <h3>IndexerSubsystem</h3>
@@ -116,27 +117,55 @@ public class IndexerSubsystem extends SubsystemBase {
         }
     }
 
-    public void stopOnNextNoteDetected() {
-        Logger.recordOutput(this.getClass().getSimpleName() + "/WaitingForNote",true);
-        m_sensorNotifier.setCallback(this::StopIfNoteDetectedCallback);
-        m_sensorNotifier.startPeriodic(M_HF_SENSOR_PERIOD);
-    }
-
-    private void StopIfNoteDetectedCallback() {
-        if(getSensor()) {
-            Logger.recordOutput(this.getClass().getSimpleName() + "/WaitingForNote",false);
-            stop();
-            this.m_sensorNotifier.stop();
-            // TODO USE THIS IF WE HAVE ISSUES WITH THE INDEXER NOT STOPPING 
-            // This is sketchy, but I don't want the command to run another time and make the indexer keep going. 
-            // I am more afraid of it becoming a time wasting ghost error though, so I am leaving it out. 
-
-            //getCurrentCommand().cancel();
-            
-            return;
-        }
-    }
-
     
+    /** 
+     * Sets the Indexer to 0 once the Indexer sensor becomes true.
+     * <p> 0.001 = 1ms
+    */
+    public void  watchIndexerSensorAndStop(double indexerCheckPeriod) {
+        if(stopIndexerNotifier != null) {
+            return; // We just continue watching
+            //stopWatchingIndexerSensor(); // OR we start a new notifier
+        }
+        stopIndexerNotifier = new Notifier(() -> {
+            if(getSensor() && stopIndexerNotifier != null) {
+                stop();
+                stopWatchingIndexerSensor();
+            }
+        });
+        stopIndexerNotifier.startPeriodic(0.001);
+    }
 
+    /**
+     * Stops watching the Indexer sensor, but does not stop the Indexer.
+     * <p> If using this in a timeout, call stop() as well.
+     */
+    public void stopWatchingIndexerSensor() {
+        stopIndexerNotifier.stop();
+        stopIndexerNotifier.close();
+    }
+
+    /**
+     * Stops the indexer whenever it detects that it has a note
+     * @return the command that does that 
+     */
+    public Command getStopIndexerWhenSensorTriggeredCommand(double indexerCheckPeriod) {
+        return new StartEndCommand(
+            () -> {
+                watchIndexerSensorAndStop(indexerCheckPeriod);
+            }, () -> {
+                stop();
+                stopWatchingIndexerSensor();
+            }
+        );
+    }
+
+    /**
+     * Stops the indexer whenever it detects that it has a note.
+     * <p> This one 
+     * @return the command that does that 
+     */
+    public Command getStopIndexerWhenSensorTriggeredCommand(double indexerCheckPeriod, double timeout) {
+        return getStopIndexerWhenSensorTriggeredCommand(indexerCheckPeriod).raceWith(new WaitCommand(timeout));
+    }
 }
