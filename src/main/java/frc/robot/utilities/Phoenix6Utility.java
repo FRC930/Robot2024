@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -101,5 +102,28 @@ public final class Phoenix6Utility {
         // This is to eliminate calls like this and possible casting errors when switch controllers
         // return (MotionMagicExpoVoltage) rightElevatorMaster.getAppliedControl()).Position
     }
+
+    /**
+     * Get velocity from controller so dont have to explicitly cast applied controller (could have had runtime casting error when switch controllers)
+     * @param motor
+     * @param defaultVelocity
+     * @return
+     */
+    public static double getVelocityFromController(ParentDevice motor, double defaultVelocity) {
+        // Velocity configuration may not be available yet, so allow for Velocity not being available yet
+        Map<String, String> map = motor.getAppliedControl().getControlInfo();
+        String velocityString = map.get("Velocity");
+        double velocity= defaultVelocity; // If controller is not available delayed configurations
+        if(velocityString != null) {
+            velocity = Double.valueOf(velocityString);
+        }
+        return velocity;
+        // This is to eliminate calls like this and possible casting errors when switch controllers
+        // return ((VelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
+    }
+
+    // public static TalonFX setTalonCurrentLimits(TalonFX talon, double statorMax, double supplyMax) {
+    //     return applyConfigAndRetry(talon, ()-> {return new CurrentLimitsConfigs().withStatorCurrentLimit(statorMax).withSupplyCurrentLimit(supplyMax)});
+    // }
 
 }

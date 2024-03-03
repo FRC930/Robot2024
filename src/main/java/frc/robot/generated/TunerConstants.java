@@ -21,8 +21,12 @@ public class TunerConstants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.078).withKI(0).withKD(0)
-        .withKS(0.2125).withKV(0.11624).withKA(0.005648);
+        .withKP(0.14).withKI(0).withKD(0)
+        .withKS(0.22).withKV(0.12).withKA(0.025);
+        // 9 Front Left: KS .34162 | KV .12107 | KA .007883 | KP .086183
+        // 11 Front Right: KS .16417 | KV .12307 | KA .022241 | KP .14505
+        // 2 Back Left: KS .00000 | KV .11718 | KA .045485 | KP .16305
+        // 18 Back Right: KS .23097 | KV .1175 | KA .026759| KP .13143
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -33,7 +37,7 @@ public class TunerConstants {
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final double kSlipCurrentA = 300.0;
+    private static final double kSlipCurrentA = 150.0;
 
 
     // Theoretical free speed (m/s) at 12v applied output;
@@ -129,15 +133,16 @@ public class TunerConstants {
     private static final double kBackRightXPosInches = -9.375;
     private static final double kBackRightYPosInches = -11.5;
 
+    private static final double SwerveOffset = 2.0; // This is due to the swerve modules shifting to the front of the robot
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
-            kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), kInvertLeftSide);
+            kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches + SwerveOffset), kInvertLeftSide);
     private static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
-            kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset, Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches), kInvertRightSide);
+            kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset, Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches + SwerveOffset), kInvertRightSide);
     private static final SwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
-            kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset, Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches), kInvertLeftSide);
+            kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset, Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches - SwerveOffset), kInvertLeftSide);
     private static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
-            kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), kInvertRightSide);
+            kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches - SwerveOffset), kInvertRightSide);
 
     public static final SwerveDrivetrainSubsystem DriveTrain = new SwerveDrivetrainSubsystem(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);

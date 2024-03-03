@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.9026396514331507,
+        "y": 6.9956624528633675
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.9026396514331507,
+        "y": 6.9956624528633675
+      },
+      "isLocked": false,
+      "linkedName": "TopWingExact"
+    },
+    {
+      "anchor": {
+        "x": 2.9026396514331507,
+        "y": 5.545221859674489
+      },
+      "prevControl": {
+        "x": 2.9026396514331507,
+        "y": 5.959750904690725
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CenterWing"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Robot2024",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

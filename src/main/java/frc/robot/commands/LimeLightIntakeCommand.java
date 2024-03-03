@@ -3,6 +3,8 @@ package frc.robot.commands;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
@@ -13,8 +15,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 
@@ -38,6 +41,7 @@ public class LimeLightIntakeCommand extends Command {
     private Pose2d m_position;
     
     private double m_throttle = 0.0;
+    private Supplier<Double> m_joystickInput;
     private double m_strafe = 0.0;
 
     private double m_distance;  
@@ -62,19 +66,32 @@ public class LimeLightIntakeCommand extends Command {
      * @param bluePosition Pose2d of the location of where the robot should go
      * 
      */
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition) {
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition, Supplier<Double> joystickInputSupplier) {
         m_SwerveDrive = swerveDrive;
         m_LimeLight = limeLight;
         m_bluePosition = bluePosition;
         m_redPosition = redPosition;
         // Default to blue alliance
         m_position = m_bluePosition;
+        m_joystickInput = joystickInputSupplier;
         addRequirements(m_SwerveDrive);
     }
 
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, Pose2d pose2d) {
-        this(drivetrain, m_GamePieceUtility, pose2d, pose2d);
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition) {
+        this(swerveDrive, limeLight, bluePosition, redPosition, null);
     }
+
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, Supplier<Double> joystickInputSupplier) {
+        this(drivetrain, m_GamePieceUtility, null, null,joystickInputSupplier);
+    }
+
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight,Pose2d pose2d) {
+        this(swerveDrive, limeLight, pose2d, pose2d, null);
+    }
+    
+    // public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, Pose2d pose2d) {
+    //     this(drivetrain, m_GamePieceUtility, pose2d, (Supplier<Double>) null);
+    // }
 
     @Override
     public void initialize() { 
@@ -95,11 +112,15 @@ public class LimeLightIntakeCommand extends Command {
 
         m_TimeElapsed = 0.0;
 
+        if(m_joystickInput != null) {
+           return;
+        }
+
         m_distance = distanceToTarget();
         
-        SmartDashboard.putNumber("GamePiece/LimeLightDistance", m_distance);
-        SmartDashboard.putNumber("GamePiece/Xpos", m_SwerveDrive.getState().Pose.getX());
-        SmartDashboard.putNumber("GamePiece/Ypos", m_SwerveDrive.getState().Pose.getY());
+        // SmartDashboard.putNumber("GamePiece/LimeLightDistance", m_distance);
+        // SmartDashboard.putNumber("GamePiece/Xpos", m_SwerveDrive.getState().Pose.getX());
+        // SmartDashboard.putNumber("GamePiece/Ypos", m_SwerveDrive.getState().Pose.getY());
         
         //Creates the trapezoid profile using the given information
         m_goal = new TrapezoidProfile.State(m_distance, 0.0); //sets the desired state to be the total distance away
@@ -114,13 +135,20 @@ public class LimeLightIntakeCommand extends Command {
         //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
         m_strafe = m_direction * MathUtil.clamp(pid.calculate(m_LimeLight.get_tx(), 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
-        m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
-        SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
-        SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
-        SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
-        SmartDashboard.putNumber("GamePiece/distanceLeft", distanceToTarget());
-        SmartDashboard.putNumber("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
+        if(m_joystickInput != null) {
+            double xValue = -m_joystickInput.get();
+            m_throttle = RobotContainer.scaleLinearVelocity(RobotContainer.getLinearVelocity(xValue, 0.0).getX());
+        } else {
+            m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
+        } 
+        
+        Logger.recordOutput("GamePiece/TX", m_LimeLight.get_tx());
+        // SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
+        // SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
+        // SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
+        // SmartDashboard.putNumber("GamePiece/distanceLeft", distanceToTarget());
+        // SmartDashboard.putNumber("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
+        // SmartDashboard.putNumber("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
 
         m_TimeElapsed += 0.02; //increases the timer  by 20 milliseconds
 
@@ -137,10 +165,13 @@ public class LimeLightIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
+        if (m_joystickInput != null) {
+            return false;
+        }
         if (profile.isFinished(m_TimeElapsed)) {
-            SmartDashboard.putNumber("GamePiece/ElapsedTime", m_TimeElapsed);
-            SmartDashboard.putNumber("GamePiece/EndXpos", m_SwerveDrive.getState().Pose.getX());
-            SmartDashboard.putNumber("GamePiece/EndYpos", m_SwerveDrive.getState().Pose.getY());
+            // SmartDashboard.putNumber("GamePiece/ElapsedTime", m_TimeElapsed);
+            // SmartDashboard.putNumber("GamePiece/EndXpos", m_SwerveDrive.getState().Pose.getX());
+            // SmartDashboard.putNumber("GamePiece/EndYpos", m_SwerveDrive.getState().Pose.getY());
             return true;
         } else {
         // return MathUtil.applyDeadband(distanceToTarget(), 0.025, 1.0) == 0;

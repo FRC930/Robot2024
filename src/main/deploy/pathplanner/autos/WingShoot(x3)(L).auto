@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4194171612308972,
+      "y": 6.9956624528633675
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "sideWingScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpStartToTopWingButNoOver"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopWingToCenterWingButNoOver"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterWingToBottomWing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Robot2024",
+  "choreoAuto": false
+}

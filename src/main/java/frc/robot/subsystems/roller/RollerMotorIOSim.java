@@ -1,5 +1,7 @@
 package frc.robot.subsystems.roller;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -18,6 +20,12 @@ public class RollerMotorIOSim extends RollerMotorIORobot {
         super(id, canbus);
         m_sim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
     }
+
+    public RollerMotorIOSim(int id, String canbus, double statorCurrentLimit, double supplyCurrentLimit) {
+        this(id, canbus);
+        //Setting current limits
+        m_motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(statorCurrentLimit).withSupplyCurrentLimit(supplyCurrentLimit));
+    } 
 
     @Override
     public void runSim() {

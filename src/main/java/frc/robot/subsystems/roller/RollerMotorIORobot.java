@@ -1,5 +1,7 @@
 package frc.robot.subsystems.roller;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.IOs.TalonRollerIO;
@@ -15,8 +17,27 @@ public class RollerMotorIORobot implements TalonRollerIO {
 
     public RollerMotorIORobot(int id, String canbus) {
         m_motor = new TalonFX(id, canbus);
-        Phoenix6Utility.resetTalonFxFactoryDefaults(m_motor);
+        TalonFXConfiguration cfg = new TalonFXConfiguration();
+
+        //cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
+        // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
+        // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
+        cfg.CurrentLimits.StatorCurrentLimitEnable = true;
+        cfg.CurrentLimits.StatorCurrentLimit = 150.0;
+
+        Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg);
+
     }
+
+    public RollerMotorIORobot(int id, String canbus, double statorCurrentLimit, double supplyCurrentLimit) {
+        this(id, canbus);
+        //Setting current limits
+        m_motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(statorCurrentLimit).withSupplyCurrentLimit(supplyCurrentLimit));
+    } 
+
+    // public void applyConfigsToMotor(TalonFXConfiguration tfxConfig) {
+    //     m_motor.getConfigurator().apply(tfxConfig);
+    // }
 
     @Override
     public void setSpeed(double speed) {
@@ -39,5 +60,15 @@ public class RollerMotorIORobot implements TalonRollerIO {
     @Override
     public TalonFX getTalon() {
         return m_motor;
+    }
+
+    @Override
+    public double getStatorCurrent() {
+        return m_motor.getStatorCurrent().getValue();
+    }
+
+    @Override
+    public double getInputCurrent() {
+        return m_motor.getSupplyCurrent().getValue();
     }
 }

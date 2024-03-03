@@ -41,6 +41,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     /**
+     * <h3>setTargetHeight</h3>
+     * Sets the target height of the elevator
+     * @param targetHeight The height the robot will try to move to
+     */
+    public void setPull(double targetHeight) {
+        m_io.setRefinedTarget(targetHeight);
+    }
+
+
+    /**
      * <h3>getHeight</h3>
      * Gets the current height of the elevator
      * @return The height of the elevator
@@ -57,6 +67,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double getTarget() {
         return m_io.getTarget();
     }
+
 
     /**
      * <h3>getVelocity</h3>
@@ -80,13 +91,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         return new InstantCommand(() -> setTarget(pos), this);
     }
 
+    public InstantCommand newPullCommand(double pos) {
+        return new InstantCommand(() -> setPull(pos), this);
+    }
+
     public boolean atSetpoint() {
         double pos = getPosition();
         double target = getTarget();
         return MathUtil.applyDeadband(target - pos, ELEVATOR_DEADBAND) == 0.0;
     }
 
-    public Command newWaitUntilSetpointCommand(double seconds) {
-        return new WaitCommand(seconds).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
+    public Command newWaitUntilSetpointCommand(double timeout) {
+        return new WaitCommand(timeout).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
     }
 }

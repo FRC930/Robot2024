@@ -20,6 +20,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.generated.TunerConstants;
 import frc.robot.utilities.RobotOdometryUtility;
 
 /**
@@ -38,6 +41,8 @@ import frc.robot.utilities.RobotOdometryUtility;
  */
 public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     private boolean hasAppliedOperatorPerspective = false;
+    private boolean usePredictedPose = true;
+
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
@@ -45,6 +50,7 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    private final double LOOKAHEAD = 0.1;
 
     public SwerveDrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -70,8 +76,8 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
             (speeds)->this.setControl(autoRequest.withSpeeds(speeds)),// Consumer of ChassisSpeeds to drive the robot
             new HolonomicPathFollowerConfig(
                 new PIDConstants(1.6, 0, 0), // TODO: Config
-                new PIDConstants(1, 0, 0), // TODO: Config
-                4.15, // Meters  // TODO get set to correct value
+                new PIDConstants(7.0, 0, 0), // TODO: Config
+                TunerConstants.kSpeedAt12VoltsMps, // Meters  // TODO get set to correct value
                 Units.inchesToMeters(11.0), // TODO determine 
                 new ReplanningConfig(),
                 0.004),
@@ -90,6 +96,7 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
 
         PathPlannerLogging.setLogTargetPoseCallback((Pose2d targetPose) -> {
             pp_field2d.setRobotPose(targetPose);
+            Logger.recordOutput("PathPlanner/TargetPose", targetPose);
         });
     }
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -118,20 +125,30 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
     @Override
     public void periodic() {
         setDriverPerspective();
-        RobotOdometryUtility.getInstance().setRobotOdometry(getState().Pose);
 
         // validates ModuleStaes are populated by odometry thread before logging them
         if (getState().ModuleStates != null) {
             Logger.recordOutput("Drivetrain/rotationVelocity", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
             Logger.recordOutput("Drivetrain/XVelocity", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
-            Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+            Logger.recordOutput("Drivetrain/YVelocity", getCurrentRobotChassisSpeeds().vyMetersPerSecond);            
+            Logger.recordOutput("Drivetrain/Pose", getState().Pose);
+
+            Logger.recordOutput("Drivetrain/OmegaVelocityRadians", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
             
-            SmartDashboard.putNumber("Pigeon2Yaw", getPigeon2().getAngle());
-            SmartDashboard.putNumber("Pose2DYaw", getState().Pose.getRotation().getDegrees());
+            Logger.recordOutput("Drivetrain/Pigeon2Yaw", getPigeon2().getAngle());
+            Logger.recordOutput("Drivetrain/Pose2DYaw", getState().Pose.getRotation().getDegrees());
             
             for (int i = 0; i < 4; i++) {
-                SmartDashboard.putNumber("SwerveWheelSpeed" + i, getState().ModuleStates[i].speedMetersPerSecond);
-                SmartDashboard.putNumber("SwerveWheelAngle" + i, getState().ModuleStates[i].angle.getDegrees());
+                Logger.recordOutput("Drivetrain/SwerveWheelSpeed/" + i, getState().ModuleStates[i].speedMetersPerSecond);
+                Logger.recordOutput("Drivetrain/SwerveWheelAngle/" + i, getState().ModuleStates[i].angle.getDegrees());
+            }
+            //Calculate our predicted FUUUUUUTURE position 
+            if(usePredictedPose) {
+                Pose2d predictedPose = getState().Pose.transformBy(new Transform2d(new Translation2d(getCurrentRobotChassisSpeeds().vxMetersPerSecond * LOOKAHEAD, getCurrentRobotChassisSpeeds().vyMetersPerSecond * LOOKAHEAD),new Rotation2d(getCurrentRobotChassisSpeeds().omegaRadiansPerSecond * LOOKAHEAD)));
+                Logger.recordOutput("Drivetrain/PredictedPose", predictedPose);
+                RobotOdometryUtility.getInstance().setRobotOdometry(predictedPose);
+            } else {
+                RobotOdometryUtility.getInstance().setRobotOdometry(getState().Pose);
             }
         }
     }

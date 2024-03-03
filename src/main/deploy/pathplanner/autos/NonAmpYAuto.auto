@@ -1,0 +1,91 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.407706324685116,
+      "y": 4.122214464115091
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BotAmpStartToBotWing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WhiteLineToPillar"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BotWingToBotCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BotCenterToBotWingLine"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BotWingLineToLowCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LowCenterToWingLine"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Robot2024",
+  "choreoAuto": false
+}

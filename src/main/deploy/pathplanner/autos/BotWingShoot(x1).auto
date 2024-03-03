@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4194171612308972,
+      "y": 4.1
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "setClose"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "sideWingScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LowAmpStartToTopWing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setMid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Robot2024",
+  "choreoAuto": false
+}

@@ -1,30 +1,46 @@
 package frc.robot.subsystems;
 
  import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
+import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * <h3>ShooterSubsystem</h3>
  * This subsystem controls the shooter
  */
 public class ShooterSubsystem extends SubsystemBase{
+
     private TalonVelocityIO IO_Left;
     private TalonVelocityIO IO_Right;
 
-    private final double VELOCITY_DEADBAND = 2.0;
+    private final double VELOCITY_DEADBAND = 5.0;
+    private boolean m_reachedSetPoint = false;
 
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
+        // m_leftMotor = new TalonFX(leftID);
         IO_Left = LeftIO;
         IO_Right = RightIO;
-        IO_Left.getTalon().setInverted(true); 
+
+        IO_Left.getTalon().setInverted(true);
         IO_Right.getTalon().setInverted(false);
+
+        // Phoenix6Utility.resetTalonFxFactoryDefaults(m_leftMotor);
+
+        // Phoenix6Utility.applyConfigAndRetry(m_leftMotor, 
+        //     () -> m_leftMotor.setControl(new Follower(IO_Right.getTalon().getDeviceID(), true)));
+        
     }
     
     /**
@@ -32,19 +48,28 @@ public class ShooterSubsystem extends SubsystemBase{
     * @param leftSpeed the speed the left wheel will be set to
     * @param rightSpeed the speed the right wheel will be set to
     */
-    public void setSpeed(double leftSpeed, double rightSpeed, double leftAccel, double rightAccel) {
-        IO_Left.setSpeed(leftSpeed, leftAccel);
-        IO_Right.setSpeed(rightSpeed, rightAccel);
+    public void setSpeed(double leftSpeed, double rightSpeed, Double leftAccel, Double rightAccel) {
+        if(leftAccel != null) {
+            IO_Left.setSpeed(leftSpeed, leftAccel);
+        } else {
+            IO_Left.setSpeed(leftSpeed);
+        }
+        if(rightAccel != null) {
+            IO_Right.setSpeed(rightSpeed, rightAccel);    
+        } else {
+            IO_Right.setSpeed(rightSpeed);
+        }
+        m_reachedSetPoint = false;
+        Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/ReachedSetPoint" ,m_reachedSetPoint);
     }
 
     /**
     * <h3>setSpeed</h3>
-    * @param leftSpeed the speed the left wheel will be set to
-    * @param rightSpeed the speed the right wheel will be set to
+    * @param leftSpeed the speed the left wheel will be set to in rot/s
+    * @param rightSpeed the speed the right wheel will be set to in rot/s 
     */
     public void setSpeed(double leftSpeed, double rightSpeed) {
-        IO_Left.setSpeed(leftSpeed);
-        IO_Right.setSpeed(rightSpeed);
+        this.setSpeed(leftSpeed, rightSpeed, null, null);
     }
 
     /**
@@ -100,7 +125,7 @@ public class ShooterSubsystem extends SubsystemBase{
     * This sets the shooter's speed to 0
     */
     public void stop() {
-        setSpeed(0,0,0,0);
+        setSpeed(0.0,0.0,0.0,0.0);
     }
 
     @Override
@@ -125,6 +150,11 @@ public class ShooterSubsystem extends SubsystemBase{
         return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed()), this);
     }
 
+    public Command newCalcAndSetSpeedsCommand() {
+        double speed = SpeakerScoreUtility.computeShooterSpeed(SpeakerScoreUtility.inchesToSpeaker());
+        return new InstantCommand(() -> setSpeed(speed, speed));
+    }
+
     public Command shootTo(ShooterAction target) {
         return newSetSpeedsCommand(target.leftWheelSpeed, target.rightWheelSpeed);
     }
@@ -144,7 +174,10 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public boolean atSetpoint() {
-        return MathUtil.applyDeadband(getRightTargetVelocity() - getRightMotorSpeed(), VELOCITY_DEADBAND) == 0.0 && MathUtil.applyDeadband(getLeftTargetVelocity() - getLeftMotorSpeed(),VELOCITY_DEADBAND) == 0.0;
+        m_reachedSetPoint = MathUtil.applyDeadband(getRightTargetVelocity() - getRightMotorSpeed(), VELOCITY_DEADBAND) == 0.0
+            && MathUtil.applyDeadband(getLeftTargetVelocity() - getLeftMotorSpeed(),VELOCITY_DEADBAND) == 0.0; 
+        Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/ReachedSetPoint" ,m_reachedSetPoint);
+        return m_reachedSetPoint;
     }
 
     public Command newWaitUntilSetpointCommand(double timeout) {

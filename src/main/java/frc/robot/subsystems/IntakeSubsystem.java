@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
@@ -23,6 +24,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private TalonRollerIO m_followerMotor;
     private TimeOfFlightIO m_sensorL;
     private TimeOfFlightIO m_sensorR;
+
+    private boolean justIntook = false;
 
 
     /**
@@ -45,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_leaderMotor.getTalon().setInverted(true);
 
         Phoenix6Utility.applyConfigAndRetry(m_followerMotor.getTalon(), 
-            () -> m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), true)));
+            () -> m_followerMotor.getTalon().setControl(new Follower(m_leaderMotor.getTalon().getDeviceID(), false)));
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", 0.0);
     }
 
@@ -89,11 +92,27 @@ public class IntakeSubsystem extends SubsystemBase {
         return m_sensorL.get() || m_sensorR.get();
     }
 
+    public void setJustIntook(boolean set) {
+        justIntook = set;
+    }
+
+    public boolean getJustIntook() {
+        return justIntook;
+    }
+
+    public Command newSetJustIntookCommand(boolean set) {
+        return new InstantCommand(() -> setJustIntook(set));
+    }
+ 
     @Override
     public void periodic() {
         m_leaderMotor.runSim();
         m_followerMotor.runSim();
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LInputCurrent" ,m_leaderMotor.getInputCurrent());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/FInputCurrent" ,m_followerMotor.getInputCurrent());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LStatorCurrent" ,m_leaderMotor.getStatorCurrent());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/FStatorCurrent" ,m_followerMotor.getStatorCurrent());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/IntookenYet", getSensor());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", m_leaderMotor.getTalon().get());

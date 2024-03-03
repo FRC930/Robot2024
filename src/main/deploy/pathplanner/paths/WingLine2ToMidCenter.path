@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0013090795412376,
-        "y": 4.9532052910259665
+        "x": 4.393969643859401,
+        "y": 4.766310474133074
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.205076102459898,
-        "y": 4.894003634161114
+        "x": 5.262260611210565,
+        "y": 4.065757534565657
       },
       "isLocked": false,
       "linkedName": "WingLine2"
     },
     {
       "anchor": {
-        "x": 8.299857368945508,
-        "y": 4.09478126648561
+        "x": 8.281967377058862,
+        "y": 4.11050362756931
       },
       "prevControl": {
-        "x": 7.4414333444051515,
-        "y": 4.262519294269358
+        "x": 7.02890786666024,
+        "y": 4.11050362756931
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,20 +30,41 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

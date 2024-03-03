@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2745940876497153,
-        "y": 6.9956624528633675
+        "x": 1.4311279977766789,
+        "y": 6.354311170160802
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6890056857036806,
-        "y": 6.7095211113499165
-      },
-      "isLocked": false,
-      "linkedName": "AmpStart"
-    },
-    {
-      "anchor": {
-        "x": 3.050643793595281,
-        "y": 6.462847541079698
-      },
-      "prevControl": {
-        "x": 2.211274710097678,
-        "y": 6.424255859079809
-      },
-      "nextControl": {
-        "x": 3.9090678181356378,
-        "y": 6.502315312322933
+        "x": 2.1806215367066955,
+        "y": 6.358984244359359
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 7.429807936538951
+        "x": 3.480524393288442,
+        "y": 6.354311170160802
       },
       "prevControl": {
-        "x": 7.638772200621325,
-        "y": 7.094331880971454
+        "x": 2.641245814315711,
+        "y": 6.3137989111680595
+      },
+      "nextControl": {
+        "x": 5.518209952254426,
+        "y": 6.45267093672561
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.281967377058862,
+        "y": 7.3426945142050055
+      },
+      "prevControl": {
+        "x": 4.9678006346026935,
+        "y": 7.3309836776592245
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,20 +46,41 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Robot2024",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }
