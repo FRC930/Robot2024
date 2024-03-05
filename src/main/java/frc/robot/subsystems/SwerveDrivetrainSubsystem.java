@@ -19,12 +19,14 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -34,11 +36,15 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * so it can be used in command-based projects easily.
  */
 public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
+    private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
+    private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
+
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
     private Field2d pp_field2d = new Field2d(); // TODO: Move to AutoCommandManager
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    private boolean hasAppliedOperatorPerspective = false;
 
     public SwerveDrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -111,6 +117,7 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
 
     @Override
     public void periodic() {
+        setDriverPerspective();
         // validates ModuleStaes are populated by odometry thread before logging them
         if (getState().ModuleStates != null) {
             Logger.recordOutput("Drivetrain/rotationVelocity", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
@@ -126,8 +133,23 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
         }
         }
         
-
-        
-
     }
+
+    private void setDriverPerspective() {
+        //Got this code from CTRE
+        /* Periodically try to apply the operator perspective */
+        /* If we haven't applied the operator perspective before, then we should apply it regardless of DS state */
+        /* This allows us to correct the perspective in case the robot code restarts mid-match */
+        /* Otherwise, only check and apply the operator perspective if the DS is disabled */
+        /* This ensures driving behavior doesn't change until an explicit disable event occurs during testing*/
+        if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent((allianceColor) -> {
+                this.setOperatorPerspectiveForward(
+                        allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation
+                                : BlueAlliancePerspectiveRotation);
+                hasAppliedOperatorPerspective = true;
+            });
+        }
+    }
+
 }
