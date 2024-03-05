@@ -31,6 +31,7 @@ import frc.robot.utilities.LimeLightDetectionUtility;
 public class LimeLightIntakeCommand extends Command {
     private final double MAX_SPEED = Units.feetToMeters(16.2);
     private final double MAX_STRAFE = 0.2; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
+    private final double MAX_THROTTLE = 0.2; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
     private PIDController pid = new PIDController(0.01, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
 
     private SwerveDrivetrainSubsystem m_SwerveDrive;
@@ -131,24 +132,26 @@ public class LimeLightIntakeCommand extends Command {
 
     @Override
     public void execute() {
+        double tx = m_LimeLight.get_tx(); // TODO handle shakey imaging!!! may not have value tx 
 
         //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
-        m_strafe = m_direction * MathUtil.clamp(pid.calculate(m_LimeLight.get_tx(), 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
+        m_strafe = m_direction * MathUtil.clamp(pid.calculate(tx, 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
         if(m_joystickInput != null) {
-            double xValue = -m_joystickInput.get();
+            double xValue = -m_joystickInput.get();  // -negated value since back intake so need to backward
+            xValue = MathUtil.clamp(xValue, -MAX_THROTTLE, MAX_THROTTLE);
             m_throttle = RobotContainer.scaleLinearVelocity(RobotContainer.getLinearVelocity(xValue, 0.0).getX());
         } else {
             m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
         } 
         
-        Logger.recordOutput("GamePiece/TX", m_LimeLight.get_tx());
-        // SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
-        // SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
-        // SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
-        // SmartDashboard.putNumber("GamePiece/distanceLeft", distanceToTarget());
-        // SmartDashboard.putNumber("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
-        // SmartDashboard.putNumber("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
+        Logger.recordOutput("GamePiece/TX",tx);
+        // Logger.recordOutput("GamePiece/position", profile.calculate(m_TimeElapsed).position);
+        Logger.recordOutput("GamePiece/throttle", m_throttle);
+        Logger.recordOutput("GamePiece/strafe", m_strafe);
+        // Logger.recordOutput("GamePiece/distanceLeft", distanceToTarget());
+        // Logger.recordOutput("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
+        // Logger.recordOutput("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
 
         m_TimeElapsed += 0.02; //increases the timer  by 20 milliseconds
 
