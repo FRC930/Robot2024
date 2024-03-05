@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
+import frc.robot.utilities.LimelightHelpers;
 
 /**
  * 
@@ -29,10 +31,10 @@ import frc.robot.utilities.LimeLightDetectionUtility;
  * 
  */
 public class LimeLightIntakeCommand extends Command {
-    private final double MAX_SPEED = Units.feetToMeters(16.2);
+    private final double MAX_SPEED = TunerConstants.kSpeedAt12VoltsMps;
     private final double MAX_STRAFE = 0.2; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
-    private final double MAX_THROTTLE = 0.2; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
-    private PIDController pid = new PIDController(0.01, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
+    private final double MAX_THROTTLE = 0.75; // NOTE: in prototype 30% speed //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
+    private PIDController pid = new PIDController(0.0065, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
 
     private SwerveDrivetrainSubsystem m_SwerveDrive;
     private LimeLightDetectionUtility m_LimeLight;
@@ -102,6 +104,10 @@ public class LimeLightIntakeCommand extends Command {
         m_position = m_bluePosition;
 
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+
+        // Force pipeline zero to see if switches to detector (MODE)
+        LimelightHelpers.setPipelineIndex(m_LimeLight.m_LimeLightName, 0);
+
         //if on red alliance, return as negative
         //if on blue alliance, return as positive
         if (optionalAlliance.isPresent()){

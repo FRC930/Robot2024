@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.Logger;
  */
 public class LimeLightDetectionUtility {
 
-    private String m_LimeLightName;
+    public String m_LimeLightName;
 
     /**
      * 
