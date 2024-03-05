@@ -11,21 +11,17 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
-import edu.wpi.first.wpilibj.Notifier;
 
 /**
  * <h3>IndexerSubsystem</h3>
  * This subsystem controls the indexer
  */
 public class IndexerSubsystem extends SubsystemBase {
-    private static final double M_HF_SENSOR_PERIOD = 0.01;
     private TalonRollerIO m_rollerIO;
     private TimeOfFlightIO m_sensorIO;
-    private Notifier m_sensorNotifier;
 
     /**
      * <h3>IndexerSubsystem</h3>
@@ -39,9 +35,7 @@ public class IndexerSubsystem extends SubsystemBase {
         m_sensorIO = ToF;
 
         motor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
-        m_sensorNotifier.setCallback(()->{});
-        m_sensorNotifier.setName("IndexerHFSensorNotifier");
-        Logger.recordOutput(this.getClass().getSimpleName() + "/WaitingForNote",false);
+        
     }
 
     /**
@@ -116,27 +110,5 @@ public class IndexerSubsystem extends SubsystemBase {
         }
     }
 
-    public void stopOnNextNoteDetected() {
-        Logger.recordOutput(this.getClass().getSimpleName() + "/WaitingForNote",true);
-        m_sensorNotifier.setCallback(this::StopIfNoteDetectedCallback);
-        m_sensorNotifier.startPeriodic(M_HF_SENSOR_PERIOD);
-    }
-
-    private void StopIfNoteDetectedCallback() {
-        if(getSensor()) {
-            Logger.recordOutput(this.getClass().getSimpleName() + "/WaitingForNote",false);
-            stop();
-            this.m_sensorNotifier.stop();
-            // TODO USE THIS IF WE HAVE ISSUES WITH THE INDEXER NOT STOPPING 
-            // This is sketchy, but I don't want the command to run another time and make the indexer keep going. 
-            // I am more afraid of it becoming a time wasting ghost error though, so I am leaving it out. 
-
-            //getCurrentCommand().cancel();
-            
-            return;
-        }
-    }
-
-    
 
 }
