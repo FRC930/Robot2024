@@ -72,15 +72,15 @@ public class FieldCoordinateSystem {
     }
 
     public void setRobotPoseOnFieldIfNoAprilTagOrAuto() {
-        if(!m_aprilTagUsed && !m_runAutoPath) {
+        if(!m_aprilTagUsed && !m_runAutoPath) {    
             Pose2d location;
             // Set default location where apriltag of speaker
             if(m_lastAlliance == Alliance.Red) {
                 location = layout.getTagPose(4).get().toPose2d();
-                location = new Pose2d(new Translation2d(location.getX()-2.0, location.getY()),location.getRotation());
+                location = new Pose2d(new Translation2d(location.getX()-2.0, location.getY()),location.getRotation().plus(Rotation2d.fromDegrees(180.0)));
             } else {
                 location = layout.getTagPose(7).get().toPose2d();
-                location = new Pose2d(new Translation2d(location.getX()+2.0, location.getY()),location.getRotation());
+                location = new Pose2d(new Translation2d(location.getX()+2.0, location.getY()),location.getRotation().plus(Rotation2d.fromDegrees(180.0)));
             }
 
             setRobotPoseBasedOnAlliance(location);
