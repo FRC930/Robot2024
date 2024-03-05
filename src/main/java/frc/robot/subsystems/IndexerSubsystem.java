@@ -40,8 +40,6 @@ public class IndexerSubsystem extends SubsystemBase {
         m_sensorIO = ToF;
 
         motor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
-        m_sensorNotifier.setCallback(()->{});
-        m_sensorNotifier.setName("IndexerHFSensorNotifier");
         Logger.recordOutput(this.getClass().getSimpleName() + "/WaitingForNote",false);
     }
 
