@@ -99,7 +99,7 @@ public final class CommandFactoryUtility {
             .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
-            .andThen(indexer.getStopIndexerWhenSensorTriggeredCommand(0.001))
+            .andThen(indexer.newUntilNoteFoundCommand())
             .andThen(intake.newSetJustIntookCommand(true))
             .andThen(new WaitCommand(0.0))
             .alongWith(new InstantCommand(() -> 
