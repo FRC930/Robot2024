@@ -1,6 +1,7 @@
 package frc.robot.subsystems.timeofflight;
 
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import frc.robot.IOs.TimeOfFlightIO;
 
@@ -16,6 +17,7 @@ public class TimeOfFlightIORobot implements TimeOfFlightIO {
     public TimeOfFlightIORobot(int id, double triggerDistance) {
         m_sensor = new TimeOfFlight(id);
         m_dist = triggerDistance;
+        m_sensor.setRangingMode(RangingMode.Short, 24);
     }
 
     public boolean get() {
@@ -25,4 +27,8 @@ public class TimeOfFlightIORobot implements TimeOfFlightIO {
     public double getRange() {
         return m_sensor.getRange();
     }
+
+    // public void setRefreshRate(double refreshSeconds) {
+    //     m_sensor.setRangingMode(RangingMode.Short, refreshSeconds);
+    // }
 }
