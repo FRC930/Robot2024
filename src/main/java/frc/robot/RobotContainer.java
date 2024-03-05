@@ -30,11 +30,13 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.FieldCoordinateSystem;
 import frc.robot.utilities.GamePieceDetectionUtility;
+import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.LimelightHelpers.Results;
 
 import java.util.Optional;
-
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import java.util.Optional;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -42,10 +44,13 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
@@ -80,12 +85,12 @@ public class RobotContainer {
     private static final int INDEXER_TOF_ID = 2;
     private static final int TURRET_ENCODER_ID = 3;
 
-    private GamePieceDetectionUtility m_GamePieceUtility = new GamePieceDetectionUtility("limelight-front");
+    private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
 
     // MK3 Falcon 13.6 ft/s 8.16:1 or 16.2 ft/s 6.86:1
     // https://www.swervedrivespecialties.com/products/mk3-swerve-module?variant=31575980703857
-    final double MaxSpeed = Units.feetToMeters(16.2); //13.6); //  meters per second desired top speed
-    final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
+    final static double MaxSpeed = Units.feetToMeters(16.2); //13.6); //  meters per second desired top speed
+    final static double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     SwerveDrivetrainSubsystem drivetrain = TunerConstants.DriveTrain; // My drivetrain
@@ -197,7 +202,7 @@ public class RobotContainer {
     SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     Telemetry logger = new Telemetry(MaxSpeed);
     
-    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, m_GamePieceUtility);
+    private AutoCommandManager m_autoManager = new AutoCommandManager(drivetrain, m_LimeLightDetectionUtility);
 
     SwerveRequest.Idle idle = new SwerveRequest.Idle();
 
@@ -235,13 +240,12 @@ public class RobotContainer {
     // SmartDashboard.putNumber("RightSparkMotor", 0.0);
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> drive.withVelocityX(negateBasedOnAlliance(-m_driverController.getLeftY() * MaxSpeed * PERCENT_SPEED)) // Drive forward with
-                                                                                              // negative Y (forward)
-                .withVelocityY(negateBasedOnAlliance(-m_driverController.getLeftX() * MaxSpeed * PERCENT_SPEED)) // Drive left with negative X (left)
-                .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-                .withDeadband(JOYSTICK_DEADBAND)
-                .withRotationalDeadband(JOYSTICK_ROTATIONAL_DEADBAND)
-            // ).ignoringDisable(true)); // TODO CAUSED ISSUES with jumping driving during characterization
+            // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
+            drivetrain.applyRequest(
+              joystickDriveWithDeadband(
+                m_driverController::getLeftY,
+                m_driverController::getLeftX,
+                m_driverController::getRightX)
             ));
           
     
@@ -267,10 +271,66 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press TODO test
     m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
-
+    // m_driverController.leftTrigger().whileTrue(new LimeLightIntakeCommand(drivetrain, m_GamePieceUtility, new Pose2d(1.0, 0.0, new Rotation2d(0.0))));
+    m_driverController.rightTrigger()
+    .whileTrue(
+      new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController::getLeftY)
+      )
+    ;
     drivetrain.registerTelemetry(logger::telemeterize);
     }
+  
+  /** 
+   * <h3>joystickDriveWithDeadband</h3>
+   * Applies deadband to joystick values and returns a request for drivetrain
+   * 
+   * <b>Code originally from team number 1091 to help deal with deadband on joystick for swerve drive</b>
+   * @param xSupplier supplier for joystick's x axis
+   * @param ySupplier supplier for joystick's y axis
+   * @param omegaSupplier supplier for omega
+   * @return request for drivetrain
+   */
+  private Supplier<SwerveRequest> joystickDriveWithDeadband(DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
+    return () -> {  
+        double xValue = xSupplier.getAsDouble();   
+        double yValue = ySupplier.getAsDouble();
+        double omegaValue = omegaSupplier.getAsDouble();       
+           
+        Translation2d linearVelocity = getLinearVelocity(xValue, yValue);
+                        
+        // Squaring the omega value and applying a deadband 
+        double omega = MathUtil.applyDeadband(-omegaValue, JOYSTICK_ROTATIONAL_DEADBAND);
+        omega = Math.copySign(omega * omega, omega);
+
+
+        return drive.withVelocityX(scaleLinearVelocity(linearVelocity.getX()))
+          .withVelocityY(scaleLinearVelocity(linearVelocity.getY()))
+          .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
+      };
+  }
+
+  public static Translation2d getLinearVelocity(double xValue, double yValue) {
+    // Apply deadband
+    double linearMagnitude = MathUtil.applyDeadband(
+                    Math.hypot(xValue, yValue), JOYSTICK_DEADBAND);
+    Rotation2d linearDirection =
+            new Rotation2d(-xValue, -yValue);
+
+    // Square values
+    linearMagnitude = linearMagnitude * linearMagnitude;
+
+    // Calculate new linear velocity
+    Translation2d linearVelocity =
+            new Pose2d(new Translation2d(), linearDirection)
+                    .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+                    .getTranslation();
+    return linearVelocity;
+  }
+
+  public static double scaleLinearVelocity(double value) {
+    return value*MaxSpeed*PERCENT_SPEED;
+  }
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
