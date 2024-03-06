@@ -204,6 +204,17 @@ public class RobotContainer {
         .withKS(0.35) 
         .withKV(0.0);
 
+
+    private final Slot0Configs pivotSimS0C =
+      new Slot0Configs()
+        .withKP(150.0)
+        .withKI(0) 
+        .withKD(0) 
+        .withKA(0) 
+        .withKG(0.35) // MotionMagic voltage
+        .withKS(0) 
+        .withKV(0);
+
         // 0.26 kp. Set to 0.1 for testing
     private final ProfiledPIDController turretPID = new ProfiledPIDController(
       // 0.1, 0.0, 0.0, new Constraints(0.1, 0.0) 
@@ -236,6 +247,13 @@ public class RobotContainer {
       new MotionMagicConfigs() // Currently set slow
         .withMotionMagicAcceleration(3.0) //18.0 fast values (but slam at zero set point)
         .withMotionMagicCruiseVelocity(4.0)//11.0 fast values (but slam at zero set point)
+        .withMotionMagicExpo_kV(0)
+        .withMotionMagicExpo_kA(0);
+
+    private final MotionMagicConfigs pivotSimMMC =
+      new MotionMagicConfigs() // Currently set slow
+        .withMotionMagicAcceleration(30.0) //18.0 fast values (but slam at zero set point)
+        .withMotionMagicCruiseVelocity(400.0)//11.0 fast values (but slam at zero set point)
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
 
@@ -292,7 +310,7 @@ public class RobotContainer {
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
         ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
-        : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC), 
+        : new PivotIOSim(5, CANBUS, 15.0, pivotSimS0C, pivotSimMMC), 
       Robot.isReal() 
         ? new TimeOfFlightIORobot(15, 62.0) 
         : new TimeOfFlightIOSim(15));
