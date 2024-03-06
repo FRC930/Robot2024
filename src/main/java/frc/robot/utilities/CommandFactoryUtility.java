@@ -102,7 +102,6 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
-            .andThen(intake.newSetJustIntookCommand(true))
             .alongWith(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
                 LimelightHelpers.setLEDMode_ForceBlink("limelight-back");})) // Wait on the intake, we're stopping too quickly

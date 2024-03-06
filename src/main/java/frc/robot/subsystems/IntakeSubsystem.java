@@ -91,18 +91,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean getSensor() {
         return m_sensorL.get() || m_sensorR.get();
     }
-
-    public void setJustIntook(boolean set) {
-        justIntook = set;
-    }
-
-    public boolean getJustIntook() {
-        return justIntook;
-    }
-
-    public Command newSetJustIntookCommand(boolean set) {
-        return new InstantCommand(() -> setJustIntook(set));
-    }
  
     @Override
     public void periodic() {
