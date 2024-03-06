@@ -309,8 +309,8 @@ public class RobotContainer {
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
-        : new PivotIOSim(5, CANBUS, 15.0, pivotSimS0C, pivotSimMMC), 
+        ? new PivotIORobot(5, 22, CANBUS, 61.352413, pivotS0C, pivotMMC)
+        : new PivotIOSim(5, 22, CANBUS, 15.0, pivotS0C, pivotMMC), //TODO ensure correct IDs
       Robot.isReal() 
         ? new TimeOfFlightIORobot(15, 62.0) 
         : new TimeOfFlightIOSim(15));
