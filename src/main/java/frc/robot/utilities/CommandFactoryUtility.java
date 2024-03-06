@@ -33,8 +33,8 @@ public final class CommandFactoryUtility {
     public static final double PIVOT_INTAKE_POS = 45.0;             /*Deg*/
 
     public static final double INDEXER_SPEAKER_SPEED = 0.9;         /*Value*/
-    public static final double INDEXER_INTAKE_SPEED = 0.7;          /*Value*/
-    public static final double INDEXER_REVERSE_SPEED = -0.2;       /*value*/
+    public static final double INDEXER_INTAKE_SPEED = 0.5;          /*Value*/
+    public static final double INDEXER_REVERSE_SPEED = -0.1;       /*value*/
 
     public static final double LEFT_SHOOTER_AMP_SPEED = -40.0;      /*Rot/s*/
     public static final double RIGHT_SHOOTER_AMP_SPEED = -40.0;     /*Rot/s*/
@@ -76,21 +76,23 @@ public final class CommandFactoryUtility {
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
     
-    public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer, ShooterSubsystem shooter) {
-        return new ConditionalCommand(
-            indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
-            // .andThen(shooter.newSetSpeedsCommand(-10.0, -10.0))
-            .andThen(new WaitCommand(0.25))
-            .andThen(intake.newSetSpeedCommand(0.0))
+    public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
+        return intake.newSetSpeedCommand(0.0)
             .andThen(indexer.newSetSpeedCommand(0.0))
-            .andThen(intake.newSetJustIntookCommand(false))
-            // .andThen(shooter.newSetSpeedsCommand(0.0, 0.0))
             .andThen(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceOff("limelight-back");})),
+                LimelightHelpers.setLEDMode_ForceOff("limelight-back");}));
+    }
+
+    public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake) {
+        return new ConditionalCommand(
+            indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
+            .andThen(new WaitCommand(0.1))
+            .andThen(indexer.newSetSpeedCommand(0.0)),
             new InstantCommand(),
-            () -> intake.getJustIntook()
-        );
+            () -> indexer.getSensorDistance() >= 40)
+                .andThen(CommandFactoryUtility.createStopIntakingCommand(intake, indexer))
+                    .andThen(intake.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED));
     }
 
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
@@ -101,13 +103,12 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
             .andThen(intake.newSetJustIntookCommand(true))
-            .andThen(new WaitCommand(0.0))
             .alongWith(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
                 LimelightHelpers.setLEDMode_ForceBlink("limelight-back");})) // Wait on the intake, we're stopping too quickly
             // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
-            .andThen(intake.newSetSpeedCommand(0.0))
-            .andThen(indexer.newSetSpeedCommand(0.0)); // Dont stop intake until note found
+            .andThen(indexer.newSetSpeedCommand(0.0))
+            .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
     public static Command createAmpScoreCommand(ElevatorSubsystem elevator, PivotSubsystem pivot, mmTurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
