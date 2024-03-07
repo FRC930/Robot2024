@@ -16,7 +16,7 @@ import frc.robot.utilities.SpeakerScoreUtility;
  * <h3>PivotSubsystem</h3>
  * A subsystem that represents the pivot
  */
-public class mmTurretSubsystem extends SubsystemBase{
+public class TurretSubsystem extends SubsystemBase{
 
     private final TalonPosIO m_io;
 
@@ -34,7 +34,7 @@ public class mmTurretSubsystem extends SubsystemBase{
      * <p>By default, angular measures are positive going up, negative going down, and 0 at the default horizontal
      * @param motorID
      */
-    public mmTurretSubsystem(TalonPosIO io) {
+    public TurretSubsystem(TalonPosIO io) {
         m_io = io;
         turretName = "" + this.hashCode();
         m_isTurretLocked = false;

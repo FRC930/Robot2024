@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
+import frc.robot.subsystems.mm_turret.TurretSubsystem;
 
 public class SpeakerScoreUtility {
 
@@ -45,7 +45,7 @@ public class SpeakerScoreUtility {
     
     private boolean m_useAutoAim = true;
 
-    private final mmTurretSubsystem m_turret;
+    private final TurretSubsystem m_turret;
 
     public enum Target{
         close,
@@ -55,7 +55,7 @@ public class SpeakerScoreUtility {
 
     private Target m_desiredTarget;
 
-    public SpeakerScoreUtility(mmTurretSubsystem turret) {
+    public SpeakerScoreUtility(TurretSubsystem turret) {
         m_desiredTarget = Target.close;
         m_turret = turret;
 

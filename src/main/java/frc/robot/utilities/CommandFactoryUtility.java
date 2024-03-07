@@ -18,7 +18,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
+import frc.robot.subsystems.mm_turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
 
@@ -60,7 +60,7 @@ public final class CommandFactoryUtility {
 
 
     //TODO review values and code
-    public static Command createEjectCommand(mmTurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
+    public static Command createEjectCommand(TurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
             return turret.newSetPosCommand(TURRET_STOW_POS)
                 .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
                 .andThen(indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED))
@@ -68,7 +68,7 @@ public final class CommandFactoryUtility {
     }
 
     //TODO review values and code
-    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  mmTurretSubsystem turret) {
+    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  TurretSubsystem turret) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
@@ -94,7 +94,7 @@ public final class CommandFactoryUtility {
                     .andThen(intake.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED));
     }
 
-    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
+    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
         return indexer.newUntilNoNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
             .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
@@ -109,7 +109,7 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
-    public static Command createAmpScoreCommand(PivotSubsystem pivot, mmTurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
+    public static Command createAmpScoreCommand(PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
         return //elevator.newSetPosCommand(ELEVATOR_AMP_POS)
                 (pivot.newSetPosCommand(PIVOT_AMP_POS))
                     .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
@@ -147,7 +147,7 @@ public final class CommandFactoryUtility {
         return intake.newSetSpeedCommand(INTAKE_SPEED);
     }
     
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
         Command command = null;
         if (adjustPivot){
             command = createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle);
@@ -165,16 +165,16 @@ public final class CommandFactoryUtility {
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, Double pivotAngle) {
     {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, pivotAngle, true);
     }}
 
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, null);
     }
 
-    public static Command createTurretPreaimCommand(mmTurretSubsystem turret) {
+    public static Command createTurretPreaimCommand(TurretSubsystem turret) {
         return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
     }

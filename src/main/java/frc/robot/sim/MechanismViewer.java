@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
+import frc.robot.subsystems.mm_turret.TurretSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
 /**
@@ -37,7 +37,7 @@ public class MechanismViewer {
     private PivotSubsystem m_pivot;
     private ElevatorSubsystem m_shootingElevator;
     private ElevatorSubsystem m_climbingElevator;
-    private mmTurretSubsystem m_turret;
+    private TurretSubsystem m_turret;
 
     /**
      * <h3>MechanismViewer</h3>
@@ -48,7 +48,7 @@ public class MechanismViewer {
      * @param climbingElevator Elevator subsystem used for endgame
      * @param turret Turret subsystem
      */
-    public MechanismViewer(PivotSubsystem pivot, mmTurretSubsystem turret) {
+    public MechanismViewer(PivotSubsystem pivot, TurretSubsystem turret) {
         m_pivot = pivot;
         m_turret = turret;
 

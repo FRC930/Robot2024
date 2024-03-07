@@ -2,7 +2,7 @@ package frc.robot.commands.tests;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.SetTurretPositionCommand;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
+import frc.robot.subsystems.mm_turret.TurretSubsystem;
 
 /**
  * <h3>SetTurretPositionCommand</h3>
@@ -16,7 +16,7 @@ public class SetTurretPositionCommandTest extends SetTurretPositionCommand {
     * Constructs a command to set the turrets position.
     */
     @Deprecated
-    public SetTurretPositionCommandTest(mmTurretSubsystem turretSubsystem, double turretPosition) {
+    public SetTurretPositionCommandTest(TurretSubsystem turretSubsystem, double turretPosition) {
         super(turretSubsystem, turretPosition);
         SmartDashboard.putNumber("TurretSetPosition", 0.0);
     }
