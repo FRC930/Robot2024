@@ -109,8 +109,8 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
             .alongWith(new InstantCommand(() -> 
-                {LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceBlink("limelight-back");})) // Wait on the intake, we're stopping too quickly
+                {LimelightHelpers.setLEDMode_ForceOn("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceOn("limelight-back");})) // Wait on the intake, we're stopping too quickly
             // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
             .andThen(indexer.newSetSpeedCommand(0.0))
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
