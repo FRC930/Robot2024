@@ -121,7 +121,7 @@ public class AutoCommandManager {
         );
         NamedCommands.registerCommand("shoot",
             CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+                .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
         );
         NamedCommands.registerCommand("shootNoStow", 
             CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
@@ -131,10 +131,10 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
         NamedCommands.registerCommand("ampScore", 
             CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+                .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
         );    
         NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
-        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createStopIntakingCommand(intake, indexer));
+        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));
         NamedCommands.registerCommand("sideWingScore", 
             CommandFactoryUtility.createTurretPreaimCommand(turret)
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, 52.0))
