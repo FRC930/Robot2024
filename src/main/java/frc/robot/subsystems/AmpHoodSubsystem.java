@@ -39,7 +39,7 @@ public class AmpHoodSubsystem extends SubsystemBase{
     * @param speed the speed the wheel will be set to [-1-1]
     */
     public void setSpeed(double speed) {
-        m_io.setSpeed(MathUtil.clamp(speed, -1, 1));
+        m_io.setSpeed(MathUtil.clamp(speed, -1.0, 1.0));
     }
 
     /**
@@ -71,14 +71,14 @@ public class AmpHoodSubsystem extends SubsystemBase{
     * This sets the shooter's speed to 0
     */
     public void stop() {
-        setSpeed(0);
+        setSpeed(0.0);
     }
 
     @Override
     public void periodic() {
         Logger.recordOutput(this.getClass().getSimpleName() + "/Speed", getSpeed());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Angle", m_io.getTalon().getPosition().getValue());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", m_io.getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/PositionRots", m_io.getTalon().getPosition().getValue());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Current", getCurrent());
     }
 }

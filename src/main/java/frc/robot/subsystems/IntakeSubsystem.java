@@ -102,7 +102,6 @@ public class IntakeSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/LStatorCurrent" ,m_leaderMotor.getStatorCurrent());
         Logger.recordOutput(this.getClass().getSimpleName() + "/FStatorCurrent" ,m_followerMotor.getStatorCurrent());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/IntookenYet", getSensor());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SetPoint", m_leaderMotor.getTalon().get());
     }
 

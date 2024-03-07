@@ -12,41 +12,36 @@ import frc.robot.subsystems.AmpHoodSubsystem;
 
 public class HoodCommand extends Command {
     private AmpHoodSubsystem m_hood;
-    private HoodSetting m_setting;
     private double m_startTime;
-    private DIOSim m_DIO; 
+    private DIOSim m_dio; 
+    private final double m_speed;
     
     private static double CURRENT_THRESHOLD = 4.0;
-    private static double START_CHECK_TIME = 1.0;
+    private static double CHECK_DELAY = 0.2;
 
-    public enum HoodSetting {
-        EXTEND,
-        RETRACT;
-    }
-
-    public HoodCommand(AmpHoodSubsystem hood, HoodSetting setting) {
+    public HoodCommand(AmpHoodSubsystem hood, double speed) {
         m_hood = hood;
-        m_setting = setting;
+        m_speed = speed;
         m_startTime = Timer.getFPGATimestamp();
         DIOSim simdio = new DIOSim(5);
         simdio.setIsInput(true);
         simdio.setInitialized(true);
         simdio.setValue(false);
-        m_DIO = simdio;
+        m_dio = simdio;
     }
 
     @Override
     public void initialize() {
-        m_hood.setSpeed(m_setting == HoodSetting.EXTEND ? 1.0 : -1.0);
+        m_hood.setSpeed(m_speed);
         m_startTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public boolean isFinished() {
         if(Robot.isReal()) {
-            return m_hood.getCurrent() > CURRENT_THRESHOLD && (Timer.getFPGATimestamp() - m_startTime) > START_CHECK_TIME;
+            return m_hood.getCurrent() > CURRENT_THRESHOLD && (Timer.getFPGATimestamp() - m_startTime) > CHECK_DELAY;
         } else {
-            return m_DIO.getValue();
+            return m_dio.getValue();
         }
         
     }

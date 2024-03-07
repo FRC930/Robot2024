@@ -327,7 +327,6 @@ public class RobotContainer {
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
         Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
-
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
         // TunerConstants.kCANbusName means same canivore as drivetrain
         Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName) : new RollerMotorIOSim(19, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT),
@@ -335,7 +334,7 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    private final AmpHoodSubsystem m_AmpHoodSubsystem = new AmpHoodSubsystem(
+    private final AmpHoodSubsystem m_ampHoodSubsystem = new AmpHoodSubsystem(
       Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
 
     private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_turretSubsystem); 
@@ -501,8 +500,8 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    SmartDashboard.putData("extendHood", CommandFactoryUtility.createExtendHoodCommand(m_AmpHoodSubsystem));
-    SmartDashboard.putData("retractHood", CommandFactoryUtility.createRetractHoodCommand(m_AmpHoodSubsystem));
+    SmartDashboard.putData("extendHood", CommandFactoryUtility.createExtendHoodCommand(m_ampHoodSubsystem));
+    SmartDashboard.putData("retractHood", CommandFactoryUtility.createRetractHoodCommand(m_ampHoodSubsystem));
   }
 
   /** 

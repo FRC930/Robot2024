@@ -15,7 +15,6 @@ import frc.robot.commands.HoodCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
-import frc.robot.commands.HoodCommand.HoodSetting;
 import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -25,6 +24,10 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
+
+    private static final double HOOD_IN_SPEED = -0.1;
+
+    private static final double HOOD_OUT_SPEED = 0.1;
 
     //#region positions
     public static final double TURRET_STOW_POS = 0.0;               /*Deg*/
@@ -184,11 +187,11 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createExtendHoodCommand(AmpHoodSubsystem hood) {
-        return new HoodCommand(hood, HoodSetting.EXTEND);
+        return new HoodCommand(hood, HOOD_OUT_SPEED);
     }
 
     public static Command createRetractHoodCommand(AmpHoodSubsystem hood) {
-        return new HoodCommand(hood, HoodSetting.RETRACT);
+        return new HoodCommand(hood, HOOD_IN_SPEED);
     }
 
 }
