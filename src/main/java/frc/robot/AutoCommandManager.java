@@ -120,8 +120,7 @@ public class AutoCommandManager {
             CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
                 .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
         );
-        NamedCommands.registerCommand("shootNoStow", 
-            CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
+        NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
         NamedCommands.registerCommand("intakeNoIndexer", 
             CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
