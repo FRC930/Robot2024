@@ -6,13 +6,17 @@ import org.littletonrobotics.conduit.schema.CoreInputs;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.HoodCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
+import frc.robot.commands.HoodCommand.HoodSetting;
+import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -177,6 +181,14 @@ public final class CommandFactoryUtility {
     public static Command createTurretPreaimCommand(mmTurretSubsystem turret) {
         return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+    }
+
+    public static Command createExtendHoodCommand(AmpHoodSubsystem hood) {
+        return new HoodCommand(hood, HoodSetting.EXTEND);
+    }
+
+    public static Command createRetractHoodCommand(AmpHoodSubsystem hood) {
+        return new HoodCommand(hood, HoodSetting.RETRACT);
     }
 
 }

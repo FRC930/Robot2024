@@ -23,6 +23,7 @@ import frc.robot.commands.tests.SetTurretPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
+import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -334,6 +335,9 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
+    private final AmpHoodSubsystem m_AmpHoodSubsystem = new AmpHoodSubsystem(
+      Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
+
     private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_turretSubsystem); 
     private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility(m_turretSubsystem);
     
@@ -497,6 +501,8 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
+    SmartDashboard.putData("extendHood", CommandFactoryUtility.createExtendHoodCommand(m_AmpHoodSubsystem));
+    SmartDashboard.putData("retractHood", CommandFactoryUtility.createRetractHoodCommand(m_AmpHoodSubsystem));
   }
 
   /** 
