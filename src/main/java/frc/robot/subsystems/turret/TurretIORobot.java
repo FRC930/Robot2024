@@ -1,4 +1,4 @@
-package frc.robot.subsystems.mm_turret;
+package frc.robot.subsystems.turret;
 
 
 import java.util.Map;
@@ -27,7 +27,7 @@ import frc.robot.utilities.Phoenix6Utility;
  * <h3>PivotIORobot</h3>
  * An IO to the real robot's pivot
  */
-public class mmTurretIORobot implements TalonPosIO{
+public class TurretIORobot implements TalonPosIO{
     protected TalonFX m_motor;
 
     private MotionMagicVoltage m_request;
@@ -49,7 +49,7 @@ public class mmTurretIORobot implements TalonPosIO{
      * <h3>PivotIORobot</h3> 
      * Creates a subsystem that represents the actual pivot subsystem
      */
-    public mmTurretIORobot(int id, int encoderID, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs, double encoderOffset) {
+    public TurretIORobot(int id, int encoderID, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs, double encoderOffset) {
         m_motor = new TalonFX(id, canbus);
         m_encoder = new DutyCycleEncoder(encoderID);
 

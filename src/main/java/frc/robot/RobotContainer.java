@@ -28,9 +28,6 @@ import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
-import frc.robot.subsystems.mm_turret.mmTurretIORobot;
-import frc.robot.subsystems.mm_turret.mmTurretIOSim;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.subsystems.pivot.PivotIORobot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -40,6 +37,9 @@ import frc.robot.subsystems.shooter.TalonVelocityIORobot;
 import frc.robot.subsystems.shooter.TalonVelocityIOSim;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
+import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.turret.TurretIORobot;
+import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
@@ -313,10 +313,10 @@ public class RobotContainer {
         : new TimeOfFlightIOSim(15));
 
     private final TalonPosIO m_turretIO = Robot.isReal()
-    ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
-    : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,0.0);
+    ? new TurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
+    : new TurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,0.0);
 
-    private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(m_turretIO);
+    private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_turretIO);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         // 14,

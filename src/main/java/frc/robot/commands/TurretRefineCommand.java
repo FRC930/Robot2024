@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.RobotOdometryUtility;
 
@@ -23,7 +23,7 @@ public class TurretRefineCommand extends Command{
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-turret");
     
-    private mmTurretSubsystem m_TurretSubsystem;
+    private TurretSubsystem m_TurretSubsystem;
     private double m_TurretPosition;
     private double m_AprilTagAngle;
     private double m_DeadBand = 1.0;
@@ -36,7 +36,7 @@ public class TurretRefineCommand extends Command{
     private AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
 
-    public TurretRefineCommand(mmTurretSubsystem turretSubsystem) {
+    public TurretRefineCommand(TurretSubsystem turretSubsystem) {
         m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         m_TargetPose = m_BlueTargetPose;

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.mm_turret;
+package frc.robot.subsystems.turret;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
  * <h3>PivotIO</h3>
  * An IO to the simulated robot's pivot
  */
-public class mmTurretIOSim extends mmTurretIORobot {
+public class TurretIOSim extends TurretIORobot {
 
     // private SingleJointedArmSim m_ArmSim;
 
@@ -24,7 +24,7 @@ public class mmTurretIOSim extends mmTurretIORobot {
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor
      */
-    public mmTurretIOSim(int id, int encoderID, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs, double encoderOffset) {
+    public TurretIOSim(int id, int encoderID, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs, double encoderOffset) {
         super(id, encoderID, canbus, gearRatio, config, mmConfigs,encoderOffset);
         // m_ArmSim = new SingleJointedArmSim(DCMotor.getKrakenX60Foc(0), gearRatio, gearRatio, gearRatio, gearRatio, gearRatio, false, gearRatio);
         // TODO Simulation appear to work better with gearratio = 1
