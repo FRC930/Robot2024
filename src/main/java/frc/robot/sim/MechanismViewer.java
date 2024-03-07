@@ -48,10 +48,8 @@ public class MechanismViewer {
      * @param climbingElevator Elevator subsystem used for endgame
      * @param turret Turret subsystem
      */
-    public MechanismViewer(PivotSubsystem pivot,ElevatorSubsystem shootingElevator, ElevatorSubsystem climbingElevator, mmTurretSubsystem turret) {
+    public MechanismViewer(PivotSubsystem pivot, mmTurretSubsystem turret) {
         m_pivot = pivot;
-        m_shootingElevator = shootingElevator;
-        m_climbingElevator = climbingElevator;
         m_turret = turret;
 
         // Main assembly window
@@ -171,12 +169,12 @@ public class MechanismViewer {
 
     public void periodic() {
         // Updates position of mechanisms
-        m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getPosition()+0.2));
-        m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTarget()+0.2));
+        // m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getPosition()+0.2));
+        // m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTarget()+0.2));
         m_pivotControl.setAngle(-90+m_pivot.getPosition());
         m_pivotControlTarget.setAngle(-90+m_pivot.getTarget());
-        m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getPosition())+0.2);
-        m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTarget())+0.2);
+        // m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getPosition())+0.2);
+        // m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTarget())+0.2);
         // Mech2d is counter-clockwise positive so negate values
         // https://github.com/wpilibsuite/frc-docs/blob/stable/source/docs/software/dashboards/glass/mech2d-widget.rst#id5
         m_turretControl.setAngle(-m_turret.getPosition());

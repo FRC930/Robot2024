@@ -68,10 +68,9 @@ public final class CommandFactoryUtility {
     }
 
     //TODO review values and code
-    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot, ElevatorSubsystem elevator, mmTurretSubsystem turret) {
+    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  mmTurretSubsystem turret) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
-            .alongWith(elevator.newSetPosCommand(ELEVATOR_STOW_POS))
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
@@ -110,29 +109,28 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
-    public static Command createAmpScoreCommand(ElevatorSubsystem elevator, PivotSubsystem pivot, mmTurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return elevator.newSetPosCommand(ELEVATOR_AMP_POS)
-                    .andThen(pivot.newSetPosCommand(PIVOT_AMP_POS))
+    public static Command createAmpScoreCommand(PivotSubsystem pivot, mmTurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
+        return //elevator.newSetPosCommand(ELEVATOR_AMP_POS)
+                (pivot.newSetPosCommand(PIVOT_AMP_POS))
                     .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
                     .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
-                    .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
+                    //.andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
                                 .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT))
                                 .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
                                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-                                )
                     .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
                     .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
                     .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
-        return elevator.newSetPosCommand(ELEVATOR_CLIMB_POS)
-            .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT));
-    }
+    // public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
+    //     return elevator.newSetPosCommand(ELEVATOR_CLIMB_POS)
+    //         .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT));
+    // }
 
-    public static Command createStowElevatorCommand(ElevatorSubsystem elevator) {
-        return elevator.newSetPosCommand(ELEVATOR_STOW_POS);
-    }
+    // public static Command createStowElevatorCommand(ElevatorSubsystem elevator) {
+    //     return elevator.newSetPosCommand(ELEVATOR_STOW_POS);
+    // }
 
     // TODO trap shot
     public static Command createPivotAndShooterSpeedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, Double pivotAngle) {
