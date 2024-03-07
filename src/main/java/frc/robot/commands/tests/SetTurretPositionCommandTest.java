@@ -2,7 +2,7 @@ package frc.robot.commands.tests;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.SetTurretPositionCommand;
-import frc.robot.subsystems.mm_turret.TurretSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 
 /**
  * <h3>SetTurretPositionCommand</h3>

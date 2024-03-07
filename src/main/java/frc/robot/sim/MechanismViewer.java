@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.mm_turret.TurretSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 
 /**
  * <h3>MechanismViewer</h3>

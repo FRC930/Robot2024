@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.mm_turret.TurretSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 
 public class SpeakerScoreUtility {
 

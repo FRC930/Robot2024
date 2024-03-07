@@ -18,7 +18,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.mm_turret.TurretSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
 

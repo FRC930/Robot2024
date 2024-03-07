@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.mm_turret.TurretSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 
 /**
  * <h3>SetTurretPositionCommand</h3>
