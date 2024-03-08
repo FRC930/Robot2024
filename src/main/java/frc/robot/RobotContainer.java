@@ -23,6 +23,7 @@ import frc.robot.commands.tests.SetTurretPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
+import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -294,13 +295,15 @@ public class RobotContainer {
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
         Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
-
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
         // TunerConstants.kCANbusName means same canivore as drivetrain
         Robot.isReal() ? new RollerMotorIORobot(19, TunerConstants.kCANbusName) : new RollerMotorIOSim(19, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT,INTAKE_SUPPLY_CURRENT_LIMIT),
         Robot.isReal() ? new RollerMotorIORobot(7, TunerConstants.kCANbusName) : new RollerMotorIOSim(7, TunerConstants.kCANbusName, INTAKE_STATOR_CURRENT_LIMIT, INTAKE_SUPPLY_CURRENT_LIMIT),
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
+
+    private final AmpHoodSubsystem m_ampHoodSubsystem = new AmpHoodSubsystem(
+      Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
 
     private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_turretSubsystem); 
     private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility(m_turretSubsystem);
@@ -462,6 +465,8 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
+    SmartDashboard.putData("extendHood", CommandFactoryUtility.createExtendHoodCommand(m_ampHoodSubsystem));
+    SmartDashboard.putData("retractHood", CommandFactoryUtility.createRetractHoodCommand(m_ampHoodSubsystem));
   }
 
   /** 
@@ -576,10 +581,66 @@ public class RobotContainer {
     if (USE_LIMELIGHT_APRIL_TAG) {  
       // updateVisionOdometry("limelight-front");
       // updateVisionOdometry("limelight-back");
-      updatePoseEstimatorWithVisionBotPose("limelight-front");
-      updatePoseEstimatorWithVisionBotPose("limelight-back");
+      // updatePoseEstimatorWithVisionBotPose("limelight-front");
+      // updatePoseEstimatorWithVisionBotPose("limelight-back");
+      updatePoseEstimateWithAprilTags("limelight-front");
+      updatePoseEstimateWithAprilTags("limelight-back");
     }
   }
+
+  // https://github.com/LimelightVision/limelight-examples/blob/main/java-wpilib/swerve-megatag-odometry/src/main/java/frc/robot/Drivetrain.java#L57
+  public void updatePoseEstimateWithAprilTags(String limeLightName) {
+    LimelightHelpers.PoseEstimate lastResult = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
+    double fpgaTimestamp = Timer.getFPGATimestamp();
+
+    // int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to
+    // store all of the IDs that the Limelight saw
+    // Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs",
+    // Arrays.toString(idArray));
+
+    // distance from current pose to vision estimated pose
+    Translation2d translation = drivetrain.getState().Pose.getTranslation();
+    double poseDifference = translation.getDistance(lastResult.pose.getTranslation());
+
+    double xyStds;
+    double degStds;
+    if (lastResult.tagCount >= 2) {
+      xyStds = 0.1;
+      degStds = 6;
+    }
+    // 1 target with large area and close to estimated pose
+    else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.8 && poseDifference < 0.5) {
+      xyStds = 1.0;
+      degStds = 12;
+    }
+    // 1 target farther away and estimated pose is close
+    else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.1 && poseDifference < 0.3) {
+      xyStds = 2.0;
+      degStds = 30;
+    }
+    // conditions don't match to add a vision measurement
+    else {
+      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
+      return;
+    }
+
+    if (m_visionUpdatesOdometry) {
+        m_StartInTeleopUtility.updateTags();
+
+        drivetrain.setVisionMeasurementStdDevs(
+          VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+
+        drivetrain.addVisionMeasurement(lastResult.pose,  
+          fpgaTimestamp - (lastResult.latency/1000.0));
+        
+        SmartDashboard.putBoolean(limeLightName + "/Updated", true);
+        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
+        this.visioncounter++;
+    }
+    
+    Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.pose);
+  }
+
 
   public void updatePoseEstimatorWithVisionBotPose(String limeLightName) {
     Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
@@ -594,48 +655,48 @@ public class RobotContainer {
     Translation2d translation = drivetrain.getState().Pose.getTranslation();
     double poseDifference = translation.getDistance(lastResult.getBotPose2d_wpiBlue().getTranslation());
 
-    if (lastResult.valid) {
-      double xyStds;
-      double degStds;
-      // multiple targets detected
-      if (lastResult.targets_Fiducials.length >= 2) {
-        xyStds = 0.1;
-        degStds = 6;
-      }
-      // 1 target with large area and close to estimated pose
-      else if (LimelightHelpers.getTA(limeLightName) > 0.8 && poseDifference < 0.5) {
-        xyStds = 1.0;
-        degStds = 12;
-      }
-      // 1 target farther away and estimated pose is close
-      else if (LimelightHelpers.getTA(limeLightName) > 0.1 && poseDifference < 0.3) {
-        xyStds = 2.0;
-        degStds = 30;
-      }
-      // conditions don't match to add a vision measurement
-      else {
-        SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-        return;
-      }
+if (lastResult.valid) {
+    double xyStds;
+    double degStds;
+    // multiple targets detected
+    if (lastResult.targets_Fiducials.length >= 2) {
+      xyStds = 0.1;
+      degStds = 6;
+    }
+    // 1 target with large area and close to estimated pose
+    else if (LimelightHelpers.getTA(limeLightName) > 0.8 && poseDifference < 0.5) {
+      xyStds = 1.0;
+      degStds = 12;
+    }
+    // 1 target farther away and estimated pose is close
+    else if (LimelightHelpers.getTA(limeLightName) > 0.1 && poseDifference < 0.3) {
+      xyStds = 2.0;
+      degStds = 30;
+    }
+    // conditions don't match to add a vision measurement
+    else {
+      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
+      return;
+    }
 
-      this.visioncounter++;
+    this.visioncounter++;
 
-      Logger.recordOutput("LimeLightOdometry/"+ limeLightName + "/UpdatCounts", this.visioncounter);
+    Logger.recordOutput("LimeLightOdometry/"+ limeLightName + "/UpdatCounts", this.visioncounter);
 
-        m_StartInTeleopUtility.updateTags();
-        int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
-        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
-        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
+      m_StartInTeleopUtility.updateTags();
+      int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
+      Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
+      Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
 
-        if (m_visionUpdatesOdometry) {
-            drivetrain.setVisionMeasurementStdDevs(
-              VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-              drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(),  
-            fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
-              - (lastResult.latency_capture/1000.0) //
-              - lastResult.latency_jsonParse / 1000.0 /*already in millis*/); // Due to json parsing in getlatestresults
-            SmartDashboard.putBoolean(limeLightName + "/Updated", true);
-        }
+      if (m_visionUpdatesOdometry) {
+          drivetrain.setVisionMeasurementStdDevs(
+            VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+            drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(),  
+          fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
+            - (lastResult.latency_capture/1000.0) //
+            - lastResult.latency_jsonParse / 1000.0 /*already in millis*/); // Due to json parsing in getlatestresults
+          SmartDashboard.putBoolean(limeLightName + "/Updated", true);
+      }
     }
   }
   

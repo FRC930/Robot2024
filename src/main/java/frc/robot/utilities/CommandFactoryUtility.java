@@ -6,13 +6,16 @@ import org.littletonrobotics.conduit.schema.CoreInputs;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.HoodCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
+import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -21,6 +24,10 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
+
+    private static final double HOOD_IN_SPEED = -0.1;
+
+    private static final double HOOD_OUT_SPEED = 0.1;
 
     //#region positions
     public static final double TURRET_STOW_POS = 0.0;               /*Deg*/
@@ -102,8 +109,8 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
             .alongWith(new InstantCommand(() -> 
-                {LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceBlink("limelight-back");})) // Wait on the intake, we're stopping too quickly
+                {LimelightHelpers.setLEDMode_ForceOn("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceOn("limelight-back");})) // Wait on the intake, we're stopping too quickly
             // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
             .andThen(indexer.newSetSpeedCommand(0.0))
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
@@ -177,6 +184,14 @@ public final class CommandFactoryUtility {
     public static Command createTurretPreaimCommand(TurretSubsystem turret) {
         return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+    }
+
+    public static Command createExtendHoodCommand(AmpHoodSubsystem hood) {
+        return new HoodCommand(hood, HOOD_OUT_SPEED);
+    }
+
+    public static Command createRetractHoodCommand(AmpHoodSubsystem hood) {
+        return new HoodCommand(hood, HOOD_IN_SPEED);
     }
 
 }
