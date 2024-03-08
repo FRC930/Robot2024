@@ -118,7 +118,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 1;
-    private static final double TURRET_OFFSET = 13.7;// 193.0; // -167.0 //TODO: if negative value, add 360
+    private static final double TURRET_OFFSET = 329.1;// 193.0; // -167.0 //if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
