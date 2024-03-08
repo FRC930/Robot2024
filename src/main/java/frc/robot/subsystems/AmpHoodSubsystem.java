@@ -10,14 +10,22 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.IOs.TalonRollerIO;
+import frc.robot.commands.HoodCommand;
 import frc.robot.utilities.Phoenix6Utility;
 
 public class AmpHoodSubsystem extends SubsystemBase{
     private TalonRollerIO m_io;
-    private boolean targetIsExtended;
+    private static final double extendedAngleThreshold = 9999; //TODO set both
+    private static final double retractedAngleThreshold = -9999;
+
+    private static final double HOOD_IN_SPEED = -0.1;
+    private static final double HOOD_OUT_SPEED = 0.1;
 
     public AmpHoodSubsystem(TalonRollerIO io) {
         m_io = io;
@@ -74,11 +82,41 @@ public class AmpHoodSubsystem extends SubsystemBase{
         setSpeed(0.0);
     }
 
+    public boolean getIsExtended() {
+        System.out.print("");
+        return m_io.getTalon().getPosition().getValue() > extendedAngleThreshold;
+    }
+
+    public boolean getIsRetracted() {
+        System.out.print("");
+        return m_io.getTalon().getPosition().getValue() < retractedAngleThreshold;
+    }
+
+    public boolean getIsInMotion() {
+        return !(getIsExtended() || getIsRetracted());
+    }
+
     @Override
     public void periodic() {
         Logger.recordOutput(this.getClass().getSimpleName() + "/Speed", getSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/PositionRots", m_io.getTalon().getPosition().getValue());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage", getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Current", getCurrent());
+    }
+
+    public Command newWaitUntilAmpIsExtendedCommand() {
+        return new WaitUntilCommand(this::getIsExtended);
+    }
+
+    public Command newWaitUntilAmpIsRetractedComand() {
+        return new WaitUntilCommand(this::getIsExtended);
+    }
+
+    public Command newExtendHoodCommand() {
+        return new HoodCommand(this, HOOD_OUT_SPEED);
+    }
+
+    public Command newRetractHoodCommand() {
+        return new HoodCommand(this, HOOD_IN_SPEED);
     }
 }

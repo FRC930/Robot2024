@@ -25,10 +25,6 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
 
-    private static final double HOOD_IN_SPEED = -0.1;
-
-    private static final double HOOD_OUT_SPEED = 0.1;
-
     //#region positions
     public static final double TURRET_STOW_POS = 0.0;               /*Deg*/
 
@@ -36,15 +32,15 @@ public final class CommandFactoryUtility {
     public static final double ELEVATOR_AMP_POS = 0.0;              /*Deg*/
     
     public static final double PIVOT_STOW_POS = 0.0;                /*Deg*/
-    public static final double PIVOT_AMP_POS = 0.0;                 /*Deg*/
+    public static final double PIVOT_AMP_POS = 30.0;                /*Deg*/
     public static final double PIVOT_INTAKE_POS = 45.0;             /*Deg*/
 
     public static final double INDEXER_SPEAKER_SPEED = 0.9;         /*Value*/
     public static final double INDEXER_INTAKE_SPEED = 0.5;          /*Value*/
-    public static final double INDEXER_REVERSE_SPEED = -0.1;       /*value*/
+    public static final double INDEXER_REVERSE_SPEED = -0.1;        /*value*/
 
-    public static final double LEFT_SHOOTER_AMP_SPEED = -40.0;      /*Rot/s*/
-    public static final double RIGHT_SHOOTER_AMP_SPEED = -40.0;     /*Rot/s*/
+    public static final double LEFT_SHOOTER_AMP_SPEED = 40.0;      /*Rot/s*/
+    public static final double RIGHT_SHOOTER_AMP_SPEED = 40.0;     /*Rot/s*/
     public static final double INDEXER_AMP_SPEED = 0.2;             /*Value*/
 
     public static final double LEFT_SHOOTER_EJECT_SPEED = 40.0;     /*Rot/s*/
@@ -62,6 +58,7 @@ public final class CommandFactoryUtility {
     public static final double TURRET_TIMEOUT = 1.0;                /*sec*/
     private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
+    private static final double AFTER_AMP_SHOOT_TIMEOUT = 0.6; 
 
     private static final double TURRET_PREAIM_TIMEOUT = 0.5;        /*sec*/
 
@@ -186,12 +183,18 @@ public final class CommandFactoryUtility {
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
     }
 
-    public static Command createExtendHoodCommand(AmpHoodSubsystem hood) {
-        return new HoodCommand(hood, HOOD_OUT_SPEED);
+    public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {
+        return 
+        hood.newWaitUntilAmpIsExtendedCommand().deadlineWith(hood.newExtendHoodCommand())
+        .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
+        .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+        .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
+        .andThen(indexer.newUntilNoNoteFoundCommand())
+        .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
+        .andThen(
+            hood.newRetractHoodCommand()
+            .alongWith(shooter.newSetSpeedsCommand(0.0,0.0))
+            .alongWith(indexer.newSetSpeedCommand(0))
+        );
     }
-
-    public static Command createRetractHoodCommand(AmpHoodSubsystem hood) {
-        return new HoodCommand(hood, HOOD_IN_SPEED);
-    }
-
 }

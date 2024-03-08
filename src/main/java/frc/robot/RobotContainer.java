@@ -465,8 +465,9 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    SmartDashboard.putData("extendHood", CommandFactoryUtility.createExtendHoodCommand(m_ampHoodSubsystem));
-    SmartDashboard.putData("retractHood", CommandFactoryUtility.createRetractHoodCommand(m_ampHoodSubsystem));
+    SmartDashboard.putData("testExtendHood", m_ampHoodSubsystem.newExtendHoodCommand());
+    SmartDashboard.putData("testRetractHood", m_ampHoodSubsystem.newRetractHoodCommand());
+    SmartDashboard.putData("testAmpScore", CommandFactoryUtility.createAmpShootCommand(m_ampHoodSubsystem, m_shooterSubsystem, m_indexerSubsystem));
   }
 
   /** 
