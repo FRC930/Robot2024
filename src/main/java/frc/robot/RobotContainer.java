@@ -140,25 +140,6 @@ public class RobotContainer {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
     //--PID AND FF CONSTANTS--\\
-    private final Slot0Configs shootingElevatorS0C = 
-      new Slot0Configs()
-        .withKP(12.0)
-        .withKI(0.0)
-        .withKD(0)
-        .withKA(0)
-        .withKG(0.5)
-        .withKS(0)
-        .withKV(0);
-
-    private final Slot0Configs shootingS0CSimulation = 
-      new Slot0Configs()
-        .withKP(1)
-        .withKI(0)
-        .withKD(0)
-        .withKA(0)
-        .withKG(0)
-        .withKS(0)
-        .withKV(0);
 
     private final Slot0Configs climbingS0C = 
       new Slot0Configs()
@@ -225,14 +206,6 @@ public class RobotContainer {
     
     //--MOTION MAGIC CONSTANTS--\\
     
-    private final MotionMagicConfigs shootingElevatorMMC = 
-    // We used motion magic voltage when tuning
-      new MotionMagicConfigs()
-        .withMotionMagicAcceleration(1.0)
-        .withMotionMagicCruiseVelocity(10.0)
-        .withMotionMagicExpo_kV(1.0)
-        .withMotionMagicExpo_kA(4.0);
-    
     private final MotionMagicConfigs climbingMMC = 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
@@ -292,11 +265,6 @@ public class RobotContainer {
     private Matrix<N3, N1> visionSTDsDevs = VecBuilder.fill(0.5, 0.5, 0.5);
   
     //--SUBSYSTEMS--\\
-
-    // public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
-    //   Robot.isReal()
-    //     ? new ElevatorIORobot(3, 4, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
-    //     : new ElevatorIOSim(3, 4, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
 
     // public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
     //   Robot.isReal()
@@ -416,9 +384,6 @@ public class RobotContainer {
     m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
     m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
     m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
-
-    // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
-    //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
     
     //#region POV controls
 
@@ -491,8 +456,8 @@ public class RobotContainer {
     
     // Amp score button
     // m_driverController.rightBumper().and(m_driverController.rightTrigger())
-    //   .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_shootingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
-    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
+    //   .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
+    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
