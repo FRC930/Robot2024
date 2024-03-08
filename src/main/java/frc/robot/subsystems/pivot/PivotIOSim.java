@@ -1,5 +1,6 @@
 package frc.robot.subsystems.pivot;
 
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -18,17 +19,20 @@ public class PivotIOSim extends PivotIORobot {
     // private final double armMOI = 0.001;
 
 	private DCMotorSim m_motorSim;
+
+    private final double gearRatio = 1.0; //Should be the RotorToSensor ratio
     
     /**
      * <h3>PivotIORobot</h3> 
      * Creates a subsystem that represents the actual pivot subsystem
      * @param motorID The id of the pivot motor
      */
-    public PivotIOSim(int id, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
-        super(id, canbus, gearRatio, config, mmConfigs);
+    public PivotIOSim(int id, int canCoderId, String canbus, double gearRatio, Slot0Configs config, MotionMagicConfigs mmConfigs) {
+        super(id,canCoderId, canbus, gearRatio, config, mmConfigs);
         // m_ArmSim = new SingleJointedArmSim(DCMotor.getKrakenX60Foc(0), gearRatio, gearRatio, gearRatio, gearRatio, gearRatio, false, gearRatio);
         // TODO Simulation appear to work better with gearratio = 1
         m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), gearRatio,0.001);
+        //this.gearRatio = gearRatio;
     }
     
     // @Override
@@ -60,6 +64,11 @@ public class PivotIOSim extends PivotIORobot {
     
         m_motor.getSimState().setRawRotorPosition(position_rot);
         m_motor.getSimState().setRotorVelocity(velocity_rps);
+
+        if(!PivotSubsystem.ENABLE_REZEROING) {
+            m_cc.getSimState().setRawPosition(position_rot / gearRatio);
+            m_cc.getSimState().setVelocity(velocity_rps / gearRatio);
+        }
     
         m_motor.getSimState().setSupplyVoltage(12 - m_motor.getSimState().getSupplyCurrent() * kMotorResistance);
     }

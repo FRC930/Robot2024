@@ -6,21 +6,28 @@ import org.littletonrobotics.conduit.schema.CoreInputs;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.HoodCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
+import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
+
+    private static final double HOOD_IN_SPEED = -0.1;
+
+    private static final double HOOD_OUT_SPEED = 0.1;
 
     //#region positions
     public static final double TURRET_STOW_POS = 0.0;               /*Deg*/
@@ -33,8 +40,8 @@ public final class CommandFactoryUtility {
     public static final double PIVOT_INTAKE_POS = 45.0;             /*Deg*/
 
     public static final double INDEXER_SPEAKER_SPEED = 0.9;         /*Value*/
-    public static final double INDEXER_INTAKE_SPEED = 0.7;          /*Value*/
-    public static final double INDEXER_REVERSE_SPEED = -0.2;       /*value*/
+    public static final double INDEXER_INTAKE_SPEED = 0.5;          /*Value*/
+    public static final double INDEXER_REVERSE_SPEED = -0.1;       /*value*/
 
     public static final double LEFT_SHOOTER_AMP_SPEED = -40.0;      /*Rot/s*/
     public static final double RIGHT_SHOOTER_AMP_SPEED = -40.0;     /*Rot/s*/
@@ -60,7 +67,7 @@ public final class CommandFactoryUtility {
 
 
     //TODO review values and code
-    public static Command createEjectCommand(mmTurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
+    public static Command createEjectCommand(TurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
             return turret.newSetPosCommand(TURRET_STOW_POS)
                 .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
                 .andThen(indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED))
@@ -68,71 +75,69 @@ public final class CommandFactoryUtility {
     }
 
     //TODO review values and code
-    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot, ElevatorSubsystem elevator, mmTurretSubsystem turret) {
+    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  TurretSubsystem turret) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
-            .alongWith(elevator.newSetPosCommand(ELEVATOR_STOW_POS))
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
     
-    public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer, ShooterSubsystem shooter) {
-        return new ConditionalCommand(
-            indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
-            // .andThen(shooter.newSetSpeedsCommand(-10.0, -10.0))
-            .andThen(new WaitCommand(0.25))
-            .andThen(intake.newSetSpeedCommand(0.0))
+    public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
+        return intake.newSetSpeedCommand(0.0)
             .andThen(indexer.newSetSpeedCommand(0.0))
-            .andThen(intake.newSetJustIntookCommand(false))
-            // .andThen(shooter.newSetSpeedsCommand(0.0, 0.0))
             .andThen(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceOff("limelight-back");})),
-            new InstantCommand(),
-            () -> intake.getJustIntook()
-        );
+                LimelightHelpers.setLEDMode_ForceOff("limelight-back");}));
     }
 
-    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, mmTurretSubsystem turret) {
+    public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake) {
+        return new ConditionalCommand(
+            indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
+            .andThen(new WaitCommand(0.1))
+            .andThen(indexer.newSetSpeedCommand(0.0)),
+            new InstantCommand(),
+            () -> indexer.getSensorDistance() >= 40)
+                .andThen(CommandFactoryUtility.createStopIntakingCommand(intake, indexer))
+                    .andThen(intake.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED));
+    }
+
+    public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
         return indexer.newUntilNoNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
             .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
-            .andThen(intake.newSetJustIntookCommand(true))
-            .andThen(new WaitCommand(0.0))
             .alongWith(new InstantCommand(() -> 
-                {LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceBlink("limelight-back");})) // Wait on the intake, we're stopping too quickly
+                {LimelightHelpers.setLEDMode_ForceOn("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceOn("limelight-back");})) // Wait on the intake, we're stopping too quickly
             // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
-            .andThen(intake.newSetSpeedCommand(0.0))
-            .andThen(indexer.newSetSpeedCommand(0.0)); // Dont stop intake until note found
+            .andThen(indexer.newSetSpeedCommand(0.0))
+            .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
-    public static Command createAmpScoreCommand(ElevatorSubsystem elevator, PivotSubsystem pivot, mmTurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return elevator.newSetPosCommand(ELEVATOR_AMP_POS)
-                    .andThen(pivot.newSetPosCommand(PIVOT_AMP_POS))
+    public static Command createAmpScoreCommand(PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
+        return //elevator.newSetPosCommand(ELEVATOR_AMP_POS)
+                (pivot.newSetPosCommand(PIVOT_AMP_POS))
                     .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
                     .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
-                    .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
+                    //.andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
                                 .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT))
                                 .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
                                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-                                )
                     .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
                     .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
                     .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
-        return elevator.newSetPosCommand(ELEVATOR_CLIMB_POS)
-            .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT));
-    }
+    // public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
+    //     return elevator.newSetPosCommand(ELEVATOR_CLIMB_POS)
+    //         .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT));
+    // }
 
-    public static Command createStowElevatorCommand(ElevatorSubsystem elevator) {
-        return elevator.newSetPosCommand(ELEVATOR_STOW_POS);
-    }
+    // public static Command createStowElevatorCommand(ElevatorSubsystem elevator) {
+    //     return elevator.newSetPosCommand(ELEVATOR_STOW_POS);
+    // }
 
     // TODO trap shot
     public static Command createPivotAndShooterSpeedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, Double pivotAngle) {
@@ -149,7 +154,7 @@ public final class CommandFactoryUtility {
         return intake.newSetSpeedCommand(INTAKE_SPEED);
     }
     
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
         Command command = null;
         if (adjustPivot){
             command = createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle);
@@ -167,18 +172,26 @@ public final class CommandFactoryUtility {
             .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret, Double pivotAngle) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, Double pivotAngle) {
     {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, pivotAngle, true);
     }}
 
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, mmTurretSubsystem turret) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, null);
     }
 
-    public static Command createTurretPreaimCommand(mmTurretSubsystem turret) {
+    public static Command createTurretPreaimCommand(TurretSubsystem turret) {
         return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+    }
+
+    public static Command createExtendHoodCommand(AmpHoodSubsystem hood) {
+        return new HoodCommand(hood, HOOD_OUT_SPEED);
+    }
+
+    public static Command createRetractHoodCommand(AmpHoodSubsystem hood) {
+        return new HoodCommand(hood, HOOD_IN_SPEED);
     }
 
 }

@@ -22,8 +22,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
@@ -35,10 +35,9 @@ public class AutoCommandManager {
 
     public AutoCommandManager(SwerveDrivetrainSubsystem drivetrain, 
         LimeLightDetectionUtility gamePieceUtility,
-        mmTurretSubsystem turret, 
+        TurretSubsystem turret, 
         ShooterSubsystem shooter, 
         IndexerSubsystem indexer, 
-        ElevatorSubsystem elevator, 
         SpeakerScoreUtility speakerUtil, 
         IntakeSubsystem intake, 
         PivotSubsystem pivot) {
@@ -46,8 +45,7 @@ public class AutoCommandManager {
             gamePieceUtility, 
             turret, 
             shooter, 
-            indexer, 
-            elevator, 
+            indexer,  
             speakerUtil, 
             intake, 
             pivot);
@@ -86,10 +84,9 @@ public class AutoCommandManager {
 
     public void configureNamedCommands(SwerveDrivetrainSubsystem drivetrain, 
         LimeLightDetectionUtility gamePieceUtility, 
-        mmTurretSubsystem turret, 
+        TurretSubsystem turret, 
         ShooterSubsystem shooter, 
         IndexerSubsystem indexer, 
-        ElevatorSubsystem elevator, 
         SpeakerScoreUtility speakerUtil, 
         IntakeSubsystem intake, 
         PivotSubsystem pivot) { 
@@ -117,11 +114,11 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("aimAndShoot",
             CommandFactoryUtility.createTurretPreaimCommand(turret)
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
         );
         NamedCommands.registerCommand("shoot",
             CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+                .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
         );
         NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
@@ -129,15 +126,15 @@ public class AutoCommandManager {
             CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
         NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
         NamedCommands.registerCommand("ampScore", 
-            CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+            CommandFactoryUtility.createAmpScoreCommand(pivot, turret, shooter, indexer)
+                .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
         );    
         NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
-        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createStopIntakingCommand(intake, indexer, shooter));
+        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));
         NamedCommands.registerCommand("sideWingScore", 
             CommandFactoryUtility.createTurretPreaimCommand(turret)
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, 52.0))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
         );
     }
 }

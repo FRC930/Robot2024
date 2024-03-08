@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -22,6 +23,7 @@ import frc.robot.IOs.TimeOfFlightIO;
 public class IndexerSubsystem extends SubsystemBase {
     private TalonRollerIO m_rollerIO;
     private TimeOfFlightIO m_sensorIO;
+    private boolean m_sensorStatus;
 
     /**
      * <h3>IndexerSubsystem</h3>
@@ -75,7 +77,11 @@ public class IndexerSubsystem extends SubsystemBase {
      * @return value of indexer sensor
      */
     public boolean getSensor() {
-        return m_sensorIO.get();
+        return m_sensorStatus;
+    }
+
+    public double getSensorDistance() {
+        return m_sensorIO.getRange();
     }
 
     public StartEndCommand getTestCommand() {
@@ -84,9 +90,11 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        m_sensorStatus = m_sensorIO.get();
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Sensor", getSensor());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LastSensorCheck", Timer.getFPGATimestamp());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SensorRange", m_sensorIO.getRange());
     }
 
