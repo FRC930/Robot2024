@@ -51,7 +51,7 @@ public class PivotIORobot implements TalonPosIO{
         // cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // NEED TO CONFIGURE
         // TODO Use tuner x to zero and save number?
         // https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/cancoder/index.html
-        cc_cfg.MagnetSensor.MagnetOffset = 0.4; // TODO NEED to configure
+        cc_cfg.MagnetSensor.MagnetOffset = -0.166992; // TODO NEED to configure
 
         if(!PivotSubsystem.ENABLE_REZEROING) {
             Phoenix6Utility.applyConfigAndRetry(m_cc, () -> {return m_cc.getConfigurator().apply(cc_cfg);});
@@ -70,9 +70,9 @@ public class PivotIORobot implements TalonPosIO{
 
         if(!PivotSubsystem.ENABLE_REZEROING) {
             cfg.Feedback.FeedbackRemoteSensorID = m_cc.getDeviceID();
-            cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-            cfg.Feedback.RotorToSensorRatio = gearRatio;  // TODO NEED to configure
-            cfg.Feedback.SensorToMechanismRatio = 1; // Applies gear ratio
+            cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+            cfg.Feedback.RotorToSensorRatio = 1.0;  // TODO NEED to configure
+            cfg.Feedback.SensorToMechanismRatio = 1.0; // Applies gear ratio
         } else {
             cfg.Feedback.SensorToMechanismRatio = gearRatio; // Applies gear ratio
         }
