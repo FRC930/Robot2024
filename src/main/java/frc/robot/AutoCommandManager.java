@@ -124,7 +124,9 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
         NamedCommands.registerCommand("intakeNoIndexer", 
             CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
-        NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
+        NamedCommands.registerCommand("intake", 
+            CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret)
+            .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake)));
         NamedCommands.registerCommand("ampScore", 
             CommandFactoryUtility.createAmpScoreCommand(pivot, turret, shooter, indexer)
                 .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
