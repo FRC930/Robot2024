@@ -162,9 +162,19 @@ public class RobotContainer {
         .withKS(0) 
         .withKV(0);
     
-    private final Slot0Configs shooterS0C =
+    private final Slot0Configs shooterLeftS0C =
       new Slot0Configs()
-        .withKP(35.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(45.5) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKI(0) 
+        .withKD(0) 
+        .withKG(0)
+        .withKS(4.0); //4.0
+
+    // 0.08 on kP and 0.0 on kS if using voltage
+
+    private final Slot0Configs shooterRightS0C =
+      new Slot0Configs()
+        .withKP(31.5) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -288,8 +298,8 @@ public class RobotContainer {
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         // 14,
-        Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(15, 0.5, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 0.5, shooterS0C, shooterMMC));
+        Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterLeftS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterLeftS0C, shooterMMC) ,
+        Robot.isReal() ? new TalonVelocityIORobot(15, 0.5, shooterRightS0C, shooterMMC)  : new TalonVelocityIOSim(15, 0.5, shooterRightS0C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
