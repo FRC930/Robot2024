@@ -68,7 +68,9 @@ public final class CommandFactoryUtility {
             return turret.newSetPosCommand(TURRET_STOW_POS)
                 .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
                 .andThen(indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED))
-                .andThen(intake.newSetSpeedCommand(INTAKE_EJECT_SPEED));
+                .andThen(intake.newSetSpeedCommand(INTAKE_EJECT_SPEED))
+                .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+                .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
     //TODO review values and code
