@@ -164,7 +164,7 @@ public class RobotContainer {
     
     private final Slot0Configs shooterLeftS0C =
       new Slot0Configs()
-        .withKP(45.5) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(35.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -174,7 +174,7 @@ public class RobotContainer {
 
     private final Slot0Configs shooterRightS0C =
       new Slot0Configs()
-        .withKP(31.5) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(33.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
