@@ -90,7 +90,7 @@ public final class CommandFactoryUtility {
     public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake) {
         return new ConditionalCommand(
             indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
-            .andThen(new WaitCommand(0.1))
+            .andThen(new WaitCommand(0.15))
             .andThen(indexer.newSetSpeedCommand(0.0)),
             new InstantCommand(),
             () -> indexer.getSensorDistance() >= 40)
@@ -105,6 +105,7 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
+            .andThen(new WaitCommand(0.05))
             .alongWith(new InstantCommand(() -> 
                 {LimelightHelpers.setLEDMode_ForceOn("limelight-front"); 
                 LimelightHelpers.setLEDMode_ForceOn("limelight-back");})) // Wait on the intake, we're stopping too quickly
@@ -179,21 +180,22 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createTurretPreaimCommand(TurretSubsystem turret) {
-        return new TurretAimCommand(turret)
-            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+        //return new TurretAimCommand(turret)
+        //    .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+        return new InstantCommand();
     }
 
     public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {
         return 
-        hood.newWaitUntilAmpIsExtendedCommand().deadlineWith(hood.newExtendHoodCommand())
-        .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
+        //hood.newWaitUntilAmpIsExtendedCommand().deadlineWith(hood.newExtendHoodCommand())
+        shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
         .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
         .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand())
         .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
         .andThen(
-            hood.newRetractHoodCommand()
-            .alongWith(shooter.newSetSpeedsCommand(0.0,0.0))
+            //hood.newRetractHoodCommand()
+            shooter.newSetSpeedsCommand(0.0,0.0)
             .alongWith(indexer.newSetSpeedCommand(0))
         );
     }

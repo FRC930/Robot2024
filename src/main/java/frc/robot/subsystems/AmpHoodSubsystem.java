@@ -105,18 +105,23 @@ public class AmpHoodSubsystem extends SubsystemBase{
     }
 
     public Command newWaitUntilAmpIsExtendedCommand() {
-        return new WaitUntilCommand(this::getIsExtended);
+        //return new WaitUntilCommand(this::getIsExtended);
+        return new InstantCommand();
+
     }
 
     public Command newWaitUntilAmpIsRetractedComand() {
-        return new WaitUntilCommand(this::getIsExtended);
+        //return new WaitUntilCommand(this::getIsExtended);
+        return new InstantCommand();
     }
 
     public Command newExtendHoodCommand() {
-        return new HoodCommand(this, HOOD_OUT_SPEED);
+        //return new HoodCommand(this, HOOD_OUT_SPEED);
+        return new InstantCommand();
     }
 
     public Command newRetractHoodCommand() {
-        return new HoodCommand(this, HOOD_IN_SPEED);
+        //return new HoodCommand(this, HOOD_IN_SPEED);
+        return new InstantCommand();
     }
 }

@@ -72,6 +72,11 @@ public class ShooterSubsystem extends SubsystemBase{
         this.setSpeed(leftSpeed, rightSpeed, null, null);
     }
 
+    public void setVoltage(double leftVoltage, double rightVoltage) {
+        IO_Left.getTalon().setVoltage(leftVoltage);
+        IO_Right.getTalon().setVoltage(rightVoltage);
+    }
+
     /**
     * <h3>getLeftMotorSpeed</h3>
     * @return The current motor speed of the left wheel in rps
@@ -148,6 +153,10 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public Command newSetSpeedsCommand(SpeakerScoreUtility speakerUtil) {
         return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed()), this);
+    }
+
+    public Command newSetVoltagesCommand(double leftVoltage, double rightVoltage) {
+        return new InstantCommand(() -> setVoltage(leftVoltage, rightVoltage));
     }
 
     public Command newCalcAndSetSpeedsCommand() {

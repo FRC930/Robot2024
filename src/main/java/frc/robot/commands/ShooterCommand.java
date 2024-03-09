@@ -31,7 +31,7 @@ public class ShooterCommand extends Command {
 
     @Override
     public void initialize() {
-        m_shooter.setSpeed( m_leftMotorSpeed,  m_rightMotorSpeed); //TODO may need to input accel
+        m_shooter.setSpeed(MathUtil.clamp(m_leftMotorSpeed,-12.0,12.0), MathUtil.clamp(m_rightMotorSpeed,-12.0,12.0)); //TODO may need to input accel
     }
 
     @Override

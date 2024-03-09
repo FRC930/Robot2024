@@ -377,7 +377,7 @@ public class RobotContainer {
     
     m_turretSubsystem.setDefaultCommand(
       new ConditionalCommand(
-        new TurretAimCommand(m_turretSubsystem),
+        new TurretAimCommand(m_turretSubsystem), 
         new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
         () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
        
@@ -528,14 +528,17 @@ public class RobotContainer {
     m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
-    m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0,0.0,true)
+    .alongWith(new IndexerCommandTest(m_indexerSubsystem, 0.0)))
+    .onFalse(new IndexerCommand(m_indexerSubsystem, 0.0)
+    .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)));
     m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
     // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
     m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
       .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
       .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
-    m_coDriverController.y().whileTrue(new InstantCommand(()->m_pivotSubsystem.setPosition(0.0)));
+    m_coDriverController.y().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 0.0));
     //#endregion
 
     m_coDriverController.rightBumper().whileTrue(new TurretRefineCommand(m_turretSubsystem));
