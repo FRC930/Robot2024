@@ -17,7 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 //Automatically aims the turret to one of the speakers based on the alliance.
 public class TurretAimCommand extends Command{
 
-    private static final double AIM_OFFSET = Units.inchesToMeters(12.0); // May be dynamic
+    private static final double AIM_OFFSET = Units.inchesToMeters(23.0); // May be dynamic
 
     private TurretSubsystem m_TurretSubsystem;
     private Pose2d m_BlueTargetPose;

@@ -157,15 +157,15 @@ public class SpeakerScoreUtility {
         double exponent = -0.152665;
         double h = 19.5834;
         double k = 19.5854;
-        double angleOffset = 4.5;
+        double angleOffset = 1.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
-            return (-0.05 * distance) + 32.7 + 1.5 + angleOffset; // 0.5 (inches) is a fudge factor
+            return (-0.05 * distance) + 32.7 + 1.0 + angleOffset; // 0.5 (inches) is a fudge factor
         } else if (distance >= LINEAR_DISTANCE_CLOSE) {
             return (-0.115 * distance) + 40.9 + 3.0 + angleOffset; // 2.0 (inches) is a fudge factor
         } else {
-            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 2.5 + angleOffset; // 2.0 (inches) is a fudge factor
+            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 4.5 + angleOffset; // 2.0 (inches) is a fudge factor
         }
         // Untested shot angle model. Distances sourced from testing on 4/23. Source graph: https://www.desmos.com/calculator/me4nlqffa5
         // return Math.exp(exponent * (distance - 4 - h)) + k;
