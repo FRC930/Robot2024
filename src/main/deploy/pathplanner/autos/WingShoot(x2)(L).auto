@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.407706324685116,
-      "y": 4.122214464115091
+      "x": 1.4194171612308972,
+      "y": 6.9956624528633675
     },
     "rotation": 180.0
   },
@@ -20,19 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BotAmpStartToBotWing"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "WhiteLineToPillar"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
+            "pathName": "AmpStartToTopWingButNoOver"
           }
         },
         {
@@ -50,37 +38,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BotWingToBotCenter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BotCenterToBotWingLine"
+            "pathName": "TopWingToCenterWingButNoOver"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BotWingLineToLowCenter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LowCenterToWingLine"
+            "name": "stopIntake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "aimAndShoot"
           }
         }
       ]

@@ -18,6 +18,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 public class TurretAimCommand extends Command{
 
     private static final double AIM_OFFSET = Units.inchesToMeters(23.0); // May be dynamic
+    private static final double AIM_Auto_OFFSET = Units.inchesToMeters(10.0); // May be dynamic
 
     private TurretSubsystem m_TurretSubsystem;
     private Pose2d m_BlueTargetPose;
@@ -43,6 +44,21 @@ public class TurretAimCommand extends Command{
         m_RedTargetPose = new Pose2d(m_RedTargetPose.getX() + 0.5, m_RedTargetPose.getY() - AIM_OFFSET, m_RedTargetPose.getRotation());
         m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         m_BlueTargetPose = new Pose2d(m_BlueTargetPose.getX() - 0.5, m_BlueTargetPose.getY() + AIM_OFFSET, m_BlueTargetPose.getRotation());
+        m_TargetPose = m_BlueTargetPose;
+
+        m_TurretSubsystem = turretSubsystem;
+        addRequirements(m_TurretSubsystem);
+    }
+
+    /** Aims the turret to the speaker apriltags based on the current alliance.
+     * Constructor
+     * @param turretSubsystem the subsystem that controls the turret.
+     */
+    public TurretAimCommand(TurretSubsystem turretSubsystem, boolean auto) {
+        m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
+        m_RedTargetPose = new Pose2d(m_RedTargetPose.getX() + 0.5, m_RedTargetPose.getY() - (auto?AIM_Auto_OFFSET:AIM_OFFSET), m_RedTargetPose.getRotation());
+        m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
+        m_BlueTargetPose = new Pose2d(m_BlueTargetPose.getX() - 0.5, m_BlueTargetPose.getY() + (auto?AIM_Auto_OFFSET:AIM_OFFSET), m_BlueTargetPose.getRotation());
         m_TargetPose = m_BlueTargetPose;
 
         m_TurretSubsystem = turretSubsystem;

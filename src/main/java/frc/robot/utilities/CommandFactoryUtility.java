@@ -108,10 +108,10 @@ public final class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
             .andThen(indexer.newUntilNoteFoundCommand())
             .andThen(new WaitCommand(0.05))
-            .alongWith(new InstantCommand(() -> 
-                {LimelightHelpers.setLEDMode_ForceOn("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceOn("limelight-back");})) // Wait on the intake, we're stopping too quickly
-            // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
+            // .alongWith(new InstantCommand(() -> 
+            //     {LimelightHelpers.setLEDMode_ForceOn("limelight-front"); 
+            //     LimelightHelpers.setLEDMode_ForceOn("limelight-back");})) // Wait on the intake, we're stopping too quickly
+            // // .andThen(createStopIntakingCommand(intake, indexer)) // currently used separately, only add if told
             .andThen(indexer.newSetSpeedCommand(0.0))
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
@@ -181,10 +181,14 @@ public final class CommandFactoryUtility {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, null);
     }
 
+    public static Command createTurretPreaimCommand(TurretSubsystem turret , boolean autoAim) {
+        return new TurretAimCommand(turret, autoAim)
+           .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+    }
+
     public static Command createTurretPreaimCommand(TurretSubsystem turret) {
-        //return new TurretAimCommand(turret)
-        //    .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
-        return new InstantCommand();
+        return new TurretAimCommand(turret)
+           .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
     }
 
     public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {
