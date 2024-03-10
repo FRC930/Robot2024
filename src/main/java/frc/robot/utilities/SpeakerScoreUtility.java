@@ -154,9 +154,6 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        double exponent = -0.152665;
-        double h = 19.5834;
-        double k = 19.5854;
         double angleOffset = 1.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
@@ -167,8 +164,6 @@ public class SpeakerScoreUtility {
         } else {
             return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 4.5 + angleOffset; // 2.0 (inches) is a fudge factor
         }
-        // Untested shot angle model. Distances sourced from testing on 4/23. Source graph: https://www.desmos.com/calculator/me4nlqffa5
-        // return Math.exp(exponent * (distance - 4 - h)) + k;
     }
 
     public static double computePivotAngleInverseTan(double distance) {
@@ -184,6 +179,15 @@ public class SpeakerScoreUtility {
             - 12.5 /*height of shooter pivot point in inches*/;
 
         return Units.radiansToDegrees(Math.atan2(heightTurretToNodeInches, distanceCenterToNodeInches));
+    }
+
+    public static double computePivotAnglePolyModel(double distance) {
+        double exponent = -0.013963036303;
+        double h = -273.137;
+        double k = 22.4469;
+
+        // Untested shot angle model. Distances sourced from testing on 3/9/24. Source graph: https://www.desmos.com/calculator/bohpjg7n1d
+        return Math.exp(exponent * (distance - h)) + k;
     }
 
     public static double computeShooterSpeed(double distance) {
