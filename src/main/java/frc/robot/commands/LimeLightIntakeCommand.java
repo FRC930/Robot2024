@@ -12,11 +12,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
@@ -44,7 +43,7 @@ public class LimeLightIntakeCommand extends Command {
     private Pose2d m_position;
     
     private double m_throttle = 0.0;
-    private Supplier<Double> m_joystickInput;
+    private CommandXboxController m_controller;
     private double m_strafe = 0.0;
 
     private double m_distance;  
@@ -69,14 +68,14 @@ public class LimeLightIntakeCommand extends Command {
      * @param bluePosition Pose2d of the location of where the robot should go
      * 
      */
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition, Supplier<Double> joystickInputSupplier) {
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition, CommandXboxController controller) {
         m_SwerveDrive = swerveDrive;
         m_LimeLight = limeLight;
         m_bluePosition = bluePosition;
         m_redPosition = redPosition;
         // Default to blue alliance
         m_position = m_bluePosition;
-        m_joystickInput = joystickInputSupplier;
+        m_controller = controller;
         addRequirements(m_SwerveDrive);
     }
 
@@ -84,8 +83,8 @@ public class LimeLightIntakeCommand extends Command {
         this(swerveDrive, limeLight, bluePosition, redPosition, null);
     }
 
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, Supplier<Double> joystickInputSupplier) {
-        this(drivetrain, m_GamePieceUtility, null, null,joystickInputSupplier);
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, CommandXboxController controller) {
+        this(drivetrain, m_GamePieceUtility, null, null, controller);
     }
 
     public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight,Pose2d pose2d) {
@@ -119,7 +118,7 @@ public class LimeLightIntakeCommand extends Command {
 
         m_TimeElapsed = 0.0;
 
-        if(m_joystickInput != null) {
+        if(m_controller != null) {
            return;
         }
 
@@ -143,8 +142,8 @@ public class LimeLightIntakeCommand extends Command {
         //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
         m_strafe = m_direction * MathUtil.clamp(pid.calculate(tx, 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
-        if(m_joystickInput != null) {
-            double xValue = -m_joystickInput.get();  // -negated value since back intake so need to backward
+        if(m_controller != null) {
+            double xValue = Math.abs(Math.hypot(m_controller.getLeftX(), m_controller.getLeftY()));  // -negated value since back intake so need to backward
             xValue = MathUtil.clamp(xValue, -MAX_THROTTLE, MAX_THROTTLE);
             m_throttle = RobotContainer.scaleLinearVelocity(RobotContainer.getLinearVelocity(xValue, 0.0).getX());
         } else {
@@ -168,13 +167,13 @@ public class LimeLightIntakeCommand extends Command {
         */
 
 
-        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(m_strafe).withRotationalRate(0.0);
+        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(m_strafe).withRotationalRate(-m_controller.getRightX());
         m_SwerveDrive.setControl(requestSupplier.get());
     }
 
     @Override
     public boolean isFinished() {
-        if (m_joystickInput != null) {
+        if (m_controller != null) {
             return false;
         }
         if (profile.isFinished(m_TimeElapsed)) {
