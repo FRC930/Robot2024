@@ -189,16 +189,21 @@ public class LimeLightIntakeCommand extends Command {
     }
 
     public double distanceToTarget() {
-        return Math.sqrt( //Uses the Pythagorean Theorem to calculate the total distance to the target
-            Math.pow(
-                Math.abs(m_position.getX() - m_SwerveDrive.getState().Pose.getX()), 
-                2.0
-            )
-            +
-            Math.pow(
-                Math.abs(m_position.getY() - m_SwerveDrive.getState().Pose.getY()),
-                2.0
-            )
-        );
+        // m_position only popuated if not using joystick input and this distanceToTarget() should not called, but just in case add check
+        if(m_position != null) {
+            return Math.sqrt( //Uses the Pythagorean Theorem to calculate the total distance to the target
+                Math.pow(
+                    Math.abs(m_position.getX() - m_SwerveDrive.getState().Pose.getX()), 
+                    2.0
+                )
+                +
+                Math.pow(
+                    Math.abs(m_position.getY() - m_SwerveDrive.getState().Pose.getY()),
+                    2.0
+                )
+            );
+        } else {
+            return 0.0;
+        }
     }
 }
