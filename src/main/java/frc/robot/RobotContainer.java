@@ -8,16 +8,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.IOs.TalonPosIO;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
-import frc.robot.commands.SetElevatorPositionCommand;
-import frc.robot.commands.SetPivotPositionCommand;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
-import frc.robot.commands.tests.SetElevatorPositionCommandTest;
 import frc.robot.commands.tests.SetPivotPositionCommandTest;
 import frc.robot.commands.tests.SetTurretPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
@@ -48,16 +44,13 @@ import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
 import frc.robot.utilities.SpeakerScoreUtility.Target;
 
-import java.time.Instant;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -71,23 +64,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -381,26 +367,31 @@ public class RobotContainer {
                 m_driverController::getRightX)
             ));
 
-    // m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem, CommandFactoryUtility.INTAKE_REJECT_SPEED));
-
-    // m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, 0.0));
-    
+            
     m_turretSubsystem.setDefaultCommand(
       new ConditionalCommand(
         new TurretAimCommand(m_turretSubsystem), 
         new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
-        () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
+        () -> m_indexerSubsystem.getSensor() 
+              && !m_turretSubsystem.getTurretLock()
+              && !SpeakerScoreUtility.getIsUsingAmp()));
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    // Sets the desired positions for the speaker
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
-    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
+    // Amp shoot and stow are done with right bumper
+    m_driverController.y().onTrue(CommandFactoryUtility.createAmpAimCommand(m_ampHoodSubsystem, m_pivotSubsystem, m_turretSubsystem, m_shooterSubsystem)); 
+    
+    //m_driverController.x().or(m_driverController.b()).onTrue(); 
+    m_driverController.a().onTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+                          .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)
+                                  .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED))); 
     
     //#region POV controls
 
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+    // Sets the desired positions for the speaker
+    m_driverController.povUp().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far));
+    m_driverController.povLeft().or(m_driverController.povRight()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium));
+    m_driverController.povDown().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close));
 
     // m_driverController.pov(0).whileTrue(
     //   drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
@@ -420,39 +411,44 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press TODO test
     // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    // Eject shooter button
-    m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)
-            .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)));
+    // Game Piece Detection intake
+    m_driverController.leftTrigger()
+        .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController::getLeftY)
+         .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
+           .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
     
-    // Intake button TODO Test
+    // Intake button
     m_driverController.leftBumper()
       .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
         .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
       ;
 
-    m_driverController.rightTrigger()
-      .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController::getLeftY)
-        .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
-          .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
-    ;
-      
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    //Aims for the speaker AKA speaker shot prep
+    m_driverController.rightTrigger().whileTrue(
       new ConditionalCommand(
         new RepeatCommand(CommandFactoryUtility.createPivotAndShooterSpeedCommand(m_shooterSubsystem, m_pivotSubsystem, null)),
         new InstantCommand(),
-        () -> m_speakerUtil.getAutoAim()
+        () -> m_speakerUtil.getAutoAim() && !SpeakerScoreUtility.getIsUsingAmp()
       )
     );
-     
 
     // Speaker score button TODO: TEST CHANGES
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    //.and(m_driverController.rightTrigger().negate())
+    m_driverController.rightBumper().whileTrue(
         new ConditionalCommand(
-          new WaitCommand(0.2).until(() -> m_pivotSubsystem.getPosition()>0.0)
-            .andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
+          // Auto aim turret or Amp Shoot
+          new ConditionalCommand(
+              // Auto aim
+              new WaitCommand(0.2).until(() -> m_pivotSubsystem.getPosition()>0.0)
+                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
+              // Amp shoot
+                CommandFactoryUtility.createAmpShootCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem),
+                  () -> !SpeakerScoreUtility.getIsUsingAmp()
+          ),
+          // If Preset Button pressed
           new InstantCommand(
             () -> {
+              // Set Preset angle/speed 
               double angle = m_speakerUtil.getPivotAngle();
               double lspeed = m_speakerUtil.getLeftShooterSpeed();
               double rspeed = m_speakerUtil.getRightShooterSpeed();
@@ -464,7 +460,9 @@ public class RobotContainer {
           () -> m_speakerUtil.getAutoAim()
         )
     )
-    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
+    .onFalse(
+      CommandFactoryUtility.createAmpStowCommand(m_ampHoodSubsystem)
+      .andThen(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)));
 
     
     // Amp score button
@@ -477,7 +475,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("testExtendHood", m_ampHoodSubsystem.newExtendHoodCommand());
     SmartDashboard.putData("testRetractHood", m_ampHoodSubsystem.newRetractHoodCommand());
-    SmartDashboard.putData("testAmpScore", CommandFactoryUtility.createAmpShootCommand(m_ampHoodSubsystem, m_shooterSubsystem, m_indexerSubsystem));
   }
 
   /** 

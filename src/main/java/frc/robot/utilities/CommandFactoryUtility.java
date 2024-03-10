@@ -25,6 +25,8 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
 
+    private static final double HOOD_RETRACT_TIME = 1.0;
+
     //#region positions
     public static final double TURRET_STOW_POS = 0.0;               /*Deg*/
 
@@ -62,6 +64,10 @@ public final class CommandFactoryUtility {
 
     private static final double TURRET_PREAIM_TIMEOUT = 0.5;        /*sec*/
 
+    private static final double LEFT_SHOOTER_HOOD_AMP_VOLTAGE = 4.0;
+    private static final double RIGHT_SHOOTER_HOOD_AMP_VOLTAGE = 4.0;
+    private static final double INDEXER_HOOD_AMP_SPEED = 0.5;
+    private static final double PIVOT_HOOD_AMP_ANGLE = 30.0;
 
     //TODO review values and code
     public static Command createEjectCommand(TurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
@@ -99,7 +105,7 @@ public final class CommandFactoryUtility {
                 .andThen(CommandFactoryUtility.createStopIntakingCommand(intake, indexer))
                     .andThen(intake.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED));
     }
-
+    
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
         return indexer.newUntilNoNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
@@ -116,19 +122,6 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
-    public static Command createAmpScoreCommand(PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return //elevator.newSetPosCommand(ELEVATOR_AMP_POS)
-                (pivot.newSetPosCommand(PIVOT_AMP_POS))
-                    .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
-                    .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
-                    //.andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
-                                .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT))
-                                .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
-                                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-                    .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
-                    .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
-                    .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
-    }
 
     // public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
     //     return elevator.newSetPosCommand(ELEVATOR_CLIMB_POS)
@@ -182,23 +175,54 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createTurretPreaimCommand(TurretSubsystem turret) {
-        //return new TurretAimCommand(turret)
-        //    .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
-        return new InstantCommand();
+        return new TurretAimCommand(turret)
+            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
     }
 
-    public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {
+    /**
+     * 
+     * @param hood
+     * @param pivot
+     * @param turret
+     * @param shooter
+     * @return
+     */
+    public static Command createAmpAimCommand(AmpHoodSubsystem hood,PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter) {
+        return SpeakerScoreUtility.newSetIsUsingAmpCommand(true)
+        .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
+        .andThen(pivot.newSetPosCommand(PIVOT_HOOD_AMP_ANGLE))
+        //Doing this so we cancel shooter prep if it was started 
+        .andThen(shooter.newSetVoltagesCommand(LEFT_SHOOTER_HOOD_AMP_VOLTAGE, RIGHT_SHOOTER_HOOD_AMP_VOLTAGE))
+        .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT))
+        .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
+        .andThen(hood.newExtendHoodCommand())
+        ;
+    }
+
+    public static Command createAmpStowCommand(AmpHoodSubsystem hood) {
+        Command thisCommand = hood.newRetractHoodCommand()
+        .andThen(SpeakerScoreUtility.newSetIsUsingAmpCommand(false));
+
+        return new ConditionalCommand(
+            thisCommand, 
+            new InstantCommand(), 
+            () -> SpeakerScoreUtility.getIsUsingAmp());
+        
+    }
+
+    public static Command createAmpShootCommand(ShooterSubsystem shooter,IndexerSubsystem indexer, PivotSubsystem pivot, TurretSubsystem turret) {
         return 
-        //hood.newWaitUntilAmpIsExtendedCommand().deadlineWith(hood.newExtendHoodCommand())
-        shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
-        .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-        .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
+        shooter.newSetVoltagesCommand(LEFT_SHOOTER_HOOD_AMP_VOLTAGE, RIGHT_SHOOTER_HOOD_AMP_VOLTAGE)
+        .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
+                    .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
+                    .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+                )
+        .andThen(indexer.newSetSpeedCommand(INDEXER_HOOD_AMP_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand())
         .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
         .andThen(
-            //hood.newRetractHoodCommand()
-            shooter.newSetSpeedsCommand(0.0,0.0)
-            .alongWith(indexer.newSetSpeedCommand(0))
+            shooter.newSetVoltagesCommand(0.0,0.0)
+            .alongWith(indexer.newSetSpeedCommand(0.0))
         );
     }
 }

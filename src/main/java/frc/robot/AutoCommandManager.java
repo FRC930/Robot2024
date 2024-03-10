@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
@@ -128,8 +129,7 @@ public class AutoCommandManager {
             CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret)
             .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake)));
         NamedCommands.registerCommand("ampScore", 
-            CommandFactoryUtility.createAmpScoreCommand(pivot, turret, shooter, indexer)
-                .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
+            new PrintCommand("TODO implement amp command") //TODO implement new amp command
         );    
         NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));

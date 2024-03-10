@@ -44,6 +44,7 @@ public class SpeakerScoreUtility {
     private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
     
     private boolean m_useAutoAim = true;
+    public static boolean m_usingAmp = false;
 
     private final TurretSubsystem m_turret;
 
@@ -188,6 +189,14 @@ public class SpeakerScoreUtility {
 
     public static double computeShooterSpeed(double distance) {
         return COMPUTED_SHOOT_SPEED;
+    }
+
+    public static boolean getIsUsingAmp() {
+        return m_usingAmp;
+    }
+
+    public static Command newSetIsUsingAmpCommand(boolean val) {
+        return new InstantCommand(() -> {m_usingAmp = val;});
     }
 
 }
