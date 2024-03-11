@@ -47,7 +47,7 @@ public class TunerConstants {
     /**
      * Max Speed for mk41 with t16 gear in feet/second
      */
-    public static final double kMaxSpeed = 19.23;
+    private static final double kMaxSpeed = 19.23; // Feet not meters USE kSpeedAt12VoltsMps
     public static final double kSpeedAt12VoltsMps = Units.feetToMeters(kMaxSpeed); //5.96 was generated value
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
