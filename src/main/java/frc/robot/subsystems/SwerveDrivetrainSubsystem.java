@@ -79,8 +79,7 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
                 new PIDConstants(7.0, 0, 0), // TODO: Config
                 TunerConstants.kSpeedAt12VoltsMps, // Meters  // TODO get set to correct value
                 Units.inchesToMeters(11.0), // TODO determine 
-                new ReplanningConfig(),
-                0.004),
+                new ReplanningConfig()),
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red alliance
                     // This will flip the path being followed to the red side of the field.
