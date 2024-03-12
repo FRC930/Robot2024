@@ -83,10 +83,10 @@ public final class CommandFactoryUtility {
     
     public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
         return intake.newSetSpeedCommand(0.0)
-            .andThen(indexer.newSetSpeedCommand(0.0))
-            .andThen(new InstantCommand(() -> 
-                {LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
-                LimelightHelpers.setLEDMode_ForceOff("limelight-back");}));
+            .andThen(indexer.newSetSpeedCommand(0.0));
+            // .andThen(new InstantCommand(() -> 
+            //     {LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+            //     LimelightHelpers.setLEDMode_ForceOff("limelight-back");}));
     }
 
     public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake) {

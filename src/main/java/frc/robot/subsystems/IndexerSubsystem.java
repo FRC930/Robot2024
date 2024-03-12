@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Robot;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
+import frc.robot.utilities.LimelightHelpers;
 
 /**
  * <h3>IndexerSubsystem</h3>
@@ -24,6 +25,8 @@ public class IndexerSubsystem extends SubsystemBase {
     private TalonRollerIO m_rollerIO;
     private TimeOfFlightIO m_sensorIO;
     private boolean m_sensorStatus;
+    private boolean m_turnedOn = false;
+    private int m_counter=0;
 
     /**
      * <h3>IndexerSubsystem</h3>
@@ -91,6 +94,26 @@ public class IndexerSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         m_sensorStatus = m_sensorIO.get();
+        if(m_sensorStatus) {
+            if(!m_turnedOn) {
+                LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceBlink("limelight-back"); 
+                m_turnedOn = true;
+            } else {
+                m_counter++;
+                if(m_counter>10) {
+                    LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+                    LimelightHelpers.setLEDMode_ForceOff("limelight-back"); 
+                }
+            }
+        } else {
+            if(m_turnedOn) {
+                LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceOff("limelight-back"); 
+                m_turnedOn = false;
+                m_counter = 0;
+            }
+        }
         Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Sensor", getSensor());
