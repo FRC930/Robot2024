@@ -328,6 +328,7 @@ public class RobotContainer {
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
+        Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS),
         Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
@@ -337,8 +338,8 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    private final AmpHoodSubsystem m_ampHoodSubsystem = new AmpHoodSubsystem(
-      Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
+    // private final AmpHoodSubsystem m_ampHoodSubsystem = new AmpHoodSubsystem(
+    //   Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
 
     private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_turretSubsystem); 
     private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility(m_turretSubsystem);
@@ -493,18 +494,9 @@ public class RobotContainer {
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
 
-    
-    // Amp score button
-    // m_driverController.rightBumper().and(m_driverController.rightTrigger())
-    //   .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
-    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
-    SmartDashboard.putData("testExtendHood", m_ampHoodSubsystem.newExtendHoodCommand());
-    SmartDashboard.putData("testRetractHood", m_ampHoodSubsystem.newRetractHoodCommand());
-    SmartDashboard.putData("testAmpScore", CommandFactoryUtility.createAmpShootCommand(m_ampHoodSubsystem, m_shooterSubsystem, m_indexerSubsystem));
   }
 
   /** 
