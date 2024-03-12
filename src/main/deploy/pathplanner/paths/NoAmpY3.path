@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9026396514331507,
-        "y": 5.545221859674489
+        "x": 8.289990426134699,
+        "y": 0.5032140833512452
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9026396514331507,
-        "y": 5.1297544341817956
+        "x": 7.001798406101942,
+        "y": 0.5734791026308728
       },
       "isLocked": false,
-      "linkedName": "CenterWing"
+      "linkedName": "NoAmpY2"
     },
     {
       "anchor": {
-        "x": 2.6373441619921745,
-        "y": 4.180768646843998
+        "x": 3.984090364757048,
+        "y": 2.002553049328638
       },
       "prevControl": {
-        "x": 1.9229831326995024,
-        "y": 5.328430628330587
+        "x": 4.710162230595502,
+        "y": 1.3467462027648738
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BottomWingNote"
+      "linkedName": "NoAmpY3"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.45,
+      "name": "Aim",
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "fullAim"
               }
             }
           ]
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 153.94650468950897,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Robot2024",
+  "folder": "NoAmpY",
   "previewStartingState": {
-    "rotation": 90.0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -12,33 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "sideWingScore"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "BotAmpStartToBotWing"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "WhiteLineToPillar"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "pathName": "NoAmpY1"
           }
         },
         {
@@ -50,37 +26,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BotWingToBotCenter"
+            "pathName": "NoAmpY2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BotCenterToBotWingLine"
+            "pathName": "NoAmpY3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "preAimedShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BotWingLineToLowCenter"
+            "pathName": "NoAmpY4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LowCenterToWingLine"
+            "pathName": "NoAmpY5"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "preAimedShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
           }
         }
       ]

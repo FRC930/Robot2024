@@ -124,6 +124,7 @@ public class AutoCommandManager {
         );
         NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
+        NamedCommands.registerCommand("closeAim", new TurretAimCommand(turret, true));
         NamedCommands.registerCommand("intakeNoIndexer", 
             CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
         NamedCommands.registerCommand("intake", 
@@ -132,12 +133,31 @@ public class AutoCommandManager {
             CommandFactoryUtility.createAmpScoreCommand(pivot, turret, shooter, indexer)
                 .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
         );    
-        NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));
         NamedCommands.registerCommand("sideWingScore", 
             CommandFactoryUtility.createTurretPreaimCommand(turret, true)
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, 45.0))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
         );
+        NamedCommands.registerCommand("closeAimAndShoot", 
+            CommandFactoryUtility.createTurretPreaimCommand(turret, true)
+                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
+        );
+        NamedCommands.registerCommand("noAmpYScore1", 
+            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 45.0, true)
+                .andThen(CommandFactoryUtility.createShootPreaimedCommand(shooter, pivot, indexer, turret))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
+                .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
+        );
+        NamedCommands.registerCommand("noAmpYScore2",
+            CommandFactoryUtility.createPrepareShootCommand(turret, shooter, true)
+                .andThen(CommandFactoryUtility.createShootPreaimedCommand(shooter, pivot, indexer, turret))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
+        );
+        NamedCommands.registerCommand("fullAim", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, false));
+        NamedCommands.registerCommand("preAimedShoot", CommandFactoryUtility.createShootPreaimedCommand(shooter, pivot, indexer, turret));
+        NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
+
     }
 }

@@ -12,27 +12,33 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "sideWingScore"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BotAmpStartToBotWing"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "shootNoStow"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "WhiteLineToPillarWOStow"
+            "pathName": "WhiteLineToPillar"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         },
         {

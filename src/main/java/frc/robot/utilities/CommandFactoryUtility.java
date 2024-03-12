@@ -80,6 +80,15 @@ public final class CommandFactoryUtility {
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
+
+    /**
+     * This doesn't stow pivot, use createStopShootingCommand(ShooterSubsystem, IndexerSubsystem, PivotSubsystem, TurretSubsystem) if pivot should stow
+     */
+    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, TurretSubsystem turret) {
+        return shooter.newSetSpeedsCommand(0.0, 0.0)
+            .alongWith(indexer.newSetSpeedCommand(0.0))
+            .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
+    }
     
     public static Command createStopIntakingCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
         return intake.newSetSpeedCommand(0.0)
@@ -161,17 +170,20 @@ public final class CommandFactoryUtility {
         } else {
             command = new InstantCommand();
         }
-        
+
         return command 
-            .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
-                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-                )
-            // .andThen(new TurretRefineCommand(turret).withTimeout(2.0))
-            .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
-            .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
-            .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
+            .andThen(createShootPreaimedCommand(shooter, pivot, indexer, turret));
     }
 
+    public static Command createShootPreaimedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
+        return pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
+            .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+            .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
+        .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
+        .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+        .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
+    }
+        
     public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, Double pivotAngle) {
     {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, pivotAngle, true);
@@ -189,6 +201,27 @@ public final class CommandFactoryUtility {
     public static Command createTurretPreaimCommand(TurretSubsystem turret) {
         return new TurretAimCommand(turret)
            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
+    }
+
+    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, boolean closeShot) {
+        return createPrepareShootCommand(turret, pivot, shooter, null, closeShot);
+    }
+
+    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, boolean closeShot) {
+        return new TurretAimCommand(turret, closeShot)
+            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
+            .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
+            .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
+                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+                .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
+    }
+
+    public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter, boolean closeShot) {
+        return new TurretAimCommand(turret, closeShot)
+            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
+            .alongWith(shooter.newCalcAndSetSpeedsCommand())
+            .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT)
+                .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
     }
 
     public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {

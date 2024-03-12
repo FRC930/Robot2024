@@ -12,7 +12,7 @@
         "y": 1.2999028565817468
       },
       "isLocked": false,
-      "linkedName": "BottomWing"
+      "linkedName": "NoAmpY3"
     },
     {
       "anchor": {
@@ -41,15 +41,32 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BotWingLine2"
+      "linkedName": "NoAmpY4"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
+      "name": "StopShoot",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "Intake",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "parallel",
         "data": {
@@ -77,7 +94,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Robot2024",
+  "folder": "NoAmpY",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0
