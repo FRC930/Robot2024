@@ -60,6 +60,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
@@ -162,7 +163,8 @@ public class RobotContainer {
         .withKS(0) 
         .withKV(0);
     
-    private final Slot0Configs shooterLeftS0C =
+    //SPEAKER SHOT
+    private final Slot0Configs shooterLeftS0C = 
       new Slot0Configs()
         .withKP(35.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
@@ -172,6 +174,7 @@ public class RobotContainer {
 
     // 0.08 on kP and 0.0 on kS if using voltage
 
+    //SPEAKER SHOT
     private final Slot0Configs shooterRightS0C =
       new Slot0Configs()
         .withKP(33.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
@@ -181,6 +184,24 @@ public class RobotContainer {
         .withKS(4.0); //4.0
 
     // 0.08 on kP and 0.0 on kS if using voltage
+
+    //FEED SHOT
+    private final Slot1Configs shooterLeftS1C =
+      new Slot1Configs()
+        .withKP(10.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKI(0) 
+        .withKD(0) 
+        .withKG(0)
+        .withKS(4.0); //4.0
+
+    //FEED SHOT
+    private final Slot1Configs shooterRightS1C =
+      new Slot1Configs()
+        .withKP(10.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKI(0) 
+        .withKD(0) 
+        .withKG(0)
+        .withKS(4.0); //4.0
 
     private final Slot0Configs turretS0C =
       new Slot0Configs()
@@ -298,8 +319,12 @@ public class RobotContainer {
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         // 14,
-        Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterLeftS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterLeftS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(15, 0.5, shooterRightS0C, shooterMMC)  : new TalonVelocityIOSim(15, 0.5, shooterRightS0C, shooterMMC));
+        Robot.isReal() 
+        ? new TalonVelocityIORobot(14, 0.5, shooterLeftS0C,shooterLeftS1C, shooterMMC) 
+        : new TalonVelocityIOSim(14, 0.5, shooterLeftS0C,shooterLeftS1C, shooterMMC),
+        Robot.isReal() 
+        ? new TalonVelocityIORobot(15, 0.5, shooterRightS0C,shooterRightS1C, shooterMMC) 
+        : new TalonVelocityIOSim(15, 0.5, shooterRightS0C, shooterRightS1C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
@@ -392,10 +417,12 @@ public class RobotContainer {
         () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-
+    
     // Sets the desired positions for the speaker
     m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
-    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
+    m_driverController.x().onTrue(CommandFactoryUtility.createFeedCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem ))
+                          .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
+    m_driverController.b().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
     m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
     
     //#region POV controls
