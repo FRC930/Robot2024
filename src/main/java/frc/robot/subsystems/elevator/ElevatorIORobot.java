@@ -62,7 +62,7 @@ public class ElevatorIORobot implements TalonPosIO {
         // cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
         // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
         // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
-        cfg.CurrentLimits.StatorCurrentLimit = 150.0;
+        cfg.CurrentLimits.StatorCurrentLimit = 80.0;
         cfg.CurrentLimits.StatorCurrentLimitEnable = true;
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
