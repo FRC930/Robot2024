@@ -56,7 +56,7 @@ public final class CommandFactoryUtility {
     public static final double PIVOT_TIMEOUT = 1.0;                 /*sec*/
     public static final double ELEVATOR_TIMEOUT = 1.0;              /*sec*/
     public static final double TURRET_TIMEOUT = 1.0;                /*sec*/
-    private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
+    private static final double SHOOTER_TIMEOUT = 0.5;              /*sec*/
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
     private static final double AFTER_AMP_SHOOT_TIMEOUT = 0.6; 
 
@@ -180,6 +180,12 @@ public final class CommandFactoryUtility {
             .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
             .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
         .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
+        .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+        .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
+    }
+
+    public static Command createShootPreaimedCommand(IndexerSubsystem indexer) {
+        return indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED)
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }

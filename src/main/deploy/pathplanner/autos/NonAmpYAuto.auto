@@ -36,12 +36,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "preAimedShoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "NoAmpY4"

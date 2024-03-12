@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 8.0630507414861,
-        "y": 2.15
+        "x": 8.527894944520273,
+        "y": 2.119661414786453
       },
       "prevControl": {
-        "x": 7.348689712193428,
-        "y": 2.173421673091564
+        "x": 7.813533915227602,
+        "y": 2.143083087878017
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,12 +48,18 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "StopShoot",
-      "waypointRelativePos": 0.1,
+      "name": "Shoot",
+      "waypointRelativePos": 0.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "preAimedShoot"
+              }
+            },
             {
               "type": "named",
               "data": {

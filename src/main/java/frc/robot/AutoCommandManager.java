@@ -59,14 +59,12 @@ public class AutoCommandManager {
         PathPlannerAuto midWingShootCommand = new PathPlannerAuto("MidWingShoot(x1)");
         PathPlannerAuto botWingShootCommand = new PathPlannerAuto("BotWingShoot(x1)");
         PathPlannerAuto NonAmpYCommand = new PathPlannerAuto("NonAmpYAuto");
-        PathPlannerAuto NonAmpYNoStowCommand = new PathPlannerAuto("NonAmpYWOStow");
 
         m_chooser.setDefaultOption("None", null);
         m_chooser.addOption("RotationTest", rotationTest);
         m_chooser.addOption("WCenterShoot", centerShootWCommand);
         m_chooser.addOption("YCenterShoot", centerShootYCommand);
         m_chooser.addOption("NonAmpYAuto", NonAmpYCommand);
-        m_chooser.addOption("NonAmpYNoStow", NonAmpYNoStowCommand);
         m_chooser.addOption("LWingShoot", wingShoot2Command);
         // m_chooser.addOption("LWingShoot", wingShoot3Command);
         m_chooser.addOption("TopWingShoot(x1)", topWingShootCommand);
@@ -145,18 +143,18 @@ public class AutoCommandManager {
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
         );
         NamedCommands.registerCommand("noAmpYScore1", 
-            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 45.0, true)
-                .andThen(CommandFactoryUtility.createShootPreaimedCommand(shooter, pivot, indexer, turret))
+            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0, true)
+                .andThen(CommandFactoryUtility.createShootPreaimedCommand(indexer))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
                 .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
         NamedCommands.registerCommand("noAmpYScore2",
             CommandFactoryUtility.createPrepareShootCommand(turret, shooter, true)
-                .andThen(CommandFactoryUtility.createShootPreaimedCommand(shooter, pivot, indexer, turret))
+                .andThen(CommandFactoryUtility.createShootPreaimedCommand(indexer))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
         );
         NamedCommands.registerCommand("fullAim", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, false));
-        NamedCommands.registerCommand("preAimedShoot", CommandFactoryUtility.createShootPreaimedCommand(shooter, pivot, indexer, turret));
+        NamedCommands.registerCommand("preAimedShoot", CommandFactoryUtility.createShootPreaimedCommand(indexer));
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
 
     }
