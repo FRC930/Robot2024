@@ -45,6 +45,7 @@ public class LimeLightIntakeCommand extends Command {
     private double m_throttle = 0.0;
     private CommandXboxController m_controller;
     private double m_strafe = 0.0;
+    private double slope = 1.34; //Adjust if the location of the game piece camera moves
 
     private double m_distance;  
     private double m_TimeElapsed;
@@ -137,10 +138,17 @@ public class LimeLightIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        double tx = m_LimeLight.get_tx(); // TODO handle shakey imaging!!! may not have value tx 
+        // Crosshair isn't in the exact center, but instead to where the note will enter the robot
+        double tx = m_LimeLight.get_tx(); // degrees left and right from crosshair // TODO handle shakey imaging!!! may not have value tx 
+        double ty = m_LimeLight.get_ty(); // degrees up and down from crosshair
+        double linearTX = (ty/slope) - tx; 
+        /** 
+         * Since our camera isn't centered on the robot, when a note moves forward/backwards it will subsequently move left/right
+         * linearTX will automatically see how far forwards/backwards the note is and determine how many degrees off is the actual center using a linear slope
+        */
 
         //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
-        m_strafe = m_direction * MathUtil.clamp(pid.calculate(tx, 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
+        m_strafe = m_direction * MathUtil.clamp(pid.calculate(-linearTX, 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
         if(m_controller != null) {
             double xValue = Math.abs(Math.hypot(m_controller.getLeftX(), m_controller.getLeftY()));  // -negated value since back intake so need to backward
@@ -150,7 +158,9 @@ public class LimeLightIntakeCommand extends Command {
             m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
         } 
         
-        Logger.recordOutput("GamePiece/TX",tx);
+        Logger.recordOutput("GamePiece/TX", tx);
+        Logger.recordOutput("GamePiece/TY", ty);
+        Logger.recordOutput("GamePiece/adjustedTX", linearTX);
         // Logger.recordOutput("GamePiece/position", profile.calculate(m_TimeElapsed).position);
         Logger.recordOutput("GamePiece/throttle", m_throttle);
         Logger.recordOutput("GamePiece/strafe", m_strafe);
