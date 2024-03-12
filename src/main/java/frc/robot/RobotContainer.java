@@ -459,7 +459,7 @@ public class RobotContainer {
       ;
 
     m_driverController.rightTrigger()
-      .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController::getLeftY)
+      .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController)
         .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
           .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
     ;
