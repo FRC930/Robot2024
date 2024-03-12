@@ -25,6 +25,9 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
 
+
+    private static final double PIVOT_FEED_POS = 45.0;
+
     //#region positions
     public static final double TURRET_STOW_POS = 0.0;               /*Deg*/
 
@@ -38,11 +41,14 @@ public final class CommandFactoryUtility {
     public static final double INDEXER_SPEAKER_SPEED = 0.9;         /*Value*/
     public static final double INDEXER_INTAKE_SPEED = 0.5;          /*Value*/
     public static final double INDEXER_REVERSE_SPEED = -0.1;        /*value*/
+    public static final double INDEXER_FEED_SPEED = 0.9;            /*Value*/
 
-    public static final double LEFT_SHOOTER_AMP_SPEED = 40.0;      /*Rot/s*/
-    public static final double RIGHT_SHOOTER_AMP_SPEED = 40.0;     /*Rot/s*/
+    private static final double SHOOTER_LEFT_FEED_SPEED = 90.0;     /*Rot/s*/
+    private static final double SHOOTER_RIGHT_FEED_SPEED = 90.0;    /*Rot/s*/
+    public static final double LEFT_SHOOTER_AMP_SPEED = 40.0;       /*Rot/s*/
+    public static final double RIGHT_SHOOTER_AMP_SPEED = 40.0;      /*Rot/s*/
     public static final double INDEXER_AMP_SPEED = 0.2;             /*Value*/
-
+    
     public static final double LEFT_SHOOTER_EJECT_SPEED = 40.0;     /*Rot/s*/
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
     public static final double INDEXER_EJECT_SPEED = -0.2;          /*Value*/
@@ -243,5 +249,16 @@ public final class CommandFactoryUtility {
             shooter.newSetSpeedsCommand(0.0,0.0)
             .alongWith(indexer.newSetSpeedCommand(0))
         );
+    }
+
+    public static Command createFeedCommand(PivotSubsystem pivot, ShooterSubsystem shooter, IndexerSubsystem indexer) {
+        return pivot.newSetPosCommand(PIVOT_FEED_POS)
+        .andThen(shooter.newSetSpeedsWithSlotCommand(SHOOTER_LEFT_FEED_SPEED,SHOOTER_RIGHT_FEED_SPEED,1))
+        .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
+                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+                )
+        .andThen(indexer.newSetSpeedCommand(INDEXER_FEED_SPEED))
+        .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+        .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 }

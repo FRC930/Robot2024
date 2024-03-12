@@ -12,8 +12,8 @@ public class ShooterCommand extends Command {
 
     protected ShooterSubsystem m_shooter;
 
-    private double m_leftMotorSpeed;
-    private double m_rightMotorSpeed;
+    protected double m_leftMotorSpeed;
+    protected double m_rightMotorSpeed;
 
     /**
     * <h3>ShooterCommand</h3>
