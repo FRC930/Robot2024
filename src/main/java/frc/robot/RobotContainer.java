@@ -419,16 +419,32 @@ public class RobotContainer {
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     
-    // Sets the desired positions for the speaker
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
-    m_driverController.x().onTrue(CommandFactoryUtility.createFeedCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem ))
-                          .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
-    m_driverController.b().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
-    
-    //#region POV controls
+    // Makes the shooter target presets
+    m_driverController.povUp()
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
+    m_driverController.povLeft().or(m_driverController.povRight())
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
+    m_driverController.povDown()
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
+    //m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
 
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+    //Feed shot button
+    m_driverController.x()
+      .onTrue(CommandFactoryUtility.createFeedCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem ))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem))
+    ;
+    
+    // Eject shooter button
+    m_driverController.y()
+      .onTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+      .onFalse(
+        CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)
+        .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED))
+      )
+    ;
+    
+
+    //#region POV controls
 
     // m_driverController.pov(0).whileTrue(
     //   drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
@@ -447,25 +463,20 @@ public class RobotContainer {
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
     // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    // Eject shooter button
-    m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)
-            .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)));
     
-    // Intake button TODO Test
+    // Intake button
     m_driverController.leftBumper()
       .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
         .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
       ;
 
-    m_driverController.rightTrigger()
+    m_driverController.leftTrigger()
       .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController)
         .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
           .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
     ;
       
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    m_driverController.rightBumper().whileTrue(
       new ConditionalCommand(
         new RepeatCommand(CommandFactoryUtility.createPivotAndShooterSpeedCommand(m_shooterSubsystem, m_pivotSubsystem, null)),
         new InstantCommand(),
@@ -475,7 +486,7 @@ public class RobotContainer {
      
 
     // Speaker score button TODO: TEST CHANGES
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    m_driverController.rightBumper().whileTrue(
         new ConditionalCommand(
           new WaitCommand(0.2).until(() -> m_pivotSubsystem.getPosition()>0.0)
             .andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
@@ -493,13 +504,14 @@ public class RobotContainer {
         )
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
-
+    
+    m_driverController.rightTrigger()
+      .onTrue(CommandFactoryUtility.createStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+      .onFalse(CommandFactoryUtility.createStopStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+    ;
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
-    SmartDashboard.putData("Test_Star_Amp_Shot", CommandFactoryUtility.createStarAmpCommand(m_indexerSubsystem, m_turretSubsystem,m_pivotSubsystem));
-    SmartDashboard.putData("Test_Star_Amp_Stop", CommandFactoryUtility.createStopStarAmpCommand(m_indexerSubsystem, m_turretSubsystem,m_pivotSubsystem));
   }
 
   /** 
