@@ -137,8 +137,10 @@ public class IndexerSubsystem extends SubsystemBase {
                 m_counter = 0;
             }
         }
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Star/Velocity" ,getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Star/Voltage" ,getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Top/Velocity" ,m_rollerTopIO.getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Top/Voltage" ,m_rollerTopIO.getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Sensor", getSensor());
         Logger.recordOutput(this.getClass().getSimpleName() + "/LastSensorCheck", Timer.getFPGATimestamp());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SensorRange", m_sensorIO.getRange());
