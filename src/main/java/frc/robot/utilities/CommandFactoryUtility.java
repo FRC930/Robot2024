@@ -25,12 +25,11 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
 
-
     private static final double INDEXER_STAR_TIMEOUT = 0.3;
 
     private static final double INDEXER_STAR_INDEX_SPEED = 0.9;
 
-    private static final int AMP_STAR_PIVOT_POS = 25;
+    private static final double AMP_STAR_PIVOT_POS = 25.0;
 
     private static final double PIVOT_FEED_POS = 45.0;
 
@@ -137,20 +136,6 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
-    // public static Command createAmpScoreCommand(PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
-    //     return //elevator.newSetPosCommand(ELEVATOR_AMP_POS)
-    //             (pivot.newSetPosCommand(PIVOT_AMP_POS))
-    //                 .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
-    //                 .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
-    //                 //.andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
-    //                             .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT))
-    //                             .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
-    //                             .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-    //                 .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
-    //                 .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
-    //                 .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
-    // }
-
     // public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
     //     return elevator.newSetPosCommand(ELEVATOR_CLIMB_POS)
     //         .andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT));
@@ -242,20 +227,6 @@ public final class CommandFactoryUtility {
                 .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
     }
 
-    // public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {
-    //     return 
-    //     //hood.newWaitUntilAmpIsExtendedCommand().deadlineWith(hood.newExtendHoodCommand())
-    //     shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
-    //     .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-    //     .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
-    //     .andThen(indexer.newUntilNoNoteFoundCommand())
-    //     .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
-    //     .andThen(
-    //         //hood.newRetractHoodCommand()
-    //         shooter.newSetSpeedsCommand(0.0,0.0)
-    //         .alongWith(indexer.newSetSpeedCommand(0))
-    //     );
-    // }
 
     public static Command createFeedCommand(PivotSubsystem pivot, ShooterSubsystem shooter, IndexerSubsystem indexer) {
         return pivot.newSetPosCommand(PIVOT_FEED_POS)
@@ -281,8 +252,8 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
-        return indexer.newSetSpeedCommand(0.0)
-        .andThen(pivot.newSetPosCommand(0.0))
+        return pivot.newSetPosCommand(0.0)
+        .alongWith(indexer.newSetSpeedCommand(0.0))
         .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret));
     }
 }

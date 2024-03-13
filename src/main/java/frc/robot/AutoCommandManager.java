@@ -129,7 +129,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("intake", 
             CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
         NamedCommands.registerCommand("ampScore", 
-            new PrintCommand("TODO add new amp command.")
+            new PrintCommand("TODO add new amp command.") //TODO implement new amp here
         );    
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));
         NamedCommands.registerCommand("sideWingScore", 

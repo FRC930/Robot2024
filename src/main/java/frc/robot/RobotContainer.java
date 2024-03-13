@@ -468,14 +468,16 @@ public class RobotContainer {
     m_driverController.leftBumper()
       .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
         .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
-      ;
+    ;
 
+    // Game-Piece Intake
     m_driverController.leftTrigger()
       .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController)
         .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
           .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
     ;
-      
+    
+    // Auto Aim Shoot
     m_driverController.rightBumper().whileTrue(
       new ConditionalCommand(
         new RepeatCommand(CommandFactoryUtility.createPivotAndShooterSpeedCommand(m_shooterSubsystem, m_pivotSubsystem, null)),
@@ -483,9 +485,15 @@ public class RobotContainer {
         () -> m_speakerUtil.getAutoAim()
       )
     );
+
+    // Amp Button
+    m_driverController.rightTrigger()
+      .onTrue(CommandFactoryUtility.createStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+      .onFalse(CommandFactoryUtility.createStopStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+    ;
      
 
-    // Speaker score button TODO: TEST CHANGES
+    // Speaker score button
     m_driverController.rightBumper().whileTrue(
         new ConditionalCommand(
           new WaitCommand(0.2).until(() -> m_pivotSubsystem.getPosition()>0.0)
@@ -505,10 +513,6 @@ public class RobotContainer {
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
     
-    m_driverController.rightTrigger()
-      .onTrue(CommandFactoryUtility.createStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
-      .onFalse(CommandFactoryUtility.createStopStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
-    ;
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
