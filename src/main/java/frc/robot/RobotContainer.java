@@ -124,7 +124,7 @@ public class RobotContainer {
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
     private static final double INTAKE_SUPPLY_CURRENT_LIMIT = 30.0;
-    private static final double INTAKE_STATOR_CURRENT_LIMIT = 150.0;
+    private static final double INTAKE_STATOR_CURRENT_LIMIT = 80.0;
 
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
@@ -328,6 +328,7 @@ public class RobotContainer {
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
+        Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS),
         Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
@@ -337,8 +338,8 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    private final AmpHoodSubsystem m_ampHoodSubsystem = new AmpHoodSubsystem(
-      Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
+    // private final AmpHoodSubsystem m_ampHoodSubsystem = new AmpHoodSubsystem(
+    //   Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
 
     private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_turretSubsystem); 
     private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility(m_turretSubsystem);
@@ -418,16 +419,32 @@ public class RobotContainer {
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     
-    // Sets the desired positions for the speaker
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
-    m_driverController.x().onTrue(CommandFactoryUtility.createFeedCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem ))
-                          .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
-    m_driverController.b().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
-    
-    //#region POV controls
+    // Makes the shooter target presets
+    m_driverController.povUp()
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
+    m_driverController.povLeft().or(m_driverController.povRight())
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
+    m_driverController.povDown()
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
+    //m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
 
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+    //Feed shot button
+    m_driverController.x()
+      .onTrue(CommandFactoryUtility.createFeedCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem ))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem))
+    ;
+    
+    // Eject shooter button
+    m_driverController.y()
+      .onTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+      .onFalse(
+        CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)
+        .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED))
+      )
+    ;
+    
+
+    //#region POV controls
 
     // m_driverController.pov(0).whileTrue(
     //   drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
@@ -446,35 +463,38 @@ public class RobotContainer {
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
     // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    // Eject shooter button
-    m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)
-            .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)));
     
-    // Intake button TODO Test
+    // Intake button
     m_driverController.leftBumper()
       .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
         .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
-      ;
+    ;
 
-    m_driverController.rightTrigger()
+    // Game-Piece Intake
+    m_driverController.leftTrigger()
       .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController)
         .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
           .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
     ;
-      
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    
+    // Auto Aim Shoot
+    m_driverController.rightBumper().whileTrue(
       new ConditionalCommand(
         new RepeatCommand(CommandFactoryUtility.createPivotAndShooterSpeedCommand(m_shooterSubsystem, m_pivotSubsystem, null)),
         new InstantCommand(),
         () -> m_speakerUtil.getAutoAim()
       )
     );
+
+    // Amp Button
+    m_driverController.rightTrigger()
+      .onTrue(CommandFactoryUtility.createStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+      .onFalse(CommandFactoryUtility.createStopStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+    ;
      
 
-    // Speaker score button TODO: TEST CHANGES
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    // Speaker score button
+    m_driverController.rightBumper().whileTrue(
         new ConditionalCommand(
           new WaitCommand(0.2).until(() -> m_pivotSubsystem.getPosition()>0.0)
             .andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
@@ -492,19 +512,10 @@ public class RobotContainer {
         )
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
-
     
-    // Amp score button
-    // m_driverController.rightBumper().and(m_driverController.rightTrigger())
-    //   .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
-    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
-    SmartDashboard.putData("testExtendHood", m_ampHoodSubsystem.newExtendHoodCommand());
-    SmartDashboard.putData("testRetractHood", m_ampHoodSubsystem.newRetractHoodCommand());
-    SmartDashboard.putData("testAmpScore", CommandFactoryUtility.createAmpShootCommand(m_ampHoodSubsystem, m_shooterSubsystem, m_indexerSubsystem));
   }
 
   /** 
@@ -610,9 +621,10 @@ public class RobotContainer {
    */
   public void portForwardCameras() {
     PortForwarder.add(5800, "10.9.30.30", 5801); //limelight-front
-    PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-back
-    PortForwarder.add(5802, "10.9.30.32", 5801); //limelight-game
-    PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-turret
+    PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-right
+    PortForwarder.add(5802, "10.9.30.32", 5801); //limelight-left
+    PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-back
+    PortForwarder.add(5804, "10.9.30.34", 5801); //limelight-game 
   }
 
   /**
@@ -620,12 +632,10 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (USE_LIMELIGHT_APRIL_TAG) {  
-      // updateVisionOdometry("limelight-front");
-      // updateVisionOdometry("limelight-back");
-      // updatePoseEstimatorWithVisionBotPose("limelight-front");
-      // updatePoseEstimatorWithVisionBotPose("limelight-back");
       updatePoseEstimateWithAprilTags("limelight-front");
       updatePoseEstimateWithAprilTags("limelight-back");
+      updatePoseEstimateWithAprilTags("limelight-right");
+      updatePoseEstimateWithAprilTags("limelight-left");
     }
   }
 
@@ -633,11 +643,6 @@ public class RobotContainer {
   public void updatePoseEstimateWithAprilTags(String limeLightName) {
     LimelightHelpers.PoseEstimate lastResult = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
     double fpgaTimestamp = Timer.getFPGATimestamp();
-
-    // int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to
-    // store all of the IDs that the Limelight saw
-    // Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs",
-    // Arrays.toString(idArray));
 
     // distance from current pose to vision estimated pose
     Translation2d translation = drivetrain.getState().Pose.getTranslation();
@@ -681,176 +686,7 @@ public class RobotContainer {
     
     Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.pose);
   }
-
-
-  public void updatePoseEstimatorWithVisionBotPose(String limeLightName) {
-    Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
-    // invalid LL data
-    if (lastResult.getBotPose2d_wpiBlue().getX() == 0.0) {
-      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-      return;
-    }
-    double fpgaTimestamp = Timer.getFPGATimestamp();
-
-    // distance from current pose to vision estimated pose
-    Translation2d translation = drivetrain.getState().Pose.getTranslation();
-    double poseDifference = translation.getDistance(lastResult.getBotPose2d_wpiBlue().getTranslation());
-
-if (lastResult.valid) {
-    double xyStds;
-    double degStds;
-    // multiple targets detected
-    if (lastResult.targets_Fiducials.length >= 2) {
-      xyStds = 0.1;
-      degStds = 6;
-    }
-    // 1 target with large area and close to estimated pose
-    else if (LimelightHelpers.getTA(limeLightName) > 0.8 && poseDifference < 0.5) {
-      xyStds = 1.0;
-      degStds = 12;
-    }
-    // 1 target farther away and estimated pose is close
-    else if (LimelightHelpers.getTA(limeLightName) > 0.1 && poseDifference < 0.3) {
-      xyStds = 2.0;
-      degStds = 30;
-    }
-    // conditions don't match to add a vision measurement
-    else {
-      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-      return;
-    }
-
-    this.visioncounter++;
-
-    Logger.recordOutput("LimeLightOdometry/"+ limeLightName + "/UpdatCounts", this.visioncounter);
-
-      m_StartInTeleopUtility.updateTags();
-      int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
-      Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
-      Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
-
-      if (m_visionUpdatesOdometry) {
-          drivetrain.setVisionMeasurementStdDevs(
-            VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-            drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(),  
-          fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
-            - (lastResult.latency_capture/1000.0) //
-            - lastResult.latency_jsonParse / 1000.0 /*already in millis*/); // Due to json parsing in getlatestresults
-          SmartDashboard.putBoolean(limeLightName + "/Updated", true);
-      }
-    }
-  }
   
-
-  /**
-   * Prints limelight, and limelight name. If the last result was valid, and the length is bigger than 0.
-   * If there is a alliance to get the alliance, and if its red it sets the alliance to red; otherwise it sets the alliance to blue.
-   * @param limeLightName
-   */
-  public void updateVisionOdometry(String limeLightName) {
-      Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
-      double fpgaTimestamp = Timer.getFPGATimestamp();
-      boolean resultIsGood = false;
-
-      if (isValidResult(lastResult)) { //Verifies that the Tags are valid, have values, and are between IDs 1 and 16
-        // if(lastResult.timestamp_RIOFPGA_capture > m_last_RIOFPGA_timestamp) {
-          int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
-
-          //We use the percentage of the screen (TA) as a reference to distance
-          if (idArray.length > 1) { //If the Limelight sees more than one Tag
-              double area = 100.0; //Defaults to not using Tags
-              /**
-               * We sort by distances based on the groups of Tags because the Source Tags are farther apart than the Speaker Tags.
-               * This makes the TA value bigger at the same distance away from the Tags.
-              */
-              if ((arrayContainsPair(idArray, 1, 2)) || (arrayContainsPair(idArray, 9, 10))) { //If the Limelight sees Source Tags
-                  area = 0.6;//Source
-              } else if ((arrayContainsPair(idArray, 3, 4)) || (arrayContainsPair(idArray, 7, 8))) { //If the Limelight sees Speaker Tags
-                  area = 0.35; //Speaker
-              } else { //If the Limelight sees more than two tags
-                  area = 0.0; //Any
-              }
-                        
-              if (LimelightHelpers.getTA(limeLightName) > area) {
-                m_StartInTeleopUtility.updateTags();
-                
-                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
-                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
-
-                if (m_visionUpdatesOdometry) {
-                    drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
-                    fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
-                      - (lastResult.latency_capture/1000.0) //
-                      - lastResult.latency_jsonParse / 1000.0/*already in millis*/); // Due to json parsing in getlatestresults
-                    resultIsGood = true;
-                }
-              }
-          }
-          // m_last_RIOFPGA_timestamp = lastResult.timestamp_RIOFPGA_capture;
-        // }
-      }
-       SmartDashboard.putBoolean(limeLightName + "/Updated", resultIsGood);
-  }
-
-  /**
-   * 
-   * Validates that the results the Limelight got are what we want to use
-   * 
-   * @param result The raw JSON dump from the Limelight
-   * @return Boolean that says if we want to use our results
-   */
-  private boolean isValidResult(Results result) {
-      return result.valid && result.targets_Fiducials.length > 0 &&
-              result.targets_Fiducials[0].fiducialID >= 1 && result.targets_Fiducials[0].fiducialID <= 16;
-  }
-
-  /**
-   * 
-   * Returns a new array that contains all of the IDs that the Limelight sees
-   * 
-   * @param result The raw JSON dump from the Limelight
-   * @return An array that contains all of the IDs that the Limelight sees
-   */
-  private int[] createAprilTagIDArray(Results result) {
-      int[] idArray = new int[result.targets_Fiducials.length];
-      for (int i = 0; i < result.targets_Fiducials.length; i++) {
-          idArray[i] = (int) result.targets_Fiducials[i].fiducialID;
-      }
-
-      return idArray;
-  }
-
-  /**
-   * 
-   * Determines if both of the IDs are in the array
-   * 
-   * @param array An Array that contains all of the April Tag IDs
-   * @param value1 ID number 1
-   * @param value2 ID number 2
-   * @return Boolean that returns if the two numbers are in the array
-   */
-  private boolean arrayContainsPair(int[] array, int value1, int value2) {
-      return arrayContains(array, value1) && arrayContains(array, value2);
-  }
-
-  /**
-   * 
-   * Determines if the array contains a specific number
-   * 
-   * @param array An Array that contains all of the April Tag IDs
-   * @param value ID value that is being checked
-   * @return boolean that says if the number is in the array
-   */
-  private boolean arrayContains(int[] array, int value) {
-      for (int i : array) {
-          if (i == value) {
-              return true;
-          }
-      }
-
-      return false;
-  }
-
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
   }

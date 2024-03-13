@@ -4,7 +4,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -27,20 +26,43 @@ public class IndexerSubsystem extends SubsystemBase {
     private boolean m_sensorStatus;
     private boolean m_turnedOn = false;
     private int m_counter=0;
+    private TalonRollerIO m_rollerTopIO;
 
     /**
      * <h3>IndexerSubsystem</h3>
      * Contains the indexer motor and time of flight through IOs, 
      * allowing it to take a physical motor or sim representation
-     * @param motor RollerMotorIORobot (Physical) or RollerMotorIOSim (Simulation) for indexer motor
+     * @param starIndexerMotor RollerMotorIORobot (Physical) or RollerMotorIOSim (Simulation) for indexer motor
+     * @param topIndexerMotor RollerMotorIORobot (Physical) or RollerMotorIOSim (Simulation) for indexer motor
      * @param ToF TimeOfFlightIORobot (Physical) or TimeOfFlightIOSim (Simulation) for indexer sensor
      */
-    public IndexerSubsystem(TalonRollerIO motor, TimeOfFlightIO ToF) {
-        m_rollerIO = motor;
+    public IndexerSubsystem(TalonRollerIO starIndexerMotor, TalonRollerIO topIndexerMotor, TimeOfFlightIO ToF) {
+        m_rollerIO = starIndexerMotor;
+        m_rollerTopIO = topIndexerMotor;
         m_sensorIO = ToF;
 
-        motor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
-        
+        starIndexerMotor.getTalon().setInverted(false);
+        starIndexerMotor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
+        topIndexerMotor.getTalon().setInverted(true);
+        topIndexerMotor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
+
+    }
+
+
+    /**
+     * <h3>setIndexerSpeed</h3>
+     * @param speed PercentOutput speed to apply
+     */
+    public void setStarIndexerSpeed(double speed) {
+        m_rollerIO.setSpeed(speed);
+    }
+
+    /**
+     * <h3>setAmpSpeed</h3>
+     * @param speed PercentOutput speed to apply
+     */
+    public void setTopIndexerSpeed(double speed) {
+        m_rollerTopIO.setSpeed(speed);
     }
 
     /**
@@ -48,7 +70,8 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param speed PercentOutput speed to apply
      */
     public void setSpeed(double speed) {
-        m_rollerIO.setSpeed(speed);
+        setStarIndexerSpeed(speed);
+        setTopIndexerSpeed(speed);
     }
 
     /**
@@ -114,8 +137,10 @@ public class IndexerSubsystem extends SubsystemBase {
                 m_counter = 0;
             }
         }
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Star/Velocity" ,getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Star/Voltage" ,getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Top/Velocity" ,m_rollerTopIO.getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Top/Voltage" ,m_rollerTopIO.getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Sensor", getSensor());
         Logger.recordOutput(this.getClass().getSimpleName() + "/LastSensorCheck", Timer.getFPGATimestamp());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SensorRange", m_sensorIO.getRange());
@@ -123,6 +148,14 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command newSetSpeedCommand(double speed) {
         return new InstantCommand(() -> setSpeed(speed), this);
+    }
+
+    public Command newSetStarSpeedCommand(double speed) {
+        return new InstantCommand(() -> setStarIndexerSpeed(speed), this);
+    }
+
+    public Command newSetTopSpeedCommand(double speed) {
+        return new InstantCommand(() -> setTopIndexerSpeed(speed), this);
     }
 
     public Command newUntilNoteFoundCommand() {
