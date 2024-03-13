@@ -497,6 +497,9 @@ public class RobotContainer {
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    SmartDashboard.putData("Test_Star_Amp_Shot", CommandFactoryUtility.createStarAmpCommand(m_indexerSubsystem, m_turretSubsystem,m_pivotSubsystem));
+    SmartDashboard.putData("Test_Star_Amp_Stop", CommandFactoryUtility.createStopStarAmpCommand(m_indexerSubsystem, m_turretSubsystem,m_pivotSubsystem));
   }
 
   /** 

@@ -148,6 +148,14 @@ public class IndexerSubsystem extends SubsystemBase {
         return new InstantCommand(() -> setSpeed(speed), this);
     }
 
+    public Command newSetStarSpeedCommand(double speed) {
+        return new InstantCommand(() -> setStarIndexerSpeed(speed), this);
+    }
+
+    public Command newSetTopSpeedCommand(double speed) {
+        return new InstantCommand(() -> setTopIndexerSpeed(speed), this);
+    }
+
     public Command newUntilNoteFoundCommand() {
         if(Robot.isReal()) {
             return new WaitUntilCommand(() -> getSensor());  // DO not set subsystem since just getting sensor value

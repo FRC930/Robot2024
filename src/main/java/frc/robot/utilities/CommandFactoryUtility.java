@@ -26,6 +26,12 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 public final class CommandFactoryUtility {
 
 
+    private static final double INDEXER_STAR_TIMEOUT = 0.3;
+
+    private static final double INDEXER_STAR_INDEX_SPEED = 0.9;
+
+    private static final int AMP_STAR_PIVOT_POS = 25;
+
     private static final double PIVOT_FEED_POS = 45.0;
 
     //#region positions
@@ -260,5 +266,23 @@ public final class CommandFactoryUtility {
         .andThen(indexer.newSetSpeedCommand(INDEXER_FEED_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
+    }
+
+    public static Command createStarAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
+        return indexer.newSetStarSpeedCommand(INDEXER_STAR_INDEX_SPEED)
+        .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
+        .andThen(pivot.newSetPosCommand(AMP_STAR_PIVOT_POS))
+        .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret))
+        .andThen(new WaitCommand(INDEXER_STAR_TIMEOUT)
+                    .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)))
+        .andThen(indexer.newSetSpeedCommand(-INDEXER_STAR_INDEX_SPEED))
+        .andThen(indexer.newUntilNoNoteFoundCommand())
+        .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT));
+    }
+
+    public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
+        return indexer.newSetSpeedCommand(0.0)
+        .andThen(pivot.newSetPosCommand(0.0))
+        .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret));
     }
 }
