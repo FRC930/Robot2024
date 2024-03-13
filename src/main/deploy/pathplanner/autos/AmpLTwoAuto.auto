@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.4194171612308972,
-      "y": 6.354311170160802
+      "y": 6.9956624528633675
     },
     "rotation": 180.0
   },
@@ -12,45 +12,39 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "sideWingScore"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "AmpStartToTopCenterY"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TopCenterToWingLine1Y"
+            "pathName": "AmpL1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "WingLine1ToTopMidCenterY"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TopMidCenterToWingLine1Y"
+            "name": "stopIntake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpL2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimAndShoot"
           }
         }
       ]

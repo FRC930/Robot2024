@@ -3,12 +3,14 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "Amp",
+    "AmpY",
     "BotSpeaker",
+    "AmpL",
     "MidSpeaker",
-    "NoAmpY",
+    "NonAmpY",
     "Robot2024",
-    "TopSpeaker"
+    "TopSpeaker",
+    "Two"
   ],
   "autoFolders": [
     "Robot2024"

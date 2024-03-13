@@ -1,0 +1,109 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.984090364757048,
+        "y": 2.002553049328638
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.014643980785821,
+        "y": 1.2999028565817468
+      },
+      "isLocked": false,
+      "linkedName": "NonAmpY3"
+    },
+    {
+      "anchor": {
+        "x": 6.712715279924141,
+        "y": 1.8737338473250418
+      },
+      "prevControl": {
+        "x": 6.400214981257319,
+        "y": 1.151076906658008
+      },
+      "nextControl": {
+        "x": 6.900088664656643,
+        "y": 2.3070347995189566
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.527894944520273,
+        "y": 2.119661414786453
+      },
+      "prevControl": {
+        "x": 7.813533915227602,
+        "y": 2.143083087878017
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "NonAmpY4"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "preparedShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "stopShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "NonAmpY",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

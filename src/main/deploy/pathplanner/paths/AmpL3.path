@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.527894944520273,
-        "y": 2.119661414786453
+        "x": 2.9026396514331507,
+        "y": 5.545221859674489
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.848919784309448,
-        "y": 0.9924230196315118
+        "x": 2.9026396514331507,
+        "y": 5.1297544341817956
       },
       "isLocked": false,
-      "linkedName": "NoAmpY4"
+      "linkedName": "AmpL2"
     },
     {
       "anchor": {
-        "x": 3.8992008753248286,
-        "y": 2.459275674614116
+        "x": 2.6373441619921745,
+        "y": 4.180768646843998
       },
       "prevControl": {
-        "x": 4.816826556730039,
-        "y": 1.1445653660538107
+        "x": 1.9229831326995024,
+        "y": 5.328430628330587
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Aim",
-      "waypointRelativePos": 0.55,
+      "name": "Intake",
+      "waypointRelativePos": 0.3,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "fullAim"
+                "name": "intake"
               }
             }
           ]
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 153.94650468950897,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "NoAmpY",
+  "folder": "AmpL",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 90.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

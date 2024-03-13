@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NoAmpY1"
+            "pathName": "NonAmpY1"
           }
         },
         {
@@ -26,31 +26,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NoAmpY2"
+            "pathName": "NonAmpY2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NoAmpY3"
+            "pathName": "NonAmpY3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NoAmpY4"
+            "pathName": "NonAmpY4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NoAmpY5"
+            "pathName": "NonAmpY5"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "preAimedShoot"
+            "name": "preparedShoot"
           }
         },
         {

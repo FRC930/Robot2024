@@ -3,53 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.984090364757048,
-        "y": 2.002553049328638
+        "x": 5.377679913705047,
+        "y": 6.640044321458116
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.014643980785821,
-        "y": 1.2999028565817468
+        "x": 6.736136953015703,
+        "y": 6.4058275905424855
       },
       "isLocked": false,
-      "linkedName": "NoAmpY3"
+      "linkedName": "AmpY3"
     },
     {
       "anchor": {
-        "x": 6.712715279924141,
-        "y": 1.8737338473250418
+        "x": 8.305389050150424,
+        "y": 5.773442417070284
       },
       "prevControl": {
-        "x": 6.400214981257319,
-        "y": 1.151076906658008
-      },
-      "nextControl": {
-        "x": 6.900088664656643,
-        "y": 2.3070347995189566
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.527894944520273,
-        "y": 2.119661414786453
-      },
-      "prevControl": {
-        "x": 7.813533915227602,
-        "y": 2.143083087878017
+        "x": 6.607317751012106,
+        "y": 5.820285763253409
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NoAmpY4"
+      "linkedName": "AmpY4"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
-      "waypointRelativePos": 0.0,
+      "name": "ShootThenIntake",
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -57,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "preAimedShoot"
+                "name": "preparedShoot"
               }
             },
             {
@@ -65,18 +49,7 @@
               "data": {
                 "name": "stopShoot"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Intake",
-      "waypointRelativePos": 0.85,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
@@ -100,7 +73,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "NoAmpY",
+  "folder": "AmpY",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

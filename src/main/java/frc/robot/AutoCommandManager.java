@@ -49,27 +49,26 @@ public class AutoCommandManager {
             speakerUtil, 
             intake, 
             pivot);
-        //m_chooser = AutoBuilder.buildAutoChooser();
-        PathPlannerAuto rotationTest = new PathPlannerAuto("RotationTest");
-        PathPlannerAuto centerShootWCommand = new PathPlannerAuto("CenterShoot(x2)(W)");
-        PathPlannerAuto centerShootYCommand = new PathPlannerAuto("CenterShoot(x1)(Y)");
-        // PathPlannerAuto wingShoot3Command = new PathPlannerAuto("WingShoot(x3)(L)");
-        PathPlannerAuto wingShoot2Command = new PathPlannerAuto("WingShoot(x2)(L)");
-        PathPlannerAuto topWingShootCommand = new PathPlannerAuto("TopWingShoot(x1)");
-        PathPlannerAuto midWingShootCommand = new PathPlannerAuto("MidWingShoot(x1)");
-        PathPlannerAuto botWingShootCommand = new PathPlannerAuto("BotWingShoot(x1)");
-        PathPlannerAuto NonAmpYCommand = new PathPlannerAuto("NonAmpYAuto");
+            
+        PathPlannerAuto ampYAuto = new PathPlannerAuto("AmpYAuto");
+        PathPlannerAuto nonAmpYCommand = new PathPlannerAuto("NonAmpYAuto");
+
+        PathPlannerAuto ampLThreeAuto = new PathPlannerAuto("AmpLThreeAuto");
+        PathPlannerAuto ampLTwoAuto = new PathPlannerAuto("AmpLTwoAuto");
+
+        PathPlannerAuto ampTwoAuto = new PathPlannerAuto("AmpTwoAuto");
+        PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
+        PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
 
         m_chooser.setDefaultOption("None", null);
-        m_chooser.addOption("RotationTest", rotationTest);
-        m_chooser.addOption("WCenterShoot", centerShootWCommand);
-        m_chooser.addOption("YCenterShoot", centerShootYCommand);
-        m_chooser.addOption("NonAmpYAuto", NonAmpYCommand);
-        m_chooser.addOption("LWingShoot", wingShoot2Command);
-        // m_chooser.addOption("LWingShoot", wingShoot3Command);
-        m_chooser.addOption("TopWingShoot(x1)", topWingShootCommand);
-        m_chooser.addOption("MidWingShoot(x1)", midWingShootCommand);
-        m_chooser.addOption("BotWingShoot(x1)", botWingShootCommand);
+
+        m_chooser.addOption("AmpY", ampYAuto);
+        m_chooser.addOption("NonAmpYAuto", nonAmpYCommand);
+        m_chooser.addOption("LTwo", ampLTwoAuto);
+        m_chooser.addOption("LThree", ampLThreeAuto);
+        m_chooser.addOption("AmpTwo", ampTwoAuto);
+        m_chooser.addOption("MidTwo", midTwoAuto);
+        m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
@@ -122,7 +121,6 @@ public class AutoCommandManager {
         );
         NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
-        NamedCommands.registerCommand("closeAim", new TurretAimCommand(turret, true));
         NamedCommands.registerCommand("intakeNoIndexer", 
             CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
         NamedCommands.registerCommand("intake", 
@@ -132,29 +130,14 @@ public class AutoCommandManager {
                 .andThen(CommandFactoryUtility.createNoteBackUpCommand(indexer, intake))
         );    
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));
-        NamedCommands.registerCommand("sideWingScore", 
-            CommandFactoryUtility.createTurretPreaimCommand(turret, true)
-                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, 45.0))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
-        );
-        NamedCommands.registerCommand("closeAimAndShoot", 
-            CommandFactoryUtility.createTurretPreaimCommand(turret, true)
-                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
-        );
-        NamedCommands.registerCommand("noAmpYScore1", 
-            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0, true)
-                .andThen(CommandFactoryUtility.createShootPreaimedCommand(indexer))
+        NamedCommands.registerCommand("movingSideShoot", 
+            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0)
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
                 .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
-        NamedCommands.registerCommand("noAmpYScore2",
-            CommandFactoryUtility.createPrepareShootCommand(turret, shooter, true)
-                .andThen(CommandFactoryUtility.createShootPreaimedCommand(indexer))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
-        );
-        NamedCommands.registerCommand("fullAim", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, false));
-        NamedCommands.registerCommand("preAimedShoot", CommandFactoryUtility.createShootPreaimedCommand(indexer));
+        NamedCommands.registerCommand("prepareShoot", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, null));
+        NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
 
     }

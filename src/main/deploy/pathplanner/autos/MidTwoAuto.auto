@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.44283883432246,
-      "y": 5.539225686154655
+      "x": 1.4311279977766789,
+      "y": 5.527514849608872
     },
     "rotation": 180.0
   },
@@ -14,31 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "sideWingScore"
+            "name": "aimAndShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "MidAmpStartToTopWing"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setMid"
+            "pathName": "MidTwo1"
           }
         },
         {

@@ -190,7 +190,7 @@ public final class CommandFactoryUtility {
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    public static Command createShootPreaimedCommand(IndexerSubsystem indexer) {
+    public static Command createShootPreparedCommand(IndexerSubsystem indexer) {
         return indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED)
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
@@ -205,22 +205,17 @@ public final class CommandFactoryUtility {
         return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, null);
     }
 
-    public static Command createTurretPreaimCommand(TurretSubsystem turret , boolean autoAim) {
-        return new TurretAimCommand(turret, autoAim)
-           .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
-    }
-
     public static Command createTurretPreaimCommand(TurretSubsystem turret) {
         return new TurretAimCommand(turret)
            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT));
     }
 
-    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, boolean closeShot) {
-        return createPrepareShootCommand(turret, pivot, shooter, null, closeShot);
+    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter) {
+        return createPrepareShootCommand(turret, pivot, shooter, null);
     }
 
-    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, boolean closeShot) {
-        return new TurretAimCommand(turret, closeShot)
+    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
+        return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
             .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
@@ -228,8 +223,8 @@ public final class CommandFactoryUtility {
                 .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
     }
 
-    public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter, boolean closeShot) {
-        return new TurretAimCommand(turret, closeShot)
+    public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter) {
+        return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
             .alongWith(shooter.newCalcAndSetSpeedsCommand())
             .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT)
