@@ -64,7 +64,7 @@ public class AutoCommandManager {
         m_chooser.setDefaultOption("None", null);
 
         m_chooser.addOption("AmpY", ampYAuto);
-        m_chooser.addOption("NonAmpYAuto", nonAmpYCommand);
+        m_chooser.addOption("NonAmpY", nonAmpYCommand);
         m_chooser.addOption("LTwo", ampLTwoAuto);
         m_chooser.addOption("LThree", ampLThreeAuto);
         m_chooser.addOption("AmpTwo", ampTwoAuto);
