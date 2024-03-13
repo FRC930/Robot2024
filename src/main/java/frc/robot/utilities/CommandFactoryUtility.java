@@ -137,19 +137,19 @@ public final class CommandFactoryUtility {
             .andThen(intake.newSetSpeedCommand(0.0)); // Dont stop intake until note found
     }
 
-    public static Command createAmpScoreCommand(PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return //elevator.newSetPosCommand(ELEVATOR_AMP_POS)
-                (pivot.newSetPosCommand(PIVOT_AMP_POS))
-                    .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
-                    .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
-                    //.andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
-                                .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT))
-                                .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
-                                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-                    .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
-                    .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
-                    .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
-    }
+    // public static Command createAmpScoreCommand(PivotSubsystem pivot, TurretSubsystem turret, ShooterSubsystem shooter, IndexerSubsystem indexer) {
+    //     return //elevator.newSetPosCommand(ELEVATOR_AMP_POS)
+    //             (pivot.newSetPosCommand(PIVOT_AMP_POS))
+    //                 .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
+    //                 .andThen(shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED))
+    //                 //.andThen(elevator.newWaitUntilSetpointCommand(ELEVATOR_TIMEOUT)
+    //                             .alongWith(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT))
+    //                             .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
+    //                             .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+    //                 .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
+    //                 .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+    //                 .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
+    // }
 
     // public static Command createElevatorClimbCommand(ElevatorSubsystem elevator) {
     //     return elevator.newSetPosCommand(ELEVATOR_CLIMB_POS)
@@ -242,20 +242,20 @@ public final class CommandFactoryUtility {
                 .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
     }
 
-    public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {
-        return 
-        //hood.newWaitUntilAmpIsExtendedCommand().deadlineWith(hood.newExtendHoodCommand())
-        shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
-        .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-        .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
-        .andThen(indexer.newUntilNoNoteFoundCommand())
-        .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
-        .andThen(
-            //hood.newRetractHoodCommand()
-            shooter.newSetSpeedsCommand(0.0,0.0)
-            .alongWith(indexer.newSetSpeedCommand(0))
-        );
-    }
+    // public static Command createAmpShootCommand(AmpHoodSubsystem hood,ShooterSubsystem shooter,IndexerSubsystem indexer) {
+    //     return 
+    //     //hood.newWaitUntilAmpIsExtendedCommand().deadlineWith(hood.newExtendHoodCommand())
+    //     shooter.newSetSpeedsCommand(LEFT_SHOOTER_AMP_SPEED, RIGHT_SHOOTER_AMP_SPEED)
+    //     .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+    //     .andThen(indexer.newSetSpeedCommand(INDEXER_AMP_SPEED))
+    //     .andThen(indexer.newUntilNoNoteFoundCommand())
+    //     .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
+    //     .andThen(
+    //         //hood.newRetractHoodCommand()
+    //         shooter.newSetSpeedsCommand(0.0,0.0)
+    //         .alongWith(indexer.newSetSpeedCommand(0))
+    //     );
+    // }
 
     public static Command createFeedCommand(PivotSubsystem pivot, ShooterSubsystem shooter, IndexerSubsystem indexer) {
         return pivot.newSetPosCommand(PIVOT_FEED_POS)
