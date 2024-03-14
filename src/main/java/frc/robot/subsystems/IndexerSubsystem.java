@@ -70,7 +70,7 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param speed PercentOutput speed to apply
      */
     public void setSpeed(double speed) {
-        setStarIndexerSpeed(speed);
+        setStarIndexerSpeed(speed/2.0);  // TODO take out once pulley installed
         setTopIndexerSpeed(speed);
     }
 
