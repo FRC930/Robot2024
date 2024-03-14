@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.527894944520273,
-        "y": 2.119661414786453
+        "x": 8.337124243170791,
+        "y": 2.5924093953451064
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.848919784309448,
-        "y": 0.9924230196315118
+        "x": 7.658149082959966,
+        "y": 1.4651710001901652
       },
       "isLocked": false,
       "linkedName": "NonAmpY4"
@@ -41,7 +41,24 @@
             {
               "type": "named",
               "data": {
-                "name": "prepareShoot"
+                "name": "prepareNonAmpYShoot3or4"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Backup",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopIntake"
               }
             }
           ]
@@ -66,5 +83,5 @@
     "rotation": 180.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

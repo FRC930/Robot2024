@@ -604,7 +604,7 @@ public class RobotContainer {
     if (autoCommand != null) {
         m_StartInTeleopUtility.updateAutonomous();
     }
-    m_visionUpdatesOdometry = true; // Turns off vision updates for autonomous
+    m_visionUpdatesOdometry = false; // Turns off vision updates for autonomous
     return autoCommand;
   }
 
@@ -643,6 +643,7 @@ public class RobotContainer {
   public void updatePoseEstimateWithAprilTags(String limeLightName) {
     LimelightHelpers.PoseEstimate lastResult = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
     double fpgaTimestamp = Timer.getFPGATimestamp();
+    // double fpgaTimestamp = Logger.getRealTimestamp();
 
     // distance from current pose to vision estimated pose
     Translation2d translation = drivetrain.getState().Pose.getTranslation();

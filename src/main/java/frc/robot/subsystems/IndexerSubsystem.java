@@ -54,7 +54,7 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param speed PercentOutput speed to apply
      */
     public void setStarIndexerSpeed(double speed) {
-        m_rollerIO.setSpeed(speed);
+        m_rollerIO.setSpeed(speed / 2.0); // TODO take out once pulley installed
     }
 
     /**
@@ -70,7 +70,7 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param speed PercentOutput speed to apply
      */
     public void setSpeed(double speed) {
-        setStarIndexerSpeed(speed/2.0);  // TODO take out once pulley installed
+        setStarIndexerSpeed(speed);  
         setTopIndexerSpeed(speed);
     }
 

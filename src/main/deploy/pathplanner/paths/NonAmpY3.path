@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.293678213604645,
-        "y": 0.43330095219391485
+        "x": 8.295974887689123,
+        "y": 0.7201137209291959
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.005486193571889,
-        "y": 0.5035659714735424
+        "x": 7.007782867656367,
+        "y": 0.7903787402088235
       },
       "isLocked": false,
       "linkedName": "NonAmpY2"
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Aim",
-      "waypointRelativePos": 0.15,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "prepareShoot"
+                "name": "prepareNonAmpYShoot3or4"
               }
             }
           ]
@@ -66,5 +66,5 @@
     "rotation": 180.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -67,7 +67,7 @@ public final class CommandFactoryUtility {
     public static final double PIVOT_TIMEOUT = 1.0;                 /*sec*/
     public static final double ELEVATOR_TIMEOUT = 1.0;              /*sec*/
     public static final double TURRET_TIMEOUT = 1.0;                /*sec*/
-    private static final double SHOOTER_TIMEOUT = 0.5;              /*sec*/
+    private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
     private static final double AFTER_AMP_SHOOT_TIMEOUT = 0.6; 
 
@@ -125,7 +125,8 @@ public final class CommandFactoryUtility {
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
             .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
-            .andThen(indexer.newSetSpeedCommand(INDEXER_INTAKE_SPEED))
+            .andThen(indexer.newSetStarSpeedCommand(INDEXER_INTAKE_SPEED))
+            .andThen(indexer.newSetTopSpeedCommand(0.4))
             .andThen(indexer.newUntilNoteFoundCommand())
             .andThen(new WaitCommand(0.05))
             // .alongWith(new InstantCommand(() -> 

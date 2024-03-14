@@ -91,10 +91,10 @@ public class TurretAimCommand extends Command{
         ty = m_TargetPose.getY();
         
         //Logs the values above.
-        // SmartDashboard.putNumber("AutoAim/tx", tx);
-        // SmartDashboard.putNumber("AutoAim/ty", ty);
-        // SmartDashboard.putNumber("AutoAim/rx", rx);
-        // SmartDashboard.putNumber("AutoAim/ry", ry);
+        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/tx", tx);
+        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/ty", ty);
+        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/rx", rx);
+        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/ry", ry);
 
         // calculates how far we need to rotate the turret to get to the desired position based on:
         // robots turret heading - the robots base heading
