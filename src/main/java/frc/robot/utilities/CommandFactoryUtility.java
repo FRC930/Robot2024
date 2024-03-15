@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.HoodCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
@@ -175,9 +176,9 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createShootPreaimedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
-        return pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
-            .andThen(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-            .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
+        return pivot.newWaitUntilSetpointCommand(0.7)
+            .andThen(shooter.newWaitUntilSetpointCommand(0.7))
+            .alongWith(turret.newWaitUntilSetpointCommand(0.7))
         .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
@@ -246,11 +247,16 @@ public final class CommandFactoryUtility {
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    public static Command createStarAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
+    public static Command createPrepareStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret,
+            PivotSubsystem pivot) {
         return indexer.newSetStarSpeedCommand(0.6)
         .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
         .andThen(pivot.newSetPosCommand(AMP_STAR_PIVOT_POS))
-        .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret))
+        .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret));
+    }
+
+    public static Command createStarAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
+        return createPrepareStarAmpCommand(indexer, turret, pivot)
         .andThen(new WaitCommand(INDEXER_STAR_TIMEOUT)
                     .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)))
         .andThen(indexer.newSetTopSpeedCommand(-0.6))

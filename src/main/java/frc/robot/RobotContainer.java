@@ -442,6 +442,9 @@ public class RobotContainer {
         .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED))
       )
     ;
+
+    m_driverController.a()
+    .onTrue(CommandFactoryUtility.createPrepareStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem));
     
 
     //#region POV controls

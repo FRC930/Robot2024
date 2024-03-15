@@ -71,7 +71,7 @@ public class TurretAimCommand extends Command{
         rx = m_CurrentPose.getX();
         ry = m_CurrentPose.getY();
 
-        if (ry >= 4.0 /*Below front pillar y (in meters)*/) {
+        if (ry >= 4.5 /*Below front pillar y (in meters)*/) {
             ampSide = true;
         } else {
             ampSide = false;
