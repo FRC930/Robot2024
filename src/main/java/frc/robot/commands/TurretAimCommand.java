@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.RobotOdometryUtility;
+import frc.robot.utilities.SpeakerScoreUtility;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
@@ -49,7 +50,7 @@ public class TurretAimCommand extends Command{
         m_AmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX() - 0.5, m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(10.0), m_AmpSideBlueTargetPose.getRotation());
         
         m_NonAmpSideRedTargetPose = new Pose2d(m_AmpSideRedTargetPose.getX(), m_AmpSideRedTargetPose.getY() + NON_AMP_AIM_OFFSET, m_AmpSideRedTargetPose.getRotation());
-        m_NonAmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX(), m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(20 ), m_AmpSideBlueTargetPose.getRotation());
+        m_NonAmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX(), m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(30), m_AmpSideBlueTargetPose.getRotation());
 
         m_TargetPose = m_AmpSideBlueTargetPose;
 
@@ -83,8 +84,14 @@ public class TurretAimCommand extends Command{
         Alliance alliance = optionalAlliance.get();
             if (alliance == Alliance.Red) {
                 m_TargetPose = (ampSide)?m_AmpSideRedTargetPose:m_NonAmpSideRedTargetPose;
+                if (SpeakerScoreUtility.inchesToSpeaker() > Units.metersToInches(8.0)) {
+                    m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() - Units.inchesToMeters(40.0), m_TargetPose.getRotation());
+                }
             } else {
                 m_TargetPose = (ampSide)?m_AmpSideBlueTargetPose:m_NonAmpSideBlueTargetPose;
+                if (SpeakerScoreUtility.inchesToSpeaker() > Units.metersToInches(8.0)) {
+                    m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() + 4.0, m_TargetPose.getRotation());
+                }
             }
         }
 

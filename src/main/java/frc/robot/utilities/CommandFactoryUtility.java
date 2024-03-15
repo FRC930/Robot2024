@@ -207,7 +207,7 @@ public final class CommandFactoryUtility {
         return createPrepareShootCommand(turret, pivot, shooter, null);
     }
 
-    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
+    public static Command createPrepareShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
         return new TurretAimCommand(turret)
             .alongWith(
                 new RepeatCommand(
@@ -215,6 +215,15 @@ public final class CommandFactoryUtility {
                 )
             )
         ;
+    }
+
+    public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
+        return new TurretAimCommand(turret)
+            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
+            .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
+            .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
+                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+                .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
     }
 
     public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter) {
