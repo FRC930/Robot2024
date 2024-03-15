@@ -632,15 +632,15 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (USE_LIMELIGHT_APRIL_TAG) {  
-      updatePoseEstimateWithAprilTags("limelight-front");
-      updatePoseEstimateWithAprilTags("limelight-back");
-      // updatePoseEstimateWithAprilTags("limelight-right");
-      // updatePoseEstimateWithAprilTags("limelight-left");
+      updatePoseEstimateWithAprilTags("limelight-front",true);
+      updatePoseEstimateWithAprilTags("limelight-back",true);
+      updatePoseEstimateWithAprilTags("limelight-right", false);
+      updatePoseEstimateWithAprilTags("limelight-left", false);
     }
   }
 
   // https://github.com/LimelightVision/limelight-examples/blob/main/java-wpilib/swerve-megatag-odometry/src/main/java/frc/robot/Drivetrain.java#L57
-  public void updatePoseEstimateWithAprilTags(String limeLightName) {
+  public void updatePoseEstimateWithAprilTags(String limeLightName, boolean usepose) {
     LimelightHelpers.PoseEstimate lastResult = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
     double fpgaTimestamp = Timer.getFPGATimestamp();
     // double fpgaTimestamp = Logger.getRealTimestamp();
@@ -671,7 +671,7 @@ public class RobotContainer {
       return;
     }
 
-    if (m_visionUpdatesOdometry) {
+    if (m_visionUpdatesOdometry&&usepose) {
         m_StartInTeleopUtility.updateTags();
 
         drivetrain.setVisionMeasurementStdDevs(
