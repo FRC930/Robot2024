@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.295974887689123,
-        "y": 0.7201137209291959
+        "x": 8.293678213604645,
+        "y": 0.8783127409336134
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.007782867656367,
-        "y": 0.7903787402088235
+        "x": 7.005486193571889,
+        "y": 0.9485777602132414
       },
       "isLocked": false,
       "linkedName": "NonAmpY2"
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Aim",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.3,
       "command": {
         "type": "parallel",
         "data": {
@@ -42,6 +42,23 @@
               "type": "named",
               "data": {
                 "name": "prepareNonAmpYShoot3or4"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "StopIntake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopIntake"
               }
             }
           ]

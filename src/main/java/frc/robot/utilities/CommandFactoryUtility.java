@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.HoodCommand;
@@ -27,7 +28,7 @@ public final class CommandFactoryUtility {
 
     private static final double INDEXER_STAR_TIMEOUT = 0.3;
 
-    private static final double INDEXER_STAR_INDEX_SPEED = 0.9;
+    private static final double INDEXER_STAR_INDEX_SPEED = 0.6;
 
     private static final double AMP_STAR_PIVOT_POS = 25.0;
 
@@ -208,11 +209,12 @@ public final class CommandFactoryUtility {
 
     public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
         return new TurretAimCommand(turret)
-            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
-            .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
-            .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
-                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
-                .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
+            .alongWith(
+                new RepeatCommand(
+                    createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle)
+                )
+            )
+        ;
     }
 
     public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter) {
@@ -236,13 +238,13 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createStarAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
-        return indexer.newSetStarSpeedCommand(INDEXER_STAR_INDEX_SPEED)
+        return indexer.newSetStarSpeedCommand(0.6)
         .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
         .andThen(pivot.newSetPosCommand(AMP_STAR_PIVOT_POS))
         .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret))
         .andThen(new WaitCommand(INDEXER_STAR_TIMEOUT)
                     .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)))
-        .andThen(indexer.newSetSpeedCommand(-INDEXER_STAR_INDEX_SPEED))
+        .andThen(indexer.newSetTopSpeedCommand(-0.6))
         .andThen(indexer.newUntilNoNoteFoundCommand())
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT));
     }

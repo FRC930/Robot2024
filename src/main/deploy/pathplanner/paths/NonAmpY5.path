@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.337124243170791,
-        "y": 2.5924093953451064
+        "x": 8.317099886696207,
+        "y": 2.9862633191742836
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.658149082959966,
-        "y": 1.4651710001901652
+        "x": 7.6381247264853815,
+        "y": 1.8590249240193424
       },
       "isLocked": false,
       "linkedName": "NonAmpY4"
@@ -50,7 +50,7 @@
     },
     {
       "name": "Backup",
-      "waypointRelativePos": 0.05,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {

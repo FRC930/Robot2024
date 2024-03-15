@@ -49,7 +49,7 @@ public class TurretAimCommand extends Command{
         m_AmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX() - 0.5, m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(10.0), m_AmpSideBlueTargetPose.getRotation());
         
         m_NonAmpSideRedTargetPose = new Pose2d(m_AmpSideRedTargetPose.getX(), m_AmpSideRedTargetPose.getY() + NON_AMP_AIM_OFFSET, m_AmpSideRedTargetPose.getRotation());
-        m_NonAmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX(), m_AmpSideBlueTargetPose.getY() + NON_AMP_AIM_OFFSET, m_AmpSideBlueTargetPose.getRotation());
+        m_NonAmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX(), m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(20 ), m_AmpSideBlueTargetPose.getRotation());
 
         m_TargetPose = m_AmpSideBlueTargetPose;
 
@@ -75,6 +75,7 @@ public class TurretAimCommand extends Command{
         } else {
             ampSide = false;
         }
+        Logger.recordOutput("AutoAim/ampSide", ampSide);
 
        // If there is an alliance present it sets the target pose based on the alliance; otherwise defaults to blue.
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
@@ -91,10 +92,10 @@ public class TurretAimCommand extends Command{
         ty = m_TargetPose.getY();
         
         //Logs the values above.
-        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/tx", tx);
-        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/ty", ty);
-        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/rx", rx);
-        Logger.recordOutput(this.getClass().getSimpleName()+"/AutoAim/ry", ry);
+        Logger.recordOutput("AutoAim/tx", tx);
+        Logger.recordOutput("AutoAim/ty", ty);
+        Logger.recordOutput("AutoAim/rx", rx);
+        Logger.recordOutput("AutoAim/ry", ry);
 
         // calculates how far we need to rotate the turret to get to the desired position based on:
         // robots turret heading - the robots base heading
