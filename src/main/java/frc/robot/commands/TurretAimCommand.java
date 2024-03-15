@@ -48,8 +48,8 @@ public class TurretAimCommand extends Command{
         m_AmpSideBlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         m_AmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX() - 0.5, m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(10.0), m_AmpSideBlueTargetPose.getRotation());
         
-        m_NonAmpSideRedTargetPose = new Pose2d(m_AmpSideRedTargetPose.getX() + 0.5, m_AmpSideRedTargetPose.getY() + NON_AMP_AIM_OFFSET, m_AmpSideRedTargetPose.getRotation());
-        m_NonAmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX() - 0.5, m_AmpSideBlueTargetPose.getY() + NON_AMP_AIM_OFFSET, m_AmpSideBlueTargetPose.getRotation());
+        m_NonAmpSideRedTargetPose = new Pose2d(m_AmpSideRedTargetPose.getX(), m_AmpSideRedTargetPose.getY() + NON_AMP_AIM_OFFSET, m_AmpSideRedTargetPose.getRotation());
+        m_NonAmpSideBlueTargetPose = new Pose2d(m_AmpSideBlueTargetPose.getX(), m_AmpSideBlueTargetPose.getY() + NON_AMP_AIM_OFFSET, m_AmpSideBlueTargetPose.getRotation());
 
         m_TargetPose = m_AmpSideBlueTargetPose;
 
