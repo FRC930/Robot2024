@@ -263,16 +263,17 @@ public final class CommandFactoryUtility {
     public static Command createStarAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
         return createPrepareStarAmpCommand(indexer, turret, pivot) 
         .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
-        .andThen(indexer.newSetStarVoltageCommand(7.44))
-        .andThen(new WaitCommand(0.2))
-        .andThen(indexer.newSetTopVoltageCommand(-7.44 / 2.0)) //TODO fix divided wrong val
-        .andThen(indexer.newUntilNoNoteFoundCommand())
-        .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT));
+        .alongWith(pivot.newWaitUntilSetpointCommand(AFTER_AMP_SHOOT_TIMEOUT))
+        .andThen(indexer.newSetStarVoltageCommand(8.4/2.0)); // Start shooting  TODO move 2.0 to indexer subsystem
     }
 
     public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
-        return pivot.newSetPosCommand(0.0)
-        .alongWith(indexer.newSetSpeedCommand(0.0))
-        .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret));
+        return new WaitCommand(0.2)
+        .andThen(indexer.newSetTopVoltageCommand(-4.2)) //TODO fix divided wrong val
+        .andThen(indexer.newUntilNoNoteFoundCommand())
+        .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT))
+        .andThen(pivot.newSetPosCommand(0.0)
+            .alongWith(indexer.newSetSpeedCommand(0.0))
+        .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret)));
     }
 }

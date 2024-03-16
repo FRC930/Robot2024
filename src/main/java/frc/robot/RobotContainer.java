@@ -443,8 +443,8 @@ public class RobotContainer {
       )
     ;
 
-    m_driverController.a()
-    .onTrue(CommandFactoryUtility.createPrepareStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem));
+    // m_driverController.a()
+    // .onTrue(CommandFactoryUtility.createPrepareStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem));
     
 
     //#region POV controls
