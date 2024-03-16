@@ -3,57 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.379242296946134,
-        "y": 6.887126081944472
+        "x": 8.28012348332389,
+        "y": 5.712959887458236
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.7424427880788205,
-        "y": 6.256049932268854
+        "x": 7.554051617485437,
+        "y": 5.935465781828085
       },
       "isLocked": false,
-      "linkedName": "AmpY3"
+      "linkedName": "AmpY4"
     },
     {
       "anchor": {
-        "x": 8.299857368945508,
-        "y": 5.574822688106915
+        "x": 5.38,
+        "y": 6.89
       },
       "prevControl": {
-        "x": 6.60178606980719,
-        "y": 5.6216660342900395
+        "x": 6.176336885113142,
+        "y": 6.702626615267496
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpY4"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ShootThenIntake",
-      "waypointRelativePos": 0,
+      "name": "Aim",
+      "waypointRelativePos": 0.25,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "preparedShoot"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "stopShoot"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "intake"
+                "name": "prepareShootEndless"
               }
             }
           ]
@@ -78,5 +66,5 @@
     "rotation": 180.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

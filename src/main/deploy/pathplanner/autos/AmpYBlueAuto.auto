@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.407706324685116,
-      "y": 4.122214464115091
+      "x": 1.4194171612308972,
+      "y": 6.979658581285779
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY1"
+            "pathName": "AmpY1Blue"
           }
         },
         {
@@ -26,31 +26,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY2"
+            "pathName": "AmpY2Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "preparedShoot"
+            "pathName": "AmpY3Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY4"
+            "pathName": "AmpY4Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY5"
+            "pathName": "AmpY5Blue"
           }
         },
         {
