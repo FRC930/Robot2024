@@ -1,0 +1,103 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.984090364757048,
+        "y": 2.002553049328638
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.628186374775031,
+        "y": 1.4989870778600332
+      },
+      "isLocked": false,
+      "linkedName": "NonAmpY3"
+    },
+    {
+      "anchor": {
+        "x": 6.197438471909753,
+        "y": 1.862023010779259
+      },
+      "prevControl": {
+        "x": 5.529920788800206,
+        "y": 1.5224087509515962
+      },
+      "nextControl": {
+        "x": 6.525186115924212,
+        "y": 2.028771812119948
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.305389050150424,
+        "y": 2.9042874633538145
+      },
+      "prevControl": {
+        "x": 7.5910280208577525,
+        "y": 2.9277091364453787
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "NonAmpY4"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "NonAmpY",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

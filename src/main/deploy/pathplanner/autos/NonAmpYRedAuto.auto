@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.407706324685116,
-      "y": 4.122214464115091
+      "x": 1.4194171612308972,
+      "y": 6.979658581285779
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY1Red"
+            "pathName": "AmpY1Red"
           }
         },
         {
@@ -26,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY2Red"
+            "pathName": "AmpY2Red"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY3Red"
+            "pathName": "AmpY3Red"
           }
         },
         {
@@ -44,13 +44,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY4Red"
+            "pathName": "AmpY4Red"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NonAmpY5Red"
+            "pathName": "AmpY5Red"
           }
         },
         {

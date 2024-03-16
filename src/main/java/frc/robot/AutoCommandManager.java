@@ -51,8 +51,11 @@ public class AutoCommandManager {
             intake, 
             pivot);
             
-        PathPlannerAuto ampYAuto = new PathPlannerAuto("AmpYAuto");
-        PathPlannerAuto nonAmpYCommand = new PathPlannerAuto("NonAmpYAuto");
+        PathPlannerAuto ampYAutoBlue = new PathPlannerAuto("AmpYBlueAuto");
+        PathPlannerAuto ampYAutoRed = new PathPlannerAuto("AmpYRedAuto");
+        
+        PathPlannerAuto nonAmpYAutoBlue = new PathPlannerAuto("NonAmpYBlueAuto");
+        PathPlannerAuto nonAmpYAutoRed = new PathPlannerAuto("NonAmpYRedAuto");
 
         PathPlannerAuto ampLThreeAuto = new PathPlannerAuto("AmpLThreeAuto");
         PathPlannerAuto ampLTwoAuto = new PathPlannerAuto("AmpLTwoAuto");
@@ -63,8 +66,10 @@ public class AutoCommandManager {
 
         m_chooser.setDefaultOption("None", null);
 
-        m_chooser.addOption("AmpY", ampYAuto);
-        m_chooser.addOption("NonAmpY", nonAmpYCommand);
+        m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
+        m_chooser.addOption("RED_AmpY", ampYAutoRed);
+        m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
+        m_chooser.addOption("RED_NonAmpY", nonAmpYAutoRed);
         m_chooser.addOption("LTwo", ampLTwoAuto);
         m_chooser.addOption("LThree", ampLThreeAuto);
         m_chooser.addOption("AmpTwo", ampTwoAuto);
