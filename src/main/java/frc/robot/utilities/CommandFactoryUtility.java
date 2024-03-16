@@ -31,7 +31,7 @@ public final class CommandFactoryUtility {
 
     private static final double INDEXER_STAR_INDEX_SPEED = 0.6;
 
-    private static final double AMP_STAR_PIVOT_POS = 25.0;
+    private static final double AMP_STAR_PIVOT_POS = 19.0;
 
     private static final double PIVOT_FEED_POS = 45.0;
 
@@ -249,17 +249,23 @@ public final class CommandFactoryUtility {
 
     public static Command createPrepareStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret,
             PivotSubsystem pivot) {
-        return indexer.newSetStarSpeedCommand(0.6)
-        .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
+        return// indexer.newSetStarVoltageCommand(0.62)
+        turret.newSetPosCommand(TURRET_STOW_POS)
         .andThen(pivot.newSetPosCommand(AMP_STAR_PIVOT_POS))
-        .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret));
+        .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret))
+        .andThen(indexer.newSetTopVoltageCommand(3.0)) // TODOspin 
+        .andThen(indexer.newSetStarVoltageCommand(3.0))
+        .andThen(new WaitCommand(0.2))
+        .andThen(indexer.newSetTopVoltageCommand(0.0))
+        .andThen(indexer.newSetStarVoltageCommand(0.0));
     }
 
     public static Command createStarAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
-        return createPrepareStarAmpCommand(indexer, turret, pivot)
-        .andThen(new WaitCommand(INDEXER_STAR_TIMEOUT)
-                    .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)))
-        .andThen(indexer.newSetTopSpeedCommand(-0.6))
+        return createPrepareStarAmpCommand(indexer, turret, pivot) 
+        .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
+        .andThen(indexer.newSetStarVoltageCommand(7.44))
+        .andThen(new WaitCommand(0.2))
+        .andThen(indexer.newSetTopVoltageCommand(-7.44 / 2.0)) //TODO fix divided wrong val
         .andThen(indexer.newUntilNoNoteFoundCommand())
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT));
     }

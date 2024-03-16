@@ -41,7 +41,7 @@ public class RollerMotorIORobot implements TalonRollerIO {
 
     @Override
     public void setSpeed(double speed) {
-        m_motor.set(speed);
+       m_motor.set(speed);
     }
 
     @Override

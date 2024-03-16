@@ -42,7 +42,7 @@ public class IndexerSubsystem extends SubsystemBase {
         m_sensorIO = ToF;
 
         starIndexerMotor.getTalon().setInverted(false);
-        starIndexerMotor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
+        starIndexerMotor.getTalon().setNeutralMode(NeutralModeValue.Coast); // Applies brake mode to belt
         topIndexerMotor.getTalon().setInverted(true);
         topIndexerMotor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
 
@@ -57,12 +57,20 @@ public class IndexerSubsystem extends SubsystemBase {
         m_rollerIO.setSpeed(speed / 2.0); // TODO take out once pulley installed
     }
 
+    public void setStarIndexerVoltage(double voltage) {
+        m_rollerIO.getTalon().setVoltage(voltage);
+    }
+
     /**
      * <h3>setAmpSpeed</h3>
      * @param speed PercentOutput speed to apply
      */
     public void setTopIndexerSpeed(double speed) {
         m_rollerTopIO.setSpeed(speed);
+    }
+
+     public void setTopIndexerVoltage(double voltage) {
+        m_rollerTopIO.getTalon().setVoltage(voltage);
     }
 
     /**
@@ -156,6 +164,14 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command newSetTopSpeedCommand(double speed) {
         return new InstantCommand(() -> setTopIndexerSpeed(speed), this);
+    }
+
+    public Command newSetStarVoltageCommand(double speed) {
+        return new InstantCommand(() -> setStarIndexerVoltage(speed), this);
+    }
+
+    public Command newSetTopVoltageCommand(double speed) {
+        return new InstantCommand(() -> setTopIndexerVoltage(speed), this);
     }
 
     public Command newUntilNoteFoundCommand() {
