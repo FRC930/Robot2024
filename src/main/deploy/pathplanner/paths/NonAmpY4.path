@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 8.293678213604645,
-        "y": 2.7520465882586542
+        "x": 8.305389050150424,
+        "y": 2.9042874633538145
       },
       "prevControl": {
-        "x": 7.579317184311973,
-        "y": 2.7754682613502184
+        "x": 7.5910280208577525,
+        "y": 2.9277091364453787
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,12 +54,6 @@
         "type": "sequential",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "preparedShoot"
-              }
-            },
             {
               "type": "named",
               "data": {
