@@ -160,6 +160,13 @@ public class SpeakerScoreUtility {
         } else if (distance >= LINEAR_DISTANCE_FAR) {
             return (-0.05 * distance) + 32.7 + 1.0 + angleOffset; // 0.5 (inches) is a fudge factor
         } else if (distance >= LINEAR_DISTANCE_CLOSE) {
+            Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+            if (optionalAlliance.isPresent()){
+                Alliance alliance = optionalAlliance.get();
+                if (alliance == Alliance.Red) {
+                    angleOffset += 2.0;
+                }
+            }
             return (-0.115 * distance) + 40.9 + 3.0 + angleOffset; // 2.0 (inches) is a fudge factor
         } else {
             return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 4.5 + angleOffset; // 2.0 (inches) is a fudge factor
