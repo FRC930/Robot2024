@@ -60,6 +60,8 @@ public class AutoCommandManager {
         PathPlannerAuto nonAmpYAutoBlue = new PathPlannerAuto("NonAmpYBlueAuto");
         PathPlannerAuto nonAmpYAutoRed = new PathPlannerAuto("NonAmpYRedAuto");
 
+        PathPlannerAuto midUAuto = new PathPlannerAuto("MidUAuto");
+
         PathPlannerAuto ampLThreeAuto = new PathPlannerAuto("AmpLThreeAuto");
         PathPlannerAuto ampLTwoAuto = new PathPlannerAuto("AmpLTwoAuto");
 
@@ -75,6 +77,7 @@ public class AutoCommandManager {
         m_chooser.addOption("RED_NonAmpJ", nonAmpJAutoRed);
         m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
         m_chooser.addOption("RED_NonAmpY", nonAmpYAutoRed);
+        m_chooser.addOption("MidUAuto", midUAuto);
         m_chooser.addOption("LTwo", ampLTwoAuto);
         m_chooser.addOption("LThree", ampLThreeAuto);
         m_chooser.addOption("AmpTwo", ampTwoAuto);

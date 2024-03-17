@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.293678213604645,
-        "y": 2.0376855589659812
+        "x": 2.9066934025451485,
+        "y": 5.550936522700434
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.911799501202425,
-        "y": 3.0799500115405367
+        "x": 1.3140196323188638,
+        "y": 5.316719791784805
       },
       "isLocked": false,
-      "linkedName": "NonAmpJ2_R"
+      "linkedName": "MidU1"
     },
     {
       "anchor": {
-        "x": 4.440812990042526,
-        "y": 4.836575493407763
+        "x": 2.695898344721082,
+        "y": 4.11050362756931
       },
       "prevControl": {
-        "x": 5.928089231356779,
-        "y": 3.9699735890199306
+        "x": 1.6067905459634015,
+        "y": 4.157346973752435
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Backup",
-      "waypointRelativePos": 0.0,
+      "name": "Intake",
+      "waypointRelativePos": 0.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "stopIntake"
+                "name": "intake"
               }
             }
           ]
@@ -50,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 6.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "NonAmpJ",
+  "folder": "MidU",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

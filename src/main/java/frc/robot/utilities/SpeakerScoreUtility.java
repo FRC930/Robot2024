@@ -165,6 +165,8 @@ public class SpeakerScoreUtility {
                 Alliance alliance = optionalAlliance.get();
                 if (alliance == Alliance.Red) {
                     angleOffset += 2.0;
+                } else {
+                    angleOffset += 2.0;
                 }
             }
             return (-0.115 * distance) + 40.9 + 3.0 + angleOffset; // 2.0 (inches) is a fudge factor
