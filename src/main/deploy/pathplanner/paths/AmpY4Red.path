@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.379242296946134,
+        "x": 5.38,
         "y": 6.887126081944472
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.7424427880788205,
+        "x": 6.743200491132686,
         "y": 6.256049932268854
       },
       "isLocked": false,
-      "linkedName": "AmpY3"
+      "linkedName": "AmpY3_R"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpY4"
+      "linkedName": "AmpY4_R"
     }
   ],
   "rotationTargets": [],

@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 8.305389050150424,
-        "y": 2.9042874633538145
+        "y": 2.634938222800839
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.4504979823083755,
-        "y": 1.9439988665997294
+        "y": 1.674649626046754
       },
       "isLocked": false,
-      "linkedName": "NonAmpY4"
+      "linkedName": "NonAmpY4_R"
     },
     {
       "anchor": {

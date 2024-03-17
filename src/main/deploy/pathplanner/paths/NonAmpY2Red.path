@@ -12,20 +12,20 @@
         "y": 0.8995199499100845
       },
       "isLocked": false,
-      "linkedName": "NonAmpY1"
+      "linkedName": "NonAmpY1_R"
     },
     {
       "anchor": {
-        "x": 8.293678213604645,
-        "y": 0.6675176831095445
+        "x": 8.27025654051308,
+        "y": 0.5504093176517296
       },
       "prevControl": {
-        "x": 5.810980865898965,
-        "y": 0.655806846563762
+        "x": 5.787559192807399,
+        "y": 0.5386984811059471
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NonAmpY2"
+      "linkedName": "NonAmpY2_R"
     }
   ],
   "rotationTargets": [],

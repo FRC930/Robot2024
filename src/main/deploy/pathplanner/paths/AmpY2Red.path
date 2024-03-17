@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.455188448838437,
-        "y": 7.13379965221469
+        "x": 3.609343595292039,
+        "y": 6.956236908194216
       },
       "isLocked": false,
-      "linkedName": "AmpY1"
+      "linkedName": "AmpY1_R"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpY2"
+      "linkedName": "AmpY2_R"
     }
   ],
   "rotationTargets": [],
