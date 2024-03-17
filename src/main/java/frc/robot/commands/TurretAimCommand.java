@@ -85,7 +85,7 @@ public class TurretAimCommand extends Command{
             if (alliance == Alliance.Red) {
                 m_TargetPose = (ampSide)?m_AmpSideRedTargetPose:m_NonAmpSideRedTargetPose;
                 if (SpeakerScoreUtility.inchesToSpeaker() > Units.metersToInches(8.0)) {
-                    m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() - Units.inchesToMeters(40.0), m_TargetPose.getRotation());
+                    m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() - Units.inchesToMeters(70.0), m_TargetPose.getRotation());
                 }
             } else {
                 m_TargetPose = (ampSide)?m_AmpSideBlueTargetPose:m_NonAmpSideBlueTargetPose;

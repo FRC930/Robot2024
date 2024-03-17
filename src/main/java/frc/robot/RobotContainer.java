@@ -638,7 +638,7 @@ public class RobotContainer {
       updatePoseEstimateWithAprilTags("limelight-front",true);
       updatePoseEstimateWithAprilTags("limelight-back",true);
       updatePoseEstimateWithAprilTags("limelight-right", false);
-      updatePoseEstimateWithAprilTags("limelight-left", false);
+      updatePoseEstimateWithAprilTags("limelight-left", true);
     }
   }
 
