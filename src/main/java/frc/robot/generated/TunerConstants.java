@@ -16,7 +16,7 @@ public class TunerConstants {
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.2)
+        .withKP(100.0).withKI(0).withKD(0.2)
         .withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
@@ -47,7 +47,7 @@ public class TunerConstants {
     /**
      * Max Speed for mk41 with t16 gear in feet/second
      */
-    public static final double kMaxSpeed = 19.23;
+    private static final double kMaxSpeed = 19.23; // Feet not meters USE kSpeedAt12VoltsMps
     public static final double kSpeedAt12VoltsMps = Units.feetToMeters(kMaxSpeed); //5.96 was generated value
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;

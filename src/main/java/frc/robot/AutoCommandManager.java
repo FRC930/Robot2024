@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
@@ -22,8 +23,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
@@ -35,10 +36,9 @@ public class AutoCommandManager {
 
     public AutoCommandManager(SwerveDrivetrainSubsystem drivetrain, 
         LimeLightDetectionUtility gamePieceUtility,
-        mmTurretSubsystem turret, 
+        TurretSubsystem turret, 
         ShooterSubsystem shooter, 
         IndexerSubsystem indexer, 
-        ElevatorSubsystem elevator, 
         SpeakerScoreUtility speakerUtil, 
         IntakeSubsystem intake, 
         PivotSubsystem pivot) {
@@ -46,32 +46,43 @@ public class AutoCommandManager {
             gamePieceUtility, 
             turret, 
             shooter, 
-            indexer, 
-            elevator, 
+            indexer,  
             speakerUtil, 
             intake, 
             pivot);
-        //m_chooser = AutoBuilder.buildAutoChooser();
-        PathPlannerAuto rotationTest = new PathPlannerAuto("RotationTest");
-        PathPlannerAuto centerShootWCommand = new PathPlannerAuto("CenterShoot(x2)(W)");
-        PathPlannerAuto centerShootYCommand = new PathPlannerAuto("CenterShoot(x1)(Y)");
-        PathPlannerAuto wingShoot3Command = new PathPlannerAuto("WingShoot(x3)(L)");
-        PathPlannerAuto topWingShootCommand = new PathPlannerAuto("TopWingShoot(x1)");
-        PathPlannerAuto midWingShootCommand = new PathPlannerAuto("MidWingShoot(x1)");
-        PathPlannerAuto botWingShootCommand = new PathPlannerAuto("BotWingShoot(x1)");
-        PathPlannerAuto NonAmpYCommand = new PathPlannerAuto("NonAmpYAuto");
-        PathPlannerAuto NonAmpYNoStowCommand = new PathPlannerAuto("NonAmpYWOStow");
+            
+        PathPlannerAuto ampYAutoBlue = new PathPlannerAuto("AmpYBlueAuto");
+        PathPlannerAuto ampYAutoRed = new PathPlannerAuto("AmpYRedAuto");
+            
+        PathPlannerAuto nonAmpJAutoBlue = new PathPlannerAuto("NonAmpJBlueAuto");
+        PathPlannerAuto nonAmpJAutoRed = new PathPlannerAuto("NonAmpJRedAuto");
+        
+        PathPlannerAuto nonAmpYAutoBlue = new PathPlannerAuto("NonAmpYBlueAuto");
+        PathPlannerAuto nonAmpYAutoRed = new PathPlannerAuto("NonAmpYRedAuto");
+
+        PathPlannerAuto midUAuto = new PathPlannerAuto("MidUAuto");
+
+        PathPlannerAuto ampLThreeAuto = new PathPlannerAuto("AmpLThreeAuto");
+        PathPlannerAuto ampLTwoAuto = new PathPlannerAuto("AmpLTwoAuto");
+
+        PathPlannerAuto ampTwoAuto = new PathPlannerAuto("AmpTwoAuto");
+        PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
+        PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
 
         m_chooser.setDefaultOption("None", null);
-        m_chooser.addOption("RotationTest", rotationTest);
-        m_chooser.addOption("WCenterShoot", centerShootWCommand);
-        m_chooser.addOption("YCenterShoot", centerShootYCommand);
-        m_chooser.addOption("NonAmpYAuto", NonAmpYCommand);
-        m_chooser.addOption("NonAmpYNoStow", NonAmpYNoStowCommand);
-        m_chooser.addOption("LWingShoot", wingShoot3Command);
-        m_chooser.addOption("TopWingShoot(x1)", topWingShootCommand);
-        m_chooser.addOption("MidWingShoot(x1)", midWingShootCommand);
-        m_chooser.addOption("BotWingShoot(x1)", botWingShootCommand);
+
+        m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
+        m_chooser.addOption("RED_AmpY", ampYAutoRed);
+        m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
+        m_chooser.addOption("RED_NonAmpJ", nonAmpJAutoRed);
+        m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
+        m_chooser.addOption("RED_NonAmpY", nonAmpYAutoRed);
+        m_chooser.addOption("MidUAuto", midUAuto);
+        m_chooser.addOption("LTwo", ampLTwoAuto);
+        m_chooser.addOption("LThree", ampLThreeAuto);
+        m_chooser.addOption("AmpTwo", ampTwoAuto);
+        m_chooser.addOption("MidTwo", midTwoAuto);
+        m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
@@ -86,10 +97,9 @@ public class AutoCommandManager {
 
     public void configureNamedCommands(SwerveDrivetrainSubsystem drivetrain, 
         LimeLightDetectionUtility gamePieceUtility, 
-        mmTurretSubsystem turret, 
+        TurretSubsystem turret, 
         ShooterSubsystem shooter, 
         IndexerSubsystem indexer, 
-        ElevatorSubsystem elevator, 
         SpeakerScoreUtility speakerUtil, 
         IntakeSubsystem intake, 
         PivotSubsystem pivot) { 
@@ -117,27 +127,32 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("aimAndShoot",
             CommandFactoryUtility.createTurretPreaimCommand(turret)
                 .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
         );
         NamedCommands.registerCommand("shoot",
             CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
         );
         NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
         NamedCommands.registerCommand("intakeNoIndexer", 
             CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
-        NamedCommands.registerCommand("intake", CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
+        NamedCommands.registerCommand("intake", 
+            CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
         NamedCommands.registerCommand("ampScore", 
-            CommandFactoryUtility.createAmpScoreCommand(elevator, pivot, turret, shooter, indexer)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+            new PrintCommand("TODO add new amp command.") //TODO implement new amp here
         );    
-        NamedCommands.registerCommand("aimTurret", new TurretAimCommand(turret));
-        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createStopIntakingCommand(intake, indexer, shooter));
-        NamedCommands.registerCommand("sideWingScore", 
-            CommandFactoryUtility.createTurretPreaimCommand(turret)
-                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, 52.0))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, elevator, turret))
+        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));
+        NamedCommands.registerCommand("movingSideShoot", 
+            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0)
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
+                .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
+        NamedCommands.registerCommand("prepareShoot", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, null));
+        NamedCommands.registerCommand("prepareShootEndless", CommandFactoryUtility.createPrepareShootEndlessCommand(turret, pivot, shooter, null));
+        NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
+        NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
+        NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 25.5));
     }
 }

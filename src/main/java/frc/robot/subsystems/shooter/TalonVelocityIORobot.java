@@ -4,6 +4,9 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.Slot2Configs;
+import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
@@ -28,7 +31,7 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     private final NeutralOut m_brake = new NeutralOut();
 
 
-    protected TalonVelocityIORobot(int MotorID, double gearRatio,Slot0Configs config, MotionMagicConfigs mmConfigs, boolean initReal, MotionMagicVelocityVoltage simRequest) {
+    protected TalonVelocityIORobot(int MotorID, double gearRatio,Slot0Configs config,Slot1Configs config1, MotionMagicConfigs mmConfigs, boolean initReal, MotionMagicVelocityVoltage simRequest) {
         m_motor = new TalonFX(MotorID); //Initializes the motor
 
         this.gearRatio = gearRatio; // The gear ratio
@@ -40,6 +43,7 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
 
         TalonFXConfiguration cfg = new TalonFXConfiguration(); //Creates a new blank TalonFX congfiguration that will be applied to the motors in a bit
         cfg.withSlot0(config); // The PID and FF configs
+        cfg.withSlot1(config1);
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
@@ -52,7 +56,7 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
         // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
         cfg.CurrentLimits.StatorCurrentLimitEnable = true;
-        cfg.CurrentLimits.StatorCurrentLimit = 150.0;
+        cfg.CurrentLimits.StatorCurrentLimit = 80.0;
 
         Phoenix6Utility.setTalonFxConfiguration(m_motor, cfg); //Applies the configuration to the motor
 
@@ -68,42 +72,54 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         
     }
 
-    public TalonVelocityIORobot(int MotorID, double gearRatio,Slot0Configs config, MotionMagicConfigs mmConfigs) {
-        this(MotorID, gearRatio,config,  mmConfigs, true, null);
+    public TalonVelocityIORobot(int MotorID, double gearRatio,Slot0Configs config, Slot1Configs config1, MotionMagicConfigs mmConfigs) {
+        this(MotorID, gearRatio,config, config1,  mmConfigs, true, null);
     }
+
+
 
     /**
     * <h3>setSpeed</h3>
     * @param speed the speed the wheel will be set to
     */
     @Override
-    public void setSpeed(double speed,double acceleration) {
+    public void setSpeedWithSlot(double speed, double acceleration, int slot) {
         ControlRequest request;
         if(speed == 0.0) {
             request = m_brake;
         } else {
-            request = m_request.withVelocity(speed).withAcceleration(acceleration).withSlot(0);
+            request = m_request.withVelocity(speed).withAcceleration(acceleration).withSlot(slot);
         }
         Phoenix6Utility.applyConfigAndNoRetry(
             m_motor,
             () -> m_motor.setControl(request));
     }
+
+    public void setSpeed(double speed, double acceleration) {
+        setSpeedWithSlot(speed, acceleration, 0);
+    }
+
     /**
     * <h3>setSpeed</h3>
     * @param speed the speed in the wheel will be set to in rot/s
     */
     @Override
-    public void setSpeed(double speed) {
+    public void setSpeedWithSlot(double speed, int slot) {
         ControlRequest request;
         if(speed == 0.0) {
             request = m_brake;
         } else {
-            request = m_request.withVelocity(speed).withSlot(0);
+            request = m_request.withVelocity(speed).withSlot(slot);
         }
         Phoenix6Utility.applyConfigAndNoRetry(
             m_motor,
             () -> m_motor.setControl(request));
     }
+
+    public void setSpeed(double speed) {
+        setSpeedWithSlot(speed, 0);
+    }
+
 
     /**
     * <h3>geMotorSpeed</h3>
@@ -150,4 +166,40 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
 
     @Override
     public void runSim() {}
+
+    /**
+     * Sets slot 0
+     */
+    public void setSlot(Slot0Configs config) {
+        m_motor.getConfigurator().apply(config);
+    }
+
+    /**
+     * Sets slot 1
+     */
+    public void setSlot(Slot1Configs config) {
+        m_motor.getConfigurator().apply(config);
+    }
+
+    /**
+     * Sets slot 2
+     */
+    public void setSlot(Slot2Configs config) {
+        m_motor.getConfigurator().apply(config);
+    }
+
+    public TalonVelocityIORobot withSlot(Slot0Configs config) {
+        setSlot(config);
+        return this;
+    }
+
+    public TalonVelocityIORobot withSlot(Slot1Configs config) {
+        setSlot(config);
+        return this;
+    }
+
+    public TalonVelocityIORobot withSlot(Slot2Configs config) {
+        setSlot(config);
+        return this;
+    }
 }

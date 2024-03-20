@@ -48,19 +48,23 @@ public class ShooterSubsystem extends SubsystemBase{
     * @param leftSpeed the speed the left wheel will be set to
     * @param rightSpeed the speed the right wheel will be set to
     */
-    public void setSpeed(double leftSpeed, double rightSpeed, Double leftAccel, Double rightAccel) {
+    public void setSpeed(double leftSpeed, double rightSpeed, Double leftAccel, Double rightAccel, int slot) {
         if(leftAccel != null) {
-            IO_Left.setSpeed(leftSpeed, leftAccel);
+            IO_Left.setSpeedWithSlot(leftSpeed, leftAccel, slot);
         } else {
-            IO_Left.setSpeed(leftSpeed);
+            IO_Left.setSpeedWithSlot(leftSpeed, slot);
         }
         if(rightAccel != null) {
-            IO_Right.setSpeed(rightSpeed, rightAccel);    
+            IO_Right.setSpeedWithSlot(rightSpeed, rightAccel, slot);    
         } else {
-            IO_Right.setSpeed(rightSpeed);
+            IO_Right.setSpeedWithSlot(rightSpeed, slot);
         }
         m_reachedSetPoint = false;
         Logger.recordOutput(this.getClass().getSimpleName() + "/RightWheel/ReachedSetPoint" ,m_reachedSetPoint);
+    }
+
+    public void setSpeed(double leftSpeed, double rightSpeed, Double leftAccel, Double rightAccel) {
+        setSpeed(leftSpeed, rightSpeed, leftAccel, rightAccel,0);
     }
 
     /**
@@ -69,7 +73,22 @@ public class ShooterSubsystem extends SubsystemBase{
     * @param rightSpeed the speed the right wheel will be set to in rot/s 
     */
     public void setSpeed(double leftSpeed, double rightSpeed) {
-        this.setSpeed(leftSpeed, rightSpeed, null, null);
+        this.setSpeed(leftSpeed, rightSpeed, null, null,0);
+    }
+
+    /**
+    * <h3>setSpeedWithSlot</h3>
+    * @param leftSpeed the speed the left wheel will be set to in rot/s
+    * @param rightSpeed the speed the right wheel will be set to in rot/s 
+    * @param slot the slot to
+    */
+    public void setSpeedWithSlot(double leftSpeed, double rightSpeed, int slot) {
+        this.setSpeed(leftSpeed, rightSpeed, null, null,slot);
+    }
+
+    public void setVoltage(double leftVoltage, double rightVoltage) {
+        IO_Left.getTalon().setVoltage(leftVoltage);
+        IO_Right.getTalon().setVoltage(rightVoltage);
     }
 
     /**
@@ -146,8 +165,25 @@ public class ShooterSubsystem extends SubsystemBase{
         return new InstantCommand(() -> setSpeed(leftSpeed, rightSpeed), this);
     }
 
+    /**
+     * Sets the speeds with a slot <p>
+     * used for feed shot <p>
+     * maybe used for amp in future
+     * @param leftSpeed
+     * @param rightSpeed
+     * @param slot
+     * @return
+     */
+    public Command newSetSpeedsWithSlotCommand(double leftSpeed, double rightSpeed,int slot) {
+        return new InstantCommand(() -> setSpeedWithSlot(leftSpeed, rightSpeed,slot), this);
+    }
+
     public Command newSetSpeedsCommand(SpeakerScoreUtility speakerUtil) {
         return new InstantCommand(() ->  setSpeed(speakerUtil.getLeftShooterSpeed(), speakerUtil.getRightShooterSpeed()), this);
+    }
+
+    public Command newSetVoltagesCommand(double leftVoltage, double rightVoltage) {
+        return new InstantCommand(() -> setVoltage(leftVoltage, rightVoltage));
     }
 
     public Command newCalcAndSetSpeedsCommand() {

@@ -12,14 +12,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
+import frc.robot.utilities.LimelightHelpers;
 
 /**
  * 
@@ -29,9 +30,10 @@ import frc.robot.utilities.LimeLightDetectionUtility;
  * 
  */
 public class LimeLightIntakeCommand extends Command {
-    private final double MAX_SPEED = Units.feetToMeters(16.2);
+    private final double MAX_SPEED = TunerConstants.kSpeedAt12VoltsMps;
     private final double MAX_STRAFE = 0.2; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
-    private PIDController pid = new PIDController(0.01, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
+    private final double MAX_THROTTLE = 0.33; // NOTE: in prototype 30% speed //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
+    private PIDController pid = new PIDController(0.0065, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
 
     private SwerveDrivetrainSubsystem m_SwerveDrive;
     private LimeLightDetectionUtility m_LimeLight;
@@ -41,8 +43,9 @@ public class LimeLightIntakeCommand extends Command {
     private Pose2d m_position;
     
     private double m_throttle = 0.0;
-    private Supplier<Double> m_joystickInput;
+    private CommandXboxController m_controller;
     private double m_strafe = 0.0;
+    private double slope = 1.34; //Adjust if the location of the game piece camera moves
 
     private double m_distance;  
     private double m_TimeElapsed;
@@ -62,18 +65,18 @@ public class LimeLightIntakeCommand extends Command {
      * Uses game piece detection and a Trapezoidal Profile to smoothly and accurately intake a cube during autonomous
      * 
      * @param swerveDrive Swerve Drive
-     * @param limeLight GamePieceDetectionUtility
+     * @param limeLight LimeLightDetectionUtility
      * @param bluePosition Pose2d of the location of where the robot should go
      * 
      */
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition, Supplier<Double> joystickInputSupplier) {
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight, Pose2d bluePosition, Pose2d redPosition, CommandXboxController controller) {
         m_SwerveDrive = swerveDrive;
         m_LimeLight = limeLight;
         m_bluePosition = bluePosition;
         m_redPosition = redPosition;
         // Default to blue alliance
         m_position = m_bluePosition;
-        m_joystickInput = joystickInputSupplier;
+        m_controller = controller;
         addRequirements(m_SwerveDrive);
     }
 
@@ -81,8 +84,8 @@ public class LimeLightIntakeCommand extends Command {
         this(swerveDrive, limeLight, bluePosition, redPosition, null);
     }
 
-    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, Supplier<Double> joystickInputSupplier) {
-        this(drivetrain, m_GamePieceUtility, null, null,joystickInputSupplier);
+    public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, CommandXboxController controller) {
+        this(drivetrain, m_GamePieceUtility, null, null, controller);
     }
 
     public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight,Pose2d pose2d) {
@@ -101,6 +104,10 @@ public class LimeLightIntakeCommand extends Command {
         m_position = m_bluePosition;
 
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+
+        // Force pipeline zero to see if switches to detector (MODE)
+        LimelightHelpers.setPipelineIndex(m_LimeLight.m_LimeLightName, 0);
+
         //if on red alliance, return as negative
         //if on blue alliance, return as positive
         if (optionalAlliance.isPresent()){
@@ -112,7 +119,7 @@ public class LimeLightIntakeCommand extends Command {
 
         m_TimeElapsed = 0.0;
 
-        if(m_joystickInput != null) {
+        if(m_controller != null) {
            return;
         }
 
@@ -131,24 +138,35 @@ public class LimeLightIntakeCommand extends Command {
 
     @Override
     public void execute() {
+        // Crosshair isn't in the exact center, but instead to where the note will enter the robot
+        double tx = m_LimeLight.get_tx(); // degrees left and right from crosshair // TODO handle shakey imaging!!! may not have value tx 
+        double ty = m_LimeLight.get_ty(); // degrees up and down from crosshair
+        double linearTX = (ty/slope) - tx; 
+        /** 
+         * Since our camera isn't centered on the robot, when a note moves forward/backwards it will subsequently move left/right
+         * linearTX will automatically see how far forwards/backwards the note is and determine how many degrees off is the actual center using a linear slope
+        */
 
         //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
-        m_strafe = m_direction * MathUtil.clamp(pid.calculate(m_LimeLight.get_tx(), 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
+        m_strafe = m_direction * MathUtil.clamp(pid.calculate(-linearTX, 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
 
-        if(m_joystickInput != null) {
-            double xValue = -m_joystickInput.get();
+        if(m_controller != null) {
+            double xValue = Math.abs(Math.hypot(m_controller.getLeftX(), m_controller.getLeftY()));  // -negated value since back intake so need to backward
+            xValue = MathUtil.clamp(xValue, -MAX_THROTTLE, MAX_THROTTLE);
             m_throttle = RobotContainer.scaleLinearVelocity(RobotContainer.getLinearVelocity(xValue, 0.0).getX());
         } else {
             m_throttle =  m_direction * profile.calculate(m_TimeElapsed).velocity; //sets the throttle (speed) to  the current point on the trapezoid profile
         } 
         
-        Logger.recordOutput("GamePiece/TX", m_LimeLight.get_tx());
-        // SmartDashboard.putNumber("GamePiece/position", profile.calculate(m_TimeElapsed).position);
-        // SmartDashboard.putNumber("GamePiece/throttle", m_throttle);
-        // SmartDashboard.putNumber("GamePiece/strafe", m_strafe);
-        // SmartDashboard.putNumber("GamePiece/distanceLeft", distanceToTarget());
-        // SmartDashboard.putNumber("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
-        // SmartDashboard.putNumber("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
+        Logger.recordOutput("GamePiece/TX", tx);
+        Logger.recordOutput("GamePiece/TY", ty);
+        Logger.recordOutput("GamePiece/adjustedTX", linearTX);
+        // Logger.recordOutput("GamePiece/position", profile.calculate(m_TimeElapsed).position);
+        Logger.recordOutput("GamePiece/throttle", m_throttle);
+        Logger.recordOutput("GamePiece/strafe", m_strafe);
+        // Logger.recordOutput("GamePiece/distanceLeft", distanceToTarget());
+        // Logger.recordOutput("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
+        // Logger.recordOutput("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
 
         m_TimeElapsed += 0.02; //increases the timer  by 20 milliseconds
 
@@ -159,13 +177,13 @@ public class LimeLightIntakeCommand extends Command {
         */
 
 
-        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(m_strafe).withRotationalRate(0.0);
+        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(m_strafe).withRotationalRate(-m_controller.getRightX());
         m_SwerveDrive.setControl(requestSupplier.get());
     }
 
     @Override
     public boolean isFinished() {
-        if (m_joystickInput != null) {
+        if (m_controller != null) {
             return false;
         }
         if (profile.isFinished(m_TimeElapsed)) {
@@ -180,17 +198,21 @@ public class LimeLightIntakeCommand extends Command {
     }
 
     public double distanceToTarget() {
-        return Math.sqrt( //Uses the Pythagorean Theorem to calculate the total distance to the target
-            Math.pow(
-                Math.abs(m_position.getX() - m_SwerveDrive.getState().Pose.getX()), 
-                2.0
-            )
-            +
-            Math.pow(
-                Math.abs(m_position.getY() - m_SwerveDrive.getState().Pose.getY()),
-                2.0
-            )
-        );
+        // m_position only popuated if not using joystick input and this distanceToTarget() should not called, but just in case add check
+        if(m_position != null) {
+            return Math.sqrt( //Uses the Pythagorean Theorem to calculate the total distance to the target
+                Math.pow(
+                    Math.abs(m_position.getX() - m_SwerveDrive.getState().Pose.getX()), 
+                    2.0
+                )
+                +
+                Math.pow(
+                    Math.abs(m_position.getY() - m_SwerveDrive.getState().Pose.getY()),
+                    2.0
+                )
+            );
+        } else {
+            return 0.0;
+        }
     }
 }
-

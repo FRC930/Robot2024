@@ -38,7 +38,10 @@
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/SelectAuto": "String Chooser",
-      "/SmartDashboard/pp_field": "Field2d"
+      "/SmartDashboard/pp_field": "Field2d",
+      "/SmartDashboard/testAmpScore": "Command",
+      "/SmartDashboard/testExtendHood": "Command",
+      "/SmartDashboard/testRetractHood": "Command"
     },
     "windows": {
       "/AdvantageKit/RealOutputs/MechanismViewer/mechanism2d": {

@@ -23,17 +23,11 @@ import frc.robot.commands.tests.SetTurretPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
+import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
-import frc.robot.subsystems.elevator.ElevatorIORobot;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.elevator.ElevatorType;
-import frc.robot.subsystems.mm_turret.mmTurretIORobot;
-import frc.robot.subsystems.mm_turret.mmTurretIOSim;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
 import frc.robot.subsystems.pivot.PivotIORobot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -43,6 +37,9 @@ import frc.robot.subsystems.shooter.TalonVelocityIORobot;
 import frc.robot.subsystems.shooter.TalonVelocityIOSim;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIORobot;
 import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
+import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.turret.TurretIORobot;
+import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
@@ -63,6 +60,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
@@ -121,19 +119,19 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 1;
-    private static final double TURRET_OFFSET = 13.7;// 193.0; // -167.0 //TODO: if negative value, add 360
+    private static final double TURRET_OFFSET = 329.85;// 193.0; // -167.0 //if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
     private static final double INTAKE_SUPPLY_CURRENT_LIMIT = 30.0;
-    private static final double INTAKE_STATOR_CURRENT_LIMIT = 150.0;
+    private static final double INTAKE_STATOR_CURRENT_LIMIT = 80.0;
 
 
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
     //#endregion
 
     //Use max speed from tuner constants from webpage
-    static final double MaxSpeed = TunerConstants.kMaxSpeed;
+    static final double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps;
     final double MaxAngularRate = 1.5 * 2.0 * Math.PI; // 1 rotation per second max angular velocity  
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -144,25 +142,6 @@ public class RobotContainer {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
     //--PID AND FF CONSTANTS--\\
-    private final Slot0Configs shootingElevatorS0C = 
-      new Slot0Configs()
-        .withKP(12.0)
-        .withKI(0.0)
-        .withKD(0)
-        .withKA(0)
-        .withKG(0.5)
-        .withKS(0)
-        .withKV(0);
-
-    private final Slot0Configs shootingS0CSimulation = 
-      new Slot0Configs()
-        .withKP(1)
-        .withKI(0)
-        .withKD(0)
-        .withKA(0)
-        .withKG(0)
-        .withKS(0)
-        .withKV(0);
 
     private final Slot0Configs climbingS0C = 
       new Slot0Configs()
@@ -184,7 +163,8 @@ public class RobotContainer {
         .withKS(0) 
         .withKV(0);
     
-    private final Slot0Configs shooterS0C =
+    //SPEAKER SHOT
+    private final Slot0Configs shooterLeftS0C = 
       new Slot0Configs()
         .withKP(35.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
@@ -193,6 +173,35 @@ public class RobotContainer {
         .withKS(4.0); //4.0
 
     // 0.08 on kP and 0.0 on kS if using voltage
+
+    //SPEAKER SHOT
+    private final Slot0Configs shooterRightS0C =
+      new Slot0Configs()
+        .withKP(33.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKI(0) 
+        .withKD(0) 
+        .withKG(0)
+        .withKS(4.0); //4.0
+
+    // 0.08 on kP and 0.0 on kS if using voltage
+
+    //FEED SHOT
+    private final Slot1Configs shooterLeftS1C =
+      new Slot1Configs()
+        .withKP(10.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKI(0) 
+        .withKD(0) 
+        .withKG(0)
+        .withKS(4.0); //4.0
+
+    //FEED SHOT
+    private final Slot1Configs shooterRightS1C =
+      new Slot1Configs()
+        .withKP(10.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKI(0) 
+        .withKD(0) 
+        .withKG(0)
+        .withKS(4.0); //4.0
 
     private final Slot0Configs turretS0C =
       new Slot0Configs()
@@ -203,6 +212,17 @@ public class RobotContainer {
         .withKG(0.0) // MotionMagic voltage
         .withKS(0.35) 
         .withKV(0.0);
+
+
+    private final Slot0Configs pivotSimS0C =
+      new Slot0Configs()
+        .withKP(150.0)
+        .withKI(0) 
+        .withKD(0) 
+        .withKA(0) 
+        .withKG(0.35) // MotionMagic voltage
+        .withKS(0) 
+        .withKV(0);
 
         // 0.26 kp. Set to 0.1 for testing
     private final ProfiledPIDController turretPID = new ProfiledPIDController(
@@ -218,14 +238,6 @@ public class RobotContainer {
     
     //--MOTION MAGIC CONSTANTS--\\
     
-    private final MotionMagicConfigs shootingElevatorMMC = 
-    // We used motion magic voltage when tuning
-      new MotionMagicConfigs()
-        .withMotionMagicAcceleration(1.0)
-        .withMotionMagicCruiseVelocity(10.0)
-        .withMotionMagicExpo_kV(1.0)
-        .withMotionMagicExpo_kA(4.0);
-    
     private final MotionMagicConfigs climbingMMC = 
       new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
@@ -236,6 +248,13 @@ public class RobotContainer {
       new MotionMagicConfigs() // Currently set slow
         .withMotionMagicAcceleration(3.0) //18.0 fast values (but slam at zero set point)
         .withMotionMagicCruiseVelocity(4.0)//11.0 fast values (but slam at zero set point)
+        .withMotionMagicExpo_kV(0)
+        .withMotionMagicExpo_kA(0);
+
+    private final MotionMagicConfigs pivotSimMMC =
+      new MotionMagicConfigs() // Currently set slow
+        .withMotionMagicAcceleration(30.0) //18.0 fast values (but slam at zero set point)
+        .withMotionMagicCruiseVelocity(400.0)//11.0 fast values (but slam at zero set point)
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
 
@@ -279,11 +298,6 @@ public class RobotContainer {
   
     //--SUBSYSTEMS--\\
 
-    public final ElevatorSubsystem m_shootingElevatorSubsystem = new ElevatorSubsystem(
-      Robot.isReal()
-        ? new ElevatorIORobot(3, 4, CANBUS, shootingElevatorS0C, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR)
-        : new ElevatorIOSim(3, 4, CANBUS, shootingS0CSimulation, shootingElevatorMMC, ElevatorType.SHOOTING_ELEVATOR));
-
     // public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
     //   Robot.isReal()
     //     ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
@@ -291,27 +305,31 @@ public class RobotContainer {
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
-        ? new PivotIORobot(5, CANBUS, 61.352413, pivotS0C, pivotMMC)
-        : new PivotIOSim(5, CANBUS, 61.352413, pivotS0C, pivotMMC), 
+        ? new PivotIORobot(5, 22, CANBUS, 61.352413, pivotS0C, pivotMMC)
+        : new PivotIOSim(5, 22, CANBUS, 15.0, pivotS0C, pivotMMC), //TODO ensure correct IDs
       Robot.isReal() 
         ? new TimeOfFlightIORobot(15, 62.0) 
         : new TimeOfFlightIOSim(15));
 
     private final TalonPosIO m_turretIO = Robot.isReal()
-    ? new mmTurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
-    : new mmTurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,0.0);
+    ? new TurretIORobot(6,TURRET_ENCODER_DIO,CANBUS, 40, turretS0C, turretMMC,TURRET_OFFSET)
+    : new TurretIOSim(6,0,CANBUS, 40, turretS0C, turretMMC,0.0);
 
-    private final mmTurretSubsystem m_turretSubsystem = new mmTurretSubsystem(m_turretIO);
+    private final TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_turretIO);
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         // 14,
-        Robot.isReal() ? new TalonVelocityIORobot(14, 0.5, shooterS0C, shooterMMC) : new TalonVelocityIOSim(14, 0.5, shooterS0C, shooterMMC) ,
-        Robot.isReal() ? new TalonVelocityIORobot(15, 0.5, shooterS0C, shooterMMC)  : new TalonVelocityIOSim(15, 0.5, shooterS0C, shooterMMC));
+        Robot.isReal() 
+        ? new TalonVelocityIORobot(14, 0.5, shooterLeftS0C,shooterLeftS1C, shooterMMC) 
+        : new TalonVelocityIOSim(14, 0.5, shooterLeftS0C,shooterLeftS1C, shooterMMC),
+        Robot.isReal() 
+        ? new TalonVelocityIORobot(15, 0.5, shooterRightS0C,shooterRightS1C, shooterMMC) 
+        : new TalonVelocityIOSim(15, 0.5, shooterRightS0C, shooterRightS1C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
+        Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS),
         Robot.isReal() ? new TimeOfFlightIORobot(2, 200) : new TimeOfFlightIOSim(2));
-
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
         // TunerConstants.kCANbusName means same canivore as drivetrain
@@ -320,8 +338,10 @@ public class RobotContainer {
         Robot.isReal() ? new TimeOfFlightIORobot(1, 200) : new TimeOfFlightIOSim(1),
         Robot.isReal() ? new TimeOfFlightIORobot(3, 200) : new TimeOfFlightIOSim(3));
 
-    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_shootingElevatorSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem); // TODO: 2 Shooting elevators given
+    // private final AmpHoodSubsystem m_ampHoodSubsystem = new AmpHoodSubsystem(
+    //   Robot.isReal() ? new RollerMotorIORobot(3, CANBUS) : new RollerMotorIOSim(3, CANBUS));
 
+    private MechanismViewer m_mechViewer = new MechanismViewer(m_pivotSubsystem, m_turretSubsystem); 
     private SpeakerScoreUtility m_speakerUtil = new SpeakerScoreUtility(m_turretSubsystem);
     
     private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -334,7 +354,6 @@ public class RobotContainer {
       m_turretSubsystem, 
       m_shooterSubsystem, 
       m_indexerSubsystem, 
-      m_shootingElevatorSubsystem, 
       m_speakerUtil, 
       m_intakeSubsystem, 
       m_pivotSubsystem);
@@ -394,23 +413,41 @@ public class RobotContainer {
     
     m_turretSubsystem.setDefaultCommand(
       new ConditionalCommand(
-        new TurretAimCommand(m_turretSubsystem),
+        new TurretAimCommand(m_turretSubsystem), 
         new SetTurretPositionCommand(m_turretSubsystem, CommandFactoryUtility.TURRET_STOW_POS), 
         () -> m_indexerSubsystem.getSensor() && !m_turretSubsystem.getTurretLock()));
        
         // m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-
-    // Sets the desired positions for the speaker
-    m_driverController.y().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
-    m_driverController.x().or(m_driverController.b()).onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
-    m_driverController.a().onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
-
-    // m_driverController.back().whileTrue(CommandFactoryUtility.createElevatorClimbCommand(m_shootingElevatorSubsystem))
-    //   .onFalse(CommandFactoryUtility.createStowElevatorCommand(m_shootingElevatorSubsystem));
     
-    //#region POV controls
+    // Makes the shooter target presets
+    m_driverController.povUp()
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.far)); 
+    m_driverController.povLeft().or(m_driverController.povRight())
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.medium)); 
+    m_driverController.povDown()
+      .onTrue(m_speakerUtil.setDesiredTargetCommand(Target.close)); 
+    //m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
 
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_turretSubsystem.toggleTurretLock()));
+    //Feed shot button
+    m_driverController.x()
+      .onTrue(CommandFactoryUtility.createFeedCommand(m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem ))
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem))
+    ;
+    
+    // Eject shooter button
+    m_driverController.y()
+      .onTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+      .onFalse(
+        CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem)
+        .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED))
+      )
+    ;
+
+    // m_driverController.a()
+    // .onTrue(CommandFactoryUtility.createPrepareStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem));
+    
+
+    //#region POV controls
 
     // m_driverController.pov(0).whileTrue(
     //   drivetrain.applyRequest(() -> forwardStraight.withVelocityX(POV_PERCENT_SPEED * MaxSpeed).withVelocityY(0.0)
@@ -429,34 +466,38 @@ public class RobotContainer {
     //#region Trigger/Bumper controls
     // reset the field-centric heading on left bumper press TODO test
     // m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    // Eject shooter button
-    m_driverController.leftTrigger().whileTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem)
-            .alongWith(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)));
     
-    // Intake button TODO Test
+    // Intake button
     m_driverController.leftBumper()
       .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
-      .onFalse(CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem, m_shooterSubsystem)
-        .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
-      ;
+        .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
+    ;
+
+    // Game-Piece Intake
+    m_driverController.leftTrigger()
+      .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController)
+        .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
+          .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
+    ;
     
-    m_driverController.start().whileTrue(m_shootingElevatorSubsystem.newSetPosCommand(ENDGAME_TARGET_POSITION))
-      .onFalse(m_shootingElevatorSubsystem.newPullCommand(ENDGAME_DEFAULT_POSITION))
-      ;
-      
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    // Auto Aim Shoot
+    m_driverController.rightBumper().whileTrue(
       new ConditionalCommand(
         new RepeatCommand(CommandFactoryUtility.createPivotAndShooterSpeedCommand(m_shooterSubsystem, m_pivotSubsystem, null)),
         new InstantCommand(),
         () -> m_speakerUtil.getAutoAim()
       )
     );
+
+    // Amp Button
+    m_driverController.rightTrigger()
+      .onTrue(CommandFactoryUtility.createStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+      .onFalse(CommandFactoryUtility.createStopStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
+    ;
      
 
-    // Speaker score button TODO: TEST CHANGES
-    m_driverController.rightBumper().and(m_driverController.rightTrigger().negate()).whileTrue(
+    // Speaker score button
+    m_driverController.rightBumper().whileTrue(
         new ConditionalCommand(
           new WaitCommand(0.2).until(() -> m_pivotSubsystem.getPosition()>0.0)
             .andThen(CommandFactoryUtility.createSpeakerScoreCommand(m_speakerUtil, m_shooterSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_turretSubsystem, null, false)),
@@ -473,24 +514,11 @@ public class RobotContainer {
           () -> m_speakerUtil.getAutoAim()
         )
     )
-    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
-
-    m_driverController.rightTrigger()
-    .whileTrue(
-      new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController::getLeftY)
-      .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
-    .onFalse(
-      CommandFactoryUtility.createStopIntakingCommand(m_intakeSubsystem, m_indexerSubsystem, m_shooterSubsystem)
-      .andThen(m_intakeSubsystem.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED)))
-    ;
-    // Amp score button
-    // m_driverController.rightBumper().and(m_driverController.rightTrigger())
-    //   .whileTrue(CommandFactoryUtility.createAmpScoreCommand(m_shootingElevatorSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem))
-    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem));
+    .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
+    
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
   }
 
   /** 
@@ -551,15 +579,17 @@ public class RobotContainer {
     m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
-    m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0));
+    m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0,0.0,true)
+    .alongWith(new IndexerCommandTest(m_indexerSubsystem, 0.0)))
+    .onFalse(new IndexerCommand(m_indexerSubsystem, 0.0)
+    .alongWith(new ShooterCommand(m_shooterSubsystem, 0.0, 0.0)));
     m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
     // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
     m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
       .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_shootingElevatorSubsystem, m_turretSubsystem));
-    m_coDriverController.y().whileTrue(new InstantCommand(()->m_pivotSubsystem.setPosition(0.0)));
-    m_coDriverController.leftBumper().whileTrue(new SetElevatorPositionCommandTest(m_shootingElevatorSubsystem, 0));
+      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
+    m_coDriverController.y().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 0.0));
     //#endregion
 
     m_coDriverController.rightBumper().whileTrue(new TurretRefineCommand(m_turretSubsystem));
@@ -577,7 +607,7 @@ public class RobotContainer {
     if (autoCommand != null) {
         m_StartInTeleopUtility.updateAutonomous();
     }
-    m_visionUpdatesOdometry = true; // Turns off vision updates for autonomous
+    m_visionUpdatesOdometry = false; // Turns off vision updates for autonomous
     return autoCommand;
   }
 
@@ -594,9 +624,10 @@ public class RobotContainer {
    */
   public void portForwardCameras() {
     PortForwarder.add(5800, "10.9.30.30", 5801); //limelight-front
-    PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-back
-    PortForwarder.add(5802, "10.9.30.32", 5801); //limelight-game
-    PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-turret
+    PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-right
+    PortForwarder.add(5802, "10.9.30.35", 5801); //limelight-left
+    PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-back
+    PortForwarder.add(5804, "10.9.30.34", 5801); //limelight-game 
   }
 
   /**
@@ -604,181 +635,62 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (USE_LIMELIGHT_APRIL_TAG) {  
-      // updateVisionOdometry("limelight-front");
-      // updateVisionOdometry("limelight-back");
-      updatePoseEstimatorWithVisionBotPose("limelight-front");
-      updatePoseEstimatorWithVisionBotPose("limelight-back");
+      updatePoseEstimateWithAprilTags("limelight-front",true);
+      updatePoseEstimateWithAprilTags("limelight-back",true);
+      updatePoseEstimateWithAprilTags("limelight-right", false);
+      updatePoseEstimateWithAprilTags("limelight-left", true);
     }
   }
 
-  public void updatePoseEstimatorWithVisionBotPose(String limeLightName) {
-    Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
-    // invalid LL data
-    if (lastResult.getBotPose2d_wpiBlue().getX() == 0.0) {
-      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-      return;
-    }
+  // https://github.com/LimelightVision/limelight-examples/blob/main/java-wpilib/swerve-megatag-odometry/src/main/java/frc/robot/Drivetrain.java#L57
+  public void updatePoseEstimateWithAprilTags(String limeLightName, boolean usepose) {
+    LimelightHelpers.PoseEstimate lastResult = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
     double fpgaTimestamp = Timer.getFPGATimestamp();
+    // double fpgaTimestamp = Logger.getRealTimestamp();
 
     // distance from current pose to vision estimated pose
     Translation2d translation = drivetrain.getState().Pose.getTranslation();
-    double poseDifference = translation.getDistance(lastResult.getBotPose2d_wpiBlue().getTranslation());
+    double poseDifference = translation.getDistance(lastResult.pose.getTranslation());
 
-    if (lastResult.valid) {
-      double xyStds;
-      double degStds;
-      // multiple targets detected
-      if (lastResult.targets_Fiducials.length >= 2) {
-        xyStds = 0.1;
-        degStds = 6;
-      }
-      // 1 target with large area and close to estimated pose
-      else if (LimelightHelpers.getTA(limeLightName) > 0.8 && poseDifference < 0.5) {
-        xyStds = 1.0;
-        degStds = 12;
-      }
-      // 1 target farther away and estimated pose is close
-      else if (LimelightHelpers.getTA(limeLightName) > 0.1 && poseDifference < 0.3) {
-        xyStds = 2.0;
-        degStds = 30;
-      }
-      // conditions don't match to add a vision measurement
-      else {
-        SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-        return;
-      }
-
-      this.visioncounter++;
-
-      Logger.recordOutput("LimeLightOdometry/"+ limeLightName + "/UpdatCounts", this.visioncounter);
-
-        m_StartInTeleopUtility.updateTags();
-        int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
-        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
-        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
-
-        if (m_visionUpdatesOdometry) {
-            drivetrain.setVisionMeasurementStdDevs(
-              VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-              drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(),  
-            fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
-              - (lastResult.latency_capture/1000.0) //
-              - lastResult.latency_jsonParse / 1000.0 /*already in millis*/); // Due to json parsing in getlatestresults
-            SmartDashboard.putBoolean(limeLightName + "/Updated", true);
-        }
+    double xyStds;
+    double degStds;
+    if (lastResult.tagCount >= 2) {
+      xyStds = 0.1;
+      degStds = 6;
     }
+    // 1 target with large area and close to estimated pose
+    else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.8 && poseDifference < 0.5) {
+      xyStds = 1.0;
+      degStds = 12;
+    }
+    // 1 target farther away and estimated pose is close
+    else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.1 && poseDifference < 0.3) {
+      xyStds = 2.0;
+      degStds = 30;
+    }
+    // conditions don't match to add a vision measurement
+    else {
+      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
+      return;
+    }
+
+    if (m_visionUpdatesOdometry&&usepose) {
+        m_StartInTeleopUtility.updateTags();
+
+        drivetrain.setVisionMeasurementStdDevs(
+          VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+
+        drivetrain.addVisionMeasurement(lastResult.pose,  
+          fpgaTimestamp - (lastResult.latency/1000.0));
+        
+        SmartDashboard.putBoolean(limeLightName + "/Updated", true);
+        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
+        this.visioncounter++;
+    }
+    
+    Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.pose);
   }
   
-
-  /**
-   * Prints limelight, and limelight name. If the last result was valid, and the length is bigger than 0.
-   * If there is a alliance to get the alliance, and if its red it sets the alliance to red; otherwise it sets the alliance to blue.
-   * @param limeLightName
-   */
-  public void updateVisionOdometry(String limeLightName) {
-      Results lastResult = LimelightHelpers.getLatestResults(limeLightName).targetingResults;
-      double fpgaTimestamp = Timer.getFPGATimestamp();
-      boolean resultIsGood = false;
-
-      if (isValidResult(lastResult)) { //Verifies that the Tags are valid, have values, and are between IDs 1 and 16
-        // if(lastResult.timestamp_RIOFPGA_capture > m_last_RIOFPGA_timestamp) {
-          int[] idArray = createAprilTagIDArray(lastResult); //Creates a local array to store all of the IDs that the Limelight saw
-
-          //We use the percentage of the screen (TA) as a reference to distance
-          if (idArray.length > 1) { //If the Limelight sees more than one Tag
-              double area = 100.0; //Defaults to not using Tags
-              /**
-               * We sort by distances based on the groups of Tags because the Source Tags are farther apart than the Speaker Tags.
-               * This makes the TA value bigger at the same distance away from the Tags.
-              */
-              if ((arrayContainsPair(idArray, 1, 2)) || (arrayContainsPair(idArray, 9, 10))) { //If the Limelight sees Source Tags
-                  area = 0.6;//Source
-              } else if ((arrayContainsPair(idArray, 3, 4)) || (arrayContainsPair(idArray, 7, 8))) { //If the Limelight sees Speaker Tags
-                  area = 0.35; //Speaker
-              } else { //If the Limelight sees more than two tags
-                  area = 0.0; //Any
-              }
-                        
-              if (LimelightHelpers.getTA(limeLightName) > area) {
-                m_StartInTeleopUtility.updateTags();
-                
-                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/IDs", Arrays.toString(idArray));
-                Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.getBotPose2d_wpiBlue());
-
-                if (m_visionUpdatesOdometry) {
-                    drivetrain.addVisionMeasurement(lastResult.getBotPose2d_wpiBlue(), 
-                    fpgaTimestamp - (lastResult.latency_pipeline/1000.0) //
-                      - (lastResult.latency_capture/1000.0) //
-                      - lastResult.latency_jsonParse / 1000.0/*already in millis*/); // Due to json parsing in getlatestresults
-                    resultIsGood = true;
-                }
-              }
-          }
-          // m_last_RIOFPGA_timestamp = lastResult.timestamp_RIOFPGA_capture;
-        // }
-      }
-       SmartDashboard.putBoolean(limeLightName + "/Updated", resultIsGood);
-  }
-
-  /**
-   * 
-   * Validates that the results the Limelight got are what we want to use
-   * 
-   * @param result The raw JSON dump from the Limelight
-   * @return Boolean that says if we want to use our results
-   */
-  private boolean isValidResult(Results result) {
-      return result.valid && result.targets_Fiducials.length > 0 &&
-              result.targets_Fiducials[0].fiducialID >= 1 && result.targets_Fiducials[0].fiducialID <= 16;
-  }
-
-  /**
-   * 
-   * Returns a new array that contains all of the IDs that the Limelight sees
-   * 
-   * @param result The raw JSON dump from the Limelight
-   * @return An array that contains all of the IDs that the Limelight sees
-   */
-  private int[] createAprilTagIDArray(Results result) {
-      int[] idArray = new int[result.targets_Fiducials.length];
-      for (int i = 0; i < result.targets_Fiducials.length; i++) {
-          idArray[i] = (int) result.targets_Fiducials[i].fiducialID;
-      }
-
-      return idArray;
-  }
-
-  /**
-   * 
-   * Determines if both of the IDs are in the array
-   * 
-   * @param array An Array that contains all of the April Tag IDs
-   * @param value1 ID number 1
-   * @param value2 ID number 2
-   * @return Boolean that returns if the two numbers are in the array
-   */
-  private boolean arrayContainsPair(int[] array, int value1, int value2) {
-      return arrayContains(array, value1) && arrayContains(array, value2);
-  }
-
-  /**
-   * 
-   * Determines if the array contains a specific number
-   * 
-   * @param array An Array that contains all of the April Tag IDs
-   * @param value ID value that is being checked
-   * @return boolean that says if the number is in the array
-   */
-  private boolean arrayContains(int[] array, int value) {
-      for (int i : array) {
-          if (i == value) {
-              return true;
-          }
-      }
-
-      return false;
-  }
-
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
   }

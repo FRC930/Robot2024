@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.813006710178897,
+        "y": 6.979658581285779
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.455188448838437,
+        "y": 7.13379965221469
+      },
+      "isLocked": false,
+      "linkedName": "AmpY1_B"
+    },
+    {
+      "anchor": {
+        "x": 8.28012348332389,
+        "y": 7.341005451241672
+      },
+      "prevControl": {
+        "x": 4.816826556730038,
+        "y": 7.271936851566012
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "AmpY2_B"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "AmpY",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

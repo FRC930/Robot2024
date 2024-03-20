@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.mm_turret.mmTurretSubsystem;
+import frc.robot.subsystems.turret.TurretSubsystem;
 
 public class SpeakerScoreUtility {
 
@@ -45,7 +45,7 @@ public class SpeakerScoreUtility {
     
     private boolean m_useAutoAim = true;
 
-    private final mmTurretSubsystem m_turret;
+    private final TurretSubsystem m_turret;
 
     public enum Target{
         close,
@@ -55,7 +55,7 @@ public class SpeakerScoreUtility {
 
     private Target m_desiredTarget;
 
-    public SpeakerScoreUtility(mmTurretSubsystem turret) {
+    public SpeakerScoreUtility(TurretSubsystem turret) {
         m_desiredTarget = Target.close;
         m_turret = turret;
 
@@ -154,21 +154,25 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        double exponent = -0.152665;
-        double h = 19.5834;
-        double k = 19.5854;
-        double angleOffset = 4.5;
+        double angleOffset = 1.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
-            return (-0.05 * distance) + 32.7 + 1.5 + angleOffset; // 0.5 (inches) is a fudge factor
+            return (-0.05 * distance) + 32.7 + 1.0 + angleOffset; // 0.5 (inches) is a fudge factor
         } else if (distance >= LINEAR_DISTANCE_CLOSE) {
+            Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+            if (optionalAlliance.isPresent()){
+                Alliance alliance = optionalAlliance.get();
+                if (alliance == Alliance.Red) {
+                    angleOffset += 2.0;
+                } else {
+                    angleOffset += 2.0;
+                }
+            }
             return (-0.115 * distance) + 40.9 + 3.0 + angleOffset; // 2.0 (inches) is a fudge factor
         } else {
-            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 2.5 + angleOffset; // 2.0 (inches) is a fudge factor
+            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 4.5 + angleOffset; // 2.0 (inches) is a fudge factor
         }
-        // Untested shot angle model. Distances sourced from testing on 4/23. Source graph: https://www.desmos.com/calculator/me4nlqffa5
-        // return Math.exp(exponent * (distance - 4 - h)) + k;
     }
 
     public static double computePivotAngleInverseTan(double distance) {
@@ -184,6 +188,15 @@ public class SpeakerScoreUtility {
             - 12.5 /*height of shooter pivot point in inches*/;
 
         return Units.radiansToDegrees(Math.atan2(heightTurretToNodeInches, distanceCenterToNodeInches));
+    }
+
+    public static double computePivotAnglePolyModel(double distance) {
+        double exponent = -0.013963036303;
+        double h = -273.137;
+        double k = 22.4469;
+
+        // Untested shot angle model. Distances sourced from testing on 3/9/24. Source graph: https://www.desmos.com/calculator/bohpjg7n1d
+        return Math.exp(exponent * (distance - h)) + k;
     }
 
     public static double computeShooterSpeed(double distance) {

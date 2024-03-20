@@ -81,7 +81,8 @@ public class Robot extends LoggedRobot {
       }
   }
   
-  // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
+  // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
+  // Logger.disableDeterministicTimestamps(); // See "Deterministic Timestamps" in the "Understanding Data Flow" page
   Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
 

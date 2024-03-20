@@ -12,8 +12,8 @@ public class ShooterCommand extends Command {
 
     protected ShooterSubsystem m_shooter;
 
-    private double m_leftMotorSpeed;
-    private double m_rightMotorSpeed;
+    protected double m_leftMotorSpeed;
+    protected double m_rightMotorSpeed;
 
     /**
     * <h3>ShooterCommand</h3>
@@ -31,7 +31,7 @@ public class ShooterCommand extends Command {
 
     @Override
     public void initialize() {
-        m_shooter.setSpeed( m_leftMotorSpeed,  m_rightMotorSpeed); //TODO may need to input accel
+        m_shooter.setSpeed(MathUtil.clamp(m_leftMotorSpeed,-12.0,12.0), MathUtil.clamp(m_rightMotorSpeed,-12.0,12.0)); //TODO may need to input accel
     }
 
     @Override

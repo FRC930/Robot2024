@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Robot;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
+import frc.robot.utilities.LimelightHelpers;
 
 /**
  * <h3>IndexerSubsystem</h3>
@@ -22,20 +23,54 @@ import frc.robot.IOs.TimeOfFlightIO;
 public class IndexerSubsystem extends SubsystemBase {
     private TalonRollerIO m_rollerIO;
     private TimeOfFlightIO m_sensorIO;
+    private boolean m_sensorStatus;
+    private boolean m_turnedOn = false;
+    private int m_counter=0;
+    private TalonRollerIO m_rollerTopIO;
 
     /**
      * <h3>IndexerSubsystem</h3>
      * Contains the indexer motor and time of flight through IOs, 
      * allowing it to take a physical motor or sim representation
-     * @param motor RollerMotorIORobot (Physical) or RollerMotorIOSim (Simulation) for indexer motor
+     * @param starIndexerMotor RollerMotorIORobot (Physical) or RollerMotorIOSim (Simulation) for indexer motor
+     * @param topIndexerMotor RollerMotorIORobot (Physical) or RollerMotorIOSim (Simulation) for indexer motor
      * @param ToF TimeOfFlightIORobot (Physical) or TimeOfFlightIOSim (Simulation) for indexer sensor
      */
-    public IndexerSubsystem(TalonRollerIO motor, TimeOfFlightIO ToF) {
-        m_rollerIO = motor;
+    public IndexerSubsystem(TalonRollerIO starIndexerMotor, TalonRollerIO topIndexerMotor, TimeOfFlightIO ToF) {
+        m_rollerIO = starIndexerMotor;
+        m_rollerTopIO = topIndexerMotor;
         m_sensorIO = ToF;
 
-        motor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
-        
+        starIndexerMotor.getTalon().setInverted(false);
+        starIndexerMotor.getTalon().setNeutralMode(NeutralModeValue.Coast); // Applies brake mode to belt
+        topIndexerMotor.getTalon().setInverted(true);
+        topIndexerMotor.getTalon().setNeutralMode(NeutralModeValue.Brake); // Applies brake mode to belt
+
+    }
+
+
+    /**
+     * <h3>setIndexerSpeed</h3>
+     * @param speed PercentOutput speed to apply
+     */
+    public void setStarIndexerSpeed(double speed) {
+        m_rollerIO.setSpeed(speed / 2.0); // TODO take out once pulley installed also remove commandfacotory see amp commands!!
+    }
+
+    public void setStarIndexerVoltage(double voltage) {
+        m_rollerIO.getTalon().setVoltage(voltage);
+    }
+
+    /**
+     * <h3>setAmpSpeed</h3>
+     * @param speed PercentOutput speed to apply
+     */
+    public void setTopIndexerSpeed(double speed) {
+        m_rollerTopIO.setSpeed(speed);
+    }
+
+     public void setTopIndexerVoltage(double voltage) {
+        m_rollerTopIO.getTalon().setVoltage(voltage);
     }
 
     /**
@@ -43,7 +78,8 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param speed PercentOutput speed to apply
      */
     public void setSpeed(double speed) {
-        m_rollerIO.setSpeed(speed);
+        setStarIndexerSpeed(speed);  
+        setTopIndexerSpeed(speed);
     }
 
     /**
@@ -75,7 +111,11 @@ public class IndexerSubsystem extends SubsystemBase {
      * @return value of indexer sensor
      */
     public boolean getSensor() {
-        return m_sensorIO.get();
+        return m_sensorStatus;
+    }
+
+    public double getSensorDistance() {
+        return m_sensorIO.getRange();
     }
 
     public StartEndCommand getTestCommand() {
@@ -84,14 +124,54 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Velocity" ,getSpeed());
-        Logger.recordOutput(this.getClass().getSimpleName() + "/Voltage" ,getVoltage());
+        m_sensorStatus = m_sensorIO.get();
+        if(m_sensorStatus) {
+            if(!m_turnedOn) {
+                LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceBlink("limelight-back"); 
+                m_turnedOn = true;
+            } else {
+                m_counter++;
+                if(m_counter>10) {
+                    LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+                    LimelightHelpers.setLEDMode_ForceOff("limelight-back"); 
+                }
+            }
+        } else {
+            if(m_turnedOn) {
+                LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceOff("limelight-back"); 
+                m_turnedOn = false;
+                m_counter = 0;
+            }
+        }
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Star/Velocity" ,getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Star/Voltage" ,getVoltage());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Top/Velocity" ,m_rollerTopIO.getSpeed());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/Top/Voltage" ,m_rollerTopIO.getVoltage());
         Logger.recordOutput(this.getClass().getSimpleName() + "/Sensor", getSensor());
+        Logger.recordOutput(this.getClass().getSimpleName() + "/LastSensorCheck", Timer.getFPGATimestamp());
         Logger.recordOutput(this.getClass().getSimpleName() + "/SensorRange", m_sensorIO.getRange());
     }
 
     public Command newSetSpeedCommand(double speed) {
         return new InstantCommand(() -> setSpeed(speed), this);
+    }
+
+    public Command newSetStarSpeedCommand(double speed) {
+        return new InstantCommand(() -> setStarIndexerSpeed(speed), this);
+    }
+
+    public Command newSetTopSpeedCommand(double speed) {
+        return new InstantCommand(() -> setTopIndexerSpeed(speed), this);
+    }
+
+    public Command newSetStarVoltageCommand(double speed) {
+        return new InstantCommand(() -> setStarIndexerVoltage(speed), this);
+    }
+
+    public Command newSetTopVoltageCommand(double speed) {
+        return new InstantCommand(() -> setTopIndexerVoltage(speed), this);
     }
 
     public Command newUntilNoteFoundCommand() {
