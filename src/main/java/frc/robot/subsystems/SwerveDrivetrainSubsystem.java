@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.generated.TunerConstants;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
@@ -63,6 +64,11 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
 
     public void configurePathPlanner() {
         SmartDashboard.putData("pp_field", pp_field2d);
+        double driveBaseRadius = 0;
+        for (var moduleLocation : m_moduleLocations) {
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        }
+
         AutoBuilder.configureHolonomic(
             ()->this.getState().Pose,
             this::seedFieldRelative,
@@ -71,10 +77,9 @@ public class SwerveDrivetrainSubsystem extends SwerveDrivetrain implements Subsy
             new HolonomicPathFollowerConfig(
                 new PIDConstants(1.6, 0, 0), // TODO: Config
                 new PIDConstants(7.0, 0, 0), // TODO: Config
-                4.15, // Meters  // TODO get set to correct value
-                Units.inchesToMeters(11.0), // TODO determine 
-                new ReplanningConfig(),
-                0.004),
+                TunerConstants.kSpeedAt12VoltsMps, // Meters 
+                driveBaseRadius, 
+                new ReplanningConfig()),
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red alliance
                     // This will flip the path being followed to the red side of the field.
