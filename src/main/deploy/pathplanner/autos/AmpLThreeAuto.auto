@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5706023719739761,
-      "y": 7.005529395674177
+      "x": 1.4194171612308972,
+      "y": 6.9956624528633675
     },
     "rotation": 180.0
   },
@@ -12,21 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aimAndShoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "AmpStartToTopWingButNoOver"
+            "pathName": "AmpL1"
           }
         },
         {
@@ -38,19 +26,13 @@
         {
           "type": "named",
           "data": {
-            "name": "setMid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TopWingToCenterWingButNoOver"
+            "pathName": "AmpL2"
           }
         },
         {
@@ -62,31 +44,19 @@
         {
           "type": "named",
           "data": {
-            "name": "setMid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CenterWingToBottomWing"
+            "pathName": "AmpL3"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setMid"
           }
         },
         {

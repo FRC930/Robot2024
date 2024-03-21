@@ -1,0 +1,91 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4311279977766789,
+      "y": 6.354311170160802
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "setClose"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "sideWingScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpStartToTopCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopCenterToWingLine1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setFar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WingLine1ToTopMidCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopMidCenterToWingLine2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setFar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "WingLine2ToMidCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Robot2024",
+  "choreoAuto": false
+}

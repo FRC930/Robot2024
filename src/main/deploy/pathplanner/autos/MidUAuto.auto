@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5607354291631679,
-      "y": 6.9956624528633675
+      "x": 1.4194171612308972,
+      "y": 5.550936522700434
     },
     "rotation": 180.0
   },
@@ -14,19 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AmpStartToTopCenter"
+            "pathName": "MidU1"
           }
         },
         {
@@ -36,18 +30,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "TopCenterToWingLine1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setFar"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "aimAndShoot"
@@ -56,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "WingLine1ToTopMidCenter"
+            "pathName": "MidU2"
           }
         },
         {
@@ -66,27 +48,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "TopMidCenterToWingLine2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setFar"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "WingLine2ToMidCenter"
           }
         }
       ]

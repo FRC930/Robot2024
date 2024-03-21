@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.9026396514331507,
-      "y": 6.9956624528633675
+      "x": 1.4311279977766789,
+      "y": 5.527514849608872
     },
     "rotation": 180.0
   },
@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopWingToCenterWingButNoOver"
+            "pathName": "AmpTwo1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "aimAndShoot"
           }
         }
       ]

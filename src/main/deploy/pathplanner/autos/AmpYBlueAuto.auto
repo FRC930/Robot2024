@@ -1,14 +1,20 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.4194171612308972,
+      "y": 6.979658581285779
+    },
+    "rotation": 180.0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "setClose"
+            "pathName": "AmpY1Blue"
           }
         },
         {
@@ -20,25 +26,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AmpStartToTopWing"
+            "pathName": "AmpY2Blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpY3Blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpY4Blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpY5Blue"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setMid"
+            "name": "preparedShoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "name": "stopShoot"
           }
         }
       ]

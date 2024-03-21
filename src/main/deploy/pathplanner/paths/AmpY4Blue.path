@@ -3,41 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5706023719739761,
-        "y": 7.005529395674177
+        "x": 5.379242296946134,
+        "y": 6.887126081944472
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5032956956391186,
-        "y": 7.0247598746269935
+        "x": 6.7424427880788205,
+        "y": 6.256049932268854
       },
       "isLocked": false,
-      "linkedName": "AmpStart"
+      "linkedName": "AmpY3_B"
     },
     {
       "anchor": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 8.28012348332389,
+        "y": 5.712959887458236
       },
       "prevControl": {
-        "x": 2.2908096302179826,
-        "y": 6.9956624528633675
+        "x": 6.582052184185573,
+        "y": 5.759803233641361
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TopWingExact"
+      "linkedName": "AmpY4_B"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.4,
+      "name": "ShootThenIntake",
+      "waypointRelativePos": 0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "preparedShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "stopShoot"
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -50,8 +62,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -61,10 +73,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Robot2024",
+  "folder": "AmpY",
   "previewStartingState": {
     "rotation": 180.0,
-    "velocity": 0.0
+    "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
