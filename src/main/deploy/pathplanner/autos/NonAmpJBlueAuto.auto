@@ -55,6 +55,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel2"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NonAmpJ3Blue"
@@ -75,6 +81,6 @@
       ]
     }
   },
-  "folder": "Robot2024",
+  "folder": null,
   "choreoAuto": false
 }
