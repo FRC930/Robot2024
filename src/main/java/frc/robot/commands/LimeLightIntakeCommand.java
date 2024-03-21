@@ -30,8 +30,8 @@ import frc.robot.utilities.LimelightHelpers;
  */
 public class LimeLightIntakeCommand extends Command {
     private final double MAX_SPEED = TunerConstants.kSpeedAt12VoltsMps;
-    private final double MAX_STRAFE = 0.2; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
-    private final double MAX_THROTTLE = 0.33; // NOTE: in prototype 30% speed //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
+    private final double MAX_STRAFE = 0.3; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
+    private final double MAX_THROTTLE = 1.0; // NOTE: in prototype 30% speed //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
     private PIDController pid = new PIDController(0.0065, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
 
     private SwerveDrivetrainSubsystem m_SwerveDrive;
@@ -186,8 +186,8 @@ public class LimeLightIntakeCommand extends Command {
 
 
         Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle)
-            .withVelocityY(m_strafe)
-            .withRotationalRate((m_controller!=null) ? -m_controller.getRightX():0.0);
+            .withVelocityY(m_strafe);
+            //.withRotationalRate((m_controller!=null) ? -m_controller.getRightX():0.0);
 
         m_SwerveDrive.setControl(requestSupplier.get());
     }
