@@ -21,7 +21,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
-
 /**
  * 
  * <h3>LimeLightIntakeCommand</h3>
@@ -114,6 +113,15 @@ public class LimeLightIntakeCommand extends Command {
         Alliance alliance = optionalAlliance.get();
             if (alliance == Alliance.Red) {
                 m_position = m_redPosition;
+                // Move point forward for red alliance (auto)
+                if(m_position != null) {
+                    m_position = new Pose2d(m_position.getX()-0.5, m_position.getY(), m_position.getRotation());
+                }
+            } else {
+                if(m_position != null) {
+                    // Move point forward for blue alliance (auto)
+                    m_position = new Pose2d(m_position.getX()+0.5, m_position.getY(), m_position.getRotation());
+                }
             }
         }
 
@@ -177,7 +185,10 @@ public class LimeLightIntakeCommand extends Command {
         */
 
 
-        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(m_strafe).withRotationalRate(-m_controller.getRightX());
+        Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle)
+            .withVelocityY(m_strafe)
+            .withRotationalRate((m_controller!=null) ? -m_controller.getRightX():0.0);
+
         m_SwerveDrive.setControl(requestSupplier.get());
     }
 
