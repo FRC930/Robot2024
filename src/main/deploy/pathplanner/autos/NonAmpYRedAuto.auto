@@ -30,6 +30,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel2"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NonAmpY3Red"
@@ -45,6 +51,12 @@
           "type": "path",
           "data": {
             "pathName": "NonAmpY4Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel2"
           }
         },
         {

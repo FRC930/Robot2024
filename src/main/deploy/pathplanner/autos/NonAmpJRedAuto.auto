@@ -55,6 +55,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel2"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NonAmpJ3Red"
