@@ -264,12 +264,12 @@ public final class CommandFactoryUtility {
         return createPrepareStarAmpCommand(indexer, turret, pivot) 
         .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
         .alongWith(pivot.newWaitUntilSetpointCommand(AFTER_AMP_SHOOT_TIMEOUT))
-        .andThen(indexer.newSetStarVoltageCommand(8.4/2.0)); // Start shooting  TODO move 2.0 to indexer subsystem
+        .andThen(indexer.newSetStarVoltageCommand(8.4)); // Start shooting 
     }
 
     public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
         return new WaitCommand(0.2)
-        .andThen(indexer.newSetTopVoltageCommand(-4.2)) //TODO fix divided wrong val
+        .andThen(indexer.newSetTopVoltageCommand(-4.2)) 
         .andThen(indexer.newUntilNoNoteFoundCommand())
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT))
         .andThen(pivot.newSetPosCommand(0.0)

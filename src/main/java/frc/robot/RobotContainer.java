@@ -289,6 +289,7 @@ public class RobotContainer {
     public static final double ENDGAME_ELEVATOR_FEEDFORWARD = 0.0;
     public static final boolean ENDGAME_ELEVATOR_LIMITFORWARDMOTION = false;
     public static final boolean ENDGAME_ELEVATOR_LIMITREVERSEMOTION = false;
+    private static final boolean DELTA_LOGGING_ENABLED = false;
 
     //--VisionSTDsDevConstants--\\
     // TODO configure for april tag confidence level 
@@ -612,11 +613,30 @@ public class RobotContainer {
   }
 
   public void robotPeriodic() {
+    double fpgaTimestampStart = Logger.getRealTimestamp();
     updateAllVision();
+    fpgaTimestampStart=logTimestamp(fpgaTimestampStart, "updateAllVision", this);
     m_mechViewer.periodic();
+    fpgaTimestampStart = logTimestamp(fpgaTimestampStart, "mechViewer", this);
     Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", SpeakerScoreUtility.inchesToSpeaker());
     Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/inverseTanPivotAngleUnimplemented", 
       SpeakerScoreUtility.computePivotAngleInverseTan(SpeakerScoreUtility.inchesToSpeaker()));
+    fpgaTimestampStart=logTimestamp(fpgaTimestampStart, "speakerScoreCalc", this);  
+  }
+   /**Creates a method for logging the Delta Time in the console. Can be disabled in the constants. 
+   * 
+   * @param startTimestamp
+   * @param loggerName
+   * @return
+   */
+  public double logTimestamp(double startTimestamp, String loggerName, Object classObject){
+    double timestamp = 0;
+    if(DELTA_LOGGING_ENABLED){
+      timestamp = Logger.getRealTimestamp();
+
+      Logger.recordOutput(classObject.getClass().getSimpleName()+ "/"+loggerName,( startTimestamp-timestamp)/1000000.0);
+    }
+    return timestamp;
   }
 
   /*
