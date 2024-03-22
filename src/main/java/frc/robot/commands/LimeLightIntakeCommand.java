@@ -58,6 +58,9 @@ public class LimeLightIntakeCommand extends Command {
     private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
     private double m_direction;
 
+    private final double BUFFER_NOTE_X = 0.2;
+
+
     /**
      * <h3>LimeLightIntakeCommand</h3>
      * 
@@ -115,12 +118,12 @@ public class LimeLightIntakeCommand extends Command {
                 m_position = m_redPosition;
                 // Move point forward for red alliance (auto)
                 if(m_position != null) {
-                    m_position = new Pose2d(m_position.getX()-0.5, m_position.getY(), m_position.getRotation());
+                    m_position = new Pose2d(m_position.getX()-BUFFER_NOTE_X, m_position.getY(), m_position.getRotation());
                 }
             } else {
                 if(m_position != null) {
                     // Move point forward for blue alliance (auto)
-                    m_position = new Pose2d(m_position.getX()+0.5, m_position.getY(), m_position.getRotation());
+                    m_position = new Pose2d(m_position.getX()+BUFFER_NOTE_X, m_position.getY(), m_position.getRotation());
                 }
             }
         }
