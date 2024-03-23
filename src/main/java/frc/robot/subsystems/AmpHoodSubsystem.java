@@ -19,6 +19,7 @@ import frc.robot.IOs.TalonRollerIO;
 import frc.robot.commands.HoodCommand;
 import frc.robot.utilities.Phoenix6Utility;
 
+@Deprecated
 public class AmpHoodSubsystem extends SubsystemBase{
     private TalonRollerIO m_io;
     private static final double extendedAngleThreshold = 9999; //TODO set both
