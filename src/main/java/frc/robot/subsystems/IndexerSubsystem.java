@@ -127,19 +127,19 @@ public class IndexerSubsystem extends SubsystemBase {
         m_sensorStatus = m_sensorIO.get();
         if(m_sensorStatus) {
             if(!m_turnedOn) {
-                LimelightHelpers.setLEDMode_ForceBlink("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceBlink("limelight-left"); 
                 LimelightHelpers.setLEDMode_ForceBlink("limelight-back"); 
                 m_turnedOn = true;
             } else {
                 m_counter++;
                 if(m_counter>10) {
-                    LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+                    LimelightHelpers.setLEDMode_ForceOff("limelight-left"); 
                     LimelightHelpers.setLEDMode_ForceOff("limelight-back"); 
                 }
             }
         } else {
             if(m_turnedOn) {
-                LimelightHelpers.setLEDMode_ForceOff("limelight-front"); 
+                LimelightHelpers.setLEDMode_ForceOff("limelight-left"); 
                 LimelightHelpers.setLEDMode_ForceOff("limelight-back"); 
                 m_turnedOn = false;
                 m_counter = 0;
