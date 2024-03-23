@@ -60,7 +60,7 @@ public final class CommandFactoryUtility {
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
     public static final double INDEXER_EJECT_SPEED = -0.2;          /*Value*/
 
-    public static final double INTAKE_SPEED = 0.6;                  /*Value*/
+    public static final double INTAKE_SPEED = 0.4;                  /*Value*/
     public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
     private static final double INTAKE_EJECT_SPEED = -0.4;          /*value*/
 
