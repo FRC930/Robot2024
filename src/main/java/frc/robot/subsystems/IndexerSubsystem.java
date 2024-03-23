@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -14,13 +15,14 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Robot;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
+import frc.robot.commands.Orchestra.Orchestratable;
 import frc.robot.utilities.LimelightHelpers;
 
 /**
  * <h3>IndexerSubsystem</h3>
  * This subsystem controls the indexer
  */
-public class IndexerSubsystem extends SubsystemBase {
+public class IndexerSubsystem extends SubsystemBase implements Orchestratable{
     private TalonRollerIO m_rollerIO;
     private TimeOfFlightIO m_sensorIO;
     private boolean m_sensorStatus;
@@ -190,5 +192,9 @@ public class IndexerSubsystem extends SubsystemBase {
         }
     }
 
+    @Override
+    public TalonFX[] getInstruments() {
+        return new TalonFX[] {m_rollerIO.getTalon(),m_rollerTopIO.getTalon()};
+    }
 
 }

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
+import frc.robot.commands.Orchestra.Orchestratable;
 import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
 
@@ -20,7 +21,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
  * <h3>ShooterSubsystem</h3>
  * This subsystem controls the shooter
  */
-public class ShooterSubsystem extends SubsystemBase{
+public class ShooterSubsystem extends SubsystemBase implements Orchestratable{
 
     private TalonVelocityIO IO_Left;
     private TalonVelocityIO IO_Right;
@@ -218,6 +219,11 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public Command newWaitUntilSetpointCommand(double timeout) {
         return new WaitCommand(timeout).until(() -> atSetpoint());
+    }
+
+    @Override
+    public TalonFX[] getInstruments() {
+        return new TalonFX[] {IO_Left.getTalon(), IO_Right.getTalon()};
     }
 }
 

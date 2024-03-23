@@ -523,6 +523,9 @@ public class RobotContainer {
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    SmartDashboard.putData("Orchestra/yarhar", CommandFactoryUtility.createOrchestraCommand("PiratesOfTheCaribbean.chrp", m_indexerSubsystem));
+    SmartDashboard.putData("Orchestra/funnyskeleton", CommandFactoryUtility.createOrchestraCommand("Megalovania.chrp", m_indexerSubsystem));
   }
 
   /** 

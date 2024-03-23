@@ -3,12 +3,14 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
+import frc.robot.commands.Orchestra.Orchestratable;
 import frc.robot.utilities.Phoenix6Utility;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,7 +20,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
  * <h3>IntakeSubsystem</h3>
  * This subsystem controls the intake
  */
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements Orchestratable {
 
     private TalonRollerIO m_leaderMotor;
     private TalonRollerIO m_followerMotor;
@@ -107,6 +109,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public InstantCommand newSetSpeedCommand(double speed) {
         return new InstantCommand(() -> setSpeed(speed), this);
+    }
+
+    @Override
+    public TalonFX[] getInstruments() {
+        return new TalonFX[] {m_leaderMotor.getTalon(),m_followerMotor.getTalon()};
     }
 }
 

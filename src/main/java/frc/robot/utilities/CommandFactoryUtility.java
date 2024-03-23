@@ -17,6 +17,8 @@ import frc.robot.commands.HoodCommand;
 import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
+import frc.robot.commands.Orchestra.OrchestraCommand;
+import frc.robot.commands.Orchestra.Orchestratable;
 import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -275,5 +277,9 @@ public final class CommandFactoryUtility {
         .andThen(pivot.newSetPosCommand(0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
         .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret)));
+    }
+
+    public static Command createOrchestraCommand(String file, Orchestratable...sections) {
+        return new OrchestraCommand(file,sections);
     }
 }
