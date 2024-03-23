@@ -26,12 +26,12 @@ public class RedirectorsSubsystem extends SubsystemBase{
     private SparkMaxWrapper m_motor;
 
     public RedirectorsSubsystem(int deviceID) {
-        m_motor = new SparkMaxWrapper(0, MotorType.kBrushless);
+        m_motor = new SparkMaxWrapper(deviceID, MotorType.kBrushless);
 
         m_motor.setSmartCurrentLimit(MotorFreeLimit, MotorStallLimit);
 
         if (RobotBase.isSimulation()) {
-            REVPhysicsSim.getInstance().addSparkMax(m_motor, DCMotor.getNEO(12));
+            REVPhysicsSim.getInstance().addSparkMax(m_motor, DCMotor.getNEO(1));
         }
         // Sets motor so it can't be manually moved when neutral
         m_motor.setIdleMode(IdleMode.kBrake);
