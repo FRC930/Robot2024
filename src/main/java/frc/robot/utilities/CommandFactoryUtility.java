@@ -114,7 +114,7 @@ public final class CommandFactoryUtility {
     public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake) {
         return new ConditionalCommand(
             indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
-            .andThen(new WaitCommand(0.15))
+            .andThen(new WaitCommand(0.20))
             .andThen(indexer.newSetSpeedCommand(0.0)),
             new InstantCommand(),
             () -> indexer.getSensorDistance() >= 40)
@@ -128,7 +128,7 @@ public final class CommandFactoryUtility {
             .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
             .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
             .andThen(indexer.newSetStarSpeedCommand(INDEXER_INTAKE_SPEED))
-            .andThen(indexer.newSetTopSpeedCommand(0.4))
+            .andThen(indexer.newSetTopSpeedCommand(0.3))
             .andThen(indexer.newUntilNoteFoundCommand())
             .andThen(new WaitCommand(0.05))
             // .alongWith(new InstantCommand(() -> 
@@ -268,10 +268,9 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
-        return new WaitCommand(0.2)
-        .andThen(indexer.newSetTopVoltageCommand(-4.2)) 
+        return indexer.newSetTopVoltageCommand(-4.2) 
         .andThen(indexer.newUntilNoNoteFoundCommand())
-        .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT))
+        .andThen(new WaitCommand( 0.4))
         .andThen(pivot.newSetPosCommand(0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
         .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret)));

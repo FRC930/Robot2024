@@ -157,7 +157,7 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        double angleOffset = 1.5;
+        double angleOffset = 3.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {

@@ -58,7 +58,7 @@ public class LimeLightIntakeCommand extends Command {
     private SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
     private double m_direction;
 
-    private final double BUFFER_NOTE_X = 0.2;
+    private final double BUFFER_NOTE_X = -0.2;
 
 
     /**
