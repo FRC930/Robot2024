@@ -44,7 +44,7 @@ public class LimeLightIntakeCommand extends Command {
     private double m_throttle = 0.0;
     private CommandXboxController m_controller;
     private double m_strafe = 0.0;
-    private double slope = 1.34; //Adjust if the location of the game piece camera moves
+    private double slope = 1.44; //Adjust if the location of the game piece camera moves
 
     private double m_distance;  
     private double m_TimeElapsed;
@@ -152,7 +152,8 @@ public class LimeLightIntakeCommand extends Command {
         // Crosshair isn't in the exact center, but instead to where the note will enter the robot
         double tx = m_LimeLight.get_tx(); // degrees left and right from crosshair // TODO handle shakey imaging!!! may not have value tx 
         double ty = m_LimeLight.get_ty(); // degrees up and down from crosshair
-        double linearTX = (ty/slope) - tx; 
+        double b = (tx == 0.0? 0.0: 9.0);
+        double linearTX = (ty/slope) - tx - b; 
         /** 
          * Since our camera isn't centered on the robot, when a note moves forward/backwards it will subsequently move left/right
          * linearTX will automatically see how far forwards/backwards the note is and determine how many degrees off is the actual center using a linear slope
