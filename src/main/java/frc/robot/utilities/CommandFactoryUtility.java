@@ -31,7 +31,7 @@ public final class CommandFactoryUtility {
 
     private static final double INDEXER_STAR_INDEX_SPEED = 0.6;
 
-    private static final double AMP_STAR_PIVOT_POS = 28.0;
+    private static final double AMP_STAR_PIVOT_POS = 25.0;
 
     private static final double PIVOT_FEED_POS = 45.0;
 
@@ -264,11 +264,11 @@ public final class CommandFactoryUtility {
         return createPrepareStarAmpCommand(indexer, turret, pivot) 
         .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
         .alongWith(pivot.newWaitUntilSetpointCommand(AFTER_AMP_SHOOT_TIMEOUT))
-        .andThen(indexer.newSetStarVoltageCommand(8.4)); // Start shooting 
+        .andThen(indexer.newSetStarVoltageCommand(5.5)); // Start shooting 
     }
 
     public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
-        return indexer.newSetTopVoltageCommand(-4.2) 
+        return indexer.newSetTopVoltageCommand(-3.8) 
         .andThen(indexer.newUntilNoNoteFoundCommand())
         .andThen(new WaitCommand( 0.4))
         .andThen(pivot.newSetPosCommand(0.0)
