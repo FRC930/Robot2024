@@ -30,7 +30,7 @@ public class SpeakerScoreUtility {
     private final static double LINEAR_DISTANCE_FAR = 132.0 - 4.0; //subracting 4 inches to make sure 11 feet uses linear
     private static final double LINEAR_DISTANCE_CLOSE = 84.0 - 4.0; //subracting 4 inches to make sure 7 feet uses linear
 
-    static final private double COMPUTED_SHOOT_SPEED = 135.0;
+    static final private double COMPUTED_SHOOT_SPEED = 117.0;
 
     static final private int CLOSE_ROW = 0;
     static final private int MEDIUM_ROW = 1;
@@ -42,7 +42,10 @@ public class SpeakerScoreUtility {
         {135.0, 135.0, 0.9, 27.45, 0.0} // "far" 185 inches back bumpers against pillar
     };
     private static final double DISTANCE_OFFSET_TO_CENTER_OF_ROBOT = 11.5;
-    
+
+    private static final double RED_ALLIANCE_OFFSET = 0.0; //was 2.0
+    private static final double BLUE_ALLIANCE_OFFSET = 0.0; //was 2.0
+
     private boolean m_useAutoAim = true;
 
     private final TurretSubsystem m_turret;
@@ -154,7 +157,7 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        double angleOffset = 1.5;
+        double angleOffset = 3.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
@@ -164,9 +167,9 @@ public class SpeakerScoreUtility {
             if (optionalAlliance.isPresent()){
                 Alliance alliance = optionalAlliance.get();
                 if (alliance == Alliance.Red) {
-                    angleOffset += 2.0;
+                    angleOffset += RED_ALLIANCE_OFFSET;
                 } else {
-                    angleOffset += 2.0;
+                    angleOffset += BLUE_ALLIANCE_OFFSET;
                 }
             }
             return (-0.115 * distance) + 40.9 + 3.0 + angleOffset; // 2.0 (inches) is a fudge factor

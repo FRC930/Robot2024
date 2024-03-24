@@ -120,7 +120,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 1;
-    private static final double TURRET_OFFSET = 329.85;// 193.0; // -167.0 //if negative value, add 360
+    private static final double TURRET_OFFSET = 329.14;// 193.0; // -167.0 //if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
@@ -167,7 +167,7 @@ public class RobotContainer {
     //SPEAKER SHOT
     private final Slot0Configs shooterLeftS0C = 
       new Slot0Configs()
-        .withKP(35.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(42.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -178,7 +178,7 @@ public class RobotContainer {
     //SPEAKER SHOT
     private final Slot0Configs shooterRightS0C =
       new Slot0Configs()
-        .withKP(33.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(39.6) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -262,7 +262,8 @@ public class RobotContainer {
     private final MotionMagicConfigs shooterMMC =
       new MotionMagicConfigs()
         .withMotionMagicAcceleration(0)
-        .withMotionMagicJerk(0); //TODO set vals
+        .withMotionMagicJerk(0)
+        .withMotionMagicCruiseVelocity(0.0); //TODO set vals
 
     private final MotionMagicConfigs turretMMC =
       new MotionMagicConfigs() // Currently set slow
@@ -324,10 +325,10 @@ public class RobotContainer {
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         // 14,
         Robot.isReal() 
-        ? new TalonVelocityIORobot(14, 1.5, shooterLeftS0C, shooterLeftS1C, shooterMMC) 
+        ? new TalonVelocityIORobot(14, 0.666667, shooterLeftS0C, shooterLeftS1C, shooterMMC) 
         : new TalonVelocityIOSim(14, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 ¯\_(ツ)_/¯ */, shooterLeftS0C, shooterLeftS1C, shooterMMC),
         Robot.isReal() 
-        ? new TalonVelocityIORobot(15, 1.5, shooterRightS0C, shooterRightS1C, shooterMMC) 
+        ? new TalonVelocityIORobot(15, 0.666667, shooterRightS0C, shooterRightS1C, shooterMMC) 
         : new TalonVelocityIOSim(15, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 ¯\_(ツ)_/¯ */, shooterRightS0C, shooterRightS1C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
@@ -583,7 +584,12 @@ public class RobotContainer {
   private void configureCoDriverBindingsForTesting() {
     //#region Test Commands
 
-    m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
+    m_coDriverController.b().onTrue(m_RedirectorsSubsystem.getNewExtendCommand())
+    .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
+    m_coDriverController.a().onTrue(m_RedirectorsSubsystem.getNewRetractCommand())
+    .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
+  
+    // m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
     m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0,0.0,true)
@@ -593,10 +599,10 @@ public class RobotContainer {
     m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
     // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
-    m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
-      .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
-    m_coDriverController.y().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 0.0));
+    // m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
+    //   .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
+    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
+    // m_coDriverController.y().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 0.0));
     //#endregion
 
     m_coDriverController.rightBumper().whileTrue(new TurretRefineCommand(m_turretSubsystem));
@@ -651,7 +657,7 @@ public class RobotContainer {
   public void portForwardCameras() {
     PortForwarder.add(5800, "10.9.30.30", 5801); //limelight-front
     PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-right
-    PortForwarder.add(5802, "10.9.30.35", 5801); //limelight-left
+    PortForwarder.add(5802, "10.9.30.32", 5801); //limelight-left
     PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-back
     PortForwarder.add(5804, "10.9.30.34", 5801); //limelight-game 
   }
@@ -663,7 +669,7 @@ public class RobotContainer {
     if (USE_LIMELIGHT_APRIL_TAG) {  
       updatePoseEstimateWithAprilTags("limelight-front",true);
       updatePoseEstimateWithAprilTags("limelight-back",true);
-      updatePoseEstimateWithAprilTags("limelight-right", false);
+      updatePoseEstimateWithAprilTags("limelight-right", true);
       updatePoseEstimateWithAprilTags("limelight-left", true);
     }
   }

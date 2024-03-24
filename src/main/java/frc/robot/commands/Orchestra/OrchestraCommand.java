@@ -74,7 +74,8 @@ public class OrchestraCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return !m_orchestra.isPlaying();
+        return false;
+        //return !m_orchestra.isPlaying();
     }
 
     @Override

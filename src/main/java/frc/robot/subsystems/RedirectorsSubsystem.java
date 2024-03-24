@@ -17,11 +17,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.SparkMaxWrapper;
 
 public class RedirectorsSubsystem extends SubsystemBase{
-    private static final double RedirectorExtendVoltage = 0.5;
-    private static final double RedirectorRetractVoltage = -0.5;
+    private static final double RedirectorExtendVoltage = 8.0; // 12 seems no difference than 8
+    private static final double RedirectorRetractVoltage = -8.0; // 12 seems no difference than 8
 
-    private static final int MotorFreeLimit = 30; // Amps
-    private static final int MotorStallLimit = 10; // Amps
+    private static final int MotorFreeLimit = 1; // Amps
+    private static final int MotorStallLimit = 1; // Amps
 
     private SparkMaxWrapper m_motor;
 
@@ -37,7 +37,7 @@ public class RedirectorsSubsystem extends SubsystemBase{
         m_motor.setIdleMode(IdleMode.kBrake);
 
         // Motor is not inverted
-        m_motor.setInverted(false);
+        m_motor.setInverted(true);
     }
 
     /**
