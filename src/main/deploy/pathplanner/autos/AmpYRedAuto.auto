@@ -30,9 +30,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "MidLineLevel5"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "MidLineLevel5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilNote"
+                }
+              }
+            ]
           }
         },
         {
@@ -48,9 +61,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "MidLineLevel4"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "MidLineLevel4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilNote"
+                }
+              }
+            ]
           }
         },
         {

@@ -154,5 +154,6 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
         NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 25.5));
+        NamedCommands.registerCommand("waitUntilNote", indexer.newUntilNoteFoundCommand());
     }
 }

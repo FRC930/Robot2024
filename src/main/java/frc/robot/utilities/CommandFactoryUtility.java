@@ -223,7 +223,7 @@ public final class CommandFactoryUtility {
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
             .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
             .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
-                .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
+                .alongWith(shooter.newWaitUntilSetpointCommand(0.5))
                 .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT)));
     }
 
