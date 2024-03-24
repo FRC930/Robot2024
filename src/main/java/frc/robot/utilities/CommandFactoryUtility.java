@@ -31,7 +31,7 @@ public final class CommandFactoryUtility {
 
     private static final double INDEXER_STAR_INDEX_SPEED = 0.6;
 
-    private static final double AMP_STAR_PIVOT_POS = 19.0;
+    private static final double AMP_STAR_PIVOT_POS = 28.0;
 
     private static final double PIVOT_FEED_POS = 45.0;
 
