@@ -143,7 +143,7 @@ public class LimeLightIntakeCommand extends Command {
         //Creates the trapezoid profile using the given information
         m_goal = new TrapezoidProfile.State(m_distance, 0.0); //sets the desired state to be the total distance away
         //TODO fix deprecated and how to get current velocity
-        m_setpoint = new TrapezoidProfile.State(0.0, 1.0); //sets the current state at (0,0)
+        m_setpoint = new TrapezoidProfile.State(0.0, 2.0); //sets the current state at (0,0)
         profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint); //combines everything into the trapezoid profile
     }
 
@@ -152,8 +152,7 @@ public class LimeLightIntakeCommand extends Command {
         // Crosshair isn't in the exact center, but instead to where the note will enter the robot
         double tx = m_LimeLight.get_tx(); // degrees left and right from crosshair // TODO handle shakey imaging!!! may not have value tx 
         double ty = m_LimeLight.get_ty(); // degrees up and down from crosshair
-        double b = (tx == 0.0? 0.0: 9.0);
-        double linearTX = (ty/slope) - tx - b; 
+        double linearTX = (tx <= 0.0 && ty <= 0.0? 0.0 : (ty/slope) - tx); 
         /** 
          * Since our camera isn't centered on the robot, when a note moves forward/backwards it will subsequently move left/right
          * linearTX will automatically see how far forwards/backwards the note is and determine how many degrees off is the actual center using a linear slope
