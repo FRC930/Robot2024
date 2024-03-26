@@ -10,6 +10,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,6 +33,9 @@ public class LimeLightIntakeCommand extends Command {
     private final double MAX_SPEED = TunerConstants.kSpeedAt12VoltsMps;
     private final double MAX_STRAFE = 0.3; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
     private final double MAX_THROTTLE = 1.0; // NOTE: in prototype 30% speed //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
+    private final double MOVING_AVERAGE_SECONDS = 0.1;
+    private final double HIGH_PASS_SECONDS = 1.0;
+    private final double HIGH_PASS_LIMIT = 0.1;
     private PIDController pid = new PIDController(0.0065, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
 
     private SwerveDrivetrainSubsystem m_SwerveDrive;
@@ -60,6 +64,8 @@ public class LimeLightIntakeCommand extends Command {
 
     private final double BUFFER_NOTE_X = -0.2;
 
+    private LinearFilter movingAverageFilter;
+    private LinearFilter highPassFilter;
 
     /**
      * <h3>LimeLightIntakeCommand</h3>
@@ -130,6 +136,7 @@ public class LimeLightIntakeCommand extends Command {
 
         m_TimeElapsed = 0.0;
 
+        movingAverageFilter = LinearFilter.movingAverage(5);
         if(m_controller != null) {
            return;
         }
@@ -145,6 +152,9 @@ public class LimeLightIntakeCommand extends Command {
         //TODO fix deprecated and how to get current velocity
         m_setpoint = new TrapezoidProfile.State(0.0, 2.0); //sets the current state at (0,0)
         profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint); //combines everything into the trapezoid profile
+        
+        // highPassFilter = LinearFilter.highPass(HIGH_PASS_SECONDS, 0.02);
+
     }
 
     @Override
@@ -152,11 +162,16 @@ public class LimeLightIntakeCommand extends Command {
         // Crosshair isn't in the exact center, but instead to where the note will enter the robot
         double tx = m_LimeLight.get_tx(); // degrees left and right from crosshair // TODO handle shakey imaging!!! may not have value tx 
         double ty = m_LimeLight.get_ty(); // degrees up and down from crosshair
-        double linearTX = (tx <= 0.0 && ty <= 0.0? 0.0 : (ty/slope) - tx); 
+        double linearTX = movingAverageFilter.calculate(tx <= -100.0 && ty <= -100.0? 0.0 : (ty/slope) - tx); //-100.0 is just a temporary value that cannot be reached
         /** 
          * Since our camera isn't centered on the robot, when a note moves forward/backwards it will subsequently move left/right
          * linearTX will automatically see how far forwards/backwards the note is and determine how many degrees off is the actual center using a linear slope
         */
+
+        //TODO implement to remove jumping from note to note
+        // if (Math.abs(highPassFilter.calculate(linearTX)) > HIGH_PASS_LIMIT) {
+        //     linearTX = 0.0;
+        // }
 
         //uses a clamp and pid on the game piece detection camera to figure out the strafe (left & right)
         m_strafe = m_direction * MathUtil.clamp(pid.calculate(-linearTX, 0.0), -MAX_STRAFE, MAX_STRAFE) * MAX_SPEED; 
