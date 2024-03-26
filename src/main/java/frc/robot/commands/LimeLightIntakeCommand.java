@@ -44,7 +44,7 @@ public class LimeLightIntakeCommand extends Command {
     private double m_throttle = 0.0;
     private CommandXboxController m_controller;
     private double m_strafe = 0.0;
-    private double slope = 1.44; //Adjust if the location of the game piece camera moves
+    private double slope = 1.3; //Adjust if the location of the game piece camera moves
 
     private double m_distance;  
     private double m_TimeElapsed;

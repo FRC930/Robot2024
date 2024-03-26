@@ -30,15 +30,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "MidLineLevel5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "MidLineLevel5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilNote"
+                }
+              }
+            ]
           }
         },
         {
@@ -57,12 +64,6 @@
           "type": "named",
           "data": {
             "name": "MidLineLevel4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
           }
         },
         {
