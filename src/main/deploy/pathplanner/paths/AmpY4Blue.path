@@ -41,12 +41,6 @@
             {
               "type": "named",
               "data": {
-                "name": "preparedShoot"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
                 "name": "stopShoot"
               }
             },
