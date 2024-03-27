@@ -4,6 +4,8 @@ import java.util.function.ObjDoubleConsumer;
 
 import org.littletonrobotics.conduit.schema.CoreInputs;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -73,7 +75,7 @@ public final class CommandFactoryUtility {
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
     private static final double AFTER_AMP_SHOOT_TIMEOUT = 0.6; 
 
-    private static final double TURRET_PREAIM_TIMEOUT = 0.5;        /*sec*/
+    private static final double TURRET_PREAIM_TIMEOUT = 0.75;        /*sec*/
 
 
     //TODO review values and code
@@ -111,13 +113,13 @@ public final class CommandFactoryUtility {
             //     LimelightHelpers.setLEDMode_ForceOff("limelight-back");}));
     }
 
-    public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake) {
+    public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake, boolean isAuto) {
         return new ConditionalCommand(
             indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
             .andThen(new WaitCommand(0.20))
             .andThen(indexer.newSetSpeedCommand(0.0)),
             new InstantCommand(),
-            () -> indexer.getSensorDistance() >= 40)
+            () -> (isAuto || indexer.getSensorDistance() >= 40))
                 .andThen(CommandFactoryUtility.createStopIntakingCommand(intake, indexer))
                     .andThen(intake.newSetSpeedCommand(CommandFactoryUtility.INTAKE_REJECT_SPEED));
     }
@@ -125,10 +127,9 @@ public final class CommandFactoryUtility {
     public static Command createRunIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, TurretSubsystem turret) {
         return indexer.newUntilNoNoteFoundCommand()  // make sure no note is found
             .andThen(turret.newSetPosCommand(TURRET_STOW_POS))
-            .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
-            .andThen(intake.newSetSpeedCommand(INTAKE_SPEED))
-            .andThen(indexer.newSetStarSpeedCommand(INDEXER_INTAKE_SPEED))
-            .andThen(indexer.newSetTopSpeedCommand(0.3))
+            .andThen(turret.newWaitUntilSetpointCommand(0.3))
+            .andThen(intake.newSetSpeedCommand(INTAKE_SPEED)
+                .alongWith(indexer.newSetSpeedsCommand(0.3, 0.3)))
             .andThen(indexer.newUntilNoteFoundCommand())
             .andThen(new WaitCommand(0.05))
             // .alongWith(new InstantCommand(() -> 
@@ -208,6 +209,10 @@ public final class CommandFactoryUtility {
         return createPrepareShootCommand(turret, pivot, shooter, null);
     }
 
+    /**
+     * @deprecated Turret does not aim properly with this in auto
+     */
+    @Deprecated
     public static Command createPrepareShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
         return new TurretAimCommand(turret)
             .alongWith(
@@ -218,13 +223,33 @@ public final class CommandFactoryUtility {
         ;
     }
 
+    /**
+     * Prepares the turret, pivot, and shooter to shoot from a given pose and with a given pivot angle.
+     * @param turret
+     * @param pivot
+     * @param shooter
+     * @param pivotAngle
+     * @param poseRed
+     * @return
+     */
+    public static Command createPreparePosedShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, Pose2d poseRed, Pose2d poseBlue) {
+        return new TurretAimCommand(turret, poseRed, poseBlue)
+            .alongWith(
+                new RepeatCommand(
+                    createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle)
+                )
+            )
+        ;
+    }
+
+
     public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
         return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
             .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
-            .andThen(pivot.newWaitUntilSetpointCommand(0.5)
-                .alongWith(shooter.newWaitUntilSetpointCommand(0.5))
-                .alongWith(turret.newWaitUntilSetpointCommand(0.5)));
+            .andThen(pivot.newWaitUntilSetpointCommand(0.75)
+                .alongWith(shooter.newWaitUntilSetpointCommand(0.75))
+                .alongWith(turret.newWaitUntilSetpointCommand(0.75)));
     }
 
     public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter) {

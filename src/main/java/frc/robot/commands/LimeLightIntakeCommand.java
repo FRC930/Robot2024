@@ -136,7 +136,7 @@ public class LimeLightIntakeCommand extends Command {
 
         m_TimeElapsed = 0.0;
 
-        movingAverageFilter = LinearFilter.movingAverage(5);
+        movingAverageFilter = LinearFilter.movingAverage(3);
         if(m_controller != null) {
            return;
         }

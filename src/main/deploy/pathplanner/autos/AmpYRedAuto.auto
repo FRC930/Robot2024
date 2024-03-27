@@ -30,22 +30,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "MidLineLevel5"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "waitUntilNote"
-                }
-              }
-            ]
+            "name": "MidLineLevel5"
           }
         },
         {
