@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ShootThenIntake",
+      "name": "Intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "sequential",

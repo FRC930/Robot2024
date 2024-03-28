@@ -42,12 +42,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "preparedShoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "AmpY4Blue"
