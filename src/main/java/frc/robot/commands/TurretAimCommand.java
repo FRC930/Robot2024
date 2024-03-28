@@ -3,11 +3,13 @@ package frc.robot.commands;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.RobotOdometryUtility;
@@ -82,6 +84,11 @@ public class TurretAimCommand extends Command{
 
         m_TurretSubsystem = turretSubsystem;
         addRequirements(m_TurretSubsystem);
+
+        Logger.recordOutput("turretTargets/ampSideRedTarget", m_AmpSideRedTargetPose);
+        Logger.recordOutput("turretTargets/nonAmpSideRedTarget", m_NonAmpSideRedTargetPose);
+        Logger.recordOutput("turretTargets/ampSideBlueTarget", m_AmpSideBlueTargetPose);
+        Logger.recordOutput("turretTargets/nonAmpSideBlueTarget", m_NonAmpSideBlueTargetPose);
     }
     
     @Override
