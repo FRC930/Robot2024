@@ -64,23 +64,6 @@
           ]
         }
       }
-    },
-    {
-      "name": "Shoot",
-      "waypointRelativePos": 1.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "preparedShoot"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
