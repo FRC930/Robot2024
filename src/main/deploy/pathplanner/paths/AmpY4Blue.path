@@ -41,13 +41,24 @@
             {
               "type": "named",
               "data": {
-                "name": "stopShoot"
+                "name": "intake"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stopShoot",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "stopShoot"
               }
             }
           ]
