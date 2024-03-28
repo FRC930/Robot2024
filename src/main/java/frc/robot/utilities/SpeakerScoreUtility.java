@@ -162,7 +162,7 @@ public class SpeakerScoreUtility {
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
         } else if (distance >= LINEAR_DISTANCE_FAR) {
-            return (-0.05 * distance) + 32.7 + 1.0 + angleOffset; // 0.5 (inches) is a fudge factor
+            return (-0.05 * distance) + 32.7 + 1.5 + angleOffset; // 0.5 (inches) is a fudge factor
         } else if (distance >= LINEAR_DISTANCE_CLOSE) {
             Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
             if (optionalAlliance.isPresent()){
