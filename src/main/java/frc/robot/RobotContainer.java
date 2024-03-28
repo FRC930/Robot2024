@@ -720,6 +720,7 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
+    SpeakerScoreUtility.resetShotOffset(); // Makes sure auto offets do not continue thru teleop.
     if(!m_TeleopInitalized) {
       // Only want to initialize starting position once (if teleop multiple times dont reset pose again)
       m_StartInTeleopUtility.updateStartingPosition(); 

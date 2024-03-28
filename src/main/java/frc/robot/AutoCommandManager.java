@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
@@ -168,6 +169,12 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
         NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 25.5));
         NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, new Pose2d(12.1, 2.00, new Rotation2d(0.0)),  new Pose2d(3.98, 2.03, new Rotation2d(0.0)) ));
+
+        //This only affects the SpeakerScoreUtility calculated shot.
+        //THIS MUST BE RESET AFTER USE or it will mess up all future shots
+        NamedCommands.registerCommand("setShotOffset-Down1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-1.0)));
+        NamedCommands.registerCommand("resetShotOffset",  new InstantCommand(()->SpeakerScoreUtility.resetShotOffset()));
+
 
     }
 }

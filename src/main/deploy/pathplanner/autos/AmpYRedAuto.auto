@@ -46,7 +46,19 @@
         {
           "type": "named",
           "data": {
+            "name": "setShotOffset-Down1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "aimAndShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "resetShotOffset"
           }
         },
         {

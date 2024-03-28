@@ -45,6 +45,7 @@ public class SpeakerScoreUtility {
 
     private static final double RED_ALLIANCE_OFFSET = 0.0; //was 2.0
     private static final double BLUE_ALLIANCE_OFFSET = 0.0; //was 2.0
+    private static double m_nextShotAngleOffset = 0.0;
 
     private boolean m_useAutoAim = true;
 
@@ -156,7 +157,7 @@ public class SpeakerScoreUtility {
         return distance;
     }
 
-    public static double computePivotAngle(double distance) {
+    public static double computePivotAngleInternal(double distance) {
         double angleOffset = 3.5;
         if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
             return FIXED_ANGLE_BUMPER_SHOT;
@@ -176,6 +177,10 @@ public class SpeakerScoreUtility {
         } else {
             return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 4.5 + angleOffset; // 2.0 (inches) is a fudge factor
         }
+    }
+
+    public static double computePivotAngle(double distance) {
+        return computePivotAngleInternal(distance) + m_nextShotAngleOffset;
     }
 
     public static double computePivotAngleInverseTan(double distance) {
@@ -206,4 +211,13 @@ public class SpeakerScoreUtility {
         return COMPUTED_SHOOT_SPEED;
     }
 
+    public static void setShotOffset(double angleOffset) {
+        Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/shotOffset",angleOffset);
+        m_nextShotAngleOffset = angleOffset;
+    }
+    
+    public static void resetShotOffset() {
+        Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/shotOffset",0.0);
+        m_nextShotAngleOffset = 0.0;
+    }
 }
