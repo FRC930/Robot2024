@@ -692,11 +692,6 @@ public class RobotContainer {
       xyStds = 1.0;
       degStds = 12;
     }
-    // 1 target farther away and estimated pose is close
-    else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.1 && poseDifference < 0.3) {
-      xyStds = 2.0;
-      degStds = 30;
-    }
     // conditions don't match to add a vision measurement
     else {
       SmartDashboard.putBoolean(limeLightName + "/Updated", false);

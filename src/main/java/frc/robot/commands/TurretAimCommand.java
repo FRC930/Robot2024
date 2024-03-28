@@ -100,6 +100,7 @@ public class TurretAimCommand extends Command{
             m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
         } else {
             m_CurrentPose = alliance == Alliance.Red ? m_ProxyPoseRed : m_ProxyPoseBlue;
+            m_CurrentPose = new Pose2d(m_CurrentPose.getX(),m_CurrentPose.getY(), RobotOdometryUtility.getInstance().getRobotOdometry().getRotation());
         }
 
         m_CurrentRobotHeading = m_CurrentPose.getRotation().getDegrees();
