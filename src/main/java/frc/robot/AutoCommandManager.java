@@ -168,7 +168,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
         NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 25.5));
-        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, new Pose2d(12.1, 2.00, new Rotation2d(0.0)),  new Pose2d(3.98, 2.03, new Rotation2d(0.0)) ));
+        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, new Pose2d(12.1, 2.00, new Rotation2d(0.0)),  new Pose2d(3.98, 0.0, new Rotation2d(0.0)) ));
 
         //This only affects the SpeakerScoreUtility calculated shot.
         //THIS MUST BE RESET AFTER USE or it will mess up all future shots

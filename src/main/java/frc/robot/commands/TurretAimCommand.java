@@ -67,7 +67,7 @@ public class TurretAimCommand extends Command{
             m_AmpSideRedTargetPose.getRotation());
         m_NonAmpSideBlueTargetPose = new Pose2d(
             m_AmpSideBlueTargetPose.getX() - 0.5, 
-            m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(30 + 12), 
+            m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(30 + 24), 
             m_AmpSideBlueTargetPose.getRotation());
 
         m_TargetPose = m_AmpSideBlueTargetPose;
