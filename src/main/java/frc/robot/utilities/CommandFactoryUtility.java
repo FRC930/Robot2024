@@ -77,7 +77,7 @@ public final class CommandFactoryUtility {
 
     private static final double TURRET_PREAIM_TIMEOUT = 0.75;        /*sec*/
 
-    private static final double STAR_AMP_VEL = 50.0;
+    private static final double STAR_AMP_VEL = 75.0;
 
 
     //TODO review values and code
