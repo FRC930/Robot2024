@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -89,6 +90,7 @@ public class TurretAimCommand extends Command{
         Logger.recordOutput("turretTargets/nonAmpSideRedTarget", m_NonAmpSideRedTargetPose);
         Logger.recordOutput("turretTargets/ampSideBlueTarget", m_AmpSideBlueTargetPose);
         Logger.recordOutput("turretTargets/nonAmpSideBlueTarget", m_NonAmpSideBlueTargetPose);
+        Logger.recordOutput("debug/AmpAndNonAmpThresholdLine", new Pose2d(0,4.5,new Rotation2d(0)));
     }
     
     @Override

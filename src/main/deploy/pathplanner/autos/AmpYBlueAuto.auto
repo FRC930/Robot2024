@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "setShotSpeedOverride-100"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -41,6 +47,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "resetShotSpeedOverride"
           }
         },
         {

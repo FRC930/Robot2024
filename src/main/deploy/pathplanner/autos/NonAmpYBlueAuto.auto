@@ -12,9 +12,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "setShotSpeedOverride-100"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NonAmpY1Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "resetShotOffset"
           }
         },
         {

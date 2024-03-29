@@ -184,6 +184,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("setShotOffset-Down1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-1.0)));
         NamedCommands.registerCommand("resetShotOffset",  new InstantCommand(()->SpeakerScoreUtility.resetShotOffset()));
 
-
+        NamedCommands.registerCommand("setShotSpeedOverride-100",  new InstantCommand(()->SpeakerScoreUtility.setShotSpeedOffset(100.0)));
+        NamedCommands.registerCommand("resetShotSpeedOverride",  new InstantCommand(()->SpeakerScoreUtility.resetShotSpeedOffset()));
     }
 }
