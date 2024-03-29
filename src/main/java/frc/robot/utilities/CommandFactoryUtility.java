@@ -77,6 +77,8 @@ public final class CommandFactoryUtility {
 
     private static final double TURRET_PREAIM_TIMEOUT = 0.75;        /*sec*/
 
+    private static final double STAR_AMP_VEL = 50.0;
+
 
     //TODO review values and code
     public static Command createEjectCommand(TurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
@@ -289,7 +291,7 @@ public final class CommandFactoryUtility {
         return createPrepareStarAmpCommand(indexer, turret, pivot) 
         .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
         .alongWith(pivot.newWaitUntilSetpointCommand(AFTER_AMP_SHOOT_TIMEOUT))
-        .andThen(indexer.newSetStarVoltageCommand(6.2)); // Start shooting 
+        .andThen(indexer.newSetStarMMVelocityCommand(STAR_AMP_VEL)); // Start shooting 
     }
 
     public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
