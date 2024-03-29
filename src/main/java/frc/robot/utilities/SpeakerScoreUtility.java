@@ -221,7 +221,7 @@ public class SpeakerScoreUtility {
     }
 
     public static double computeShooterSpeed(double distance) {
-        return (m_nextShotSpeedOverride > 0.0)?COMPUTED_SHOOT_SPEED:m_nextShotSpeedOverride;
+        return (m_nextShotSpeedOverride > 0.0)?m_nextShotSpeedOverride:COMPUTED_SHOOT_SPEED;
     }
 
     public static void setShotOffset(double angleOffset) {
