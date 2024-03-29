@@ -164,11 +164,20 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("prepareShoot", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, null));
         NamedCommands.registerCommand("prepareShootEndless", CommandFactoryUtility.createPrepareShootEndlessCommand(turret, pivot, shooter, null));
         // Used in AmpY3 & AmpY5
-        NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, new Pose2d(11.2, 6.89, new Rotation2d(0.0)),  new Pose2d(5.38, 6.89, new Rotation2d(0.0)) ));
+        NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
+                new Pose2d(11.2, 6.89, new Rotation2d(0.0)), 
+                // y: 6.89 original value
+                // moved since it was too far to the left 
+                new Pose2d(5.38, 5.89, new Rotation2d(0.0)) ));
         NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
-        NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 25.5));
-        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, new Pose2d(12.1, 2.00, new Rotation2d(0.0)),  new Pose2d(3.98, 0.0, new Rotation2d(0.0)) ));
+        NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 
+                25.5));
+        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
+                new Pose2d(12.1, 2.00, new Rotation2d(0.0)),
+                // y: 2.x original value
+                // moved since it was too far to right  
+                new Pose2d(3.98, 0.0, new Rotation2d(0.0)) ));
 
         //This only affects the SpeakerScoreUtility calculated shot.
         //THIS MUST BE RESET AFTER USE or it will mess up all future shots
