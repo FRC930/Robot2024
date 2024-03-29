@@ -135,7 +135,7 @@ public class TurretAimCommand extends Command{
         } else {
             m_TargetPose = (ampSide)?m_AmpSideBlueTargetPose:m_NonAmpSideBlueTargetPose;
             if (SpeakerScoreUtility.inchesToSpeaker() > Units.metersToInches(8.0)) {
-                m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() + 3.5, m_TargetPose.getRotation());
+                m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() + 4.25, m_TargetPose.getRotation());
             }
         }
         
