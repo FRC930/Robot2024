@@ -70,8 +70,11 @@ public class AutoCommandManager {
         PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
         PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
 
+        PathPlannerAuto wsAuto = new PathPlannerAuto("WSPath");
+
         m_chooser.setDefaultOption("None", null);
 
+        m_chooser.addOption("WSAuto8sec", wsAuto);
         m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
         m_chooser.addOption("RED_AmpY", ampYAutoRed);
         m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
