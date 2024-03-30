@@ -62,7 +62,7 @@ public final class CommandFactoryUtility {
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
     public static final double INDEXER_EJECT_SPEED = -0.2;          /*Value*/
 
-    public static final double INTAKE_SPEED = 0.5;                  /*Value*/
+    public static final double INTAKE_SPEED = 0.90;                  /*Value*/
     public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
     private static final double INTAKE_EJECT_SPEED = -0.4;          /*value*/
 
@@ -77,7 +77,7 @@ public final class CommandFactoryUtility {
 
     private static final double TURRET_PREAIM_TIMEOUT = 0.75;        /*sec*/
 
-    private static final double STAR_AMP_VEL = 75.0;
+    private static final double STAR_AMP_VEL = 73.0;
 
 
     //TODO review values and code
