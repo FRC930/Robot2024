@@ -174,8 +174,10 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 
                 25.5));
         NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
-                new Pose2d(12.1, 2.00, new Rotation2d(0.0)),
-                // y: 2.x original value
+                // y: 2.0 original value
+                // moved since it was too far to right  
+                new Pose2d(12.1, 1.00, new Rotation2d(0.0)),
+                // y: 2.0 original value
                 // moved since it was too far to right  
                 new Pose2d(3.98, 0.0, new Rotation2d(0.0)) ));
 
