@@ -12,9 +12,53 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "AmpY1Blue"
+            "name": "setShotSpeedOverride-100"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AmpY1Blue"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "movingSideShoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "resetShotSpeedOverride"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setShotOffset-Down1"
           }
         },
         {
@@ -24,9 +68,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "resetShotOffset"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "AmpY2Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel5"
           }
         },
         {
@@ -36,9 +92,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "preparedShoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "AmpY4Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel4"
           }
         },
         {

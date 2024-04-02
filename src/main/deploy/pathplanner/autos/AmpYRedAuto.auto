@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
+      "x": 1.42,
       "y": 6.979658581285779
     },
     "rotation": 180.0
@@ -12,9 +12,53 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "AmpY1Red"
+            "name": "setShotSpeedOverride-100"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AmpY1Red"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "movingSideShoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "resetShotSpeedOverride"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setShotOffset-Down1"
           }
         },
         {
@@ -24,9 +68,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "resetShotOffset"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "AmpY2Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel5"
           }
         },
         {
@@ -36,9 +92,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "preparedShoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "AmpY4Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel4"
           }
         },
         {

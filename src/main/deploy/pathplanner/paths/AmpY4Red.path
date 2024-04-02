@@ -16,34 +16,28 @@
     },
     {
       "anchor": {
-        "x": 8.28012348332389,
+        "x": 7.25,
         "y": 5.712959887458236
       },
       "prevControl": {
-        "x": 6.582052184185573,
+        "x": 5.551928700861682,
         "y": 5.759803233641361
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpY4_R"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ShootThenIntake",
+      "name": "stopShootThenIntake",
       "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "preparedShoot"
-              }
-            },
             {
               "type": "named",
               "data": {
@@ -68,7 +62,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },

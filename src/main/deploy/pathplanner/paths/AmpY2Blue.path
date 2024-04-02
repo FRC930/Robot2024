@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.813006710178897,
+        "x": 3.0,
         "y": 6.979658581285779
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.455188448838437,
+        "x": 3.6421817386595396,
         "y": 7.13379965221469
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 7.341005451241672
+        "x": 7.25,
+        "y": 7.54
       },
       "prevControl": {
-        "x": 4.816826556730038,
-        "y": 7.271936851566012
+        "x": 3.786703073406147,
+        "y": 7.47093140032434
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpY2_B"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -56,7 +56,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },

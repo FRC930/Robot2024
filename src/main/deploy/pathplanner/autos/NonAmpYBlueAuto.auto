@@ -12,9 +12,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "setShotSpeedOverride-100"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NonAmpY1Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "resetShotOffset"
           }
         },
         {
@@ -27,6 +39,12 @@
           "type": "path",
           "data": {
             "pathName": "NonAmpY2Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel1"
           }
         },
         {
@@ -45,6 +63,12 @@
           "type": "path",
           "data": {
             "pathName": "NonAmpY4Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel2"
           }
         },
         {

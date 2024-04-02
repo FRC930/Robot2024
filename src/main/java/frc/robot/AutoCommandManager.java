@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
@@ -69,8 +70,11 @@ public class AutoCommandManager {
         PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
         PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
 
+        PathPlannerAuto wsAuto = new PathPlannerAuto("WSPath");
+
         m_chooser.setDefaultOption("None", null);
 
+        m_chooser.addOption("WSAuto8sec", wsAuto);
         m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
         m_chooser.addOption("RED_AmpY", ampYAutoRed);
         m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
@@ -111,15 +115,26 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("AllianceLowNote", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(2.9, 4.1, new Rotation2d(0.0)), new Pose2d(13.68, 4.1, new Rotation2d(0.0))));
         NamedCommands.registerCommand("MidLineLevel1", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
-            new Pose2d(8.29, 0.77, new Rotation2d(0.0))));
+            new Pose2d(8.29, 0.77, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
         NamedCommands.registerCommand("MidLineLevel2", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
-            new Pose2d(8.29, 2.44, new Rotation2d(0.0))));
+            new Pose2d(8.29, 2.44, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
         NamedCommands.registerCommand("MidLineLevel3", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
-            new Pose2d(8.29, 4.1, new Rotation2d(0.0))));
+            new Pose2d(8.29, 4.1, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
         NamedCommands.registerCommand("MidLineLevel4", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
-            new Pose2d(8.29, 5.78, new Rotation2d(0.0))));
+            new Pose2d(8.29, 5.78, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
         NamedCommands.registerCommand("MidLineLevel5", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
+            new Pose2d(8.29, 7.44, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+        NamedCommands.registerCommand("MidLineLevel5.1", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(8.29, 7.44, new Rotation2d(0.0))));
+
+        // Waits until there is a note in the indexer or for 1 second. (So we don't move beyond the midline)
+        NamedCommands.registerCommand("waitUntilNote", indexer.newUntilNoteFoundCommand().raceWith(new WaitCommand(1.0)));
+
 
         NamedCommands.registerCommand("setFar", speakerUtil.setDesiredTargetCommand(Target.far));
         NamedCommands.registerCommand("setMid", speakerUtil.setDesiredTargetCommand(Target.medium));
@@ -142,7 +157,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("ampScore", 
             new PrintCommand("TODO add new amp command.") //TODO implement new amp here
         );    
-        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake));
+        NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, true));
         NamedCommands.registerCommand("movingSideShoot", 
             CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0)
                 .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer))
@@ -151,8 +166,30 @@ public class AutoCommandManager {
         );
         NamedCommands.registerCommand("prepareShoot", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, null));
         NamedCommands.registerCommand("prepareShootEndless", CommandFactoryUtility.createPrepareShootEndlessCommand(turret, pivot, shooter, null));
+        // Used in AmpY3 & AmpY5
+        NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
+                new Pose2d(11.2, 6.89, new Rotation2d(0.0)), 
+                // y: 6.89 original value
+                // moved since it was too far to the left 
+                new Pose2d(5.38, 5.89, new Rotation2d(0.0)) ));
         NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
-        NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 25.5));
+        NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 
+                25.5));
+        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
+                // y: 2.0 original value
+                // moved since it was too far to right  
+                new Pose2d(12.1, 1.00, new Rotation2d(0.0)),
+                // y: 2.0 original value
+                // moved since it was too far to right  
+                new Pose2d(3.98, 0.0, new Rotation2d(0.0)) ));
+
+        //This only affects the SpeakerScoreUtility calculated shot.
+        //THIS MUST BE RESET AFTER USE or it will mess up all future shots
+        NamedCommands.registerCommand("setShotOffset-Down1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-1.0)));
+        NamedCommands.registerCommand("resetShotOffset",  new InstantCommand(()->SpeakerScoreUtility.resetShotOffset()));
+
+        NamedCommands.registerCommand("setShotSpeedOverride-100",  new InstantCommand(()->SpeakerScoreUtility.setShotSpeedOffset(100.0)));
+        NamedCommands.registerCommand("resetShotSpeedOverride",  new InstantCommand(()->SpeakerScoreUtility.resetShotSpeedOffset()));
     }
 }

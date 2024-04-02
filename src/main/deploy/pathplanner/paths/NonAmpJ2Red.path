@@ -20,28 +20,28 @@
         "y": 1.5809629336805036
       },
       "prevControl": {
-        "x": 5.305077766098949,
-        "y": 1.436110444399683
+        "x": 5.3458785468033225,
+        "y": 1.3406856872185158
       },
       "nextControl": {
-        "x": 6.080330106451938,
-        "y": 1.6746496260467554
+        "x": 6.17401679881819,
+        "y": 1.8034688280503517
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.293678213604645,
+        "x": 7.25,
         "y": 2.2601914533358305
       },
       "prevControl": {
-        "x": 6.665871933741014,
-        "y": 2.3304564726105195
+        "x": 6.337968510459132,
+        "y": 2.283613126427394
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NonAmpJ2_R"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -72,7 +72,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },

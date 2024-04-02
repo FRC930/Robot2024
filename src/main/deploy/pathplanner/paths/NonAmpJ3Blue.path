@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.281967377058862,
+        "x": 8.28,
         "y": 2.435854001522554
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.157727068663837,
+        "x": 7.155759691604974,
         "y": 3.548383473371797
       },
       "isLocked": false,
-      "linkedName": "NonAmpJ2_B"
+      "linkedName": null
     },
     {
       "anchor": {

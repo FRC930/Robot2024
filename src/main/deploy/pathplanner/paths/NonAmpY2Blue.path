@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 8.293678213604645,
+        "x": 7.25,
         "y": 0.6675176831095445
       },
       "prevControl": {
-        "x": 5.810980865898965,
+        "x": 4.76730265229432,
         "y": 0.655806846563762
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NonAmpY2_B"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -56,7 +56,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },

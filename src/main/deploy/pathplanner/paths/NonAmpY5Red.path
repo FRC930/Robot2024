@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "prepareShootEndless"
+                "name": "prepareNonAmpYShoot"
               }
             }
           ]
@@ -50,7 +50,7 @@
     },
     {
       "name": "Backup",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {

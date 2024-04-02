@@ -32,23 +32,23 @@
     },
     {
       "anchor": {
-        "x": 8.305389050150424,
+        "x": 7.25,
         "y": 2.9042874633538145
       },
       "prevControl": {
-        "x": 7.5910280208577525,
+        "x": 6.535638970707328,
         "y": 2.9277091364453787
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NonAmpY4_B"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
+      "name": "stopShoot",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
@@ -89,7 +89,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },

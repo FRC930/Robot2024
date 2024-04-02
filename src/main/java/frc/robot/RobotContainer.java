@@ -26,6 +26,7 @@ import frc.robot.sim.MechanismViewer;
 import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RedirectorsSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.pivot.PivotIORobot;
@@ -119,7 +120,7 @@ public class RobotContainer {
     //--DIO IDS--\\
 
     private static final int TURRET_ENCODER_DIO = 1;
-    private static final double TURRET_OFFSET = 329.85;// 193.0; // -167.0 //if negative value, add 360
+    private static final double TURRET_OFFSET = 329.14;// 193.0; // -167.0 //if negative value, add 360
 
     private static final double TURRET_MANUAL_SPEED = 0.2;
 
@@ -166,7 +167,7 @@ public class RobotContainer {
     //SPEAKER SHOT
     private final Slot0Configs shooterLeftS0C = 
       new Slot0Configs()
-        .withKP(35.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(42.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -177,7 +178,7 @@ public class RobotContainer {
     //SPEAKER SHOT
     private final Slot0Configs shooterRightS0C =
       new Slot0Configs()
-        .withKP(33.0) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
+        .withKP(39.6) //45.0 // 55 when 140 set  but issues with motor moving after going back to 0
         .withKI(0) 
         .withKD(0) 
         .withKG(0)
@@ -261,7 +262,8 @@ public class RobotContainer {
     private final MotionMagicConfigs shooterMMC =
       new MotionMagicConfigs()
         .withMotionMagicAcceleration(0)
-        .withMotionMagicJerk(0); //TODO set vals
+        .withMotionMagicJerk(0)
+        .withMotionMagicCruiseVelocity(0.0); //TODO set vals
 
     private final MotionMagicConfigs turretMMC =
       new MotionMagicConfigs() // Currently set slow
@@ -289,6 +291,7 @@ public class RobotContainer {
     public static final double ENDGAME_ELEVATOR_FEEDFORWARD = 0.0;
     public static final boolean ENDGAME_ELEVATOR_LIMITFORWARDMOTION = false;
     public static final boolean ENDGAME_ELEVATOR_LIMITREVERSEMOTION = false;
+    private static final boolean DELTA_LOGGING_ENABLED = false;
 
     //--VisionSTDsDevConstants--\\
     // TODO configure for april tag confidence level 
@@ -302,6 +305,8 @@ public class RobotContainer {
     //   Robot.isReal()
     //     ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
     //     : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
+
+    private final RedirectorsSubsystem m_RedirectorsSubsystem = new RedirectorsSubsystem(4);
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
@@ -320,11 +325,11 @@ public class RobotContainer {
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
         // 14,
         Robot.isReal() 
-        ? new TalonVelocityIORobot(14, 0.5, shooterLeftS0C,shooterLeftS1C, shooterMMC) 
-        : new TalonVelocityIOSim(14, 0.5, shooterLeftS0C,shooterLeftS1C, shooterMMC),
+        ? new TalonVelocityIORobot(14, 0.666667, shooterLeftS0C, shooterLeftS1C, shooterMMC) 
+        : new TalonVelocityIOSim(14, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 */, shooterLeftS0C, shooterLeftS1C, shooterMMC),
         Robot.isReal() 
-        ? new TalonVelocityIORobot(15, 0.5, shooterRightS0C,shooterRightS1C, shooterMMC) 
-        : new TalonVelocityIOSim(15, 0.5, shooterRightS0C, shooterRightS1C, shooterMMC));
+        ? new TalonVelocityIORobot(15, 0.666667, shooterRightS0C, shooterRightS1C, shooterMMC) 
+        : new TalonVelocityIOSim(15, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 */, shooterRightS0C, shooterRightS1C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
@@ -470,14 +475,14 @@ public class RobotContainer {
     // Intake button
     m_driverController.leftBumper()
       .whileTrue(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem))
-        .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
+        .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem, false));
     ;
 
     // Game-Piece Intake
     m_driverController.leftTrigger()
       .whileTrue( new LimeLightIntakeCommand(drivetrain, m_LimeLightDetectionUtility, m_driverController)
         .alongWith(CommandFactoryUtility.createRunIntakeCommand(m_intakeSubsystem, m_indexerSubsystem, m_turretSubsystem)))
-          .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem));
+          .onFalse(CommandFactoryUtility.createNoteBackUpCommand(m_indexerSubsystem, m_intakeSubsystem, false));
     ;
     
     // Auto Aim Shoot
@@ -576,7 +581,12 @@ public class RobotContainer {
   private void configureCoDriverBindingsForTesting() {
     //#region Test Commands
 
-    m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
+    m_coDriverController.b().onTrue(m_RedirectorsSubsystem.getNewExtendCommand())
+    .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
+    m_coDriverController.a().onTrue(m_RedirectorsSubsystem.getNewRetractCommand())
+    .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
+  
+    // m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
     m_coDriverController.rightTrigger().whileTrue(new ShooterCommandTest(m_shooterSubsystem,0.0,0.0,true)
@@ -586,10 +596,10 @@ public class RobotContainer {
     m_coDriverController.rightBumper().whileTrue(new ShooterCommand(m_shooterSubsystem, -0.8, -0.8).raceWith(new IndexerCommand(m_indexerSubsystem, 0.2)));
     m_coDriverController.x().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0));
     // m_coDriverController.b().whileTrue(new IndexerCommandTest(m_indexerSubsystem, 0.0).until(m_indexerSubsystem::getSensor));
-    m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
-      .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
-      .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
-    m_coDriverController.y().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 0.0));
+    // m_coDriverController.a().whileTrue((new ShooterCommandTest(m_shooterSubsystem,0.0/100.0,0.0/100.0))
+    //   .alongWith(new SetPivotPositionCommandTest(m_pivotSubsystem, 90)))
+    //   .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem));
+    // m_coDriverController.y().whileTrue(new SetPivotPositionCommandTest(m_pivotSubsystem, 0.0));
     //#endregion
 
     m_coDriverController.rightBumper().whileTrue(new TurretRefineCommand(m_turretSubsystem));
@@ -612,11 +622,30 @@ public class RobotContainer {
   }
 
   public void robotPeriodic() {
+    double fpgaTimestampStart = Logger.getRealTimestamp();
     updateAllVision();
+    fpgaTimestampStart=logTimestamp(fpgaTimestampStart, "updateAllVision", this);
     m_mechViewer.periodic();
+    fpgaTimestampStart = logTimestamp(fpgaTimestampStart, "mechViewer", this);
     Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/distance", SpeakerScoreUtility.inchesToSpeaker());
     Logger.recordOutput(SpeakerScoreUtility.class.getSimpleName() + "/inverseTanPivotAngleUnimplemented", 
       SpeakerScoreUtility.computePivotAngleInverseTan(SpeakerScoreUtility.inchesToSpeaker()));
+    fpgaTimestampStart=logTimestamp(fpgaTimestampStart, "speakerScoreCalc", this);  
+  }
+   /**Creates a method for logging the Delta Time in the console. Can be disabled in the constants. 
+   * 
+   * @param startTimestamp
+   * @param loggerName
+   * @return
+   */
+  public double logTimestamp(double startTimestamp, String loggerName, Object classObject){
+    double timestamp = 0;
+    if(DELTA_LOGGING_ENABLED){
+      timestamp = Logger.getRealTimestamp();
+
+      Logger.recordOutput(classObject.getClass().getSimpleName()+ "/"+loggerName,( startTimestamp-timestamp)/1000000.0);
+    }
+    return timestamp;
   }
 
   /*
@@ -625,7 +654,7 @@ public class RobotContainer {
   public void portForwardCameras() {
     PortForwarder.add(5800, "10.9.30.30", 5801); //limelight-front
     PortForwarder.add(5801, "10.9.30.31", 5801); //limelight-right
-    PortForwarder.add(5802, "10.9.30.35", 5801); //limelight-left
+    PortForwarder.add(5802, "10.9.30.32", 5801); //limelight-left
     PortForwarder.add(5803, "10.9.30.33", 5801); //limelight-back
     PortForwarder.add(5804, "10.9.30.34", 5801); //limelight-game 
   }
@@ -637,7 +666,7 @@ public class RobotContainer {
     if (USE_LIMELIGHT_APRIL_TAG) {  
       updatePoseEstimateWithAprilTags("limelight-front",true);
       updatePoseEstimateWithAprilTags("limelight-back",true);
-      updatePoseEstimateWithAprilTags("limelight-right", false);
+      updatePoseEstimateWithAprilTags("limelight-right", true);
       updatePoseEstimateWithAprilTags("limelight-left", true);
     }
   }
@@ -662,11 +691,6 @@ public class RobotContainer {
     else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.8 && poseDifference < 0.5) {
       xyStds = 1.0;
       degStds = 12;
-    }
-    // 1 target farther away and estimated pose is close
-    else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.1 && poseDifference < 0.3) {
-      xyStds = 2.0;
-      degStds = 30;
     }
     // conditions don't match to add a vision measurement
     else {
@@ -696,6 +720,8 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
+    SpeakerScoreUtility.resetShotSpeedOffset();
+    SpeakerScoreUtility.resetShotOffset();// Makes sure auto offets do not continue thru teleop.
     if(!m_TeleopInitalized) {
       // Only want to initialize starting position once (if teleop multiple times dont reset pose again)
       m_StartInTeleopUtility.updateStartingPosition(); 

@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Aim",
-      "waypointRelativePos": 0.3,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "prepareShootEndless"
+                "name": "prepareNonAmpYShoot"
               }
             }
           ]
@@ -50,7 +50,7 @@
     },
     {
       "name": "StopIntake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {

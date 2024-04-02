@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.28012348332389,
-        "y": 7.341005451241672
+        "y": 7.34
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.1731819947783455,
-        "y": 7.066180831582558
+        "y": 7.065175380340886
       },
       "isLocked": false,
       "linkedName": "AmpY2_B"
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Aim",
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "prepareShootEndless"
+                "name": "prepareAmpYShoot"
               }
             }
           ]
@@ -50,7 +50,7 @@
     },
     {
       "name": "StopIntake",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {

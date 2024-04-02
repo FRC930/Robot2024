@@ -51,7 +51,7 @@ public class PivotIORobot implements TalonPosIO{
         // cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // NEED TO CONFIGURE
         // TODO Use tuner x to zero and save number?
         // https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/cancoder/index.html
-        cc_cfg.MagnetSensor.MagnetOffset = -0.166992; // TODO NEED to configure
+        cc_cfg.MagnetSensor.MagnetOffset = -0.163818; // TODO NEED to configure
 
         if(!PivotSubsystem.ENABLE_REZEROING) {
             Phoenix6Utility.applyConfigAndRetry(m_cc, () -> {return m_cc.getConfigurator().apply(cc_cfg);});
