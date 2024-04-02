@@ -84,11 +84,11 @@ public class IndexerSubsystem extends SubsystemBase {
      * @param speed PercentOutput speed to apply
      */
     public void setStarIndexerSpeed(double speed) {
-        m_starRollerIO.setSpeed(speed); // REMOVED DIVIDE BY 2.0 SINCE NEW PULLEY WAS ADDED!!
+        m_starRollerIO.setSpeed(speed); // REMOVED DIVIDE BY 2.0 SINCE NEW PULLEY WAS ADDED
     }
 
     public void setStarIndexerVoltage(double voltage) {
-        m_starRollerIO.getTalon().setVoltage(voltage); // REMOVED DIVIDE BY 2.0 SINCE NEW PULLEY WAS ADDED!!
+        m_starRollerIO.getTalon().setVoltage(voltage); // REMOVED DIVIDE BY 2.0 SINCE NEW PULLEY WAS ADDED
     }
 
     /**

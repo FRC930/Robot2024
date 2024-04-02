@@ -326,10 +326,10 @@ public class RobotContainer {
         // 14,
         Robot.isReal() 
         ? new TalonVelocityIORobot(14, 0.666667, shooterLeftS0C, shooterLeftS1C, shooterMMC) 
-        : new TalonVelocityIOSim(14, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 ¯\_(ツ)_/¯ */, shooterLeftS0C, shooterLeftS1C, shooterMMC),
+        : new TalonVelocityIOSim(14, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 */, shooterLeftS0C, shooterLeftS1C, shooterMMC),
         Robot.isReal() 
         ? new TalonVelocityIORobot(15, 0.666667, shooterRightS0C, shooterRightS1C, shooterMMC) 
-        : new TalonVelocityIOSim(15, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 ¯\_(ツ)_/¯ */, shooterRightS0C, shooterRightS1C, shooterMMC));
+        : new TalonVelocityIOSim(15, 0.666667 /* The gear ratio is 1.5:1. Therefore 1/1.5 */, shooterRightS0C, shooterRightS1C, shooterMMC));
 
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
         Robot.isReal() ? new RollerMotorIORobot(20, CANBUS) : new RollerMotorIOSim(20, CANBUS),
