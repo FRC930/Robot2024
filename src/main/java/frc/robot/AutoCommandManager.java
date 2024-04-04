@@ -70,11 +70,15 @@ public class AutoCommandManager {
         PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
         PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
 
-        PathPlannerAuto wsAuto = new PathPlannerAuto("WSPath");
+        PathPlannerAuto ampWaitAuto = new PathPlannerAuto("AmpWaitAuto");
+        PathPlannerAuto midWaitAuto = new PathPlannerAuto("MidWaitAuto");
+        PathPlannerAuto nonAmpWaitAuto = new PathPlannerAuto("NonAmpWaitAuto");
 
         m_chooser.setDefaultOption("None", null);
 
-        m_chooser.addOption("WSAuto8sec", wsAuto);
+        m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto));
+        m_chooser.addOption("MidWait", new WaitCommand(8.0).andThen(midTwoAuto));
+        m_chooser.addOption("NonAmpWait", new WaitCommand(8.0).andThen(nonAmpTwoAuto));
         m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
         m_chooser.addOption("RED_AmpY", ampYAutoRed);
         m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
