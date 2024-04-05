@@ -58,12 +58,16 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -142,6 +146,11 @@ public class RobotContainer {
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-cen
 
+    static SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+        .withSteerRequestType(SteerRequestType.MotionMagic); // I want field-cen
+   
+        static AprilTagFieldLayout aprilTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     //--PID AND FF CONSTANTS--\\
 
     private final Slot0Configs climbingS0C = 
@@ -448,6 +457,9 @@ public class RobotContainer {
       )
     ;
 
+    m_driverController.rightTrigger()
+      .whileTrue(drivetrain.applyRequest(RobotContainer.drivePointingAtAmp(m_driverController::getLeftX, m_driverController::getLeftY)));
+
     // m_driverController.a()
     // .onTrue(CommandFactoryUtility.createPrepareStarAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem));
     
@@ -552,6 +564,30 @@ public class RobotContainer {
         return drive.withVelocityX(scaleLinearVelocity(linearVelocity.getX()))
           .withVelocityY(scaleLinearVelocity(linearVelocity.getY()))
           .withRotationalRate(omega * MaxAngularRate); // Drive counterclockwise with negative X (left)
+      };
+  }
+
+  public static Supplier<SwerveRequest> drivePointingAtAmp (DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    return () -> {  
+      Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
+      Alliance alliance;
+      if (optionalAlliance.isPresent()){
+          alliance = optionalAlliance.get();
+      } else {
+          alliance = Alliance.Blue;
+      }
+
+        double xValue = xSupplier.getAsDouble();   
+        double yValue = ySupplier.getAsDouble();  
+  
+        Translation2d linearVelocity = getLinearVelocity(xValue, yValue);
+
+        var request = driveFacingAngle.withVelocityX(scaleLinearVelocity(linearVelocity.getY()))
+          .withVelocityY(scaleLinearVelocity(linearVelocity.getX()))
+          .withTargetDirection(new Rotation2d(Units.degreesToRadians((alliance == Alliance.Blue) ? 270.0 : 90.0)));
+        request.HeadingController = new PhoenixPIDController(4.0, 0.0, 0.0);
+        return request; 
+          // Drive counterclockwise with negative X (left)
       };
   }
 
