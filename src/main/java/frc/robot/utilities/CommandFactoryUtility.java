@@ -118,7 +118,7 @@ public final class CommandFactoryUtility {
     public static Command createNoteBackUpCommand(IndexerSubsystem indexer, IntakeSubsystem intake, boolean isAuto) {
         return new ConditionalCommand(
             indexer.newSetSpeedCommand(INDEXER_REVERSE_SPEED)
-            .andThen(new WaitCommand(0.20))
+            .andThen(new WaitCommand(isAuto ? 0.40 : 0.20))
             .andThen(indexer.newSetSpeedCommand(0.0)),
             new InstantCommand(),
             () -> (isAuto || indexer.getSensorDistance() >= 40))
