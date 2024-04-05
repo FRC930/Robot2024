@@ -206,6 +206,12 @@ public class AutoCommandManager {
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
                 .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
+        NamedCommands.registerCommand("movingSideShootPlus", 
+            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 40.0)
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
+                .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
+        );
         
         // Turns the turret and pivot towards the speaker and spins up the shooter.
         NamedCommands.registerCommand("prepareShoot", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, null));
@@ -216,7 +222,7 @@ public class AutoCommandManager {
         // Shoots from the shooting position used in AmpY
         // Used in AmpY3 & AmpY5
         NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
-                new Pose2d(11.2, 6.89, new Rotation2d(0.0)), 
+                new Pose2d(11.2, 7.89, new Rotation2d(0.0)), 
                 // y: 6.89 original value
                 // moved since it was too far to the left 
                 new Pose2d(5.38, 5.89, new Rotation2d(0.0)) ));
@@ -244,6 +250,8 @@ public class AutoCommandManager {
         // THIS MUST BE RESET AFTER USE or it will mess up all future shots. In addition, this only affects the SpeakerScoreUtility calculated shot.
         // ! - - - !THIS MUST BE RESET AFTER USE! - - - !
         NamedCommands.registerCommand("setShotOffset-Down1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-1.0)));
+        NamedCommands.registerCommand("setShotOffset-Down2",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-2.5)));
+        NamedCommands.registerCommand("setShotOffset-Up1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(1.0)));
         NamedCommands.registerCommand("resetShotOffset",  new InstantCommand(()->SpeakerScoreUtility.resetShotOffset()));
 
         // Sets the shooter's target speed to 100 rots/s instead of 117. 
