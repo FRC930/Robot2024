@@ -93,7 +93,6 @@ public class AutoCommandManager {
         m_chooser.addOption("AmpTwo", ampTwoAuto);
         m_chooser.addOption("MidTwo", midTwoAuto);
         m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
-        m_chooser.addOption("shot3Test", shot3Test);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
