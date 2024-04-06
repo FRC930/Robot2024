@@ -62,7 +62,8 @@ public final class CommandFactoryUtility {
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
     public static final double INDEXER_EJECT_SPEED = -0.2;          /*Value*/
 
-    public static final double INTAKE_SPEED = 0.90;                  /*Value*/
+    public static final double INTAKE_SPEED = 0.90;                 /*Value*/
+    public static final double INTAKE_SHOOTING_SPEED = 0.90;        /*Value*/
     public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
     private static final double INTAKE_EJECT_SPEED = -0.4;          /*value*/
 
@@ -73,9 +74,9 @@ public final class CommandFactoryUtility {
     public static final double TURRET_TIMEOUT = 1.0;                /*sec*/
     private static final double SHOOTER_TIMEOUT = 1.0;              /*sec*/
     private static final double AFTER_SHOOT_TIMEOUT = 0.2;          /*sec*/
-    private static final double AFTER_AMP_SHOOT_TIMEOUT = 0.6; 
+    private static final double AFTER_AMP_SHOOT_TIMEOUT = 0.4;      /*sec*/
 
-    private static final double TURRET_PREAIM_TIMEOUT = 0.75;        /*sec*/
+    private static final double TURRET_PREAIM_TIMEOUT = 0.75;       /*sec*/
 
     private static final double STAR_AMP_VEL = 74.0;
 
@@ -87,13 +88,15 @@ public final class CommandFactoryUtility {
                 .andThen(indexer.newSetSpeedCommand(INDEXER_EJECT_SPEED))
                 .andThen(intake.newSetSpeedCommand(INTAKE_EJECT_SPEED))
                 .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+                .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
                 .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
     //TODO review values and code
-    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  TurretSubsystem turret) {
+    public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  TurretSubsystem turret, IntakeSubsystem intake) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
+            .alongWith(intake.newSetSpeedCommand(INTAKE_REJECT_SPEED))
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
@@ -166,7 +169,7 @@ public final class CommandFactoryUtility {
         return intake.newSetSpeedCommand(INTAKE_SPEED);
     }
     
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, Double pivotAngle, boolean adjustPivot) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, IntakeSubsystem intake, Double pivotAngle, boolean adjustPivot) {
         Command command = null;
         if (adjustPivot){
             command = createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle);
@@ -175,31 +178,33 @@ public final class CommandFactoryUtility {
         }
 
         return command 
-            .andThen(createShootPreaimedCommand(shooter, pivot, indexer, turret));
+            .andThen(createShootPreaimedCommand(shooter, pivot, indexer, turret, intake));
     }
 
-    public static Command createShootPreaimedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
+    public static Command createShootPreaimedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, IntakeSubsystem intake) {
         return pivot.newWaitUntilSetpointCommand(0.7)
             .andThen(shooter.newWaitUntilSetpointCommand(0.7))
             .alongWith(turret.newWaitUntilSetpointCommand(0.7))
         .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
+        .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    public static Command createShootPreparedCommand(IndexerSubsystem indexer) {
+    public static Command createShootPreparedCommand(IndexerSubsystem indexer, IntakeSubsystem intake) {
         return indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED)
+        .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
         
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, Double pivotAngle) {
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, IntakeSubsystem intake, Double pivotAngle) {
     {
-        return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, pivotAngle, true);
+        return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake, pivotAngle, true);
     }}
 
-    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret) {
-        return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, null);
+    public static Command createSpeakerScoreCommand(SpeakerScoreUtility speakerUtil, ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, IntakeSubsystem intake) {
+        return createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake, null);
     }
 
     public static Command createTurretPreaimCommand(TurretSubsystem turret) {
@@ -263,13 +268,14 @@ public final class CommandFactoryUtility {
     }
 
 
-    public static Command createFeedCommand(PivotSubsystem pivot, ShooterSubsystem shooter, IndexerSubsystem indexer) {
+    public static Command createFeedCommand(PivotSubsystem pivot, ShooterSubsystem shooter, IndexerSubsystem indexer, IntakeSubsystem intake) {
         return pivot.newSetPosCommand(PIVOT_FEED_POS)
         .andThen(shooter.newSetSpeedsWithSlotCommand(SHOOTER_LEFT_FEED_SPEED,SHOOTER_RIGHT_FEED_SPEED,1))
         .andThen(pivot.newWaitUntilSetpointCommand(PIVOT_TIMEOUT)
                 .alongWith(shooter.newWaitUntilSetpointCommand(SHOOTER_TIMEOUT))
                 )
         .andThen(indexer.newSetSpeedCommand(INDEXER_FEED_SPEED))
+        .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
@@ -287,19 +293,21 @@ public final class CommandFactoryUtility {
         .andThen(indexer.newSetStarVoltageCommand(0.0));
     }
 
-    public static Command createStarAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
+    public static Command createAmpCommand(IndexerSubsystem indexer,TurretSubsystem turret, PivotSubsystem pivot) {
         return createPrepareStarAmpCommand(indexer, turret, pivot) 
         .alongWith(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
         .alongWith(pivot.newWaitUntilSetpointCommand(AFTER_AMP_SHOOT_TIMEOUT))
         .andThen(indexer.newSetStarMMVelocityCommand(STAR_AMP_VEL)); // Start shooting 
     }
 
-    public static Command createStopStarAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot) {
+    public static Command createStopAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot, IntakeSubsystem intake) {
         return indexer.newSetTopVoltageCommand(-4.0) 
+        .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand())
-        .andThen(new WaitCommand( 0.4))
+        .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
         .andThen(pivot.newSetPosCommand(0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
+            .alongWith(intake.newSetSpeedCommand(0.0))
         .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret)));
     }
 }

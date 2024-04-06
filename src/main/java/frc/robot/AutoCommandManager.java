@@ -166,18 +166,18 @@ public class AutoCommandManager {
         //NOTE - Can only be used when stationary
         NamedCommands.registerCommand("aimAndShoot",
             CommandFactoryUtility.createTurretPreaimCommand(turret)
-                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
+                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake))
         );
 
         //Shoots and stops the shooter, pivot, indexer, and turret
         NamedCommands.registerCommand("shoot",
-            CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
+            CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake)
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake))
         );
 
         //Shoots the note currently in the shooter, does not stow.
-        NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
+        NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake));
         
         //Aims the turret instantaneously
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
@@ -201,13 +201,13 @@ public class AutoCommandManager {
         //TODO: Ask harry what exactly it does. I know about as much about it as the name indicates.
         NamedCommands.registerCommand("movingSideShoot", 
             CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0)
-                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer))
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
                 .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
         NamedCommands.registerCommand("movingSideShootPlus", 
             CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 40.0)
-                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer))
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
                 .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
@@ -227,10 +227,10 @@ public class AutoCommandManager {
                 new Pose2d(5.38, 5.89, new Rotation2d(0.0)) ));
         
         // Shoots assuming the shooter is already spun up and prepared to shoot. Does not stop the shooter.
-        NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
+        NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer, intake));
 
         // Stops the shooter and stows the indexer and pivot
-        NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
+        NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake));
 
         // TODO: Ask harry what exactly it does. I know about as much about it as the name indicates.
         NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 
