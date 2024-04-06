@@ -74,8 +74,6 @@ public class AutoCommandManager {
         PathPlannerAuto midWaitAuto = new PathPlannerAuto("MidWaitAuto");
         PathPlannerAuto nonAmpWaitAuto = new PathPlannerAuto("NonAmpWaitAuto");
 
-        PathPlannerAuto shot3Test = new PathPlannerAuto("shot3Test");
-
         m_chooser.setDefaultOption("None", null);
 
         m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto));
