@@ -9,9 +9,11 @@
     "MidSpeaker",
     "MidU",
     "Wait",
+    "NonAmpStage",
     "NonAmpJ",
     "NonAmpY",
     "Robot2024",
+    "SkipY",
     "TopSpeaker",
     "Two"
   ],

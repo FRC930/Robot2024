@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 6.9956624528633675
+      "x": 1.43,
+      "y": 4.12
     },
     "rotation": 180.0
   },
@@ -12,51 +12,57 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "AmpL1"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "nonAmpSideShootNoStop"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AmpL2"
+            "pathName": "SkipY1Red"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntakeSensor"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aimAndShoot"
+            "name": "MidLineLevel1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AmpL3"
+            "pathName": "SkipY2Red"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntakeSensor"
+            "name": "preparedShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SkipY3Red"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "aimAndShoot"
+            "name": "MidLineLevel2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SkipY4Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]

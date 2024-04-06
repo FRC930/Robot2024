@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 1.43,
+        "y": 4.12
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 1.6298040288388285,
+        "y": 2.2989976749184273
       },
       "isLocked": false,
-      "linkedName": "AmpL1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0309099079736637,
-        "y": 5.545221859674489
+        "x": 7.263828373810596,
+        "y": 0.6808190539458011
       },
       "prevControl": {
-        "x": 3.0309099079736637,
-        "y": 5.959750904690725
+        "x": 4.781131026104916,
+        "y": 0.6691082174000186
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpL2"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 90.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -53,21 +47,38 @@
           ]
         }
       }
+    },
+    {
+      "name": "StopShoot",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopShoot"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 90.0,
-    "rotateFast": true
+    "velocity": 2.0,
+    "rotation": 180.0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpL",
+  "folder": "SkipY",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

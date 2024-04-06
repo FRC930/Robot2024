@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0309099079736637,
-        "y": 5.545221859674489
+        "x": 8.28012348332389,
+        "y": 0.7597545964322702
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5572966530548458,
-        "y": 5.239346632539419
+        "x": 7.062196482562612,
+        "y": 1.1110796928057156
       },
       "isLocked": false,
-      "linkedName": "AmpL2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6373441619921745,
-        "y": 4.180768646843998
+        "x": 3.984090364757048,
+        "y": 2.002553049328638
       },
       "prevControl": {
-        "x": 2.1724858834333065,
-        "y": 4.93347140540435
+        "x": 4.93266812496535,
+        "y": 1.6863604625925368
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.3,
+      "name": "Aim",
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,24 @@
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "prepareSkipYShoot3"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Backup",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopIntake"
               }
             }
           ]
@@ -57,14 +74,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 153.94650468950897,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpL",
+  "folder": "SkipY",
   "previewStartingState": {
-    "rotation": 90.0,
+    "rotation": 180.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

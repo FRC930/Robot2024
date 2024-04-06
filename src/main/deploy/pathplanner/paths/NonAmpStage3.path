@@ -3,43 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 8.289990426134699,
+        "y": 4.1046482092964185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 6.405404349270238,
+        "y": 3.788906039350541
       },
       "isLocked": false,
-      "linkedName": "AmpL1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0309099079736637,
-        "y": 5.545221859674489
+        "x": 4.284011644946369,
+        "y": 4.913737519782733
       },
       "prevControl": {
-        "x": 3.0309099079736637,
-        "y": 5.959750904690725
+        "x": 4.678689357378716,
+        "y": 4.361188722377445
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpL2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 90.0,
-      "rotateFast": true
+      "rotationDegrees": 162.5573127770788,
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.6,
+      "name": "Aim",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -47,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "aim"
               }
             }
           ]
@@ -57,17 +57,17 @@
   ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0,
-    "rotateFast": true
+    "rotation": 117.07208023799282,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpL",
+  "folder": "NonAmpStage",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

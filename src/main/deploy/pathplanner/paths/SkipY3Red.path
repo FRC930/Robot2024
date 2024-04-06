@@ -3,43 +3,60 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 3.984090364757048,
+        "y": 2.002553049328638
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 5.231238154784003,
+        "y": 1.4011058791348356
       },
       "isLocked": false,
-      "linkedName": "AmpL1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0309099079736637,
-        "y": 5.545221859674489
+        "x": 7.431566401594342,
+        "y": 2.002553049328638
       },
       "prevControl": {
-        "x": 3.0309099079736637,
-        "y": 5.959750904690725
+        "x": 6.425138234891854,
+        "y": 1.4109728219456439
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpL2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 90.0,
-      "rotateFast": true
+      "rotationDegrees": -155.0,
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
+      "name": "stopShoot",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "Intake",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -56,18 +73,18 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 90.0,
-    "rotateFast": true
+    "velocity": 2.0,
+    "rotation": -155.0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpL",
+  "folder": "SkipY",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

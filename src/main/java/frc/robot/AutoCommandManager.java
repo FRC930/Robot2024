@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -67,6 +69,7 @@ public class AutoCommandManager {
         PathPlannerAuto ampLTwoAuto = new PathPlannerAuto("AmpLTwoAuto");
 
         PathPlannerAuto ampTwoAuto = new PathPlannerAuto("AmpTwoAuto");
+        PathPlannerAuto ampTwoAuto2 = new PathPlannerAuto("AmpTwoAuto");
         PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
         PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
 
@@ -74,9 +77,12 @@ public class AutoCommandManager {
         PathPlannerAuto midWaitAuto = new PathPlannerAuto("MidWaitAuto");
         PathPlannerAuto nonAmpWaitAuto = new PathPlannerAuto("NonAmpWaitAuto");
 
+        // PathPlannerAuto nonAmpStage = new PathPlannerAuto("NonAmpStage");
+        PathPlannerAuto skipYRed = new PathPlannerAuto("SkipYRed");
+
+
         m_chooser.setDefaultOption("None", null);
 
-        m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto));
         m_chooser.addOption("MidWait", new WaitCommand(8.0).andThen(midTwoAuto));
         m_chooser.addOption("NonAmpWait", new WaitCommand(8.0).andThen(nonAmpTwoAuto));
         m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
@@ -88,9 +94,12 @@ public class AutoCommandManager {
         m_chooser.addOption("MidUAuto", midUAuto);
         m_chooser.addOption("LTwo", ampLTwoAuto);
         m_chooser.addOption("LThree", ampLThreeAuto);
-        m_chooser.addOption("AmpTwo", ampTwoAuto);
+        m_chooser.addOption("AmpTwo", ampTwoAuto2);
+        m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto));
         m_chooser.addOption("MidTwo", midTwoAuto);
         m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
+        // m_chooser.addOption("NonAmpStage", nonAmpStage);
+        m_chooser.addOption("SkipYRed", skipYRed);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
@@ -195,6 +204,7 @@ public class AutoCommandManager {
         
         //Stops the intake and does a note backup
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, true));
+        NamedCommands.registerCommand("stopIntakeSensor", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, true));
 
         //TODO: Ask harry what exactly it does. I know about as much about it as the name indicates.
         NamedCommands.registerCommand("movingSideShoot", 
@@ -229,10 +239,6 @@ public class AutoCommandManager {
 
         // Stops the shooter and stows the indexer and pivot
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake));
-
-        // TODO: Ask harry what exactly it does. I know about as much about it as the name indicates.
-        NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 
-                25.5));
         
         // Prepares to shoot from the shooting position in NonAmpY
         NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
@@ -242,6 +248,21 @@ public class AutoCommandManager {
                 // y: 2.0 original value
                 // moved since it was too far to right  
                 new Pose2d(3.98, 0.0, new Rotation2d(0.0)) ));
+
+
+        NamedCommands.registerCommand("prepareSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null,  
+                new Pose2d(convertBlueXToRedX(3.98), 1.5, new Rotation2d(0.0)),
+                new Pose2d(3.98, 2.0, new Rotation2d(0.0)) ));
+
+        NamedCommands.registerCommand("prepareSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null,  
+                new Pose2d(convertBlueXToRedX(3.98), 1.5, new Rotation2d(0.0)),
+                new Pose2d(3.98, 2.0, new Rotation2d(0.0)) ));
+
+        NamedCommands.registerCommand("nonAmpSideShootNoStop", 
+            CommandFactoryUtility.createPreparePosedShootCommand(turret, pivot, shooter, null,
+                    new Pose2d(convertBlueXToRedX(1.43), 3.12, new Rotation2d(0.0)),
+                    new Pose2d(1.43, 4.12, new Rotation2d(0.0)) )
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake)));
         
         // Offsets future shots down by one degree
         // THIS MUST BE RESET AFTER USE or it will mess up all future shots. In addition, this only affects the SpeakerScoreUtility calculated shot.
@@ -257,5 +278,11 @@ public class AutoCommandManager {
         // ! - - - !THIS MUST BE RESET AFTER USE! - - - !
         NamedCommands.registerCommand("setShotSpeedOverride-100",  new InstantCommand(()->SpeakerScoreUtility.setShotSpeedOffset(100.0)));
         NamedCommands.registerCommand("resetShotSpeedOverride",  new InstantCommand(()->SpeakerScoreUtility.resetShotSpeedOffset()));
+
+        NamedCommands.registerCommand("stopDrivetrain", drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric().withVelocityX(0).withVelocityY(0).withDriveRequestType(DriveRequestType.OpenLoopVoltage)));
+    }
+
+    private static double convertBlueXToRedX(double x) {
+        return 16.5 - x;
     }
 }

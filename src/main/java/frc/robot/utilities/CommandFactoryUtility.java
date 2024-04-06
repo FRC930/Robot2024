@@ -259,6 +259,16 @@ public final class CommandFactoryUtility {
                 .alongWith(turret.newWaitUntilSetpointCommand(0.75)));
     }
 
+
+    public static Command createPreparePosedShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, Pose2d poseRed, Pose2d poseBlue) {
+        return new TurretAimCommand(turret, poseRed, poseBlue)
+            .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
+            .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
+            .andThen(pivot.newWaitUntilSetpointCommand(0.75)
+                .alongWith(shooter.newWaitUntilSetpointCommand(0.75))
+                .alongWith(turret.newWaitUntilSetpointCommand(0.75)));
+    }
+
     public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter) {
         return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
