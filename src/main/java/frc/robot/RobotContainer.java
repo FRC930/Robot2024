@@ -44,6 +44,7 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
+import frc.robot.utilities.RobotOdometryUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
 import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
@@ -64,6 +65,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -700,11 +702,63 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (USE_LIMELIGHT_APRIL_TAG) {  
-      updatePoseEstimateWithAprilTags("limelight-front",true);
-      updatePoseEstimateWithAprilTags("limelight-back",true);
-      updatePoseEstimateWithAprilTags("limelight-right", true);
-      updatePoseEstimateWithAprilTags("limelight-left", true);
+      // updatePoseEstimateWithAprilTags("limelight-front",true);
+      // updatePoseEstimateWithAprilTags("limelight-back",true);
+      // updatePoseEstimateWithAprilTags("limelight-right", true);
+      // updatePoseEstimateWithAprilTags("limelight-left", true);
+      updatePoseWithMegaTag2("limelight-front",true);
+      updatePoseWithMegaTag2("limelight-back",true);
+      updatePoseWithMegaTag2("limelight-right", true);
+      updatePoseWithMegaTag2("limelight-left", true);
     }
+  }
+
+  public void updatePoseWithMegaTag2(String limeLightName, boolean usePose) {
+    boolean doRejectUpdate = false;
+    double fpgaTimestamp = Timer.getFPGATimestamp();
+
+    LimelightHelpers.SetRobotOrientation(limeLightName, RobotOdometryUtility.getInstance().getRobotOdometry().getRotation().getDegrees(), 0,
+        0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limeLightName);
+
+    if (Math.abs(TunerConstants.DriveTrain.getPigeon2().getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+    {
+      doRejectUpdate = true;
+    }
+
+    // distance from current pose to vision estimated pose
+    Translation2d translation = TunerConstants.DriveTrain.getState().Pose.getTranslation();
+    double poseDifference = translation.getDistance(mt2.pose.getTranslation());
+
+    double xyStds;
+    double degStds;
+    if (mt2.tagCount >= 2) {
+      xyStds = 0.1;
+      degStds = 6;
+    }
+    // 1 target with large area and close to estimated pose
+    else if (mt2.tagCount == 1 && mt2.avgTagArea > 0.8 && poseDifference < 0.5) {
+      xyStds = 1.0;
+      degStds = 12;
+    }
+    // conditions don't match to add a vision measurement
+    else {
+      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
+      return;
+    }
+
+    if (m_visionUpdatesOdometry && usePose && !doRejectUpdate) {
+      m_StartInTeleopUtility.updateTags();
+
+      drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+      drivetrain.addVisionMeasurement(mt2.pose, fpgaTimestamp - (mt2.timestampSeconds / 1000.0));
+
+      SmartDashboard.putBoolean(limeLightName + "/Updated", true);
+      Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
+      this.visioncounter++;
+    }
+
+    Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", mt2.pose);
   }
 
   // https://github.com/LimelightVision/limelight-examples/blob/main/java-wpilib/swerve-megatag-odometry/src/main/java/frc/robot/Drivetrain.java#L57
