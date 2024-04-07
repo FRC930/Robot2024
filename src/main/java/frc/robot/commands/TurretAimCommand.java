@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.utilities.AimingMathUtil;
 import frc.robot.utilities.RobotOdometryUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -23,6 +24,9 @@ public class TurretAimCommand extends Command{
 
     private static final double AIM_OFFSET = Units.inchesToMeters(23.0); // May be dynamic
     private static final double NON_AMP_AIM_OFFSET = Units.inchesToMeters(13.0); // May be dynamic
+
+    //Has the shooter use custom offsets from SmartDashboard and logs extra info
+    public static final boolean debugMode_TESTONLY = true;
 
     private TurretSubsystem m_TurretSubsystem;
     private Pose2d m_AmpSideBlueTargetPose;
@@ -44,15 +48,31 @@ public class TurretAimCommand extends Command{
     private boolean ampSide;
     private Pose2d m_ProxyPoseRed;
     private Pose2d m_ProxyPoseBlue;
-    
+    private boolean m_usesNewModel;
+
+    //We default to the new model when using odometry
     public TurretAimCommand(TurretSubsystem turretSubsystem) {
+        this(turretSubsystem, true);
+    }
+    
+    public TurretAimCommand(TurretSubsystem turretSubsystem, boolean usesNewModel) {
         this(turretSubsystem,null,null);
     }
+
+    //Since our auto aims are tuned for it, we default to the old model when passing in a proxy pose
+    public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue) {
+        this(turretSubsystem, proxyPoseRed, proxyPoseBlue, false);
+    }
+
     /** Aims the turret to the speaker apriltags based on the current alliance.
      * Constructor
      * @param turretSubsystem the subsystem that controls the turret.
      */
-    public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue) {
+    public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue,boolean usesNewModel) {
+        if (debugMode_TESTONLY) {
+            SmartDashboard.putNumber("PivotOffset", 0.0);
+            SmartDashboard.putNumber("TurretOffset", 0.0);
+        }
         m_AmpSideRedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         Logger.recordOutput("turretTargets/redIdealTarget", m_AmpSideRedTargetPose);
         m_AmpSideRedTargetPose = new Pose2d(
@@ -140,6 +160,15 @@ public class TurretAimCommand extends Command{
                 m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() + 4.25, m_TargetPose.getRotation());
             }
         }
+
+        double txi;
+        double tyi;
+        if(debugMode_TESTONLY || m_usesNewModel) {
+            txi = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX();
+            tyi = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY();
+            Logger.recordOutput("AutoAim/txi", txi);
+            Logger.recordOutput("AutoAim/tyi", tyi);
+        }
         
 
         tx = m_TargetPose.getX();
@@ -154,6 +183,20 @@ public class TurretAimCommand extends Command{
         // calculates how far we need to rotate the turret to get to the desired position based on:
         // robots turret heading - the robots base heading
         m_DesiredHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading, 360);
+
+        if(m_usesNewModel) {
+            m_DesiredHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360) + AimingMathUtil.getTurretOffsetForDistance(SpeakerScoreUtility.inchesToSpeaker());
+        }
+        
+        if(debugMode_TESTONLY) {
+            double turretOffset = SmartDashboard.getNumber("TurretOffset", 0);
+            double idealHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360);
+
+            m_DesiredHeading += turretOffset;
+            Logger.recordOutput("Offsets/turretOffset", turretOffset);
+            Logger.recordOutput("AutoAim/IdealHeading", idealHeading);
+            Logger.recordOutput("AutoAim/TurretTotalOffsetFromIdeal", m_DesiredHeading - idealHeading);
+        }
 
         //Logs the desired heading
         // SmartDashboard.putNumber("AutoAim/Math", Math.toDegrees(Math.atan2(ty - ry, tx - rx)));

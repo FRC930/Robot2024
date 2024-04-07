@@ -193,7 +193,8 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        return computePivotAngleInternal(distance) + m_nextShotAngleOffset;
+        return computePivotAnglePolyModel(distance) + m_nextShotAngleOffset;
+        //return computePivotAngleInternal(distance) + m_nextShotAngleOffset;
     }
 
     public static double computePivotAngleInverseTan(double distance) {
@@ -211,13 +212,18 @@ public class SpeakerScoreUtility {
         return Units.radiansToDegrees(Math.atan2(heightTurretToNodeInches, distanceCenterToNodeInches));
     }
 
+    /*  SHOOTER DATA SHEET HERE:
+    // You can find the regression for these values here: https://www.desmos.com/calculator/0s3xe9y9ca
+    // OPTIONS FOR TUNING: 
+    // 1. You can add more data points for the regression. Make sure to update the link though! The link to the calculator will change after saving it.
+    // 2. Use piecewise overrides or modifiers for areas that don't work
+    */
     public static double computePivotAnglePolyModel(double distance) {
-        double exponent = -0.013963036303;
-        double h = -273.137;
-        double k = 22.4469;
+        double exponent = 0.982502;
+        double h = 233.775;
+        double k = 24.011;
 
-        // Untested shot angle model. Distances sourced from testing on 3/9/24. Source graph: https://www.desmos.com/calculator/bohpjg7n1d
-        return Math.exp(exponent * (distance - h)) + k;
+        return Math.pow(exponent , (distance - h)) + k;
     }
 
     public static double computeShooterSpeed(double distance) {

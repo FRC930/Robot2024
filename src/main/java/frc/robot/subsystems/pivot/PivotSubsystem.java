@@ -8,12 +8,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
 import frc.robot.IOs.TimeOfFlightIO;
+import frc.robot.commands.TurretAimCommand;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
@@ -58,10 +61,16 @@ public class PivotSubsystem extends SubsystemBase{
      * @param angle The angle in degrees from the horizontal
      */
     public void setPosition(double angle) {
-        m_io.setTarget(MathUtil.clamp(angle,0.0,90.0));        
+        double givenAngle = angle;
+        if(TurretAimCommand.debugMode_TESTONLY) {
+            double angleOffset = SmartDashboard.getNumber("PivotOffset", 0);
+            givenAngle += angleOffset;
+            Logger.recordOutput("Offsets/pivotOffset", angleOffset);
+        }
+        m_io.setTarget(MathUtil.clamp(givenAngle,0.0,90.0));        
         m_reachedSetPoint = false;
         Logger.recordOutput(this.getClass().getSimpleName() + "/ReachedSetPoint", m_reachedSetPoint);
-        if (angle == 0.0){
+        if (givenAngle == 0.0){
             m_resetWhenSensorTriggered = true;
         }
     }
