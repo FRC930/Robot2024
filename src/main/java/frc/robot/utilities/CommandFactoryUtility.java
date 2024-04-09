@@ -239,8 +239,8 @@ public final class CommandFactoryUtility {
      * @param poseRed
      * @return
      */
-    public static Command createPreparePosedShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, Pose2d poseRed, Pose2d poseBlue) {
-        return new TurretAimCommand(turret, poseRed, poseBlue)
+    public static Command createPreparePosedShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, Pose2d poseRed, Pose2d poseBlue, boolean usesNewModel) {
+        return new TurretAimCommand(turret, poseRed, poseBlue, usesNewModel)
             .alongWith(
                 new RepeatCommand(
                     createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle)
