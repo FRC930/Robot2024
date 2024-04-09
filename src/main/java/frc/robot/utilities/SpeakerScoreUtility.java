@@ -152,10 +152,7 @@ public class SpeakerScoreUtility {
             } else {
                 m_TargetPose = m_BlueTargetPose;
             }
-            if (useProxyPose) {
-                m_CurrentPose = alliance == Alliance.Red ? redPose : bluePose;
-                m_CurrentPose = new Pose2d(m_CurrentPose.getX(),m_CurrentPose.getY(), RobotOdometryUtility.getInstance().getRobotOdometry().getRotation());
-            }
+            if (useProxyPose) m_CurrentPose = (alliance == Alliance.Red ? redPose : bluePose);
         }
 
         double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY()))
