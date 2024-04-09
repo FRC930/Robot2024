@@ -302,7 +302,7 @@ public class RobotContainer {
     public static final double ENDGAME_ELEVATOR_FEEDFORWARD = 0.0;
     public static final boolean ENDGAME_ELEVATOR_LIMITFORWARDMOTION = false;
     public static final boolean ENDGAME_ELEVATOR_LIMITREVERSEMOTION = false;
-    private static final boolean DELTA_LOGGING_ENABLED = false;
+    private static final boolean DELTA_LOGGING_ENABLED = true;
 
     //--VisionSTDsDevConstants--\\
     // TODO configure for april tag confidence level 

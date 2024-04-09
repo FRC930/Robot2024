@@ -132,24 +132,31 @@ public class SpeakerScoreUtility {
     }
 
     public static double inchesToSpeaker() {
+        return inchesToSpeaker(false, null, null);
+    }
+
+    public static double inchesToSpeaker(boolean useProxyPose, Pose2d redPose, Pose2d bluePose) {
         AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
         Pose2d m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         Pose2d m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         Pose2d m_TargetPose = m_BlueTargetPose;
+        Pose2d m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
 
         // If there is an alliance present it sets the target pose based on the alliance; otherwise defaults to blue.
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
         if (optionalAlliance.isPresent()){
-        Alliance alliance = optionalAlliance.get();
+            Alliance alliance = optionalAlliance.get();
             if (alliance == Alliance.Red) {
                 m_TargetPose = m_RedTargetPose;
             } else {
                 m_TargetPose = m_BlueTargetPose;
             }
+            if (useProxyPose) {
+                m_CurrentPose = alliance == Alliance.Red ? redPose : bluePose;
+                m_CurrentPose = new Pose2d(m_CurrentPose.getX(),m_CurrentPose.getY(), RobotOdometryUtility.getInstance().getRobotOdometry().getRotation());
+            }
         }
-        // gets the robots position, and gets the robots heading.
-        Pose2d m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
 
         double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY()))
              - DISTANCE_OFFSET_TO_CENTER_OF_ROBOT;

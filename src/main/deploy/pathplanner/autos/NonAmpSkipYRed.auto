@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SkipY1Red"
+            "pathName": "NonAmpSkipY1Red"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SkipY2Red"
+            "pathName": "NonAmpSkipY2Red"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SkipY3Red"
+            "pathName": "NonAmpSkipY3Red"
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SkipY4Red"
+            "pathName": "NonAmpSkipY4Red"
           }
         },
         {

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.289990426134699,
-        "y": 2.4272679314589416
+        "x": 3.35,
+        "y": 3.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.904667558265215,
-        "y": 1.2881920200359664
+        "x": 4.323704624584711,
+        "y": 1.0071319429372099
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.3517051912848466,
-        "y": 2.9979741557200663
+        "x": 7.6144496939493145,
+        "y": 1.8268905011419148
       },
       "prevControl": {
-        "x": 4.0777770571233,
-        "y": 1.7683363184130072
+        "x": 6.361390183550694,
+        "y": 1.206216164215495
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,24 +30,24 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.35,
-      "rotationDegrees": 180.0,
-      "rotateFast": true
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -155.0,
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Aim",
-      "waypointRelativePos": 0.4,
+      "name": "stopShoot",
+      "waypointRelativePos": 0.1,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "prepareSkipYShoot4"
+                "name": "stopShoot"
               }
             }
           ]
@@ -55,8 +55,8 @@
       }
     },
     {
-      "name": "Backup",
-      "waypointRelativePos": 0.2,
+      "name": "Intake",
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -64,7 +64,7 @@
             {
               "type": "named",
               "data": {
-                "name": "stopIntake"
+                "name": "intake"
               }
             }
           ]
@@ -79,14 +79,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 180.0,
-    "rotateFast": true
+    "velocity": 2.0,
+    "rotation": -155.0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "SkipY",
   "previewStartingState": {
-    "rotation": -155.0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
