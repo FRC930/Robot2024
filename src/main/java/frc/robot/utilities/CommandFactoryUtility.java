@@ -182,9 +182,9 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createShootPreaimedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, IntakeSubsystem intake) {
-        return pivot.newWaitUntilSetpointCommand(0.7)
-            .andThen(shooter.newWaitUntilSetpointCommand(0.7))
-            .alongWith(turret.newWaitUntilSetpointCommand(0.7))
+        return (pivot.newWaitUntilSetpointCommand(0.55)
+            .alongWith(shooter.newWaitUntilSetpointCommand(0.55))
+            .alongWith(turret.newWaitUntilSetpointCommand(0.7)))
         .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
         .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
@@ -251,7 +251,7 @@ public final class CommandFactoryUtility {
 
 
     public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
-        return new TurretAimCommand(turret)
+        return new TurretAimCommand(turret, true)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
             .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
             .andThen(pivot.newWaitUntilSetpointCommand(0.75)
@@ -264,9 +264,9 @@ public final class CommandFactoryUtility {
         return new TurretAimCommand(turret, poseRed, poseBlue)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
             .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
-            .andThen(pivot.newWaitUntilSetpointCommand(0.75)
-                .alongWith(shooter.newWaitUntilSetpointCommand(0.75))
-                .alongWith(turret.newWaitUntilSetpointCommand(0.75)));
+            .andThen(pivot.newWaitUntilSetpointCommand(0.35)
+                .alongWith(shooter.newWaitUntilSetpointCommand(0.35))
+                .alongWith(turret.newWaitUntilSetpointCommand(0.35)));
     }
 
     public static Command createPrepareShootCommand(TurretSubsystem turret, ShooterSubsystem shooter) {

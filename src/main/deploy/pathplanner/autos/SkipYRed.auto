@@ -62,7 +62,13 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "preparedShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
           }
         }
       ]

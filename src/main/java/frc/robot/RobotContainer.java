@@ -258,8 +258,8 @@ public class RobotContainer {
 
     private final MotionMagicConfigs pivotMMC =
       new MotionMagicConfigs() // Currently set slow
-        .withMotionMagicAcceleration(3.0) //18.0 fast values (but slam at zero set point)
-        .withMotionMagicCruiseVelocity(4.0)//11.0 fast values (but slam at zero set point)
+        .withMotionMagicAcceleration(10.0) //18.0 fast values (but slam at zero set point)
+        .withMotionMagicCruiseVelocity(8.0)//11.0 fast values (but slam at zero set point)
         .withMotionMagicExpo_kV(0)
         .withMotionMagicExpo_kA(0);
 
