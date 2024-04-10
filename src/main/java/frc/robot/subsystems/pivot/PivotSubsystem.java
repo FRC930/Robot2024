@@ -67,7 +67,7 @@ public class PivotSubsystem extends SubsystemBase{
             givenAngle += angleOffset;
             Logger.recordOutput("Offsets/pivotOffset", angleOffset);
         }
-        m_io.setTarget(MathUtil.clamp(givenAngle,0.0,90.0));        
+        m_io.setTarget(MathUtil.clamp(givenAngle,0.0,58.0)); // Intake and star touch eachother at 58
         m_reachedSetPoint = false;
         Logger.recordOutput(this.getClass().getSimpleName() + "/ReachedSetPoint", m_reachedSetPoint);
         if (givenAngle == 0.0){
