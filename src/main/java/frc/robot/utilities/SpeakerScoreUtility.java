@@ -59,6 +59,7 @@ public class SpeakerScoreUtility {
     };
 
     private Target m_desiredTarget;
+    private static AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
     public SpeakerScoreUtility(TurretSubsystem turret) {
         m_desiredTarget = Target.close;
@@ -136,8 +137,6 @@ public class SpeakerScoreUtility {
     }
 
     public static double inchesToSpeaker(boolean useProxyPose, Pose2d redPose, Pose2d bluePose) {
-        AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-
         Pose2d m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         Pose2d m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         Pose2d m_TargetPose = m_BlueTargetPose;

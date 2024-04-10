@@ -152,7 +152,7 @@ public class RobotContainer {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
         .withSteerRequestType(SteerRequestType.MotionMagic); // I want field-cen
    
-        static AprilTagFieldLayout aprilTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    static final AprilTagFieldLayout aprilTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     //--PID AND FF CONSTANTS--\\
 
     private final Slot0Configs climbingS0C = 

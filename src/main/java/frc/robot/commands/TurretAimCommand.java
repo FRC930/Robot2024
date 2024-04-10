@@ -39,7 +39,7 @@ public class TurretAimCommand extends Command{
     private double m_CurrentRobotHeading;
     private double m_DesiredHeading;
 
-    private AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    private final AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
     private double tx; //target x
     private double ty; //target y
@@ -142,6 +142,27 @@ public class TurretAimCommand extends Command{
         rx = m_CurrentPose.getX();
         ry = m_CurrentPose.getY();
 
+        if(m_usesNewModel) {
+            m_DesiredHeading = calcTurretAngleExpo(alliance);
+        } else {
+            m_DesiredHeading = calcTurretAngleZoned(alliance);
+        }
+
+        Logger.recordOutput("AutoAim/tx", tx);
+        Logger.recordOutput("AutoAim/ty", ty);
+        Logger.recordOutput("AutoAim/rx", rx);
+        Logger.recordOutput("AutoAim/ry", ry);
+
+        //Logs the desired heading
+        // SmartDashboard.putNumber("AutoAim/Math", Math.toDegrees(Math.atan2(ty - ry, tx - rx)));
+        Logger.recordOutput("AutoAim/DesiredHeading", m_DesiredHeading);
+
+        // actually moves the robots turret to the desired position
+        // TODO sussex back in
+        m_TurretSubsystem.setPosition(m_DesiredHeading);
+    }
+
+    private double calcTurretAngleZoned(Alliance alliance) {
         if (ry >= 4.5 /*Below front pillar y (in meters)*/) {
             ampSide = true;
         } else {
@@ -161,52 +182,20 @@ public class TurretAimCommand extends Command{
             }
         }
 
-        double txi;
-        double tyi;
-        if(debugMode_TESTONLY || m_usesNewModel) {
-            txi = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX();
-            tyi = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY();
-            Logger.recordOutput("AutoAim/txi", txi);
-            Logger.recordOutput("AutoAim/tyi", tyi);
-        }
-        
-
         tx = m_TargetPose.getX();
         ty = m_TargetPose.getY();
         
-        //Logs the values above.
-        Logger.recordOutput("AutoAim/tx", tx);
-        Logger.recordOutput("AutoAim/ty", ty);
-        Logger.recordOutput("AutoAim/rx", rx);
-        Logger.recordOutput("AutoAim/ry", ry);
-
         // calculates how far we need to rotate the turret to get to the desired position based on:
         // robots turret heading - the robots base heading
-        m_DesiredHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading, 360);
-
-        if(m_usesNewModel) {
-            m_DesiredHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360) + AimingMathUtil.getTurretOffsetForDistance(SpeakerScoreUtility.inchesToSpeaker());
-        }
-        
-        if(debugMode_TESTONLY) {
-            double turretOffset = SmartDashboard.getNumber("TurretOffset", 0);
-            double idealHeading = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360);
-
-            m_DesiredHeading += turretOffset;
-            Logger.recordOutput("Offsets/turretOffset", turretOffset);
-            Logger.recordOutput("AutoAim/IdealHeading", idealHeading);
-            Logger.recordOutput("AutoAim/TurretTotalOffsetFromIdeal", m_DesiredHeading - idealHeading);
-        }
-
-        //Logs the desired heading
-        // SmartDashboard.putNumber("AutoAim/Math", Math.toDegrees(Math.atan2(ty - ry, tx - rx)));
-        Logger.recordOutput("AutoAim/DesiredHeading", m_DesiredHeading);
-
-        // actually moves the robots turret to the desired position
-        // TODO sussex back in
-        m_TurretSubsystem.setPosition(m_DesiredHeading);
+        return -Math.IEEEremainder(Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading, 360);
     }
 
+    private double calcTurretAngleExpo(Alliance alliance) {
+        double txi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getX();
+        double tyi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getY();
+        return -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360) + AimingMathUtil.getTurretOffsetForDistance(SpeakerScoreUtility.inchesToSpeaker());
+    }
+    
     // Makes it so that this command never ends.
     @Override
     public boolean isFinished() {
