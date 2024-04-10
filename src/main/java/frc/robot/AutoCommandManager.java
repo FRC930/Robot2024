@@ -78,7 +78,8 @@ public class AutoCommandManager {
         PathPlannerAuto nonAmpWaitAuto = new PathPlannerAuto("NonAmpWaitAuto");
 
         // PathPlannerAuto nonAmpStage = new PathPlannerAuto("NonAmpStage");
-        PathPlannerAuto skipYRed = new PathPlannerAuto("SkipYRed");
+        PathPlannerAuto nonAmpSkipYRed = new PathPlannerAuto("NonAmpSkipYRed");
+        PathPlannerAuto ampSkipYRed = new PathPlannerAuto("AmpSkipYRed");
 
 
         m_chooser.setDefaultOption("None", null);
@@ -99,7 +100,9 @@ public class AutoCommandManager {
         m_chooser.addOption("MidTwo", midTwoAuto);
         m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
         // m_chooser.addOption("NonAmpStage", nonAmpStage);
-        m_chooser.addOption("SkipYRed", skipYRed);
+        m_chooser.addOption("NonAmpSkipYRed", nonAmpSkipYRed);
+        m_chooser.addOption("AmpSkipYRed", ampSkipYRed);
+
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
@@ -252,6 +255,26 @@ public class AutoCommandManager {
                 false ));
 
 
+        NamedCommands.registerCommand("prepareAmpSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
+                SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                        true, 
+                        new Pose2d(convertBlueXToRedX(4.35), 6.66, new Rotation2d(0.0)),
+                        new Pose2d(4.35, 6.66, new Rotation2d(0.0))))
+                        - 2.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(4.35), 6.66, new Rotation2d(0.0)),
+                new Pose2d(4.35, 6.66, new Rotation2d(0.0)),
+                true));
+
+        NamedCommands.registerCommand("prepareAmpSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
+                SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                        true, 
+                        new Pose2d(convertBlueXToRedX(4.35), 6.66, new Rotation2d(0.0)),
+                        new Pose2d(4.35, 6.66, new Rotation2d(0.0))))
+                        - 2.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(4.35), 6.66, new Rotation2d(0.0)),
+                new Pose2d(4.35, 6.66, new Rotation2d(0.0)),
+                true));
+
         NamedCommands.registerCommand("prepareSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
                         true, 
@@ -271,6 +294,8 @@ public class AutoCommandManager {
                 new Pose2d(convertBlueXToRedX(3.35 + 1.0), 3.0 - 1.5, new Rotation2d(0.0)),
                 new Pose2d(3.35, 3.0, new Rotation2d(0.0)),
                 true));
+
+
 
         NamedCommands.registerCommand("nonAmpSideShootNoStop", 
             CommandFactoryUtility.createPreparePosedShootCommand(turret, pivot, shooter, null,
