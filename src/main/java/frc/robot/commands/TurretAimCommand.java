@@ -64,9 +64,14 @@ public class TurretAimCommand extends Command{
         this(turretSubsystem, proxyPoseRed, proxyPoseBlue, false);
     }
 
-    /** Aims the turret to the speaker apriltags based on the current alliance.
+    /**
+     * <h3> TurretAimCommand </h3>
+     * Aims the turret to the speaker apriltags based on the current alliance.
      * Constructor
-     * @param turretSubsystem the subsystem that controls the turret.
+     * @param turretSubsystem
+     * @param proxyPoseRed
+     * @param proxyPoseBlue
+     * @param usesNewModel
      */
     public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue,boolean usesNewModel) {
         if (debugMode_TESTONLY) {
