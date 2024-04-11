@@ -153,6 +153,10 @@ public class TurretAimCommand extends Command{
             m_DesiredHeading = calcTurretAngleZoned(alliance);
         }
 
+        if(debugMode_TESTONLY) {
+            m_DesiredHeading += SmartDashboard.getNumber("TurretOffset", 0.0);
+        }
+
         Logger.recordOutput("AutoAim/tx", tx);
         Logger.recordOutput("AutoAim/ty", ty);
         Logger.recordOutput("AutoAim/rx", rx);
@@ -198,7 +202,9 @@ public class TurretAimCommand extends Command{
     private double calcTurretAngleExpo(Alliance alliance) {
         double txi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getX();
         double tyi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getY();
-        return -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360) + AimingMathUtil.getTurretOffsetForDistance(SpeakerScoreUtility.inchesToSpeaker());
+        double firstPart = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360);
+        Logger.recordOutput("AutoAim/IdealHeading", firstPart);
+        return firstPart + AimingMathUtil.getTurretOffsetForDistance(SpeakerScoreUtility.inchesToSpeaker());
     }
     
     // Makes it so that this command never ends.

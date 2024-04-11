@@ -65,7 +65,6 @@ public class PivotSubsystem extends SubsystemBase{
         if(TurretAimCommand.debugMode_TESTONLY) {
             double angleOffset = SmartDashboard.getNumber("PivotOffset", 0);
             givenAngle += angleOffset;
-            Logger.recordOutput("Offsets/pivotOffset", angleOffset);
         }
         m_io.setTarget(MathUtil.clamp(givenAngle,0.0,58.0)); // Intake and star touch eachother at 58
         m_reachedSetPoint = false;
