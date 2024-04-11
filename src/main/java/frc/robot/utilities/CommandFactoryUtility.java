@@ -23,6 +23,7 @@ import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.LeafBlower.BlowerSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.turret.TurretSubsystem;
@@ -319,5 +320,11 @@ public final class CommandFactoryUtility {
             .alongWith(indexer.newSetSpeedCommand(0.0))
             .alongWith(intake.newSetSpeedCommand(0.0))
         .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret)));
+    }
+
+    public static Command createTestBlowerCommand(BlowerSubsystem blower){
+        return blower.getNewSetSpeedCommand(1.0)
+        .andThen(new WaitCommand(5.0))
+        .andThen(blower.getNewSetSpeedCommand(0.0));
     }
 }
