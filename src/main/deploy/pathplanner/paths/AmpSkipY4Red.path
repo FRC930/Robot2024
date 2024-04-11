@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.293678213604645,
-        "y": 5.7617315805245015
+        "x": 8.305389050150424,
+        "y": 5.433828157242619
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.86037726141073,
-        "y": 5.995948311440132
+        "x": 7.7315580594071305,
+        "y": 5.738309907432939
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 5.39,
+        "y": 6.82
       },
       "prevControl": {
-        "x": 5.506499115708644,
-        "y": 6.45267093672561
+        "x": 6.747847789561484,
+        "y": 6.148189186535292
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.6,
       "rotationDegrees": 180.0,
       "rotateFast": false
     }
@@ -74,7 +74,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 6.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -84,10 +84,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "SkipY",
+  "folder": "AmpSkipY",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

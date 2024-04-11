@@ -8,14 +8,15 @@
     "BotSpeaker",
     "MidSpeaker",
     "MidU",
-    "Wait",
-    "NonAmpStage",
+    "AmpSkipY",
     "NonAmpJ",
+    "NonAmpSkipY",
+    "NonAmpStage",
     "NonAmpY",
     "Robot2024",
-    "SkipY",
     "TopSpeaker",
-    "Two"
+    "Two",
+    "Wait"
   ],
   "autoFolders": [
     "Robot2024"

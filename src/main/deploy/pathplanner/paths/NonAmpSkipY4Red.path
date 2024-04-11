@@ -84,7 +84,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "SkipY",
+  "folder": "NonAmpSkipY",
   "previewStartingState": {
     "rotation": -155.0,
     "velocity": 0

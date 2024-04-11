@@ -4,36 +4,42 @@
     {
       "anchor": {
         "x": 8.305389050150424,
-        "y": 7.096766946743594
+        "y": 3.6186484926464857
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.485630491945719,
-        "y": 7.0733452736520315
+        "x": 7.942353117231199,
+        "y": 4.789732147224637
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.38939075025083,
-        "y": 6.8157068696448375
+        "x": 5.39,
+        "y": 6.82
       },
       "prevControl": {
-        "x": 6.314546837367568,
-        "y": 6.9328152351026535
+        "x": 6.6658719337410135,
+        "y": 6.2887192250846695
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpSkipY2"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.45,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Aim",
-      "waypointRelativePos": 0.5,
+      "name": "prepareShootAmp",
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "prepareAmpSkipYShoot3"
+                "name": "prepareAmpSkipYShoot5"
               }
             }
           ]
@@ -49,8 +55,8 @@
       }
     },
     {
-      "name": "Backup",
-      "waypointRelativePos": 0.2,
+      "name": "stopIntake",
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -80,7 +86,7 @@
   "reversed": false,
   "folder": "AmpSkipY",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 130.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
