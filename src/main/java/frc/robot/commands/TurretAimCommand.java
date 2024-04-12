@@ -56,12 +56,12 @@ public class TurretAimCommand extends Command{
     }
     
     public TurretAimCommand(TurretSubsystem turretSubsystem, boolean usesNewModel) {
-        this(turretSubsystem,null,null);
+        this(turretSubsystem,null,null, usesNewModel);
     }
 
     //Since our auto aims are tuned for it, we default to the old model when passing in a proxy pose
     public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue) {
-        this(turretSubsystem, proxyPoseRed, proxyPoseBlue, false);
+        this(turretSubsystem, proxyPoseRed, proxyPoseBlue, true);
     }
 
     /**
@@ -110,6 +110,7 @@ public class TurretAimCommand extends Command{
             useProxyPose = false;
         }
 
+        m_usesNewModel = usesNewModel;
         m_TurretSubsystem = turretSubsystem;
         addRequirements(m_TurretSubsystem);
 

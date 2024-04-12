@@ -20,7 +20,7 @@ public abstract class AimingMathUtil {
     */
     private static final double TRAJ_OFFSET_LINEAR_FACTOR = -0.0265424;
 
-    private static final double TRAJ_OFFSET_ZERO = 13.6514;
+    private static final double TRAJ_OFFSET_ZERO = 15.6514; //13.6514 Offset for old note (changed to new note offset)
 
     /**
      * Given a certain distance, returns a certain offset to the turret to adjust for the notes flight characteristics
