@@ -240,8 +240,8 @@ public final class CommandFactoryUtility {
      * @param poseRed
      * @return
      */
-    public static Command createPreparePosedShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, Pose2d poseRed, Pose2d poseBlue, boolean usesNewModel) {
-        return new TurretAimCommand(turret, poseRed, poseBlue, usesNewModel)
+    public static Command createPreparePosedShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle, Pose2d poseRed, Pose2d poseBlue) {
+        return new TurretAimCommand(turret, poseRed, poseBlue)
             .alongWith(
                 new RepeatCommand(
                     createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle)
@@ -252,7 +252,7 @@ public final class CommandFactoryUtility {
 
 
     public static Command createPrepareShootCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {
-        return new TurretAimCommand(turret, true)
+        return new TurretAimCommand(turret)
             .raceWith(turret.newWaitUntilSetpointCommand(TURRET_PREAIM_TIMEOUT))
             .alongWith(createPivotAndShooterSpeedCommand(shooter, pivot, pivotAngle))
             .andThen(pivot.newWaitUntilSetpointCommand(0.75)

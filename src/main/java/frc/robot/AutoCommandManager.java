@@ -243,8 +243,7 @@ public class AutoCommandManager {
                 new Pose2d(3.98, 2.0, new Rotation2d(0.0))))
                 - 0.0,    //degrees fudge factor
             new Pose2d(convertBlueXToRedX(3.98), 2.0, new Rotation2d(0.0)),
-            new Pose2d(3.98, 2.0, new Rotation2d(0.0)),
-            true));
+            new Pose2d(3.98, 2.0, new Rotation2d(0.0))));
 
         // Shoots from the shooting position used in AmpY
         // Used in AmpY3 & AmpY5
@@ -255,8 +254,7 @@ public class AutoCommandManager {
             new Pose2d(5.38, 6.89, new Rotation2d(0.0))))
             - 0.0,    //degrees fudge factor
         new Pose2d(convertBlueXToRedX(5.38), 6.89, new Rotation2d(0.0)),
-        new Pose2d(5.38, 6.89, new Rotation2d(0.0)),
-        true));
+        new Pose2d(5.38, 6.89, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
@@ -265,8 +263,7 @@ public class AutoCommandManager {
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
                         + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
-                new Pose2d(5.39, 6.82, new Rotation2d(0.0)),
-                true));
+                new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
@@ -275,8 +272,7 @@ public class AutoCommandManager {
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
                         + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
-                new Pose2d(5.39, 6.82, new Rotation2d(0.0)),
-                true));
+                new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot5", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
@@ -285,8 +281,7 @@ public class AutoCommandManager {
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
                         + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
-                new Pose2d(5.39, 6.82, new Rotation2d(0.0)),
-                true));
+                new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
@@ -295,8 +290,7 @@ public class AutoCommandManager {
                         new Pose2d(3.35, 3.0, new Rotation2d(0.0))))
                         + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.35), 3.0, new Rotation2d(0.0)),
-                new Pose2d(3.35, 3.0, new Rotation2d(0.0)),
-                true));
+                new Pose2d(3.35, 3.0, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
@@ -305,8 +299,7 @@ public class AutoCommandManager {
                         new Pose2d(3.35, 3.0, new Rotation2d(0.0))))
                         - 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.35), 3.0, new Rotation2d(0.0)),
-                new Pose2d(3.35, 3.0, new Rotation2d(0.0)),
-                true));
+                new Pose2d(3.35, 3.0, new Rotation2d(0.0))));
 
 
 
