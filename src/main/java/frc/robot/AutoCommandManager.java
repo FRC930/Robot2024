@@ -315,6 +315,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("setShotOffset-Down1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-1.0)));
         NamedCommands.registerCommand("setShotOffset-Down2",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-2.5)));
         NamedCommands.registerCommand("setShotOffset-Up1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(1.0)));
+        NamedCommands.registerCommand("setShotOffset-Up0.5",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(0.5)));
         NamedCommands.registerCommand("resetShotOffset",  new InstantCommand(()->SpeakerScoreUtility.resetShotOffset()));
 
         // Sets the shooter's target speed to 100 rots/s instead of 117. 
