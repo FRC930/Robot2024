@@ -29,6 +29,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RedirectorsSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
+import frc.robot.subsystems.LeafBlower.BlowerSubsystem;
 import frc.robot.subsystems.pivot.PivotIORobot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -317,7 +318,8 @@ public class RobotContainer {
     //     ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
     //     : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
 
-    private final RedirectorsSubsystem m_RedirectorsSubsystem = new RedirectorsSubsystem(4);
+    //private final RedirectorsSubsystem m_RedirectorsSubsystem = new RedirectorsSubsystem(4);
+    private final BlowerSubsystem m_BlowerSubsystem = new BlowerSubsystem(4);
 
     private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem(
       Robot.isReal()
@@ -413,6 +415,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureDriverBindings() {
+
+    //temporary trap command, not mapped to button and may want to rework
+    Command trapCommand = m_pivotSubsystem.newSetPosCommand(60.0)
+      .andThen(m_BlowerSubsystem.newSetSpeedCommand(1.0))
+      .andThen(m_shooterSubsystem.newSetVoltagesCommand(4.0, 4.0))
+      .andThen(new WaitCommand(1.0))
+      .andThen(m_indexerSubsystem.newSetSpeedCommand(50.0));
+
     //#region Default commands
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
             // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
@@ -624,11 +634,16 @@ public class RobotContainer {
   private void configureCoDriverBindingsForTesting() {
     //#region Test Commands
 
-    m_coDriverController.b().onTrue(m_RedirectorsSubsystem.getNewExtendCommand())
-    .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
-    m_coDriverController.a().onTrue(m_RedirectorsSubsystem.getNewRetractCommand())
-    .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
+    //redirect test
+    // m_coDriverController.b().onTrue(m_RedirectorsSubsystem.getNewExtendCommand())
+    // .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
+    // m_coDriverController.a().onTrue(m_RedirectorsSubsystem.getNewRetractCommand())
+    // .onFalse(new InstantCommand(() -> m_RedirectorsSubsystem.setVoltage(0.0)));
   
+    //Starts blower to 100% speed on button b, and 0% when not
+    m_coDriverController.b().onTrue(m_BlowerSubsystem.newSetSpeedCommand(1.0))
+      .onFalse(m_BlowerSubsystem.newSetSpeedCommand(0.0));
+
     // m_coDriverController.b().whileTrue(new SetTurretPositionCommandTest(m_turretSubsystem, 0));
     
     m_coDriverController.leftTrigger().whileTrue(new IntakeCommandTest(m_intakeSubsystem,0.0/100.0));
