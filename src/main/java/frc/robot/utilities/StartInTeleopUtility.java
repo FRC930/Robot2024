@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 
 /**
- * Gives the robot an odometry position when it starts in teleop if it doesn' already have a position
+ * Gives the robot an odometry position when it starts in teleop if it doesn't already have a position from April Tags or Autonomous
  */
 public class StartInTeleopUtility {
     private AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -32,7 +32,7 @@ public class StartInTeleopUtility {
     private boolean m_isFirstTime = true;
 
     /**
-     * Resets the robots position.
+     * Gives the robot an odometry position when it starts in teleop if it doesn't already have a position from April Tags or Autonomous
      * @param resetPose
      */
     public StartInTeleopUtility(Consumer<Pose2d> resetPose) {

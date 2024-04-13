@@ -26,17 +26,17 @@ import frc.robot.utilities.LimelightHelpers;
  * 
  * <h3>LimeLightIntakeCommand</h3>
  * 
- * Uses game piece detection and a Trapezoidal Profile to smoothly and accurately intake a cube during autonomous
+ * Uses game piece detection and a Trapezoidal Profile to smoothly and accurately intake a game pieces during autonomous
  * 
  */
 public class LimeLightIntakeCommand extends Command {
     private final double MAX_SPEED = TunerConstants.kSpeedAt12VoltsMps;
-    private final double MAX_STRAFE = 0.3; //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
-    private final double MAX_THROTTLE = 1.0; // NOTE: in prototype 30% speed //TODO tune this value on the robot. Tune PID value first and set this value as a hard stop to prevent outlying data
+    private final double MAX_STRAFE = 0.3; 
+    private final double MAX_THROTTLE = 1.0;
     private final double MOVING_AVERAGE_SECONDS = 0.1;
     private final double HIGH_PASS_SECONDS = 1.0;
     private final double HIGH_PASS_LIMIT = 0.1;
-    private PIDController pid = new PIDController(0.0065, 0.0, 0.0); //(0.01, 0.0, 0.0); //TODO tune this value
+    private PIDController pid = new PIDController(0.0065, 0.0, 0.0);
 
     private SwerveDrivetrainSubsystem m_SwerveDrive;
     private LimeLightDetectionUtility m_LimeLight;
@@ -65,7 +65,7 @@ public class LimeLightIntakeCommand extends Command {
     private final double BUFFER_NOTE_X = -0.2;
 
     private LinearFilter movingAverageFilter;
-    private LinearFilter highPassFilter;
+    // private LinearFilter highPassFilter;
 
     /**
      * <h3>LimeLightIntakeCommand</h3>
@@ -99,22 +99,17 @@ public class LimeLightIntakeCommand extends Command {
     public LimeLightIntakeCommand(SwerveDrivetrainSubsystem swerveDrive, LimeLightDetectionUtility limeLight,Pose2d pose2d) {
         this(swerveDrive, limeLight, pose2d, pose2d, null);
     }
-    
-    // public LimeLightIntakeCommand(SwerveDrivetrainSubsystem drivetrain, LimeLightDetectionUtility m_GamePieceUtility, Pose2d pose2d) {
-    //     this(drivetrain, m_GamePieceUtility, pose2d, (Supplier<Double>) null);
-    // }
 
     @Override
     public void initialize() { 
-        //TODO This assumes you are directly in front or behind (if overshoot will go wrong direction)
         m_direction = -1.0; //Currently camera in back of robot (go backwards) when camera in front use 1.0
         //Default to blue alliance (named commands are reused)
         m_position = m_bluePosition;
 
-        Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
-
         // Force pipeline zero to see if switches to detector (MODE)
         LimelightHelpers.setPipelineIndex(m_LimeLight.m_LimeLightName, 0);
+
+        Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
 
         //if on red alliance, return as negative
         //if on blue alliance, return as positive
@@ -143,26 +138,21 @@ public class LimeLightIntakeCommand extends Command {
 
         m_distance = distanceToTarget();
         
-        // SmartDashboard.putNumber("GamePiece/LimeLightDistance", m_distance);
-        // SmartDashboard.putNumber("GamePiece/Xpos", m_SwerveDrive.getState().Pose.getX());
-        // SmartDashboard.putNumber("GamePiece/Ypos", m_SwerveDrive.getState().Pose.getY());
-        
         //Creates the trapezoid profile using the given information
         m_goal = new TrapezoidProfile.State(m_distance, 0.0); //sets the desired state to be the total distance away
-        //TODO fix deprecated and how to get current velocity
         m_setpoint = new TrapezoidProfile.State(0.0, 2.0); //sets the current state at (0,0)
         profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint); //combines everything into the trapezoid profile
         
         // highPassFilter = LinearFilter.highPass(HIGH_PASS_SECONDS, 0.02);
-
     }
 
     @Override
     public void execute() {
         // Crosshair isn't in the exact center, but instead to where the note will enter the robot
-        double tx = m_LimeLight.get_tx(); // degrees left and right from crosshair // TODO handle shakey imaging!!! may not have value tx 
+        double tx = m_LimeLight.get_tx(); // degrees left and right from crosshair
         double ty = m_LimeLight.get_ty(); // degrees up and down from crosshair
         double linearTX = movingAverageFilter.calculate(tx <= -100.0 && ty <= -100.0? 0.0 : (ty/slope) - tx + 2.0); //-100.0 is just a temporary value that cannot be reached
+        
         /** 
          * Since our camera isn't centered on the robot, when a note moves forward/backwards it will subsequently move left/right
          * linearTX will automatically see how far forwards/backwards the note is and determine how many degrees off is the actual center using a linear slope
@@ -170,7 +160,8 @@ public class LimeLightIntakeCommand extends Command {
         if (tx == 0.0 || ty == 0.0) {
             linearTX = 0.0;
         }
-        //TODO implement to remove jumping from note to note
+
+        // Prevents the robot from unwantingly jumped to a new note
         // if (Math.abs(highPassFilter.calculate(linearTX)) > HIGH_PASS_LIMIT) {
         //     linearTX = 0.0;
         // }
@@ -189,21 +180,14 @@ public class LimeLightIntakeCommand extends Command {
         Logger.recordOutput("GamePiece/TX", tx);
         Logger.recordOutput("GamePiece/TY", ty);
         Logger.recordOutput("GamePiece/adjustedTX", linearTX);
-        // Logger.recordOutput("GamePiece/position", profile.calculate(m_TimeElapsed).position);
         Logger.recordOutput("GamePiece/throttle", m_throttle);
         Logger.recordOutput("GamePiece/strafe", m_strafe);
-        // Logger.recordOutput("GamePiece/distanceLeft", distanceToTarget());
-        // Logger.recordOutput("GamePiece/SteerVelocity", m_SwerveDrive.getModule(0).getSteerMotor().getVelocity().getValueAsDouble());
-        // Logger.recordOutput("GamePiece/DriveVelocity", m_SwerveDrive.getModule(0).getDriveMotor().getVelocity().getValueAsDouble());
-
         m_TimeElapsed += 0.02; //increases the timer  by 20 milliseconds
 
         /* 
          * This command utilitzes the swerve drive while it isn't field relative. 
          * The swerve drive returns back to field relative after the command is used.
-         * This is located in RobotContainer at line 155
         */
-
 
         Supplier<SwerveRequest> requestSupplier = () -> forwardStraight.withVelocityX(m_throttle).withVelocityY(m_strafe);
         m_SwerveDrive.setControl(requestSupplier.get());
@@ -215,13 +199,9 @@ public class LimeLightIntakeCommand extends Command {
             return false;
         }
         if (profile.isFinished(m_TimeElapsed)) {
-            // SmartDashboard.putNumber("GamePiece/ElapsedTime", m_TimeElapsed);
-            // SmartDashboard.putNumber("GamePiece/EndXpos", m_SwerveDrive.getState().Pose.getX());
-            // SmartDashboard.putNumber("GamePiece/EndYpos", m_SwerveDrive.getState().Pose.getY());
             return true;
         } else {
-        // return MathUtil.applyDeadband(distanceToTarget(), 0.025, 1.0) == 0;
-            return false; //ends the command when the timer reaches the end of the trapezoid profile
+            return false;
         }
     }
 

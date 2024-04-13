@@ -714,7 +714,7 @@ public class RobotContainer {
   }
 
   /**
-   * Update all vision
+   * Update the odometry with all four cameras
    */
   public void updateAllVision() {
     if (USE_LIMELIGHT_APRIL_TAG) {  
@@ -722,71 +722,19 @@ public class RobotContainer {
       updatePoseEstimateWithAprilTags("limelight-back",true);
       updatePoseEstimateWithAprilTags("limelight-right", true);
       updatePoseEstimateWithAprilTags("limelight-left", true);
-      // updatePoseWithMegaTag2("limelight-front",true);
-      // updatePoseWithMegaTag2("limelight-back",true);
-      // updatePoseWithMegaTag2("limelight-right", true);
-      // updatePoseWithMegaTag2("limelight-left", true);
     }
-  }
-
-  public void updatePoseWithMegaTag2(String limeLightName, boolean usePose) {
-    boolean doRejectUpdate = false;
-    double fpgaTimestamp = Timer.getFPGATimestamp();
-
-    LimelightHelpers.SetRobotOrientation(limeLightName, RobotOdometryUtility.getInstance().getRobotOdometry().getRotation().getDegrees(), 0,
-        0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limeLightName);
-
-    if (Math.abs(TunerConstants.DriveTrain.getPigeon2().getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-    {
-      doRejectUpdate = true;
-    }
-
-    // distance from current pose to vision estimated pose
-    Translation2d translation = TunerConstants.DriveTrain.getState().Pose.getTranslation();
-    double poseDifference = translation.getDistance(mt2.pose.getTranslation());
-
-    double xyStds;
-    double degStds;
-    if (mt2.tagCount >= 2) {
-      xyStds = 0.1;
-      degStds = 6;
-    }
-    // 1 target with large area and close to estimated pose
-    else if (mt2.tagCount == 1 && mt2.avgTagArea > 0.8 && poseDifference < 0.5) {
-      xyStds = 1.0;
-      degStds = 12;
-    }
-    // conditions don't match to add a vision measurement
-    else {
-      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-      return;
-    }
-
-    if (m_visionUpdatesOdometry && usePose && !doRejectUpdate) {
-      m_StartInTeleopUtility.updateTags();
-
-      drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-      drivetrain.addVisionMeasurement(mt2.pose, fpgaTimestamp - (mt2.timestampSeconds / 1000.0));
-
-      SmartDashboard.putBoolean(limeLightName + "/Updated", true);
-      Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
-      this.visioncounter++;
-    }
-
-    Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", mt2.pose);
   }
 
   // https://github.com/LimelightVision/limelight-examples/blob/main/java-wpilib/swerve-megatag-odometry/src/main/java/frc/robot/Drivetrain.java#L57
   public void updatePoseEstimateWithAprilTags(String limeLightName, boolean usepose) {
     LimelightHelpers.PoseEstimate lastResult = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
     double fpgaTimestamp = Timer.getFPGATimestamp();
-    // double fpgaTimestamp = Logger.getRealTimestamp();
 
-    // distance from current pose to vision estimated pose
+    // Distance from current pose to vision estimated pose
     Translation2d translation = drivetrain.getState().Pose.getTranslation();
     double poseDifference = translation.getDistance(lastResult.pose.getTranslation());
 
+    // Standard deviation
     double xyStds;
     double degStds;
     if (lastResult.tagCount >= 2) {
@@ -798,23 +746,24 @@ public class RobotContainer {
       xyStds = 1.0;
       degStds = 12;
     }
-    // conditions don't match to add a vision measurement
+    // Conditions don't match to add a vision measurement
     else {
       SmartDashboard.putBoolean(limeLightName + "/Updated", false);
       return;
     }
 
     if (m_visionUpdatesOdometry&&usepose) {
-        m_StartInTeleopUtility.updateTags();
+        m_StartInTeleopUtility.updateTags(); // Tells our robot that we have updated our odometry through April Tags at least once
 
         drivetrain.setVisionMeasurementStdDevs(
           VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
 
-        drivetrain.addVisionMeasurement(lastResult.pose,  
+        drivetrain.addVisionMeasurement(lastResult.pose,  // Updates our odometry while acounting for latency
           fpgaTimestamp - (lastResult.latency/1000.0));
         
         SmartDashboard.putBoolean(limeLightName + "/Updated", true);
         Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
+        
         this.visioncounter++;
     }
     
