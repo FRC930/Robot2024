@@ -54,8 +54,7 @@ import frc.robot.utilities.SpeakerScoreUtility.Target;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -112,6 +111,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
     private final boolean USE_LIMELIGHT_APRIL_TAG = true;
     private boolean m_visionUpdatesOdometry = true;
+    private boolean m_turnWithAmp = true;
     
     //The position we want the eleveator to move to.
     private final double ENDGAME_TARGET_POSITION = 0.0;
@@ -468,9 +468,17 @@ public class RobotContainer {
       )
     ;
 
+    m_driverController.b()
+      .onTrue(
+          new InstantCommand(() -> {m_turnWithAmp = !m_turnWithAmp;})
+      );
+
     // Amp Button
     m_driverController.y()
-      .whileTrue(drivetrain.applyRequest(RobotContainer.drivePointingAtAmp(m_driverController::getLeftX, m_driverController::getLeftY)));
+      .whileTrue(
+          drivetrain.applyRequest(RobotContainer.drivePointingAtAmp(m_driverController::getLeftX, m_driverController::getLeftY))
+            .onlyIf(() -> m_turnWithAmp)
+      );
     m_driverController.y()
       .onTrue(CommandFactoryUtility.createAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem))
       .onFalse(CommandFactoryUtility.createStopAmpCommand(m_indexerSubsystem, m_turretSubsystem, m_pivotSubsystem, m_intakeSubsystem))

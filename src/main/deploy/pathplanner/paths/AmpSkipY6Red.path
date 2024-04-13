@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.305389050150424,
-        "y": 3.6186484926464857
+        "x": 8.27025654051308,
+        "y": 3.677202675375393
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.942353117231199,
-        "y": 4.789732147224637
+        "x": 7.907220607593855,
+        "y": 4.8482863299535435
       },
       "isLocked": false,
       "linkedName": null
@@ -39,7 +39,7 @@
   "eventMarkers": [
     {
       "name": "prepareShootAmp",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "parallel",
         "data": {
