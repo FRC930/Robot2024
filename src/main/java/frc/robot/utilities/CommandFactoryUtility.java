@@ -323,8 +323,8 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createTestBlowerCommand(BlowerSubsystem blower){
-        return blower.getNewSetSpeedCommand(1.0)
+        return blower.newSetSpeedCommand(1.0)
         .andThen(new WaitCommand(5.0))
-        .andThen(blower.getNewSetSpeedCommand(0.0));
+        .andThen(blower.newSetSpeedCommand(0.0));
     }
 }

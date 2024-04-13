@@ -11,9 +11,10 @@ import frc.robot.utilities.SparkMaxWrapper;
 
 public class BlowerSubsystem extends SubsystemBase {
 
-    private SparkMaxWrapper m_SparkMaxWrapper = new SparkMaxWrapper(19, MotorType.kBrushed);
+    private SparkMaxWrapper m_SparkMaxWrapper;
 
-    public BlowerSubsystem(){
+    public BlowerSubsystem(int id){
+        m_SparkMaxWrapper = new SparkMaxWrapper(id, MotorType.kBrushed);
         m_SparkMaxWrapper.resetToFactoryDefaults();
         m_SparkMaxWrapper.setSmartCurrentLimit(12);
         m_SparkMaxWrapper.setShouldBrake(false);
@@ -28,7 +29,7 @@ public class BlowerSubsystem extends SubsystemBase {
         Logger.recordOutput(this.getClass().getSimpleName() + "/speed", m_SparkMaxWrapper.get());
     }
 
-    public Command getNewSetSpeedCommand(double speed) {
+    public Command newSetSpeedCommand(double speed) {
         return new InstantCommand(()->{
             setSpeed(speed);
         });
