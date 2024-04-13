@@ -228,15 +228,6 @@ public class AutoCommandManager {
 
         // The same as prepareShoot except we keep turning the pivot.
         NamedCommands.registerCommand("prepareShootEndless", CommandFactoryUtility.createPrepareShootEndlessCommand(turret, pivot, shooter, null));
-
-        // Shoots from the shooting position used in AmpY
-        // Used in AmpY3 & AmpY5
-        NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
-                new Pose2d(11.2, 7.89, new Rotation2d(0.0)), 
-                // y: 6.89 original value
-                // moved since it was too far to the left 
-                new Pose2d(5.38, 5.89, new Rotation2d(0.0)),
-                false ));
         
         // Shoots assuming the shooter is already spun up and prepared to shoot. Does not stop the shooter.
         NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer, intake));
@@ -245,22 +236,34 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake));
         
         // Prepares to shoot from the shooting position in NonAmpY
-        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
-                // y: 2.0 original value
-                // moved since it was too far to right  
-                new Pose2d(12.1, 1.00, new Rotation2d(0.0)),
-                // y: 2.0 original value
-                // moved since it was too far to right  
-                new Pose2d(3.98, 0.0, new Rotation2d(0.0)),
-                false ));
+        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
+            SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                true, 
+                new Pose2d(convertBlueXToRedX(3.98), 2.0, new Rotation2d(0.0)),
+                new Pose2d(3.98, 2.0, new Rotation2d(0.0))))
+                - 0.0,    //degrees fudge factor
+            new Pose2d(convertBlueXToRedX(3.98), 2.0, new Rotation2d(0.0)),
+            new Pose2d(3.98, 2.0, new Rotation2d(0.0)),
+            true));
 
+        // Shoots from the shooting position used in AmpY
+        // Used in AmpY3 & AmpY5
+        NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
+        SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+            true, 
+            new Pose2d(convertBlueXToRedX(5.38), 6.89, new Rotation2d(0.0)),
+            new Pose2d(5.38, 6.89, new Rotation2d(0.0))))
+            - 0.0,    //degrees fudge factor
+        new Pose2d(convertBlueXToRedX(5.38), 6.89, new Rotation2d(0.0)),
+        new Pose2d(5.38, 6.89, new Rotation2d(0.0)),
+        true));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 2.0,    //degrees fudge factor
+                        + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0)),
                 true));
@@ -270,7 +273,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 2.0,    //degrees fudge factor
+                        + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0)),
                 true));
@@ -280,7 +283,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 2.0,    //degrees fudge factor
+                        + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0)),
                 true));
@@ -290,8 +293,8 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.35), 3.0, new Rotation2d(0.0)),
                         new Pose2d(3.35, 3.0, new Rotation2d(0.0))))
-                        - 0.5,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(3.35 + 1.0), 3.0 - 1.5, new Rotation2d(0.0)),
+                        + 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(3.35), 3.0, new Rotation2d(0.0)),
                 new Pose2d(3.35, 3.0, new Rotation2d(0.0)),
                 true));
 
@@ -300,8 +303,8 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.35), 3.0, new Rotation2d(0.0)),
                         new Pose2d(3.35, 3.0, new Rotation2d(0.0))))
-                        - 2.0,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(3.35 + 1.0), 3.0 - 1.5, new Rotation2d(0.0)),
+                        - 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(3.35), 3.0, new Rotation2d(0.0)),
                 new Pose2d(3.35, 3.0, new Rotation2d(0.0)),
                 true));
 
