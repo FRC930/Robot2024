@@ -48,20 +48,10 @@ public class TurretAimCommand extends Command{
     private boolean ampSide;
     private Pose2d m_ProxyPoseRed;
     private Pose2d m_ProxyPoseBlue;
-    private boolean m_usesNewModel;
 
     //We default to the new model when using odometry
     public TurretAimCommand(TurretSubsystem turretSubsystem) {
-        this(turretSubsystem, true);
-    }
-    
-    public TurretAimCommand(TurretSubsystem turretSubsystem, boolean usesNewModel) {
-        this(turretSubsystem,null,null, usesNewModel);
-    }
-
-    //Since our auto aims are tuned for it, we default to the old model when passing in a proxy pose
-    public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue) {
-        this(turretSubsystem, proxyPoseRed, proxyPoseBlue, true);
+        this(turretSubsystem, null, null);
     }
 
     /**
@@ -73,7 +63,7 @@ public class TurretAimCommand extends Command{
      * @param proxyPoseBlue
      * @param usesNewModel
      */
-    public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue,boolean usesNewModel) {
+    public TurretAimCommand(TurretSubsystem turretSubsystem,Pose2d proxyPoseRed, Pose2d proxyPoseBlue) {
         if (debugMode_TESTONLY) {
             SmartDashboard.putNumber("PivotOffset", 0.0);
             SmartDashboard.putNumber("TurretOffset", 0.0);
@@ -110,7 +100,6 @@ public class TurretAimCommand extends Command{
             useProxyPose = false;
         }
 
-        m_usesNewModel = usesNewModel;
         m_TurretSubsystem = turretSubsystem;
         addRequirements(m_TurretSubsystem);
 
@@ -148,12 +137,8 @@ public class TurretAimCommand extends Command{
         rx = m_CurrentPose.getX();
         ry = m_CurrentPose.getY();
 
-        if(m_usesNewModel) {
-            m_DesiredHeading = calcTurretAngleExpo(alliance);
-        } else {
-            m_DesiredHeading = calcTurretAngleZoned(alliance);
-        }
-
+        m_DesiredHeading = calcTurretAngleExpo(alliance);
+        
         if(debugMode_TESTONLY) {
             m_DesiredHeading += SmartDashboard.getNumber("TurretOffset", 0.0);
         }
@@ -170,34 +155,6 @@ public class TurretAimCommand extends Command{
         // actually moves the robots turret to the desired position
         // TODO sussex back in
         m_TurretSubsystem.setPosition(m_DesiredHeading);
-    }
-
-    private double calcTurretAngleZoned(Alliance alliance) {
-        if (ry >= 4.5 /*Below front pillar y (in meters)*/) {
-            ampSide = true;
-        } else {
-            ampSide = false;
-        }
-        Logger.recordOutput("AutoAim/ampSide", ampSide);
-        
-        if (alliance == Alliance.Red) {
-            m_TargetPose = (ampSide)?m_AmpSideRedTargetPose:m_NonAmpSideRedTargetPose;
-            if (SpeakerScoreUtility.inchesToSpeaker() > Units.metersToInches(8.0)) {
-                m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() - Units.inchesToMeters(70.0), m_TargetPose.getRotation());
-            }
-        } else {
-            m_TargetPose = (ampSide)?m_AmpSideBlueTargetPose:m_NonAmpSideBlueTargetPose;
-            if (SpeakerScoreUtility.inchesToSpeaker() > Units.metersToInches(8.0)) {
-                m_TargetPose = new Pose2d(m_TargetPose.getX(), m_TargetPose.getY() + 4.25, m_TargetPose.getRotation());
-            }
-        }
-
-        tx = m_TargetPose.getX();
-        ty = m_TargetPose.getY();
-        
-        // calculates how far we need to rotate the turret to get to the desired position based on:
-        // robots turret heading - the robots base heading
-        return -Math.IEEEremainder(Math.toDegrees(Math.atan2(ty - ry, tx - rx)) - m_CurrentRobotHeading, 360);
     }
 
     private double calcTurretAngleExpo(Alliance alliance) {
