@@ -819,6 +819,8 @@ public class RobotContainer {
     }
     
     Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.pose);
+    Logger.recordOutput("LimeLightOdometry/TA", lastResult.avgTagArea);
+    Logger.recordOutput("LimeLightOdometry/PoseDifference", poseDifference);
   }
   
   public void simulationPeriodic() {

@@ -7,7 +7,10 @@ import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -141,6 +144,7 @@ public class TurretAimCommand extends Command{
         
         if(debugMode_TESTONLY) {
             m_DesiredHeading += SmartDashboard.getNumber("TurretOffset", 0.0);
+            Logger.recordOutput("AutoAim/display/targetHeadingDisplay", new Pose2d(rx,ry,new Rotation2d(Units.degreesToRadians( m_CurrentRobotHeading - m_DesiredHeading))).transformBy(new Transform2d(new Translation2d(10,0),new Rotation2d())));
         }
 
         Logger.recordOutput("AutoAim/tx", tx);
@@ -162,6 +166,10 @@ public class TurretAimCommand extends Command{
         double tyi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getY();
         double firstPart = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360);
         Logger.recordOutput("AutoAim/IdealHeading", firstPart);
+        if(debugMode_TESTONLY) {
+            Logger.recordOutput("AutoAim/display/targetDisplay", alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d());
+            Logger.recordOutput("AutoAim/display/idealHeadingDisplay", new Pose2d(rx,ry,new Rotation2d(Units.degreesToRadians( m_CurrentRobotHeading - firstPart))).transformBy(new Transform2d(new Translation2d(10,0),new Rotation2d())));
+        }
         return firstPart + AimingMathUtil.getTurretOffsetForDistance(SpeakerScoreUtility.inchesToSpeaker());
     }
     
