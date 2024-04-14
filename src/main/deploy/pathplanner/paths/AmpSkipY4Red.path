@@ -38,33 +38,22 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "prepareShootAmp",
+      "name": "stopIntake",
       "waypointRelativePos": 0.1,
       "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "prepareAmpSkipYShoot4"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "stopIntake",
-      "waypointRelativePos": 0.05,
-      "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
                 "name": "stopIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "prepareAmpSkipYShoot4"
               }
             }
           ]

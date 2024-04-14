@@ -183,8 +183,8 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createShootPreaimedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, IndexerSubsystem indexer, TurretSubsystem turret, IntakeSubsystem intake) {
-        return (pivot.newWaitUntilSetpointCommand(0.55)
-            .alongWith(shooter.newWaitUntilSetpointCommand(0.55))
+        return (pivot.newWaitUntilSetpointCommand(0.7)
+            .alongWith(shooter.newWaitUntilSetpointCommand(0.7))
             .alongWith(turret.newWaitUntilSetpointCommand(0.7)))
         .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
         .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
