@@ -8,25 +8,18 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.IOs.TalonPosIO;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.LimeLightIntakeCommand;
-import frc.robot.commands.SetElevatorPositionCommand;
-import frc.robot.commands.SetPivotPositionCommand;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.TrapAlignAndShootCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
-import frc.robot.commands.tests.SetElevatorPositionCommandTest;
-import frc.robot.commands.tests.SetPivotPositionCommandTest;
-import frc.robot.commands.tests.SetTurretPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.sim.MechanismViewer;
-import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.RedirectorsSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.LeafBlower.BlowerSubsystem;
@@ -48,11 +41,8 @@ import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.RobotOdometryUtility;
 import frc.robot.utilities.SpeakerScoreUtility;
 import frc.robot.utilities.StartInTeleopUtility;
-import frc.robot.utilities.LimelightHelpers.Results;
 import frc.robot.utilities.SpeakerScoreUtility.Target;
 
-import java.time.Instant;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.*;
 
@@ -61,11 +51,9 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -79,7 +67,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -88,14 +75,10 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -112,10 +95,6 @@ public class RobotContainer {
     private final boolean USE_LIMELIGHT_APRIL_TAG = true;
     private boolean m_visionUpdatesOdometry = true;
     private boolean m_turnWithAmp = true;
-    
-    //The position we want the eleveator to move to.
-    private final double ENDGAME_TARGET_POSITION = 0.0;
-    private final double ENDGAME_DEFAULT_POSITION = 0.0;
 
     private static final double POV_PERCENT_SPEED = 1.0;
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -461,12 +440,15 @@ public class RobotContainer {
     ;
     
     // Eject shooter button
+    // m_driverController.a()
+    //   .onTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+    //   .onFalse(
+    //     CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem, m_intakeSubsystem)
+    //   )
+    // ;
+
     m_driverController.a()
-      .onTrue(CommandFactoryUtility.createEjectCommand(m_turretSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-      .onFalse(
-        CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem, m_intakeSubsystem)
-      )
-    ;
+      .onTrue(new TrapAlignAndShootCommand(drivetrain));
 
     m_driverController.b()
       .onTrue(
