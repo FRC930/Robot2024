@@ -124,10 +124,10 @@ public class TrapAlignAndShootCommand extends Command {
     }
 
     @Override
-		public void end(boolean interrupted) {
-			if (interrupted && this.alignCommand != null) {
-				this.alignCommand.end(true);
-			}
-			this.alignCommand = null;
-		}
+    public void end(boolean interrupted) {
+        if (interrupted && this.alignCommand != null) {
+            this.alignCommand.end(true);
+        }
+        this.alignCommand = null;
+    }
 }
