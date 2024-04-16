@@ -1,6 +1,7 @@
 package frc.robot.utilities;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -39,13 +40,24 @@ public class ShotLoggingUtil {
         this.output = output;
     }
 
+    //Get the value of a certain path on the networktable
+    private static Object getTableVal(String path) {
+        return table.getEntry(path).getValue().getValue();
+    }
+
+    //Gets whether or not a certain path exists
+    private static boolean getTableValExists(String path) {
+        return table.getEntry(path).exists();
+    }
+
+    //Gets the shot values that this util has been created with
     public static String[] getShotVals(String[] logPaths) {
         String[] logVals = new String[logPaths.length];
 
         for(int i = 0; i< logPaths.length; i++){
             String key = logPaths[i];
-            if(table.getEntry(key).exists()) {
-                logVals[i] = table.getEntry(key).getValue().getValue().toString();
+            if(getTableValExists(key)) {
+                logVals[i] = getTableVal(key).toString();
             } else {
                 logVals[i] = "INVALID";
             }
@@ -59,7 +71,7 @@ public class ShotLoggingUtil {
      * Also adds a comment onto the end.
      */
     public void logShot(String comment) {
-        String[] pastOutput = SmartDashboard.getStringArray("/AdvantageKit/RealOutputs/" + this.output, new String[0]);
+        String[] pastOutput = (String[])Optional.ofNullable(getTableVal("/AdvantageKit/RealOutputs/" + this.output)).orElse(new String[0]);
         String[] newOutput = new String[pastOutput.length + 1];
 
         for(int i = 0; i < pastOutput.length; i++) {
@@ -95,13 +107,14 @@ public class ShotLoggingUtil {
         return out;
     }
 
+    //Compiles 
     public static String compileCSVFormattedStrings(String[] strings) {
         String out = "";
         for(int i = 0; i < strings.length; i++) {
             if(i < strings.length - 1) {
-                out += strings[i] + "\n";
+                out += strings[i] + ";";
             } else {
-                out += strings[i];
+                out += strings[i] + "";
             }
         }
         return out;
@@ -135,7 +148,7 @@ public class ShotLoggingUtil {
 
     public Command getDumpOutputCommand(String path) {
         return new InstantCommand(()->{
-            Logger.recordOutput(path, compileCSVFormattedStrings(SmartDashboard.getStringArray("AdvantageKit/RealOutputs/" + this.output, new String[] {"thing broke :("})));
+            Logger.recordOutput(path, compileCSVFormattedStrings((String[])Optional.ofNullable(getTableVal("/AdvantageKit/RealOutputs/" + this.output)).orElse(new String[0])));
         });
     }
 }

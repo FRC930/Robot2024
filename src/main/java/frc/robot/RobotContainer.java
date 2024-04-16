@@ -555,7 +555,7 @@ public class RobotContainer {
     SmartDashboard.putData("logging/forceTurretLog",ShotLoggingUtil.getTurretInstance().getDoLogCommand("Forced"));
     
     SmartDashboard.putData("logging/outputPivotLogs",ShotLoggingUtil.getPivotInstance().getDumpOutputCommand("logging/pivotOut"));
-    SmartDashboard.putData("logging/outputTurretLogs",ShotLoggingUtil.getPivotInstance().getDumpOutputCommand("logging/turretOut"));
+    SmartDashboard.putData("logging/outputTurretLogs",ShotLoggingUtil.getTurretInstance().getDumpOutputCommand("logging/turretOut"));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);

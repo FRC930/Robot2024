@@ -49,6 +49,7 @@ public class TurretAimCommand extends Command{
     private double rx; //robot x
     private double ry; //robot y
     private boolean ampSide;
+    private double idealHeading;
     private Pose2d m_ProxyPoseRed;
     private Pose2d m_ProxyPoseBlue;
 
@@ -155,7 +156,7 @@ public class TurretAimCommand extends Command{
         //Logs the desired heading
         // SmartDashboard.putNumber("AutoAim/Math", Math.toDegrees(Math.atan2(ty - ry, tx - rx)));
         Logger.recordOutput("AutoAim/DesiredHeading", m_DesiredHeading);
-
+        Logger.recordOutput("AutoAim/HeadingOffset", m_DesiredHeading - idealHeading);
         // actually moves the robots turret to the desired position
         // TODO sussex back in
         m_TurretSubsystem.setPosition(m_DesiredHeading);
@@ -165,6 +166,7 @@ public class TurretAimCommand extends Command{
         double txi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getX();
         double tyi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getY();
         double firstPart = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360);
+        idealHeading = firstPart;
         Logger.recordOutput("AutoAim/IdealHeading", firstPart);
         if(debugMode_TESTONLY) {
             Logger.recordOutput("AutoAim/display/targetDisplay", alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d());
