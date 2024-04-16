@@ -46,6 +46,7 @@ import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.RobotOdometryUtility;
+import frc.robot.utilities.ShotLoggingUtil;
 import frc.robot.utilities.SpeakerScoreUtility;
 import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
@@ -550,6 +551,11 @@ public class RobotContainer {
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem, m_intakeSubsystem));
     
+    SmartDashboard.putData("logging/forcePivotLog",ShotLoggingUtil.getPivotInstance().getDoLogCommand("Forced"));
+    SmartDashboard.putData("logging/forceTurretLog",ShotLoggingUtil.getTurretInstance().getDoLogCommand("Forced"));
+    
+    SmartDashboard.putData("logging/outputPivotLogs",ShotLoggingUtil.getPivotInstance().getDumpOutputCommand("logging/pivotOut"));
+    SmartDashboard.putData("logging/outputTurretLogs",ShotLoggingUtil.getPivotInstance().getDumpOutputCommand("logging/turretOut"));
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);

@@ -189,6 +189,7 @@ public final class CommandFactoryUtility {
         .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
         .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+        .andThen(createLogShotCommand("Shoot Preaimed"))
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
@@ -196,6 +197,7 @@ public final class CommandFactoryUtility {
         return indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED)
         .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+        .andThen(createLogShotCommand("Shoot Prepared"))
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
         
@@ -326,5 +328,10 @@ public final class CommandFactoryUtility {
         return blower.newSetSpeedCommand(1.0)
         .andThen(new WaitCommand(5.0))
         .andThen(blower.newSetSpeedCommand(0.0));
+    }
+
+    public static Command createLogShotCommand(String comment) {
+        return ShotLoggingUtil.getPivotInstance().getDoLogCommand(comment)
+        .andThen(ShotLoggingUtil.getTurretInstance().getDoLogCommand(comment));
     }
 }
