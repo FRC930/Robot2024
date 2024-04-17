@@ -279,7 +279,7 @@ public class AutoCommandManager {
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
                         + 0.0,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(5.39), 7.3, new Rotation2d(0.0)),
+                new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
@@ -288,7 +288,7 @@ public class AutoCommandManager {
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
                         + 0.0,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(5.39), 7.32, new Rotation2d(0.0)),
+                new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot5", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
@@ -297,7 +297,7 @@ public class AutoCommandManager {
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
                         + 0.0,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(5.39), 7.32, new Rotation2d(0.0)),
+                new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
@@ -320,7 +320,7 @@ public class AutoCommandManager {
 
 
         NamedCommands.registerCommand("nonAmpSideShootNoStop", 
-            CommandFactoryUtility.createPreparePosedShootCommand(turret, pivot, shooter, 45.0,
+            CommandFactoryUtility.createPreparePosedShootCommand(turret, pivot, shooter, 42.0,
                     new Pose2d(convertBlueXToRedX(1.43), 3.12, new Rotation2d(0.0)),
                     new Pose2d(1.43, 4.12, new Rotation2d(0.0)) )
                 .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake)));

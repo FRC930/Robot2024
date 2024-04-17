@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.305389050150424,
-        "y": 5.433828157242619
+        "x": 8.27025654051308,
+        "y": 5.785153253616065
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.7315580594071305,
-        "y": 5.738309907432939
+        "x": 7.696425549769786,
+        "y": 6.089635003806385
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 6.82
       },
       "prevControl": {
-        "x": 6.747847789561484,
-        "y": 6.148189186535292
+        "x": 6.829823645381955,
+        "y": 6.2887192250846695
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "stopIntakeSensor"
+                "name": "stopIntake"
               }
             },
             {
