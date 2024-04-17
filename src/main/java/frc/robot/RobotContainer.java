@@ -556,6 +556,10 @@ public class RobotContainer {
     
     SmartDashboard.putData("logging/outputPivotLogs",ShotLoggingUtil.getPivotInstance().getDumpOutputCommand("logging/pivotOut"));
     SmartDashboard.putData("logging/outputTurretLogs",ShotLoggingUtil.getTurretInstance().getDumpOutputCommand("logging/turretOut"));
+
+    SmartDashboard.putData("logging/logLastShotHit",ShotLoggingUtil.getAddShotCommand(true));
+    SmartDashboard.putData("logging/logLastShotMissed",ShotLoggingUtil.getAddShotCommand(false));
+    SmartDashboard.putData("logging/deleteLastShotHit",ShotLoggingUtil.getRemoveShotCommand());
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);

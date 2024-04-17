@@ -24,6 +24,7 @@ public class ShotLoggingUtil {
         "/AdvantageKit/RealOutputs/PivotSubsystem/Angle",
         "/AdvantageKit/RealOutputs/PivotSubsystem/SetPoint"
     };
+    private static String lastShotResult = "Unknown";
     private static final String outputTurret = "logging/shotLogs/turret";
     private static final String outputPivot = "logging/shotLogs/pivot";
     private static ShotLoggingUtil pivotInstance;
@@ -120,6 +121,31 @@ public class ShotLoggingUtil {
         return out;
     }
 
+    private static void addShotResult(String result) {
+        String[] pastOutput = (String[])Optional.ofNullable(getTableVal("/AdvantageKit/RealOutputs/" + "logging/shotsHit")).orElse(new String[0]);
+        String[] newOutput = Arrays.copyOf(pastOutput, pastOutput.length + 1);
+        newOutput[newOutput.length - 1] = lastShotResult;
+        Logger.recordOutput("logging/shotsHit",newOutput);
+    }
+
+    public static void resolveLastShot(boolean didShotHit) {
+        lastShotResult = didShotHit ? "Hit" : "Missed";
+        addShotResult(lastShotResult);
+    }
+
+    public static void deleteLastShotLog() {
+        String[] pastOutput = (String[])Optional.ofNullable(getTableVal("/AdvantageKit/RealOutputs/" + "logging/shotsHit")).orElse(new String[0]);
+        String[] newOutput = Arrays.copyOf(pastOutput, pastOutput.length - 1);
+        Logger.recordOutput("logging/shotsHit",newOutput);
+    }
+
+    public static void advanceToNextShot() {
+        if(lastShotResult.equals("Unknown")) {
+            addShotResult("Unknown");
+        }
+        lastShotResult = "Unknown";
+    }
+
     public static ShotLoggingUtil getPivotInstance() {
         if(pivotInstance == null) {
             pivotInstance = new ShotLoggingUtil(logPathsPivot,outputPivot);
@@ -149,6 +175,24 @@ public class ShotLoggingUtil {
     public Command getDumpOutputCommand(String path) {
         return new InstantCommand(()->{
             Logger.recordOutput(path, compileCSVFormattedStrings((String[])Optional.ofNullable(getTableVal("/AdvantageKit/RealOutputs/" + this.output)).orElse(new String[0])));
+        });
+    }
+
+    public static Command getAdvanceShotCommand() {
+        return new InstantCommand(()->{
+            advanceToNextShot();
+        });
+    }
+
+    public static Command getAddShotCommand(boolean hit) {
+        return new InstantCommand(()->{
+            resolveLastShot(hit);
+        });
+    }
+
+    public static Command getRemoveShotCommand() {
+        return new InstantCommand(()->{
+            deleteLastShotLog();
         });
     }
 }

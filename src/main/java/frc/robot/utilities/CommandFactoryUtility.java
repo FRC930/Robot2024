@@ -331,7 +331,8 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createLogShotCommand(String comment) {
-        return ShotLoggingUtil.getPivotInstance().getDoLogCommand(comment)
+        return ShotLoggingUtil.getAdvanceShotCommand()
+        .andThen(ShotLoggingUtil.getPivotInstance().getDoLogCommand(comment))
         .andThen(ShotLoggingUtil.getTurretInstance().getDoLogCommand(comment));
     }
 }
