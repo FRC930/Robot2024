@@ -71,7 +71,9 @@ public class AutoCommandManager {
         PathPlannerAuto ampTwoAuto = new PathPlannerAuto("AmpTwoAuto");
         PathPlannerAuto ampTwoAuto2 = new PathPlannerAuto("AmpTwoAuto");
         PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
+        PathPlannerAuto midTwoAuto2 = new PathPlannerAuto("MidTwoAuto");
         PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
+        PathPlannerAuto nonAmpTwoAuto2 = new PathPlannerAuto("NonAmpTwoAuto");
 
         PathPlannerAuto ampWaitAuto = new PathPlannerAuto("AmpWaitAuto");
         PathPlannerAuto midWaitAuto = new PathPlannerAuto("MidWaitAuto");
@@ -80,12 +82,15 @@ public class AutoCommandManager {
         // PathPlannerAuto nonAmpStage = new PathPlannerAuto("NonAmpStage");
         PathPlannerAuto nonAmpSkipYRed = new PathPlannerAuto("NonAmpSkipYRed");
         PathPlannerAuto ampSkipYRed = new PathPlannerAuto("AmpSkipYRed");
+        PathPlannerAuto ampAnchorRed = new PathPlannerAuto("ampAnchorRed");
 
 
         m_chooser.setDefaultOption("None", null);
 
-        m_chooser.addOption("MidWait", new WaitCommand(8.0).andThen(midTwoAuto));
-        m_chooser.addOption("NonAmpWait", new WaitCommand(8.0).andThen(nonAmpTwoAuto));
+        
+        m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto2));
+        m_chooser.addOption("MidWait", new WaitCommand(8.0).andThen(midTwoAuto2));
+        m_chooser.addOption("NonAmpWait", new WaitCommand(8.0).andThen(nonAmpTwoAuto2));
         m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
         m_chooser.addOption("RED_AmpY", ampYAutoRed);
         m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
@@ -95,13 +100,13 @@ public class AutoCommandManager {
         m_chooser.addOption("MidUAuto", midUAuto);
         m_chooser.addOption("LTwo", ampLTwoAuto);
         m_chooser.addOption("LThree", ampLThreeAuto);
-        m_chooser.addOption("AmpTwo", ampTwoAuto2);
-        m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto));
+        m_chooser.addOption("AmpTwo", ampTwoAuto);
         m_chooser.addOption("MidTwo", midTwoAuto);
         m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
         // m_chooser.addOption("NonAmpStage", nonAmpStage);
-        m_chooser.addOption("NonAmpSkipYRed", nonAmpSkipYRed);
-        m_chooser.addOption("AmpSkipYRed", ampSkipYRed);
+        m_chooser.addOption("RED_NonAmpSkipY", nonAmpSkipYRed);
+        m_chooser.addOption("RED_AmpSkipY", ampSkipYRed);
+        m_chooser.addOption("RED_AmpAnchor", ampAnchorRed);
 
 
         SmartDashboard.putData("SelectAuto", m_chooser);
@@ -163,6 +168,18 @@ public class AutoCommandManager {
             .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
         NamedCommands.registerCommand("MidLineLevel5.1", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(8.29, 7.44, new Rotation2d(0.0))));
+        NamedCommands.registerCommand("WingLevel3Extended",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(4.01, 7.39, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+        NamedCommands.registerCommand("WingLevel1",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(2.73, 4.08, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+        NamedCommands.registerCommand("WingLevel2",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(2.91, 5.55, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+        NamedCommands.registerCommand("WingLevel3",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(2.91, 7.01, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
 
         // Waits until there is a note in the indexer or for 1 second. (So we don't move beyond the midline)
         NamedCommands.registerCommand("waitUntilNote", indexer.newUntilNoteFoundCommand().raceWith(new WaitCommand(1.0)));
@@ -325,6 +342,12 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("resetShotSpeedOverride",  new InstantCommand(()->SpeakerScoreUtility.resetShotSpeedOffset()));
 
         NamedCommands.registerCommand("stopDrivetrain", drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric().withVelocityX(0).withVelocityY(0).withDriveRequestType(DriveRequestType.OpenLoopVoltage)));
+        
+        NamedCommands.registerCommand("frontalEject", 
+            shooter.newSetSpeedsCommand(50.0, 50.0)
+                .alongWith(indexer.newSetSpeedCommand(0.7))
+                .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+                .andThen(new WaitCommand(0.5))); // This is to validate that note is out);
     }
 
     private static double convertBlueXToRedX(double x) {

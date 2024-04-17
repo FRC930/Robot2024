@@ -4,11 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "AmpL",
+    "AmpSkipY",
     "AmpY",
     "BotSpeaker",
     "MidSpeaker",
     "MidU",
-    "AmpSkipY",
     "NonAmpJ",
     "NonAmpSkipY",
     "NonAmpStage",
@@ -16,7 +16,8 @@
     "Robot2024",
     "TopSpeaker",
     "Two",
-    "Wait"
+    "Wait",
+    "AmpAnchor"
   ],
   "autoFolders": [
     "Robot2024"
