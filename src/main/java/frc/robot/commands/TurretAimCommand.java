@@ -142,7 +142,7 @@ public class TurretAimCommand extends Command{
         rx = m_CurrentPose.getX();
         ry = m_CurrentPose.getY();
 
-        m_DesiredHeading = calcTurretAngleExpo(alliance) + TURRET_OFFSET_FUDGE;
+        m_DesiredHeading = calcTurretAngleExpo(alliance) + (alliance == Alliance.Red ? 0.0 : TURRET_OFFSET_FUDGE);
         
         if(debugMode_TESTONLY) {
             m_DesiredHeading += SmartDashboard.getNumber("TurretOffset", 0.0);
