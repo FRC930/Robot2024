@@ -223,8 +223,8 @@ public class SpeakerScoreUtility {
     */
     public static double computePivotAnglePolyModel(double distance) {
         double exponent = 0.982502;
-        double h = 230.316;
-        double k = 23.5; //25.9504;
+        double h = 230.316 + AimingMathUtil.DIST_FUDGE + SmartDashboard.getNumber("offsets/distanceOffset",  0.0);
+        double k = 23.5 + 0.25; //25.9504 - old value before champs;
 
         return Math.pow(exponent , (distance - h)) + k;
     }

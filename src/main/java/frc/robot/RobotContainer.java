@@ -416,7 +416,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureDriverBindings() {
-
+    SmartDashboard.putNumber("offsets/distanceOffset", 0.0);
     //temporary trap command, not mapped to button and may want to rework
     Command trapCommand = m_pivotSubsystem.newSetPosCommand(60.0)
       .andThen(m_BlowerSubsystem.newSetSpeedCommand(1.0))

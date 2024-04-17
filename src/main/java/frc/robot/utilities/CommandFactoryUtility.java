@@ -65,7 +65,7 @@ public final class CommandFactoryUtility {
 
     public static final double INTAKE_SPEED = 0.90;                 /*Value*/
     public static final double INTAKE_SHOOTING_SPEED = 0.90;        /*Value*/
-    public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
+    public static final double INTAKE_REJECT_SPEED = 0.0;//-0.15;         /*Value*/
     private static final double INTAKE_EJECT_SPEED = -0.4;          /*value*/
 
     public static final double ELEVATOR_CLIMB_POS = 8.0;
