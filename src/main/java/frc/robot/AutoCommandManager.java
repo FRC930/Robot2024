@@ -82,7 +82,7 @@ public class AutoCommandManager {
         // PathPlannerAuto nonAmpStage = new PathPlannerAuto("NonAmpStage");
         PathPlannerAuto nonAmpSkipYRed = new PathPlannerAuto("NonAmpSkipYRed");
         PathPlannerAuto ampSkipYRed = new PathPlannerAuto("AmpSkipYRed");
-        PathPlannerAuto ampAnchorRed = new PathPlannerAuto("ampAnchorRed");
+        PathPlannerAuto ampAnchorRed = new PathPlannerAuto("AmpAnchorRed");
 
 
         m_chooser.setDefaultOption("None", null);
@@ -278,7 +278,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 1.0,    //degrees fudge factor
+                        + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 7.3, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
@@ -296,7 +296,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 0.5,    //degrees fudge factor
+                        + 0.0,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 7.32, new Rotation2d(0.0)),
                 new Pose2d(5.39, 6.82, new Rotation2d(0.0))));
 
