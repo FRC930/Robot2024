@@ -6,6 +6,9 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.Odometry;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 
@@ -30,7 +33,12 @@ public abstract class AimingMathUtil {
      */
     public static double getTurretOffsetForDistance(double distance) {
         //Quick test for if this offsets in the right direction, since small offsets being in the wrong direction could go unnoticed until late.
-        //return 25;
+        //return 25; 
+        if(distance > 300){ // Blue feed shot
+            if(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue){
+                return 45.0;
+            }
+        }
 
         // This models the note's path as a parabolic trajectory, and gets the angle from the turret to a point on that trajectory. It then returns the negative of that angle.
         return (TRAJ_OFFSET_LINEAR_FACTOR * (distance - DIST_FUDGE - SmartDashboard.getNumber("offsets/distanceOffset", 0.0))) + TRAJ_OFFSET_ZERO;

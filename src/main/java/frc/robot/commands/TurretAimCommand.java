@@ -31,7 +31,7 @@ public class TurretAimCommand extends Command{
     //Has the shooter use custom offsets from SmartDashboard and logs extra info
     public static final boolean debugMode_TESTONLY = true;
     private static final double TURRET_OFFSET_FUDGE_RED = -5.0;
-    private static final double TURRET_OFFSET_FUDGE_BLUE = -10.0;
+    private static final double TURRET_OFFSET_FUDGE_BLUE = -5.0;
 
     private TurretSubsystem m_TurretSubsystem;
     private Pose2d m_AmpSideBlueTargetPose;
