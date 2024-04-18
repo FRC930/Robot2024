@@ -75,15 +75,13 @@ public class AutoCommandManager {
         PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
         PathPlannerAuto nonAmpTwoAuto2 = new PathPlannerAuto("NonAmpTwoAuto");
 
-        PathPlannerAuto ampWaitAuto = new PathPlannerAuto("AmpWaitAuto");
-        PathPlannerAuto midWaitAuto = new PathPlannerAuto("MidWaitAuto");
-        PathPlannerAuto nonAmpWaitAuto = new PathPlannerAuto("NonAmpWaitAuto");
-
         // PathPlannerAuto nonAmpStage = new PathPlannerAuto("NonAmpStage");
         PathPlannerAuto nonAmpSkipYRed = new PathPlannerAuto("NonAmpSkipYRed");
         PathPlannerAuto nonAmpSkipYBlue = new PathPlannerAuto("NonAmpSkipYBlue");
 
         PathPlannerAuto ampSkipYRed = new PathPlannerAuto("AmpSkipYRed");
+        PathPlannerAuto ampSkipYBlue = new PathPlannerAuto("AmpSkipYBlue");
+
         PathPlannerAuto ampAnchorRed = new PathPlannerAuto("AmpAnchorRed");
 
 
@@ -95,13 +93,13 @@ public class AutoCommandManager {
         m_chooser.addOption("NonAmpWait", new WaitCommand(8.0).andThen(nonAmpTwoAuto2));
         m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
         m_chooser.addOption("RED_AmpY", ampYAutoRed);
-        m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
-        m_chooser.addOption("RED_NonAmpJ", nonAmpJAutoRed);
+        // m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
+        // m_chooser.addOption("RED_NonAmpJ", nonAmpJAutoRed);
         m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
         m_chooser.addOption("RED_NonAmpY", nonAmpYAutoRed);
-        m_chooser.addOption("MidUAuto", midUAuto);
-        m_chooser.addOption("LTwo", ampLTwoAuto);
-        m_chooser.addOption("LThree", ampLThreeAuto);
+        // m_chooser.addOption("MidUAuto", midUAuto);
+        // m_chooser.addOption("LTwo", ampLTwoAuto);
+        // m_chooser.addOption("LThree", ampLThreeAuto);
         m_chooser.addOption("AmpTwo", ampTwoAuto);
         m_chooser.addOption("MidTwo", midTwoAuto);
         m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
@@ -109,6 +107,7 @@ public class AutoCommandManager {
         m_chooser.addOption("RED_NonAmpSkipY", nonAmpSkipYRed);
         m_chooser.addOption("BLUE_NonAmpSkipY", nonAmpSkipYBlue);
         m_chooser.addOption("RED_AmpSkipY", ampSkipYRed);
+        m_chooser.addOption("BLUE_AmpSkipY", ampSkipYBlue);
         m_chooser.addOption("RED_AmpAnchor", ampAnchorRed);
 
 

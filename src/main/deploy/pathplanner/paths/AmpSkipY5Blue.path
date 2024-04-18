@@ -3,47 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.38,
-        "y": 6.887126081944472
+        "x": 5.38939075025083,
+        "y": 6.8157068696448375
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.209149308455535,
-        "y": 6.265297551993107
+        "x": 6.466787712462727,
+        "y": 6.148189186535292
       },
       "isLocked": false,
-      "linkedName": "AmpY3_R"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.555895511220408,
-        "y": 5.269876445601678
+        "x": 7.75,
+        "y": 4.801442983770418
       },
       "prevControl": {
-        "x": 7.005486193568677,
-        "y": 5.656334051612468
+        "x": 7.1176148265278,
+        "y": 5.562647359246215
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 130.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "stopShootThenIntake",
-      "waypointRelativePos": 0,
+      "name": "Intake",
+      "waypointRelativePos": 0.45,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "hardStopShoot"
-              }
-            },
             {
               "type": "named",
               "data": {
@@ -53,21 +53,38 @@
           ]
         }
       }
+    },
+    {
+      "name": "stopShoot",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "hardStopShoot"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 6.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 150.0,
-    "rotateFast": true
+    "rotation": 130.0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpY",
+  "folder": "AmpSkipY",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0
