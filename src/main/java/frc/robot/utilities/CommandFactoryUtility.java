@@ -102,6 +102,15 @@ public final class CommandFactoryUtility {
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS));
     }
 
+    public static Command createHardStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  TurretSubsystem turret, IntakeSubsystem intake) {
+        return shooter.newSetSpeedsWithSlotCommand(-1.0, -1.0, 1)
+            .alongWith(indexer.newSetSpeedCommand(0.0))
+            .alongWith(intake.newSetSpeedCommand(INTAKE_REJECT_SPEED))
+            .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
+            .alongWith(turret.newSetPosCommand(TURRET_STOW_POS))
+            .andThen(new WaitCommand(0.5).andThen(shooter.newSetSpeedsCommand(0.0, 0.0)));
+    }
+
     /**
      * This doesn't stow pivot, use createStopShootingCommand(ShooterSubsystem, IndexerSubsystem, PivotSubsystem, TurretSubsystem) if pivot should stow
      */

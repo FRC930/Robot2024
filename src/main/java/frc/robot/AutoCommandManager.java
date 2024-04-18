@@ -251,6 +251,9 @@ public class AutoCommandManager {
 
         // Stops the shooter and stows the indexer and pivot
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake));
+
+        // Sets shooter to 0 instead of coasting (Needed to stop quickly for autos)
+        NamedCommands.registerCommand("hardStopShoot", CommandFactoryUtility.createHardStopShootingCommand(shooter, indexer, pivot, turret, intake));
         
         // Prepares to shoot from the shooting position in NonAmpY
         NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
@@ -270,35 +273,35 @@ public class AutoCommandManager {
             new Pose2d(convertBlueXToRedX(5.38), 6.89, new Rotation2d(0.0)),
             new Pose2d(5.38, 6.89, new Rotation2d(0.0))))
             - 0.0,    //degrees fudge factor
-        new Pose2d(convertBlueXToRedX(5.38), 6.89, new Rotation2d(0.0)),
-        new Pose2d(5.38, 6.89, new Rotation2d(0.0))));
+        new Pose2d(convertBlueXToRedX(4.38), 6.89, new Rotation2d(0.0)),
+        new Pose2d(4.38, 6.89, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        - 0.5,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(5.39), 5.82, new Rotation2d(0.0)),
-                new Pose2d(5.39, 5.82, new Rotation2d(0.0))));
+                        - 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(4.39), 5.82, new Rotation2d(0.0)),
+                new Pose2d(4.39, 5.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        - 0.5,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(5.39), 5.82, new Rotation2d(0.0)),
-                new Pose2d(5.39, 5.82, new Rotation2d(0.0))));
+                        - 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(4.39), 5.82, new Rotation2d(0.0)),
+                new Pose2d(4.39, 5.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareAmpSkipYShoot5", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        - 0.5,    //degrees fudge factor
-                new Pose2d(convertBlueXToRedX(5.39), 5.82, new Rotation2d(0.0)),
-                new Pose2d(5.39, 5.82, new Rotation2d(0.0))));
+                        - 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(4.39), 5.82, new Rotation2d(0.0)),
+                new Pose2d(4.39, 5.82, new Rotation2d(0.0))));
 
         NamedCommands.registerCommand("prepareSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
                 SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
