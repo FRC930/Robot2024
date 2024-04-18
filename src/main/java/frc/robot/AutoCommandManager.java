@@ -224,7 +224,7 @@ public class AutoCommandManager {
         
         //Stops the intake and does a note backup
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, true));
-        NamedCommands.registerCommand("stopIntakeSensor", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, true));
+        NamedCommands.registerCommand("stopIntakeSensor", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, false));
 
         //TODO: Ask harry what exactly it does. I know about as much about it as the name indicates.
         NamedCommands.registerCommand("movingSideShoot", 
@@ -256,11 +256,11 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
             SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
                 true, 
-                new Pose2d(convertBlueXToRedX(3.98), 2.0, new Rotation2d(0.0)),
-                new Pose2d(3.98, 2.0, new Rotation2d(0.0))))
+                new Pose2d(convertBlueXToRedX(2.41), 3.35, new Rotation2d(0.0)),
+                new Pose2d(2.41, 3.35, new Rotation2d(0.0))))
                 - 0.0,    //degrees fudge factor
-            new Pose2d(convertBlueXToRedX(3.98), 2.0, new Rotation2d(0.0)),
-            new Pose2d(3.98, 2.0, new Rotation2d(0.0))));
+            new Pose2d(convertBlueXToRedX(2.41), 3.35, new Rotation2d(0.0)),
+            new Pose2d(2.41, 3.35, new Rotation2d(0.0))));
 
         // Shoots from the shooting position used in AmpY
         // Used in AmpY3 & AmpY5
@@ -278,7 +278,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 0.0,    //degrees fudge factor
+                        - 0.5,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 5.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 5.82, new Rotation2d(0.0))));
 
@@ -287,7 +287,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 0.0,    //degrees fudge factor
+                        - 0.5,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 5.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 5.82, new Rotation2d(0.0))));
 
@@ -296,7 +296,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(5.39), 6.82, new Rotation2d(0.0)),
                         new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
-                        + 0.0,    //degrees fudge factor
+                        - 0.5,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(5.39), 5.82, new Rotation2d(0.0)),
                 new Pose2d(5.39, 5.82, new Rotation2d(0.0))));
 
@@ -305,7 +305,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                         new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
-                        + 0.0,    //degrees fudge factor
+                        - 0.5,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                 new Pose2d(3.32, 3.28, new Rotation2d(0.0))));
 
@@ -314,7 +314,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                         new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
-                        + 0.0,    //degrees fudge factor
+                        - 0.5,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                 new Pose2d(3.32, 3.28, new Rotation2d(0.0))));
 

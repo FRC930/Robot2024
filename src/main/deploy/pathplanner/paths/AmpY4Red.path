@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.689293606832576,
-        "y": 6.2770083885388885
+        "x": 6.209149308455535,
+        "y": 6.265297551993107
       },
       "isLocked": false,
       "linkedName": "AmpY3_R"
@@ -20,8 +20,8 @@
         "y": 5.410406484151056
       },
       "prevControl": {
-        "x": 6.6541610971952325,
-        "y": 5.4806715034257465
+        "x": 6.759558626107266,
+        "y": 5.796864090161846
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,8 +63,8 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 180.0,
-    "rotateFast": false
+    "rotation": 150.0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "AmpY",
