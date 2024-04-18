@@ -4,8 +4,12 @@ import java.util.function.ObjDoubleConsumer;
 
 import org.littletonrobotics.conduit.schema.CoreInputs;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -23,6 +27,7 @@ import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 import frc.robot.subsystems.LeafBlower.BlowerSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -80,6 +85,12 @@ public final class CommandFactoryUtility {
     private static final double TURRET_PREAIM_TIMEOUT = 0.75;       /*sec*/
 
     private static final double STAR_AMP_VEL = 74.0;
+
+    private static final double INDEXER_TRAP_SPEED = 50.0;
+
+    // private static final double TRAP_SHOT_PIVOT_ANGLE = ;
+    // private static final double TRAP_SHOT_TURRET_ANGLE = SmartDashboard.getNumber("trapshot/turret_angle", 0.0);
+
 
 
     //TODO review values and code
@@ -326,5 +337,27 @@ public final class CommandFactoryUtility {
         return blower.newSetSpeedCommand(1.0)
         .andThen(new WaitCommand(5.0))
         .andThen(blower.newSetSpeedCommand(0.0));
+    }
+
+    public static Command createTrapShotCommand(BlowerSubsystem blower, TurretSubsystem turret, PivotSubsystem pivot,ShooterSubsystem shooter,SwerveDrivetrainSubsystem swerve){
+       
+
+        return blower.newSetSpeedCommand(SmartDashboard.getNumber("trapshot/blowerSpeed", 1.0))
+        .andThen(turret.newSetPosCommand(SmartDashboard.getNumber("trapshot/turretangle", 0.0)))
+        .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret))
+        .andThen(pivot.newSetPosCommand(SmartDashboard.getNumber("trapshot/pivotangle", 60.0)))
+        .andThen(shooter.newSetVoltagesCommand(SmartDashboard.getNumber("trapshot/shootervolts",40.0), SmartDashboard.getNumber("trapshot/shootervolts", 40.0)))
+        .andThen(TrapShotUtil.getPathtoClosestTrapShot(swerve));
+    }
+
+    public static Command createStopTrapShotCommand(BlowerSubsystem blower, TurretSubsystem turret, PivotSubsystem pivot, IndexerSubsystem indexer, ShooterSubsystem shooter) {
+        return 
+        indexer.newSetSpeedCommand(INDEXER_TRAP_SPEED)
+        .andThen(indexer.newUntilNoNoteFoundCommand())
+        .andThen(blower.newSetSpeedCommand(0.0))
+        .andThen(new InstantCommand(() -> turret.disableTurretLock(),turret))
+        .andThen(turret.newSetPosCommand(0.0))
+        .andThen(pivot.newSetPosCommand(0.0))
+        .andThen(shooter.newSetSpeedsCommand(0.0, 0.0));
     }
 }

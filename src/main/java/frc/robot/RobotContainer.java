@@ -661,7 +661,9 @@ public class RobotContainer {
     //#endregion
 
     m_coDriverController.rightBumper().whileTrue(new TurretRefineCommand(m_turretSubsystem));
-
+    m_coDriverController.leftBumper()
+      .onTrue(CommandFactoryUtility.createTrapShotCommand(m_BlowerSubsystem, m_turretSubsystem, m_pivotSubsystem, m_shooterSubsystem, drivetrain))
+      .onFalse(CommandFactoryUtility.createStopTrapShotCommand(m_BlowerSubsystem,m_turretSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_shooterSubsystem));
   }
 
   /**
