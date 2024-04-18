@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 7.647176264395325
+      "x": 1.42,
+      "y": 7.29585116802188
     },
     "rotation": 180.0
   },
@@ -11,12 +11,6 @@
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "setShotOffset-Up0.5"
-          }
-        },
         {
           "type": "named",
           "data": {

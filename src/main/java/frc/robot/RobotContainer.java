@@ -46,6 +46,7 @@ import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.RobotOdometryUtility;
+import frc.robot.utilities.ShotLoggingUtil;
 import frc.robot.utilities.SpeakerScoreUtility;
 import frc.robot.utilities.StartInTeleopUtility;
 import frc.robot.utilities.LimelightHelpers.Results;
@@ -393,6 +394,7 @@ public class RobotContainer {
   private double m_last_RIOFPGA_timestamp = -1.0;
 
   private int visioncounter = 0;
+  private static double lastLimelightUpdate;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -415,7 +417,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureDriverBindings() {
-
+    SmartDashboard.putNumber("offsets/distanceOffset", 0.0);
     //temporary trap command, not mapped to button and may want to rework
     Command trapCommand = m_pivotSubsystem.newSetPosCommand(60.0)
       .andThen(m_BlowerSubsystem.newSetSpeedCommand(1.0))
@@ -550,6 +552,15 @@ public class RobotContainer {
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem, m_intakeSubsystem));
     
+    SmartDashboard.putData("logging/forcePivotLog",ShotLoggingUtil.getPivotInstance().getDoLogCommand("Forced"));
+    SmartDashboard.putData("logging/forceTurretLog",ShotLoggingUtil.getTurretInstance().getDoLogCommand("Forced"));
+    
+    SmartDashboard.putData("logging/outputPivotLogs",ShotLoggingUtil.getPivotInstance().getDumpOutputCommand("logging/pivotOut"));
+    SmartDashboard.putData("logging/outputTurretLogs",ShotLoggingUtil.getTurretInstance().getDumpOutputCommand("logging/turretOut"));
+
+    SmartDashboard.putData("logging/logLastShotHit",ShotLoggingUtil.getAddShotCommand(true));
+    SmartDashboard.putData("logging/logLastShotMissed",ShotLoggingUtil.getAddShotCommand(false));
+    SmartDashboard.putData("logging/deleteLastShotHit",ShotLoggingUtil.getRemoveShotCommand());
     //#endregion 
 
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -728,6 +739,7 @@ public class RobotContainer {
       // updatePoseWithMegaTag2("limelight-back",true);
       // updatePoseWithMegaTag2("limelight-right", true);
       // updatePoseWithMegaTag2("limelight-left", true);
+      Logger.recordOutput("timeSinceLastLog", Timer.getFPGATimestamp() - lastLimelightUpdate);
     }
   }
 
@@ -817,12 +829,22 @@ public class RobotContainer {
         
         SmartDashboard.putBoolean(limeLightName + "/Updated", true);
         Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
+        lastLimelightUpdate = Timer.getFPGATimestamp();
         this.visioncounter++;
     }
     
     Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.pose);
     Logger.recordOutput("LimeLightOdometry/TA", lastResult.avgTagArea);
     Logger.recordOutput("LimeLightOdometry/PoseDifference", poseDifference);
+  }
+
+  /**
+   * A trigger representing whether or not the limelight has updated in a certain time period.
+   * @param timeThreshold
+   * @return
+   */
+  public static Trigger getHasLimelightUpdatedForTime(double timeThreshold) {
+    return new Trigger(() -> {return Timer.getFPGATimestamp() - lastLimelightUpdate < timeThreshold;});
   }
   
   public void simulationPeriodic() {

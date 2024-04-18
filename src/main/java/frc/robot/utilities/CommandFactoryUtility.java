@@ -70,7 +70,7 @@ public final class CommandFactoryUtility {
 
     public static final double INTAKE_SPEED = 0.90;                 /*Value*/
     public static final double INTAKE_SHOOTING_SPEED = 0.90;        /*Value*/
-    public static final double INTAKE_REJECT_SPEED = -0.15;         /*Value*/
+    public static final double INTAKE_REJECT_SPEED = 0.0;//-0.15;         /*Value*/
     private static final double INTAKE_EJECT_SPEED = -0.4;          /*value*/
 
     public static final double ELEVATOR_CLIMB_POS = 8.0;
@@ -200,6 +200,7 @@ public final class CommandFactoryUtility {
         .andThen(indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED))
         .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+        .andThen(createLogShotCommand("Shoot Preaimed"))
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
@@ -207,6 +208,7 @@ public final class CommandFactoryUtility {
         return indexer.newSetSpeedCommand(INDEXER_SPEAKER_SPEED)
         .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+        .andThen(createLogShotCommand("Shoot Prepared"))
         .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
         
@@ -337,6 +339,12 @@ public final class CommandFactoryUtility {
         return blower.newSetSpeedCommand(1.0)
         .andThen(new WaitCommand(5.0))
         .andThen(blower.newSetSpeedCommand(0.0));
+    }
+
+    public static Command createLogShotCommand(String comment) {
+        return ShotLoggingUtil.getAdvanceShotCommand()
+        .andThen(ShotLoggingUtil.getPivotInstance().getDoLogCommand(comment))
+        .andThen(ShotLoggingUtil.getTurretInstance().getDoLogCommand(comment));
     }
 
     public static Command createTrapShotCommand(BlowerSubsystem blower, TurretSubsystem turret, PivotSubsystem pivot,ShooterSubsystem shooter,SwerveDrivetrainSubsystem swerve){

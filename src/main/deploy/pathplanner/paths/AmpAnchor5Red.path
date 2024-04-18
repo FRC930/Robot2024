@@ -3,57 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.27025654051308,
-        "y": 5.468960666879964
+        "x": 2.672476671629519,
+        "y": 5.539225686154654
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.696425549769786,
-        "y": 5.773442417070283
+        "x": 1.9229831326995024,
+        "y": 5.644623215066689
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.39,
-        "y": 6.82
+        "x": 2.2040432097982583,
+        "y": 4.485250397034318
       },
       "prevControl": {
-        "x": 6.829823645381955,
-        "y": 6.2887192250846695
+        "x": 1.454549670868242,
+        "y": 5.187900589781208
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.6,
-      "rotationDegrees": 180.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "stopIntake",
-      "waypointRelativePos": 0.1,
+      "name": "shootuh",
+      "waypointRelativePos": 0.95,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "stopIntake"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "prepareAmpSkipYShoot4"
+                "name": "preparedShoot"
               }
             }
           ]
@@ -63,19 +51,19 @@
   ],
   "globalConstraints": {
     "maxVelocity": 6.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 180.0,
+    "velocity": 2.0,
+    "rotation": 150.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpSkipY",
+  "folder": "AmpAnchor",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

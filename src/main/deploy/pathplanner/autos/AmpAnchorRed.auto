@@ -1,0 +1,143 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.42,
+      "y": 7.29585116802188
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpAnchor1Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpAnchor2Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "preparedShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpAnchor3Red"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "prepareShootEndless"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "WingLevel3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "prepareShootEndless"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "WingLevel3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpAnchor4Red"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "prepareShootEndless"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "WingLevel2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpAnchor5Red"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "prepareShootEndless"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "WingLevel1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Robot2024",
+  "choreoAuto": false
+}

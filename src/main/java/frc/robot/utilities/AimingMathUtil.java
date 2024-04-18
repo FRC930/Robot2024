@@ -6,6 +6,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.Odometry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDrivetrainSubsystem;
 
 public abstract class AimingMathUtil {
@@ -21,6 +22,7 @@ public abstract class AimingMathUtil {
 
     private static final double TRAJ_OFFSET_ZERO = 15.6514; //13.6514 Offset for old note (changed to new note offset)
 
+    public static final double DIST_FUDGE = 16.0;
     /**
      * Given a certain distance, returns a certain offset to the turret to adjust for the notes flight characteristics
      * If this is somehow reversed based on alliance, just invert what this method returns. I don't think it is, but maybe.
@@ -31,6 +33,6 @@ public abstract class AimingMathUtil {
         //return 25;
 
         // This models the note's path as a parabolic trajectory, and gets the angle from the turret to a point on that trajectory. It then returns the negative of that angle.
-        return (TRAJ_OFFSET_LINEAR_FACTOR * distance) + TRAJ_OFFSET_ZERO;
+        return (TRAJ_OFFSET_LINEAR_FACTOR * (distance - DIST_FUDGE - SmartDashboard.getNumber("offsets/distanceOffset", 0.0))) + TRAJ_OFFSET_ZERO;
     }
 }
