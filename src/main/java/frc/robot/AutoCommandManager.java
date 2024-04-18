@@ -327,7 +327,7 @@ public class AutoCommandManager {
 
         NamedCommands.registerCommand("nonAmpSideShootNoStop", 
             CommandFactoryUtility.createPreparePosedShootCommand(turret, pivot, shooter, 45.0,
-                    new Pose2d(convertBlueXToRedX(3.5), 3.12, new Rotation2d(0.0)),
+                    new Pose2d(convertBlueXToRedX(3.0), 3.12, new Rotation2d(0.0)),
                     new Pose2d(3.5, 3.12, new Rotation2d(0.0)) )
                 .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake)));
         
