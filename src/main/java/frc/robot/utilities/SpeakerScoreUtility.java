@@ -216,15 +216,15 @@ public class SpeakerScoreUtility {
     }
 
     /*  SHOOTER DATA SHEET HERE:
-    // You can find the regression for these values here: https://www.desmos.com/calculator/0s3xe9y9ca
-    // OPTIONS FOR TUNING: 
+    // SEE INSTRUCTION SHEET: https://docs.google.com/document/d/1Bgt9aPj9Tyn7bf3AqmL5ytYnkF5hi1Utf2yvQWLiGkc/edit?usp=sharing
+    // OPTIONS FOR TUNING:
     // 1. You can add more data points for the regression. Make sure to update the link though! The link to the calculator will change after saving it.
     // 2. Use piecewise overrides or modifiers for areas that don't work
     */
     public static double computePivotAnglePolyModel(double distance) {
         double exponent = 0.982502;
         double h = 230.316;
-        double k = 25.9504;
+        double k = 23.5; //25.9504;
 
         return Math.pow(exponent , (distance - h)) + k;
     }
