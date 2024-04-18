@@ -81,6 +81,8 @@ public class AutoCommandManager {
 
         // PathPlannerAuto nonAmpStage = new PathPlannerAuto("NonAmpStage");
         PathPlannerAuto nonAmpSkipYRed = new PathPlannerAuto("NonAmpSkipYRed");
+        PathPlannerAuto nonAmpSkipYBlue = new PathPlannerAuto("NonAmpSkipYBlue");
+
         PathPlannerAuto ampSkipYRed = new PathPlannerAuto("AmpSkipYRed");
         PathPlannerAuto ampAnchorRed = new PathPlannerAuto("AmpAnchorRed");
 
@@ -105,6 +107,7 @@ public class AutoCommandManager {
         m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
         // m_chooser.addOption("NonAmpStage", nonAmpStage);
         m_chooser.addOption("RED_NonAmpSkipY", nonAmpSkipYRed);
+        m_chooser.addOption("BLUE_NonAmpSkipY", nonAmpSkipYBlue);
         m_chooser.addOption("RED_AmpSkipY", ampSkipYRed);
         m_chooser.addOption("RED_AmpAnchor", ampAnchorRed);
 
@@ -325,7 +328,7 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("nonAmpSideShootNoStop", 
             CommandFactoryUtility.createPreparePosedShootCommand(turret, pivot, shooter, 45.0,
                     new Pose2d(convertBlueXToRedX(3.5), 3.12, new Rotation2d(0.0)),
-                    new Pose2d(3.5, 4.12, new Rotation2d(0.0)) )
+                    new Pose2d(3.5, 3.12, new Rotation2d(0.0)) )
                 .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake)));
         
         // Offsets future shots down by one degree

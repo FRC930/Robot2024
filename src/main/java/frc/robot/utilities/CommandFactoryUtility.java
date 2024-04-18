@@ -79,7 +79,7 @@ public final class CommandFactoryUtility {
 
     private static final double TURRET_PREAIM_TIMEOUT = 0.75;       /*sec*/
 
-    private static final double STAR_AMP_VEL = 74.0;
+    private static final double STAR_AMP_VEL = 73.0;
 
 
     //TODO review values and code
@@ -103,12 +103,12 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createHardStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  TurretSubsystem turret, IntakeSubsystem intake) {
-        return shooter.newSetSpeedsWithSlotCommand(-1.0, -1.0, 1)
+        return shooter.newSetSpeedsCommand(0.0, 0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
             .alongWith(intake.newSetSpeedCommand(INTAKE_REJECT_SPEED))
             .alongWith(pivot.newSetPosCommand(PIVOT_STOW_POS))
             .alongWith(turret.newSetPosCommand(TURRET_STOW_POS))
-            .andThen(new WaitCommand(0.5).andThen(shooter.newSetSpeedsCommand(0.0, 0.0)));
+            .andThen(new WaitCommand(0.5).andThen(shooter.newSetSpeedsWithSlotCommand(-1.0, -1.0, 1)));
     }
 
     /**
