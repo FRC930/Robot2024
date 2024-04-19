@@ -91,11 +91,11 @@ public class AutoCommandManager {
         m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto2));
         m_chooser.addOption("MidWait", new WaitCommand(8.0).andThen(midTwoAuto2));
         m_chooser.addOption("NonAmpWait", new WaitCommand(8.0).andThen(nonAmpTwoAuto2));
-        m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
+        // m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
         m_chooser.addOption("RED_AmpY", ampYAutoRed);
         // m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
         // m_chooser.addOption("RED_NonAmpJ", nonAmpJAutoRed);
-        m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
+        // m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
         m_chooser.addOption("RED_NonAmpY", nonAmpYAutoRed);
         // m_chooser.addOption("MidUAuto", midUAuto);
         // m_chooser.addOption("LTwo", ampLTwoAuto);
