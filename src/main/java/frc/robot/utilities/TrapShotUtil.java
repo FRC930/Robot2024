@@ -56,6 +56,9 @@ public class TrapShotUtil {
 
     private static final double TRAP_SHOT_ANGLE_TOLERANCE = 0.1;
 
+    private static final double TRAP_SHOT_VELOCITY_CONVERGENCE = 1.0;
+    private static final double TRAP_SHOT_VEOLOCITY_CONVERGENCE_RANGE = 1.0;
+
     public static double TrapShotMaxSpeed = 5.861;
     public static double TrapShotMaxAccel = 3.0;
     public static double TrapShotMaxAngularSpeed = 50.0;

@@ -555,6 +555,8 @@ public class RobotContainer {
     m_driverController.start()
       .onTrue(CommandFactoryUtility.createTrapShotCommand(m_BlowerSubsystem, m_turretSubsystem, m_pivotSubsystem, m_shooterSubsystem, drivetrain))
       .onFalse(CommandFactoryUtility.createStopTrapShotCommand(m_BlowerSubsystem,m_turretSubsystem, m_pivotSubsystem, m_indexerSubsystem, m_shooterSubsystem));
+    m_driverController.back()
+      .whileTrue(CommandFactoryUtility.createMoveToTrapShotPosCommand());
 
     SmartDashboard.putData("logging/forcePivotLog",ShotLoggingUtil.getPivotInstance().getDoLogCommand("Forced"));
     SmartDashboard.putData("logging/forceTurretLog",ShotLoggingUtil.getTurretInstance().getDoLogCommand("Forced"));

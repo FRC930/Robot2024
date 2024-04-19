@@ -348,14 +348,11 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createTrapShotCommand(BlowerSubsystem blower, TurretSubsystem turret, PivotSubsystem pivot,ShooterSubsystem shooter,SwerveDrivetrainSubsystem swerve){
-       
-
         return blower.newSetSpeedCommand(SmartDashboard.getNumber("trapshot/blowerSpeed", 1.0))
         .andThen(turret.newSetPosCommand(SmartDashboard.getNumber("trapshot/turretangle", 0.0)))
         .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret))
         .andThen(pivot.newSetPosCommand(SmartDashboard.getNumber("trapshot/pivotangle", 60.0)))
-        .andThen(shooter.newSetVoltagesCommand(SmartDashboard.getNumber("trapshot/shootervolts",40.0), SmartDashboard.getNumber("trapshot/shootervolts", 40.0)))
-        .andThen(TrapShotUtil.getPathToClosestTrapShotAndRepeat(3));
+        .andThen(shooter.newSetVoltagesCommand(SmartDashboard.getNumber("trapshot/shootervolts",40.0), SmartDashboard.getNumber("trapshot/shootervolts", 40.0)));
     }
 
     public static Command createStopTrapShotCommand(BlowerSubsystem blower, TurretSubsystem turret, PivotSubsystem pivot, IndexerSubsystem indexer, ShooterSubsystem shooter) {
@@ -367,5 +364,9 @@ public final class CommandFactoryUtility {
         .andThen(turret.newSetPosCommand(0.0))
         .andThen(pivot.newSetPosCommand(0.0))
         .andThen(shooter.newSetSpeedsCommand(0.0, 0.0));
+    }
+
+    public static Command createMoveToTrapShotPosCommand() {
+        return TrapShotUtil.getPathToClosestTrapShotAndRepeat(3);
     }
 }
