@@ -355,7 +355,7 @@ public final class CommandFactoryUtility {
         .andThen(new InstantCommand(() -> turret.enableTurretLock(),turret))
         .andThen(pivot.newSetPosCommand(SmartDashboard.getNumber("trapshot/pivotangle", 60.0)))
         .andThen(shooter.newSetVoltagesCommand(SmartDashboard.getNumber("trapshot/shootervolts",40.0), SmartDashboard.getNumber("trapshot/shootervolts", 40.0)))
-        .andThen(TrapShotUtil.getPathtoClosestTrapShot(swerve));
+        .andThen(TrapShotUtil.getPathToClosestTrapShotAndRepeat(3));
     }
 
     public static Command createStopTrapShotCommand(BlowerSubsystem blower, TurretSubsystem turret, PivotSubsystem pivot, IndexerSubsystem indexer, ShooterSubsystem shooter) {
