@@ -367,6 +367,6 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createMoveToTrapShotPosCommand() {
-        return TrapShotUtil.getPathToClosestTrapShotAndRepeat(3);
+        return TrapShotUtil.getPathtoClosestTrapShot();
     }
 }
