@@ -72,30 +72,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSkipY5Blue"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "MidLineLevel3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSkipY6Blue"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "preparedShoot"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "stopShoot"
