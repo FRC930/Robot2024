@@ -310,7 +310,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                         new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
-                        - 0.0,    //degrees fudge factor
+                        + 0.2,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                 new Pose2d(3.32, 2.28, new Rotation2d(0.0))));
 
@@ -319,7 +319,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                         new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
-                        - 0.0,    //degrees fudge factor
+                        + 0.2,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                 new Pose2d(3.32, 2.28, new Rotation2d(0.0))));
 
