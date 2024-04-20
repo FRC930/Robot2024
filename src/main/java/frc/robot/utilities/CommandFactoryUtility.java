@@ -30,11 +30,11 @@ import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
 
+
     private static final double INDEXER_STAR_TIMEOUT = 0.3;
 
     private static final double INDEXER_STAR_INDEX_SPEED = 0.6;
 
-    private static final double AMP_STAR_PIVOT_POS = 25.0;
 
     private static final double PIVOT_FEED_POS = 45.0;
 
@@ -45,7 +45,6 @@ public final class CommandFactoryUtility {
     public static final double ELEVATOR_AMP_POS = 0.0;              /*Deg*/
     
     public static final double PIVOT_STOW_POS = 0.0;                /*Deg*/
-    public static final double PIVOT_AMP_POS = 30.0;                /*Deg*/
     public static final double PIVOT_INTAKE_POS = 45.0;             /*Deg*/
 
     public static final double INDEXER_SPEAKER_SPEED = 0.9;         /*Value*/
@@ -55,9 +54,6 @@ public final class CommandFactoryUtility {
 
     private static final double SHOOTER_LEFT_FEED_SPEED = 80.0;     /*Rot/s*/
     private static final double SHOOTER_RIGHT_FEED_SPEED = 80.0;    /*Rot/s*/
-    public static final double LEFT_SHOOTER_AMP_SPEED = 40.0;       /*Rot/s*/
-    public static final double RIGHT_SHOOTER_AMP_SPEED = 40.0;      /*Rot/s*/
-    public static final double INDEXER_AMP_SPEED = 0.2;             /*Value*/
     
     public static final double LEFT_SHOOTER_EJECT_SPEED = 40.0;     /*Rot/s*/
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/
@@ -79,7 +75,11 @@ public final class CommandFactoryUtility {
 
     private static final double TURRET_PREAIM_TIMEOUT = 0.75;       /*sec*/
 
-    private static final double STAR_AMP_VEL = 73.0;
+    private static final double STAR_AMP_VEL = 60.0; // 65.0; // 70.0;
+    public static final double LEFT_SHOOTER_AMP_SPEED = 40.0;       /*Rot/s*/
+    public static final double RIGHT_SHOOTER_AMP_SPEED = 40.0;      /*Rot/s*/
+    private static final double AMP_STAR_PIVOT_POS = 20.0;          // 20.0;
+    private static final double INDEXER_AMP_SPEED = -5.5; //-6.0
 
 
     //TODO review values and code
@@ -323,7 +323,7 @@ public final class CommandFactoryUtility {
     }
 
     public static Command createStopAmpCommand(IndexerSubsystem indexer, TurretSubsystem turret, PivotSubsystem pivot, IntakeSubsystem intake) {
-        return indexer.newSetTopVoltageCommand(-4.0) 
+        return indexer.newSetTopVoltageCommand(INDEXER_AMP_SPEED) 
         .andThen(intake.newSetSpeedCommand(INTAKE_SHOOTING_SPEED))
         .andThen(indexer.newUntilNoNoteFoundCommand())
         .andThen(new WaitCommand(AFTER_AMP_SHOOT_TIMEOUT))
