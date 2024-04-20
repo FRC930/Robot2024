@@ -52,8 +52,8 @@ public final class CommandFactoryUtility {
     public static final double INDEXER_REVERSE_SPEED = -0.1;        /*value*/
     public static final double INDEXER_FEED_SPEED = 0.9;            /*Value*/
 
-    private static final double SHOOTER_LEFT_FEED_SPEED = 80.0;     /*Rot/s*/
-    private static final double SHOOTER_RIGHT_FEED_SPEED = 80.0;    /*Rot/s*/
+    private static final double SHOOTER_LEFT_FEED_SPEED = 74.0;     /*Rot/s*/
+    private static final double SHOOTER_RIGHT_FEED_SPEED = 74.0;    /*Rot/s*/
     
     public static final double LEFT_SHOOTER_EJECT_SPEED = 40.0;     /*Rot/s*/
     public static final double RIGHT_SHOOTER_EJECT_SPEED = 40.0;    /*Rot/s*/

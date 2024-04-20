@@ -34,7 +34,7 @@ public abstract class AimingMathUtil {
     public static double getTurretOffsetForDistance(double distance) {
         //Quick test for if this offsets in the right direction, since small offsets being in the wrong direction could go unnoticed until late.
         //return 25; 
-        if(distance > 300){ // Blue feed shot
+        if(distance > 230.0){ // Blue feed shot
             if(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue){
                 return 45.0;
             }
