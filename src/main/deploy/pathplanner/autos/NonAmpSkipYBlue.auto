@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4311279977766789,
-      "y": 6.354311170160802
+      "x": 1.43,
+      "y": 4.12
     },
     "rotation": 180.0
   },
@@ -14,73 +14,61 @@
         {
           "type": "named",
           "data": {
-            "name": "setClose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "sideWingScore"
+            "name": "nonAmpSideShootNoStop"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AmpStartToTopCenter"
+            "pathName": "NonAmpSkipY1Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TopCenterToWingLine1"
+            "pathName": "NonAmpSkipY2Blue"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setFar"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
+            "name": "preparedShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "WingLine1ToTopMidCenter"
+            "pathName": "NonAmpSkipY3Blue"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TopMidCenterToWingLine2"
+            "pathName": "NonAmpSkipY4Blue"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setFar"
+            "name": "preparedShoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "WingLine2ToMidCenter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "name": "stopShoot"
           }
         }
       ]

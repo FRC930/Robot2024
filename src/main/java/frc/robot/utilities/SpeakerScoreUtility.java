@@ -59,6 +59,7 @@ public class SpeakerScoreUtility {
     };
 
     private Target m_desiredTarget;
+    private static AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
     public SpeakerScoreUtility(TurretSubsystem turret) {
         m_desiredTarget = Target.close;
@@ -132,24 +133,26 @@ public class SpeakerScoreUtility {
     }
 
     public static double inchesToSpeaker() {
-        AprilTagFieldLayout m_AprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        return inchesToSpeaker(false, null, null);
+    }
 
+    public static double inchesToSpeaker(boolean useProxyPose, Pose2d redPose, Pose2d bluePose) {
         Pose2d m_RedTargetPose = m_AprilTagFieldLayout.getTagPose(4).get().toPose2d();
         Pose2d m_BlueTargetPose = m_AprilTagFieldLayout.getTagPose(7).get().toPose2d();
         Pose2d m_TargetPose = m_BlueTargetPose;
+        Pose2d m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
 
         // If there is an alliance present it sets the target pose based on the alliance; otherwise defaults to blue.
         Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
         if (optionalAlliance.isPresent()){
-        Alliance alliance = optionalAlliance.get();
+            Alliance alliance = optionalAlliance.get();
             if (alliance == Alliance.Red) {
                 m_TargetPose = m_RedTargetPose;
             } else {
                 m_TargetPose = m_BlueTargetPose;
             }
+            if (useProxyPose) m_CurrentPose = (alliance == Alliance.Red ? redPose : bluePose);
         }
-        // gets the robots position, and gets the robots heading.
-        Pose2d m_CurrentPose = RobotOdometryUtility.getInstance().getRobotOdometry();
 
         double distance = Units.metersToInches(Math.hypot(m_TargetPose.getX() - m_CurrentPose.getX(), m_TargetPose.getY() - m_CurrentPose.getY()))
              - DISTANCE_OFFSET_TO_CENTER_OF_ROBOT;
@@ -193,7 +196,8 @@ public class SpeakerScoreUtility {
     }
 
     public static double computePivotAngle(double distance) {
-        return computePivotAngleInternal(distance) + m_nextShotAngleOffset;
+        return computePivotAnglePolyModel(distance) + m_nextShotAngleOffset;
+        //return computePivotAngleInternal(distance) + m_nextShotAngleOffset;
     }
 
     public static double computePivotAngleInverseTan(double distance) {
@@ -211,13 +215,18 @@ public class SpeakerScoreUtility {
         return Units.radiansToDegrees(Math.atan2(heightTurretToNodeInches, distanceCenterToNodeInches));
     }
 
+    /*  SHOOTER DATA SHEET HERE:
+    // SEE INSTRUCTION SHEET: https://docs.google.com/document/d/1Bgt9aPj9Tyn7bf3AqmL5ytYnkF5hi1Utf2yvQWLiGkc/edit?usp=sharing
+    // OPTIONS FOR TUNING:
+    // 1. You can add more data points for the regression. Make sure to update the link though! The link to the calculator will change after saving it.
+    // 2. Use piecewise overrides or modifiers for areas that don't work
+    */
     public static double computePivotAnglePolyModel(double distance) {
-        double exponent = -0.013963036303;
-        double h = -273.137;
-        double k = 22.4469;
+        double exponent = 0.982502;
+        double h = 230.316 + AimingMathUtil.DIST_FUDGE + SmartDashboard.getNumber("offsets/distanceOffset",  0.0);
+        double k = 23.5; //25.9504 - old value before champs;
 
-        // Untested shot angle model. Distances sourced from testing on 3/9/24. Source graph: https://www.desmos.com/calculator/bohpjg7n1d
-        return Math.exp(exponent * (distance - h)) + k;
+        return Math.pow(exponent , (distance - h)) + k;
     }
 
     public static double computeShooterSpeed(double distance) {

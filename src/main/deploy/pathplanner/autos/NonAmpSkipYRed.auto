@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.43,
+      "y": 4.12
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "nonAmpSideShootNoStop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NonAmpSkipY1Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NonAmpSkipY2Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "preparedShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NonAmpSkipY3Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "MidLineLevel2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NonAmpSkipY4Red"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "preparedShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Robot2024",
+  "choreoAuto": false
+}

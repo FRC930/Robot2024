@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -67,26 +69,47 @@ public class AutoCommandManager {
         PathPlannerAuto ampLTwoAuto = new PathPlannerAuto("AmpLTwoAuto");
 
         PathPlannerAuto ampTwoAuto = new PathPlannerAuto("AmpTwoAuto");
+        PathPlannerAuto ampTwoAuto2 = new PathPlannerAuto("AmpTwoAuto");
         PathPlannerAuto midTwoAuto = new PathPlannerAuto("MidTwoAuto");
+        PathPlannerAuto midTwoAuto2 = new PathPlannerAuto("MidTwoAuto");
         PathPlannerAuto nonAmpTwoAuto = new PathPlannerAuto("NonAmpTwoAuto");
+        PathPlannerAuto nonAmpTwoAuto2 = new PathPlannerAuto("NonAmpTwoAuto");
 
-        PathPlannerAuto wsAuto = new PathPlannerAuto("WSPath");
+        // PathPlannerAuto nonAmpStage = new PathPlannerAuto("NonAmpStage");
+        PathPlannerAuto nonAmpSkipYRed = new PathPlannerAuto("NonAmpSkipYRed");
+        PathPlannerAuto nonAmpSkipYBlue = new PathPlannerAuto("NonAmpSkipYBlue");
+
+        PathPlannerAuto ampSkipYRed = new PathPlannerAuto("AmpSkipYRed");
+        PathPlannerAuto ampSkipYBlue = new PathPlannerAuto("AmpSkipYBlue");
+
+        PathPlannerAuto ampAnchorRed = new PathPlannerAuto("AmpAnchorRed");
+
 
         m_chooser.setDefaultOption("None", null);
 
-        m_chooser.addOption("WSAuto8sec", wsAuto);
-        m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
+        
+        m_chooser.addOption("AmpWait", new WaitCommand(8.0).andThen(ampTwoAuto2));
+        m_chooser.addOption("MidWait", new WaitCommand(8.0).andThen(midTwoAuto2));
+        m_chooser.addOption("NonAmpWait", new WaitCommand(8.0).andThen(nonAmpTwoAuto2));
+        // m_chooser.addOption("BLUE_AmpY", ampYAutoBlue);
         m_chooser.addOption("RED_AmpY", ampYAutoRed);
-        m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
-        m_chooser.addOption("RED_NonAmpJ", nonAmpJAutoRed);
-        m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
+        // m_chooser.addOption("BLUE_NonAmpJ", nonAmpJAutoBlue);
+        // m_chooser.addOption("RED_NonAmpJ", nonAmpJAutoRed);
+        // m_chooser.addOption("BLUE_NonAmpY", nonAmpYAutoBlue);
         m_chooser.addOption("RED_NonAmpY", nonAmpYAutoRed);
-        m_chooser.addOption("MidUAuto", midUAuto);
-        m_chooser.addOption("LTwo", ampLTwoAuto);
-        m_chooser.addOption("LThree", ampLThreeAuto);
+        // m_chooser.addOption("MidUAuto", midUAuto);
+        // m_chooser.addOption("LTwo", ampLTwoAuto);
+        // m_chooser.addOption("LThree", ampLThreeAuto);
         m_chooser.addOption("AmpTwo", ampTwoAuto);
         m_chooser.addOption("MidTwo", midTwoAuto);
         m_chooser.addOption("NonAmpTwo", nonAmpTwoAuto);
+        // m_chooser.addOption("NonAmpStage", nonAmpStage);
+        m_chooser.addOption("RED_NonAmpSkipY", nonAmpSkipYRed);
+        m_chooser.addOption("BLUE_NonAmpSkipY", nonAmpSkipYBlue);
+        m_chooser.addOption("RED_AmpSkipY", ampSkipYRed);
+        m_chooser.addOption("BLUE_AmpSkipY", ampSkipYBlue);
+        m_chooser.addOption("RED_AmpAnchor", ampAnchorRed);
+
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
@@ -107,6 +130,22 @@ public class AutoCommandManager {
         SpeakerScoreUtility speakerUtil, 
         IntakeSubsystem intake, 
         PivotSubsystem pivot) { 
+
+        /*
+         * - - Gamepiece Intake Commands - -
+         * These commands attempt to intake a note at a given position. Assuming the game-piece camera can see the note, it will drive to it and intake it.
+         * NOTE - These do NOT start the intake, they just tell the limelight to drive to a detected note.
+         * 
+         * Field layout:
+         * (amp side)
+         *  Alliance  MidLine
+         *  |  top   |  Level 5
+            |  mid   |  Level 4
+         *  |  low   |  Level 3
+         *  |        |  Level 2
+         *  |        |  Level 1
+         * (source side)
+         */
         //TODO update all of the x and y positions for each of the alliance colors (don't do center line points)
         NamedCommands.registerCommand("AllianceTopNote", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(2.9, 7.0, new Rotation2d(0.0)), new Pose2d(13.68, 7.0, new Rotation2d(0.0))));
@@ -116,7 +155,7 @@ public class AutoCommandManager {
             new Pose2d(2.9, 4.1, new Rotation2d(0.0)), new Pose2d(13.68, 4.1, new Rotation2d(0.0))));
         NamedCommands.registerCommand("MidLineLevel1", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(8.29, 0.77, new Rotation2d(0.0)))
-            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.5)));
         NamedCommands.registerCommand("MidLineLevel2", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(8.29, 2.44, new Rotation2d(0.0)))
             .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
@@ -131,65 +170,192 @@ public class AutoCommandManager {
             .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
         NamedCommands.registerCommand("MidLineLevel5.1", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(8.29, 7.44, new Rotation2d(0.0))));
+        NamedCommands.registerCommand("WingLevel3Extended",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(4.01, 7.39, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+        NamedCommands.registerCommand("WingLevel1",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(2.73, 4.08, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+        NamedCommands.registerCommand("WingLevel2",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(2.91, 5.55, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
+        NamedCommands.registerCommand("WingLevel3",new LimeLightIntakeCommand(drivetrain, gamePieceUtility,
+            new Pose2d(2.91, 7.01, new Rotation2d(0.0)))
+            .raceWith(indexer.newUntilNoteFoundCommand().withTimeout(1.0)));
 
         // Waits until there is a note in the indexer or for 1 second. (So we don't move beyond the midline)
         NamedCommands.registerCommand("waitUntilNote", indexer.newUntilNoteFoundCommand().raceWith(new WaitCommand(1.0)));
 
-
+        //Sets the shooter to a shooter preset
         NamedCommands.registerCommand("setFar", speakerUtil.setDesiredTargetCommand(Target.far));
         NamedCommands.registerCommand("setMid", speakerUtil.setDesiredTargetCommand(Target.medium));
         NamedCommands.registerCommand("setClose", speakerUtil.setDesiredTargetCommand(Target.close));
+
+        //Prepares, shoots, and stops the shooter, pivot, and turret
+        //NOTE - Can only be used when stationary
         NamedCommands.registerCommand("aimAndShoot",
             CommandFactoryUtility.createTurretPreaimCommand(turret)
-                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret))
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
+                .andThen(CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake))
         );
+
+        //Shoots and stops the shooter, pivot, indexer, and turret
         NamedCommands.registerCommand("shoot",
-            CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret)
-                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret))
+            CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake)
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake))
         );
-        NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret));
+
+        //Shoots the note currently in the shooter, does not stow.
+        NamedCommands.registerCommand("shootNoStow", CommandFactoryUtility.createSpeakerScoreCommand(speakerUtil, shooter, pivot, indexer, turret, intake));
+        
+        //Aims the turret instantaneously
         NamedCommands.registerCommand("aim", new TurretAimCommand(turret));
+
+        //Turns on the intake without doing anything with the indexer
         NamedCommands.registerCommand("intakeNoIndexer", 
             CommandFactoryUtility.createIntakeNoIndexerCommand(intake));
+        
+        //Runs the intake and indexer to intake a note. Stops the intake once we get a note.
         NamedCommands.registerCommand("intake", 
             CommandFactoryUtility.createRunIntakeCommand(intake, indexer, turret));
+        
+        //Scores into the amp.
         NamedCommands.registerCommand("ampScore", 
             new PrintCommand("TODO add new amp command.") //TODO implement new amp here
-        );    
+        );  
+        
+        //Stops the intake and does a note backup
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, true));
+        NamedCommands.registerCommand("stopIntakeSensor", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, false));
+
+        //TODO: Ask harry what exactly it does. I know about as much about it as the name indicates.
         NamedCommands.registerCommand("movingSideShoot", 
             CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0)
-                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer))
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
                 .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
+        NamedCommands.registerCommand("movingSideShootPlus", 
+            CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 40.0)
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake))
+                .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
+                .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
+        );
+        
+        // Turns the turret and pivot towards the speaker and spins up the shooter.
         NamedCommands.registerCommand("prepareShoot", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, null));
-        NamedCommands.registerCommand("prepareShootEndless", CommandFactoryUtility.createPrepareShootEndlessCommand(turret, pivot, shooter, null));
-        // Used in AmpY3 & AmpY5
-        NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
-                new Pose2d(11.2, 6.89, new Rotation2d(0.0)), 
-                // y: 6.89 original value
-                // moved since it was too far to the left 
-                new Pose2d(5.38, 5.89, new Rotation2d(0.0)) ));
-        NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer));
-        NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret));
-        NamedCommands.registerCommand("prepareNonAmpYShoot3or4", CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 
-                25.5));
-        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, null, 
-                // y: 2.0 original value
-                // moved since it was too far to right  
-                new Pose2d(12.1, 1.00, new Rotation2d(0.0)),
-                // y: 2.0 original value
-                // moved since it was too far to right  
-                new Pose2d(3.98, 0.0, new Rotation2d(0.0)) ));
 
-        //This only affects the SpeakerScoreUtility calculated shot.
-        //THIS MUST BE RESET AFTER USE or it will mess up all future shots
+        // The same as prepareShoot except we keep turning the pivot.
+        NamedCommands.registerCommand("prepareShootEndless", CommandFactoryUtility.createPrepareShootEndlessCommand(turret, pivot, shooter, null));
+        
+        // Shoots assuming the shooter is already spun up and prepared to shoot. Does not stop the shooter.
+        NamedCommands.registerCommand("preparedShoot", CommandFactoryUtility.createShootPreparedCommand(indexer, intake));
+
+        // Stops the shooter and stows the indexer and pivot
+        NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootingCommand(shooter, indexer, pivot, turret, intake));
+
+        // Sets shooter to 0 instead of coasting (Needed to stop quickly for autos)
+        NamedCommands.registerCommand("hardStopShoot", CommandFactoryUtility.createHardStopShootingCommand(shooter, indexer, pivot, turret, intake));
+        
+        // Prepares to shoot from the shooting position in NonAmpY
+        NamedCommands.registerCommand("prepareNonAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
+            SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                true, 
+                new Pose2d(convertBlueXToRedX(2.41), 3.35, new Rotation2d(0.0)),
+                new Pose2d(2.41, 3.35, new Rotation2d(0.0))))
+                + 0.0,    //degrees fudge factor
+            new Pose2d(convertBlueXToRedX(2.41), 3.35, new Rotation2d(0.0)),
+            new Pose2d(2.41, 3.35, new Rotation2d(0.0))));
+
+        // Shoots from the shooting position used in AmpY
+        // Used in AmpY3 & AmpY5
+        NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
+        SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+            true, 
+            new Pose2d(convertBlueXToRedX(5.38), 6.89, new Rotation2d(0.0)),
+            new Pose2d(5.38, 6.89, new Rotation2d(0.0))))
+            - 0.0,    //degrees fudge factor
+        new Pose2d(convertBlueXToRedX(4.38), 6.89, new Rotation2d(0.0)),
+        new Pose2d(4.38, 6.89, new Rotation2d(0.0))));
+
+        NamedCommands.registerCommand("prepareAmpSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
+                SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                        true, 
+                        new Pose2d(convertBlueXToRedX(6.39), 6.82, new Rotation2d(0.0)),
+                        new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
+                        - 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(6.39), 7.82, new Rotation2d(0.0)),
+                new Pose2d(6.39, 5.82, new Rotation2d(0.0))));
+
+        NamedCommands.registerCommand("prepareAmpSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
+                SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                        true, 
+                        new Pose2d(convertBlueXToRedX(6.39), 6.82, new Rotation2d(0.0)),
+                        new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
+                        - 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(6.39), 7.82, new Rotation2d(0.0)),
+                new Pose2d(6.39, 5.82, new Rotation2d(0.0))));
+
+        NamedCommands.registerCommand("prepareAmpSkipYShoot5", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
+                SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                        true, 
+                        new Pose2d(convertBlueXToRedX(6.39), 6.82, new Rotation2d(0.0)),
+                        new Pose2d(5.39, 6.82, new Rotation2d(0.0))))
+                        - 0.0,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(6.39), 7.32, new Rotation2d(0.0)),
+                new Pose2d(6.39, 5.82, new Rotation2d(0.0))));
+
+        NamedCommands.registerCommand("prepareSkipYShoot3", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
+                SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                        true, 
+                        new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
+                        new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
+                        + 0.2,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
+                new Pose2d(3.32, 2.28, new Rotation2d(0.0))));
+
+        NamedCommands.registerCommand("prepareSkipYShoot4", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter, 
+                SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+                        true, 
+                        new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
+                        new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
+                        + 0.2,    //degrees fudge factor
+                new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
+                new Pose2d(3.32, 2.28, new Rotation2d(0.0))));
+
+
+        NamedCommands.registerCommand("nonAmpSideShootNoStop", 
+            CommandFactoryUtility.createPreparePosedShootCommand(turret, pivot, shooter, 45.0,
+                    new Pose2d(convertBlueXToRedX(3.0), 3.12, new Rotation2d(0.0)),
+                    new Pose2d(3.5, 3.12, new Rotation2d(0.0)) )
+                .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake)));
+        
+        // Offsets future shots down by one degree
+        // THIS MUST BE RESET AFTER USE or it will mess up all future shots. In addition, this only affects the SpeakerScoreUtility calculated shot.
+        // ! - - - !THIS MUST BE RESET AFTER USE! - - - !
         NamedCommands.registerCommand("setShotOffset-Down1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-1.0)));
+        NamedCommands.registerCommand("setShotOffset-Down2",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(-2.5)));
+        NamedCommands.registerCommand("setShotOffset-Up1",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(1.0)));
+        NamedCommands.registerCommand("setShotOffset-Up0.5",  new InstantCommand(()->SpeakerScoreUtility.setShotOffset(0.5)));
         NamedCommands.registerCommand("resetShotOffset",  new InstantCommand(()->SpeakerScoreUtility.resetShotOffset()));
 
+        // Sets the shooter's target speed to 100 rots/s instead of 117. 
+        // Used for slowing close-range shots so they don't bounce out of the speaker.
+        // THIS MUST BE RESET AFTER USE or it will mess up all future shots. In addition, this only affects the SpeakerScoreUtility calculated shot.
+        // ! - - - !THIS MUST BE RESET AFTER USE! - - - !
         NamedCommands.registerCommand("setShotSpeedOverride-100",  new InstantCommand(()->SpeakerScoreUtility.setShotSpeedOffset(100.0)));
         NamedCommands.registerCommand("resetShotSpeedOverride",  new InstantCommand(()->SpeakerScoreUtility.resetShotSpeedOffset()));
+
+        NamedCommands.registerCommand("stopDrivetrain", drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric().withVelocityX(0).withVelocityY(0).withDriveRequestType(DriveRequestType.OpenLoopVoltage)));
+        
+        NamedCommands.registerCommand("frontalEject", 
+            shooter.newSetSpeedsWithSlotCommand(50.0, 50.0, 1)
+                .alongWith(indexer.newSetSpeedCommand(0.7))
+                .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
+                .andThen(new WaitCommand(0.5))); // This is to validate that note is out);
+    }
+
+    private static double convertBlueXToRedX(double x) {
+        return 16.5 - x;
     }
 }

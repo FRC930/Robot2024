@@ -20,12 +20,6 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndShoot"
           }
         },
@@ -38,7 +32,7 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "stopIntakeSensor"
           }
         },
         {
@@ -56,7 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "stopIntakeSensor"
           }
         },
         {

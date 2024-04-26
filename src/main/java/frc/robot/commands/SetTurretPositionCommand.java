@@ -12,10 +12,12 @@ public class SetTurretPositionCommand extends Command {
     protected TurretSubsystem m_turret;
     private double m_turretPos;
     
-    /**
-    * <h3>SetTurretPositionCommand</h3>
-    * Constructs a command to set the turrets position.
-    */
+    /***
+     * <h3>SetTurretPositionCommand</h3>
+     * Constructs a command to set the turrets position.
+     * @param turretSubsystem
+     * @param turretPosition
+     */
     public SetTurretPositionCommand(TurretSubsystem turretSubsystem, double turretPosition) {
         m_turret = turretSubsystem;
         m_turretPos = turretPosition;

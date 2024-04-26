@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 5.712959887458236
+        "x": 8.281967377058862,
+        "y": 4.778021310678856
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.554051617485437,
-        "y": 5.935465781828085
+        "x": 7.63787136704088,
+        "y": 5.176189753235427
       },
       "isLocked": false,
       "linkedName": "AmpY4_R"
@@ -20,8 +20,8 @@
         "y": 6.89
       },
       "prevControl": {
-        "x": 6.176336885113142,
-        "y": 6.702626615267496
+        "x": 5.998354250631467,
+        "y": 6.476092609817175
       },
       "nextControl": null,
       "isLocked": false,
@@ -75,7 +75,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 180.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "AmpY",

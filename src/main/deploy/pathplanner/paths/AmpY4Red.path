@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.743200491132686,
-        "y": 6.256049932268854
+        "x": 6.209149308455535,
+        "y": 6.265297551993107
       },
       "isLocked": false,
       "linkedName": "AmpY3_R"
     },
     {
       "anchor": {
-        "x": 7.25,
-        "y": 5.712959887458236
+        "x": 7.555895511220408,
+        "y": 5.269876445601678
       },
       "prevControl": {
-        "x": 5.551928700861682,
-        "y": 5.759803233641361
+        "x": 7.005486193568677,
+        "y": 5.656334051612468
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "stopShoot"
+                "name": "hardStopShoot"
               }
             },
             {
@@ -63,8 +63,8 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 180.0,
-    "rotateFast": false
+    "rotation": 150.0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "AmpY",

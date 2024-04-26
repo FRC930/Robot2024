@@ -20,12 +20,6 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndShoot"
           }
         },
@@ -33,12 +27,6 @@
           "type": "path",
           "data": {
             "pathName": "AmpL2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
           }
         },
         {

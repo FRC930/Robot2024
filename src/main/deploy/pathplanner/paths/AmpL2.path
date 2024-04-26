@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.9026396514331507,
+        "x": 3.0309099079736637,
         "y": 5.545221859674489
       },
       "prevControl": {
-        "x": 2.9026396514331507,
+        "x": 3.0309099079736637,
         "y": 5.959750904690725
       },
       "nextControl": null,
@@ -28,7 +28,13 @@
       "linkedName": "AmpL2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -50,7 +56,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0

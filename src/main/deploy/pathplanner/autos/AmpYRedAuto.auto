@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "setShotSpeedOverride-100"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -52,25 +46,7 @@
         {
           "type": "named",
           "data": {
-            "name": "resetShotSpeedOverride"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setShotOffset-Down1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "aimAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "resetShotOffset"
           }
         },
         {
