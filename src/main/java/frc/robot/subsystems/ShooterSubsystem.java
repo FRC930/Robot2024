@@ -1,20 +1,15 @@
 package frc.robot.subsystems;
 
  import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
-import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * <h3>ShooterSubsystem</h3>

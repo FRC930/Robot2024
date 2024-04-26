@@ -1,16 +1,9 @@
 package frc.robot.utilities;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.kinematics.Odometry;
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.SwerveDrivetrainSubsystem;
+
 
 public abstract class AimingMathUtil {
     

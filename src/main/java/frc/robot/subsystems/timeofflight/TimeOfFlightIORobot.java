@@ -1,14 +1,9 @@
 package frc.robot.subsystems.timeofflight;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
-import edu.wpi.first.wpilibj.Timer;
-
 import frc.robot.IOs.TimeOfFlightIO;
-import frc.robot.utilities.SpeakerScoreUtility;
 
 /**
  * <h3>TimeOfFlightIORobot</h3>

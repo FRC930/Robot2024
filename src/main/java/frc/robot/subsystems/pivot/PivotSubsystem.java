@@ -6,7 +6,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
 import frc.robot.IOs.TimeOfFlightIO;
 import frc.robot.commands.TurretAimCommand;
-import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;

@@ -5,7 +5,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+
 
 /**
  * <h3>ElevatorIOSim</h3>
