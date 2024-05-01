@@ -19,9 +19,7 @@ public class RollerMotorIORobot implements TalonRollerIO {
         m_motor = new TalonFX(id, canbus);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
-        //cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
-        // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
-        // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
+
         cfg.CurrentLimits.StatorCurrentLimitEnable = true;
         cfg.CurrentLimits.StatorCurrentLimit = 80.0;
 
@@ -34,10 +32,6 @@ public class RollerMotorIORobot implements TalonRollerIO {
         //Setting current limits
         m_motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(statorCurrentLimit).withSupplyCurrentLimit(supplyCurrentLimit));
     } 
-
-    // public void applyConfigsToMotor(TalonFXConfiguration tfxConfig) {
-    //     m_motor.getConfigurator().apply(tfxConfig);
-    // }
 
     @Override
     public void setSpeed(double speed) {
