@@ -29,7 +29,4 @@ public class TimeOfFlightIORobot implements TimeOfFlightIO {
         return m_sensor.getRange();
     }
 
-    // public void setRefreshRate(double refreshSeconds) {
-    //     m_sensor.setRangingMode(RangingMode.Short, refreshSeconds);
-    // }
 }
