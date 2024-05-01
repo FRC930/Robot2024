@@ -5,25 +5,29 @@ import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+/**
+ * @deprecated Worked in sim, broke on the robot.
+ * <p> Didn't cause any issues, it just wasn't logging any shots.
+ * <p> Intended to make model tuning easier by saving the settings at which the robot shot automatically.
+ */
+@Deprecated
 public class ShotLoggingUtil {
     // PRESETS - - Preset logging vals so we don't have to do juggling. Keeps two static instances of the class to keep things global.
     private static final String[] logPathsTurret = {
         "/AdvantageKit/RealOutputs/SpeakerScoreUtility/distance",
         "/AdvantageKit/RealOutputs/AutoAim/HeadingOffset"
     };
+
     private static final String[] logPathsPivot = {
         "/AdvantageKit/RealOutputs/SpeakerScoreUtility/distance",
         "/AdvantageKit/RealOutputs/PivotSubsystem/Angle",
         "/AdvantageKit/RealOutputs/PivotSubsystem/SetPoint"
     };
+    
     private static String lastShotResult = "Unknown";
     private static final String outputTurret = "logging/shotLogs/turret";
     private static final String outputPivot = "logging/shotLogs/pivot";
@@ -34,7 +38,6 @@ public class ShotLoggingUtil {
     private static final NetworkTableInstance table = NetworkTableInstance.getDefault();
     private final String[] logPaths;
     private final String output;
-
     
     private ShotLoggingUtil(String[] logPaths, String output) {
         this.logPaths = logPaths;
@@ -108,7 +111,11 @@ public class ShotLoggingUtil {
         return out;
     }
 
-    //Compiles 
+    /**
+     * Compiles a list of shot values already in CSV format, using ";" as a delimiter
+     * @param strings
+     * @return
+     */
     public static String compileCSVFormattedStrings(String[] strings) {
         String out = "";
         for(int i = 0; i < strings.length; i++) {
@@ -121,6 +128,10 @@ public class ShotLoggingUtil {
         return out;
     }
 
+    /**
+     * Adds the last result onto the output
+     * @param result
+     */
     private static void addShotResult(String result) {
         String[] pastOutput = (String[])Optional.ofNullable(getTableVal("/AdvantageKit/RealOutputs/" + "logging/shotsHit")).orElse(new String[0]);
         String[] newOutput = Arrays.copyOf(pastOutput, pastOutput.length + 1);
@@ -128,17 +139,27 @@ public class ShotLoggingUtil {
         Logger.recordOutput("logging/shotsHit",newOutput);
     }
 
+    /**
+     * Records whether or not the last shot hit
+     * @param didShotHit
+     */
     public static void resolveLastShot(boolean didShotHit) {
         lastShotResult = didShotHit ? "Hit" : "Missed";
         addShotResult(lastShotResult);
     }
 
+    /**
+     * Removes the last shot log
+     */
     public static void deleteLastShotLog() {
         String[] pastOutput = (String[])Optional.ofNullable(getTableVal("/AdvantageKit/RealOutputs/" + "logging/shotsHit")).orElse(new String[0]);
         String[] newOutput = Arrays.copyOf(pastOutput, pastOutput.length - 1);
         Logger.recordOutput("logging/shotsHit",newOutput);
     }
 
+    /**
+     * Advances onto the next shot
+     */
     public static void advanceToNextShot() {
         if(lastShotResult.equals("Unknown")) {
             addShotResult("Unknown");
@@ -146,6 +167,10 @@ public class ShotLoggingUtil {
         lastShotResult = "Unknown";
     }
 
+    /**
+     * Stores a single global instance of this util for the pivot
+     * @return
+     */
     public static ShotLoggingUtil getPivotInstance() {
         if(pivotInstance == null) {
             pivotInstance = new ShotLoggingUtil(logPathsPivot,outputPivot);
@@ -153,6 +178,10 @@ public class ShotLoggingUtil {
         return pivotInstance;
     }
 
+    /**
+     * Stores a single global instance of this util for the turret
+     * @return
+     */
     public static ShotLoggingUtil getTurretInstance() {
         if(turretInstance == null) {
             turretInstance = new ShotLoggingUtil(logPathsTurret,outputTurret);
