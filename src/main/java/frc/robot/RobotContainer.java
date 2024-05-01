@@ -14,7 +14,6 @@ import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
-import frc.robot.commands.tests.SetElevatorPositionCommandTest;
 import frc.robot.commands.tests.SetPivotPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
 import frc.robot.generated.TunerConstants;
@@ -300,11 +299,6 @@ public class RobotContainer {
     private Matrix<N3, N1> visionSTDsDevs = VecBuilder.fill(0.5, 0.5, 0.5);
   
     //--SUBSYSTEMS--\\
-
-    // public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
-    //   Robot.isReal()
-    //     ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
-    //     : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
 
     //private final RedirectorsSubsystem m_RedirectorsSubsystem = new RedirectorsSubsystem(4);
     private final BlowerSubsystem m_BlowerSubsystem = new BlowerSubsystem(4);

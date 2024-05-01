@@ -24,18 +24,11 @@ public class ShooterSubsystem extends SubsystemBase{
     private boolean m_reachedSetPoint = false;
 
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
-        // m_leftMotor = new TalonFX(leftID);
         IO_Left = LeftIO;
         IO_Right = RightIO;
 
         IO_Left.getTalon().setInverted(true);
         IO_Right.getTalon().setInverted(false);
-
-        // Phoenix6Utility.resetTalonFxFactoryDefaults(m_leftMotor);
-
-        // Phoenix6Utility.applyConfigAndRetry(m_leftMotor, 
-        //     () -> m_leftMotor.setControl(new Follower(IO_Right.getTalon().getDeviceID(), true)));
-        
     }
     
     /**
