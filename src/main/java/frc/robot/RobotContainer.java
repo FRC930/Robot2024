@@ -14,7 +14,6 @@ import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
-import frc.robot.commands.tests.SetElevatorPositionCommandTest;
 import frc.robot.commands.tests.SetPivotPositionCommandTest;
 import frc.robot.commands.tests.ShooterCommandTest;
 import frc.robot.generated.TunerConstants;
