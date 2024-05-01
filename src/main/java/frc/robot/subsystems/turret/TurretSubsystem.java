@@ -108,10 +108,6 @@ public class TurretSubsystem extends SubsystemBase{
         return new WaitCommand(seconds).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
     }
 
-    public void toggleTurretLock() {
-        m_isTurretLocked = !m_isTurretLocked;
-    }
-
     public void disableTurretLock() {
         m_isTurretLocked = false;
     }
