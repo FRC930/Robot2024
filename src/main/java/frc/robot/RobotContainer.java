@@ -300,11 +300,6 @@ public class RobotContainer {
   
     //--SUBSYSTEMS--\\
 
-    // public final ElevatorSubsystem m_climbingElevatorSubsystem = new ElevatorSubsystem(
-    //   Robot.isReal()
-    //     ? new ElevatorIORobot(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR)
-    //     : new ElevatorIOSim(21, 22, CANBUS, climbingS0C,  climbingMMC, ElevatorType.CLIMBING_ELEVATOR));
-
     //private final RedirectorsSubsystem m_RedirectorsSubsystem = new RedirectorsSubsystem(4);
     private final BlowerSubsystem m_BlowerSubsystem = new BlowerSubsystem(4);
 
