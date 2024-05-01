@@ -77,7 +77,7 @@ public class TurretRefineCommand extends Command{
                 
             if ((isBlue && (m_CurrentPose.getY() < m_TargetPose.getY()))   || 
                 (!isBlue && !(m_CurrentPose.getY() < m_TargetPose.getY())) ) {
-                Offset = ANGLE_OFFSET; //TODO figure out Offset values
+                Offset = ANGLE_OFFSET; 
             } else {
                 Offset = -ANGLE_OFFSET;
             }
