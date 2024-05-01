@@ -139,7 +139,6 @@ public class AutoCommandManager {
          *  |        |  Level 1
          * (source side)
          */
-        //TODO update all of the x and y positions for each of the alliance colors (don't do center line points)
         NamedCommands.registerCommand("AllianceTopNote", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
             new Pose2d(2.9, 7.0, new Rotation2d(0.0)), new Pose2d(13.68, 7.0, new Rotation2d(0.0))));
         NamedCommands.registerCommand("AllianceMidNote", new LimeLightIntakeCommand(drivetrain, gamePieceUtility, 
@@ -214,20 +213,22 @@ public class AutoCommandManager {
         
         //Scores into the amp.
         NamedCommands.registerCommand("ampScore", 
-            new PrintCommand("TODO add new amp command.") //TODO implement new amp here
+            //We don't ever use amp during auto, so this is never used and was never finished
+            new PrintCommand("TODO add new amp command.") 
         );  
         
         //Stops the intake and does a note backup
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, true));
         NamedCommands.registerCommand("stopIntakeSensor", CommandFactoryUtility.createNoteBackUpCommand(indexer, intake, false));
 
-        //TODO: Ask harry what exactly it does. I know about as much about it as the name indicates.
+        //Shoots into the speaker while moving
         NamedCommands.registerCommand("movingSideShoot", 
             CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 39.0)
                 .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake))
                 .andThen(CommandFactoryUtility.createStopShootingCommand(shooter, indexer, turret))
                 .andThen(pivot.newSetPosCommand(35.0)) // pivot angle for pillar shot
         );
+
         NamedCommands.registerCommand("movingSideShootPlus", 
             CommandFactoryUtility.createPrepareShootCommand(turret, pivot, shooter, 40.0)
                 .andThen(CommandFactoryUtility.createShootPreparedCommand(indexer, intake))

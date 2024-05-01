@@ -112,12 +112,9 @@ public class MechanismViewer {
 
     public void periodic() {
         // Updates position of mechanisms
-        // m_climbingElevatorControl.setLength(Units.inchesToMeters(m_climbingElevator.getPosition()+0.2));
-        // m_climbingElevatorControlTarget.setLength(Units.inchesToMeters(m_climbingElevator.getTarget()+0.2));
         m_pivotControl.setAngle(m_pivot.getPosition());
         m_pivotControlTarget.setAngle(m_pivot.getTarget());
-        // m_shootingElevatorControl.setLength(Units.inchesToMeters(m_shootingElevator.getPosition())+0.2);
-        // m_shootingElevatorControlTarget.setLength(Units.inchesToMeters(m_shootingElevator.getTarget())+0.2);
+
         // Mech2d is counter-clockwise positive so negate values
         // https://github.com/wpilibsuite/frc-docs/blob/stable/source/docs/software/dashboards/glass/mech2d-widget.rst#id5
         m_turretControl.setAngle(-m_turret.getPosition());
