@@ -75,6 +75,7 @@ public class PivotSubsystem extends SubsystemBase{
     public void resetMotorPosition() {
         // reset motor
         if(m_io instanceof PivotIORobot && ENABLE_REZEROING) {
+            //dead code, but could be renabled if ENABLE_REZEROING is set to true
             Logger.recordOutput(this.getClass().getSimpleName() + "/AngleWhenReset", getPosition());
             Logger.recordOutput(this.getClass().getSimpleName() + "/LimitSwitchRangeWhenReset", m_sensorIO.getRange());
             TalonFX m_motor = ((PivotIORobot) m_io).m_motor;    
@@ -111,16 +112,6 @@ public class PivotSubsystem extends SubsystemBase{
     }
 
     /**
-     * <h3>getVoltage</h3>
-     * Gets the current voltage of the subystem.
-     * @return The voltage the motor is running at.
-     */
-   // public double getVoltage() {
-
-   // }
-
-
-    /**
      * <h3>getSensor</h3>
      * @return value of indexer sensor
      */
@@ -149,10 +140,6 @@ public class PivotSubsystem extends SubsystemBase{
 
     public Command newSetPosCommand(double pos) {
         return new InstantCommand(() -> setPosition(pos), this);
-    }
-
-    public Command newSetPosCommand(SpeakerScoreUtility speakerUtil) {
-        return new InstantCommand(() -> setPosition(speakerUtil.getPivotAngle()), this);
     }
 
     public Command newCalcAndSetPosCommand() {
