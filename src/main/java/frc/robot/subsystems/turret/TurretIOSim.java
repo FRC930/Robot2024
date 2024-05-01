@@ -30,22 +30,7 @@ public class TurretIOSim extends TurretIORobot {
         // TODO Simulation appear to work better with gearratio = 1
         m_motorSim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1,0.001);
     }
-    
-    // @Override
-    // public void runSim() {
-    //     m_ArmSim.setInputVoltage(m_motor.getSimState().getMotorVoltage());
 
-    //     m_ArmSim.update(0.02);
-        
-    //     /// SET SIM PHYSICS INPUTS
-    //     final double position_rot = Units.radiansToRotations(m_ArmSim.getAngleRads());
-    //     final double velocity_rps = Units.radiansToRotations(m_ArmSim.getVelocityRadPerSec());
-
-    //     m_motor.getSimState().setRawRotorPosition(position_rot);
-    //     m_motor.getSimState().setRotorVelocity(velocity_rps);
-
-    //     m_motor.getSimState().setSupplyVoltage(12 - m_motor.getSimState().getSupplyCurrent() * kMotorResistance);
-    // }
     @Override
     public void runSim() {
         /// DEVICE SPEED SIMULATION
