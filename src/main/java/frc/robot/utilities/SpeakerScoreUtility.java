@@ -20,9 +20,7 @@ public class SpeakerScoreUtility {
     // {LeftShooterSpeed, RightShooterSpeed, IndexerSpeed, PivotPosition, ElevatorPosition}
     static final private int LEFT_SPEED_COLUMN = 0;
     static final private int RIGHT_SPEED_COLUMN = 1;
-    static final private int INDEXER_SPEED_COLUMN = 2;  // TODO not needed since never used different value
     static final private int PIVOT_ANGLE_COLUMN = 3;
-    static final private int EVELATOR_HEIGHT_COLUMN = 4;   // TODO not need given all at 0.0 
 
     static final private double FIXED_ANGLE_BUMPER_SHOT_DISTANCE = 43.0; //In inches
     private static final double FIXED_ANGLE_BUMPER_SHOT = 56.0;
@@ -82,10 +80,6 @@ public class SpeakerScoreUtility {
 
     public boolean getAutoAim() {
         return m_useAutoAim;
-    }
-
-    public Target getDesiredTarget() {
-        return m_desiredTarget;
     }
 
     public boolean isClose() {
@@ -161,58 +155,8 @@ public class SpeakerScoreUtility {
         return distance;
     }
 
-    public static double computePivotAngleInternal(double distance) {
-        double angleOffset = 3.5;
-
-        Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
-        Alliance alliance;
-        if (optionalAlliance.isPresent()){
-            alliance = optionalAlliance.get();
-        } else {
-            alliance = Alliance.Blue;
-        }
-
-        if(distance <= FIXED_ANGLE_BUMPER_SHOT_DISTANCE){
-            return FIXED_ANGLE_BUMPER_SHOT;
-        } else if (distance >= LINEAR_DISTANCE_FAR) {
-            if (alliance == Alliance.Red) {
-                angleOffset += -0.5;
-            } else {
-                angleOffset += 0.0;
-            }
-
-            return (-0.05 * distance) + 32.7 + 1.5 + angleOffset; // 0.5 (inches) is a fudge factor
-        } else if (distance >= LINEAR_DISTANCE_CLOSE) {
-            if (alliance == Alliance.Red) {
-                angleOffset += RED_ALLIANCE_OFFSET;
-            } else {
-                angleOffset += BLUE_ALLIANCE_OFFSET;
-            }
-            
-            return (-0.115 * distance) + 40.9 + 3.0 + angleOffset; // 2.0 (inches) is a fudge factor
-        } else {
-            return (1.95E-3 * Math.pow(distance, 2)) - (0.54 * distance) + 63.3 + 4.5 + angleOffset; // 2.0 (inches) is a fudge factor
-        }
-    }
-
     public static double computePivotAngle(double distance) {
         return computePivotAnglePolyModel(distance) + m_nextShotAngleOffset;
-        //return computePivotAngleInternal(distance) + m_nextShotAngleOffset;
-    }
-
-    public static double computePivotAngleInverseTan(double distance) {
-        // "Node" is shooting target, in middle of opening
-
-        double distanceCenterToNodeInches = 
-            distance + DISTANCE_OFFSET_TO_CENTER_OF_ROBOT /*distance from speaker to robot frame when shooting*/
-            + 8.0 /*inches from center of robot to the pivot point of shooter*/ 
-            - 4.0 /*we want to shoot into the middle of opening, not back wall*/;
-        double heightTurretToNodeInches = 
-            57.13 /*from documentation height of april tag in inches*/ 
-            + 24.0 /*height of node above april tag*/ 
-            - 12.5 /*height of shooter pivot point in inches*/;
-
-        return Units.radiansToDegrees(Math.atan2(heightTurretToNodeInches, distanceCenterToNodeInches));
     }
 
     /*  SHOOTER DATA SHEET HERE:
