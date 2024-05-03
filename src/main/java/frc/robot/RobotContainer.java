@@ -612,14 +612,14 @@ public class RobotContainer {
    */
   public void updateAllVision() {
     if (USE_LIMELIGHT_APRIL_TAG) {  
-      updatePoseEstimateWithAprilTags("limelight-front",true);
-      updatePoseEstimateWithAprilTags("limelight-back",true);
-      updatePoseEstimateWithAprilTags("limelight-right", true);
-      updatePoseEstimateWithAprilTags("limelight-left", true);
-      // updatePoseWithMegaTag2("limelight-front",true);
-      // updatePoseWithMegaTag2("limelight-back",true);
-      // updatePoseWithMegaTag2("limelight-right", true);
-      // updatePoseWithMegaTag2("limelight-left", true);
+      // updatePoseEstimateWithAprilTags("limelight-front",true);
+      // updatePoseEstimateWithAprilTags("limelight-back",true);
+      // updatePoseEstimateWithAprilTags("limelight-right", true);
+      // updatePoseEstimateWithAprilTags("limelight-left", true);
+      updatePoseWithMegaTag2("limelight-front", true);
+      updatePoseWithMegaTag2("limelight-back", false);
+      updatePoseWithMegaTag2("limelight-right", false);
+      updatePoseWithMegaTag2("limelight-left", false);
     }
   }
 
@@ -627,40 +627,40 @@ public class RobotContainer {
     boolean doRejectUpdate = false;
     double fpgaTimestamp = Timer.getFPGATimestamp();
 
-    LimelightHelpers.SetRobotOrientation(limeLightName, RobotOdometryUtility.getInstance().getRobotOdometry().getRotation().getDegrees(), 0,
+    LimelightHelpers.SetRobotOrientation(limeLightName, RobotOdometryUtility.getInstance().getRobotOdometry().getRotation().getDegrees() , 0,
         0, 0, 0, 0);
     LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limeLightName);
 
-    if (Math.abs(TunerConstants.DriveTrain.getPigeon2().getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-    {
-      doRejectUpdate = true;
-    }
+    // if (Math.abs(TunerConstants.DriveTrain.getPigeon2().getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+    // {
+    //   doRejectUpdate = true;
+    // }
 
     // distance from current pose to vision estimated pose
-    Translation2d translation = TunerConstants.DriveTrain.getState().Pose.getTranslation();
-    double poseDifference = translation.getDistance(mt2.pose.getTranslation());
+    // Translation2d translation = TunerConstants.DriveTrain.getState().Pose.getTranslation();
+    // double poseDifference = translation.getDistance(mt2.pose.getTranslation());
 
     double xyStds;
     double degStds;
-    if (mt2.tagCount >= 2) {
+    // if (mt2.tagCount >= 2) {
       xyStds = 0.1;
       degStds = 6;
-    }
+    // }
     // 1 target with large area and close to estimated pose
-    else if (mt2.tagCount == 1 && mt2.avgTagArea > 0.8 && poseDifference < 0.5) {
-      xyStds = 1.0;
-      degStds = 12;
-    }
+    // else if (mt2.tagCount == 1 && mt2.avgTagArea > 0.8 && poseDifference < 0.5) {
+    //   xyStds = 1.0;
+    //   degStds = 12;
+    // }
     // conditions don't match to add a vision measurement
-    else {
-      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-      return;
-    }
+    // else {
+    //   SmartDashboard.putBoolean(limeLightName + "/Updated", false);
+    //   return;
+    // }
 
-    if (m_visionUpdatesOdometry && usePose && !doRejectUpdate) {
+    if (m_visionUpdatesOdometry && usePose && !doRejectUpdate && mt2.tagCount > 0) {
       m_StartInTeleopUtility.updateTags();
 
-      drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+      drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, 99999.0));
       drivetrain.addVisionMeasurement(mt2.pose, fpgaTimestamp - (mt2.timestampSeconds / 1000.0));
 
       SmartDashboard.putBoolean(limeLightName + "/Updated", true);
