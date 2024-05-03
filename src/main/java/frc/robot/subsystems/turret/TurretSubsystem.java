@@ -3,14 +3,11 @@ package frc.robot.subsystems.turret;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
-import frc.robot.utilities.CommandFactoryUtility;
-import frc.robot.utilities.SpeakerScoreUtility;
 
 /**
  * <h3>PivotSubsystem</h3>
@@ -109,10 +106,6 @@ public class TurretSubsystem extends SubsystemBase{
 
     public Command newWaitUntilSetpointCommand(double seconds) {
         return new WaitCommand(seconds).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
-    }
-
-    public void toggleTurretLock() {
-        m_isTurretLocked = !m_isTurretLocked;
     }
 
     public void disableTurretLock() {

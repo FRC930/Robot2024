@@ -1,41 +1,22 @@
 package frc.robot.utilities;
 
-import java.util.function.ObjDoubleConsumer;
-
-import org.littletonrobotics.conduit.schema.CoreInputs;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.HoodCommand;
-import frc.robot.commands.SetElevatorPositionCommand;
 import frc.robot.commands.TurretAimCommand;
-import frc.robot.commands.TurretRefineCommand;
 import frc.robot.subsystems.AmpHoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.LeafBlower.BlowerSubsystem;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.turret.TurretSubsystem;
 
 public final class CommandFactoryUtility {
-
-
-    private static final double INDEXER_STAR_TIMEOUT = 0.3;
-
-    private static final double INDEXER_STAR_INDEX_SPEED = 0.6;
-
-
     private static final double PIVOT_FEED_POS = 45.0;
 
     //#region positions
@@ -81,8 +62,6 @@ public final class CommandFactoryUtility {
     private static final double AMP_STAR_PIVOT_POS = 20.0;          // 20.0;
     private static final double INDEXER_AMP_SPEED = -5.5; //-6.0
 
-
-    //TODO review values and code
     public static Command createEjectCommand(TurretSubsystem turret, IndexerSubsystem indexer, IntakeSubsystem intake) {
             return turret.newSetPosCommand(TURRET_STOW_POS)
                 .andThen(turret.newWaitUntilSetpointCommand(TURRET_TIMEOUT))
@@ -93,7 +72,6 @@ public final class CommandFactoryUtility {
                 .andThen(new WaitCommand(AFTER_SHOOT_TIMEOUT)); // This is to validate that note is out
     }
 
-    //TODO review values and code
     public static Command createStopShootingCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,  TurretSubsystem turret, IntakeSubsystem intake) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
             .alongWith(indexer.newSetSpeedCommand(0.0))
@@ -163,8 +141,6 @@ public final class CommandFactoryUtility {
     // public static Command createStowElevatorCommand(ElevatorSubsystem elevator) {
     //     return elevator.newSetPosCommand(ELEVATOR_STOW_POS);
     // }
-
-    // TODO trap shot
     public static Command createPivotAndShooterSpeedCommand(ShooterSubsystem shooter, PivotSubsystem pivot, Double pivotAngle) {
         Command command = shooter.newCalcAndSetSpeedsCommand(); //shooter.newSetSpeedsCommand(speakerUtil)
             if (pivotAngle == null) {
@@ -229,7 +205,10 @@ public final class CommandFactoryUtility {
     }
 
     /**
-     * @deprecated Turret does not aim properly with this in auto
+     * @deprecated Do not use, ends as soon as pivot reaches target. 
+     * use {@code createPreparePosedShootEndless()} with proxy poses instead.
+     * <p> We moved over to a proxy-pose based method of shooting during autos because our odometry was quacked.
+     * <>
      */
     @Deprecated
     public static Command createPrepareShootEndlessCommand(TurretSubsystem turret, PivotSubsystem pivot, ShooterSubsystem shooter, Double pivotAngle) {

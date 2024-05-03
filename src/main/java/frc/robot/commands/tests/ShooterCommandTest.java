@@ -1,6 +1,5 @@
 package frc.robot.commands.tests;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ShooterSubsystem;

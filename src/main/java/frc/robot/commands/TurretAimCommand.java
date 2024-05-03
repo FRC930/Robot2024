@@ -3,14 +3,11 @@ package frc.robot.commands;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedSystemStats;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,7 +22,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 //Automatically aims the turret to one of the speakers based on the alliance.
 public class TurretAimCommand extends Command{
 
-    private static final double AIM_OFFSET = Units.inchesToMeters(23.0); // May be dynamic
     private static final double NON_AMP_AIM_OFFSET = Units.inchesToMeters(13.0); // May be dynamic
 
     //Has the shooter use custom offsets from SmartDashboard and logs extra info
@@ -38,7 +34,6 @@ public class TurretAimCommand extends Command{
     private Pose2d m_AmpSideRedTargetPose;
     private Pose2d m_NonAmpSideBlueTargetPose;
     private Pose2d m_NonAmpSideRedTargetPose;
-    private Pose2d m_TargetPose;
     private Pose2d m_CurrentPose;
     private final boolean useProxyPose;
     private double m_CurrentRobotHeading;
@@ -50,7 +45,6 @@ public class TurretAimCommand extends Command{
     private double ty; //target y
     private double rx; //robot x
     private double ry; //robot y
-    private boolean ampSide;
     private double idealHeading;
     private Pose2d m_ProxyPoseRed;
     private Pose2d m_ProxyPoseBlue;
@@ -96,7 +90,6 @@ public class TurretAimCommand extends Command{
             m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(30 + 24), 
             m_AmpSideBlueTargetPose.getRotation());
 
-        m_TargetPose = m_AmpSideBlueTargetPose;
 
         if(proxyPoseRed != null && proxyPoseBlue != null) {
             m_ProxyPoseRed = proxyPoseRed;

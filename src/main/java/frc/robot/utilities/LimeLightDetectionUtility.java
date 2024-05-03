@@ -1,6 +1,5 @@
 package frc.robot.utilities;
 
-import org.littletonrobotics.junction.Logger;
 
 /**
  * 

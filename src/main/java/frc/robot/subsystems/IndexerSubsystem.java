@@ -2,10 +2,8 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -148,10 +146,6 @@ public class IndexerSubsystem extends SubsystemBase {
         return m_sensorIO.getRange();
     }
 
-    public StartEndCommand getTestCommand() {
-        return new StartEndCommand(() -> {setSpeed(0.3);}, () -> {stop();}, this);
-    }
-
     @Override
     public void periodic() {
         m_sensorStatus = m_sensorIO.get();
@@ -187,14 +181,6 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command newSetSpeedCommand(double speed) {
         return new InstantCommand(() -> setSpeed(speed), this);
-    }
-
-    public Command newSetStarSpeedCommand(double speed) {
-        return new InstantCommand(() -> setStarIndexerSpeed(speed), this);
-    }
-
-    public Command newSetTopSpeedCommand(double speed) {
-        return new InstantCommand(() -> setTopIndexerSpeed(speed), this);
     }
 
     public Command newSetStarVoltageCommand(double speed) {
