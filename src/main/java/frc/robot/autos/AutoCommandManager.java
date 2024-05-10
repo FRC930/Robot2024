@@ -82,7 +82,7 @@ public class AutoCommandManager {
         //Subsystems used by auto commands
         SwerveDrive s_SwerveDrive = (SwerveDrive) subsystemMap.get(subNames.SwerveDriveSubsystem.toString());
         // Adding options to the chooser in Shuffleboard/smartdashboard
-        Boolean isBlue = (DriverStation.getAlliance() == Alliance.Blue);
+        Boolean isBlue = (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue);
         m_chooser.setDefaultOption("None", null);
         //Adding chooser to Shuffleboard/Smartdashboard
         SmartDashboard.putData("Auto choices", m_chooser);
