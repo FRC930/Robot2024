@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "Pigeon 2 (v6)[13]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX (v6)[14]": {
         "header": {
           "open": true
@@ -31,12 +36,15 @@
       "/AdvantageKit/RealOutputs/MechanismViewer/turret2d": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/SmartDashboard/Auto choices": "String Chooser",
+      "/SmartDashboard/FieldSim/Field2d": "Field2d",
       "/SmartDashboard/MechanismSimulator/mechanism2d": "Mechanism2d",
       "/SmartDashboard/MechanismSimulator/turret2d": "Mechanism2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/PP_Field": "Field2d",
       "/SmartDashboard/SelectAuto": "String Chooser",
       "/SmartDashboard/logging/deleteLastShotHit": "Command",
       "/SmartDashboard/logging/forcePivotLog": "Command",
@@ -67,6 +75,17 @@
         }
       },
       "/Pose": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/FieldSim/Field2d": {
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
@@ -128,6 +147,15 @@
       }
     },
     "transitory": {
+      "AdvantageKit": {
+        "RealOutputs": {
+          "Odometry": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "open": true
       }

@@ -37,8 +37,6 @@ import frc.robot.utilities.SwerveModuleConstants;
  */
 public class RobotContainer {
 
-  Alliance alliance = Alliance.Invalid;
-
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;   
