@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.REVPhysicsSim;
@@ -20,7 +22,6 @@ import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.CtreUtils;
 import frc.robot.utilities.RevUtils;
 import frc.robot.utilities.SwerveModuleConstants;
 
@@ -53,7 +54,7 @@ public class SwerveModule extends SubsystemBase {
 
   private CANSparkMax m_driveMotor;
   private CANSparkMax m_turningMotor;
-  private CANCoder m_angleEncoder;
+  private CANcoder m_angleEncoder;
 
   public final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turnEncoder;
@@ -81,7 +82,7 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor = new CANSparkMax(swerveModuleConstants.turningMotorChannel,
         CANSparkMaxLowLevel.MotorType.kBrushless);
 
-    m_angleEncoder = new CANCoder(swerveModuleConstants.cancoderID, "rio"); // TODO CanBUS Pass in
+    m_angleEncoder = new CANcoder(swerveModuleConstants.cancoderID, "rio"); // TODO CanBUS Pass in
     m_angleOffset = swerveModuleConstants.angleOffset;
 
     // Set the distance per pulse for the drive encoder. We can simply use the
@@ -100,10 +101,14 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor.enableVoltageCompensation(12.6);
     m_turningMotor.setInverted(true); // MK4i Steer Motor is inverted
 
-    m_angleEncoder.configFactoryDefault();
-    CtreUtils.checkCtreError(
-        m_angleEncoder.configAllSettings(CtreUtils.generateCanCoderConfig()),
-        "Error setting configuration CANCoder encoder");
+    m_angleEncoder.getConfigurator().apply(new CANcoderConfiguration());
+    
+    CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
+    //Was 0-360 in 2023, that is no longer an option
+    cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+
+    //TODO re-add error checking
+    m_angleEncoder.getConfigurator().apply(cc_cfg);
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder.setPositionConversionFactor(kDriveRevToMeters);
@@ -157,7 +162,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void resetAngleToAbsolute() {
-    double angle = m_angleEncoder.getAbsolutePosition() - m_angleOffset;
+    double angle = (m_angleEncoder.getAbsolutePosition().getValue() * 360) - m_angleOffset;
     m_turnEncoder.setPosition(angle);
   }
 
