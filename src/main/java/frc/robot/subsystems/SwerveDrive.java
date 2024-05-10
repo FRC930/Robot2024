@@ -6,9 +6,8 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.unmanaged.Unmanaged;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.unmanaged.Unmanaged;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -129,7 +128,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public double getHeadingDegrees() {
-    return Math.IEEEremainder(m_pigeon.getYaw(), 360);
+    return Math.IEEEremainder(m_pigeon.getYaw().getValue(), 360);
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -194,12 +193,17 @@ public class SwerveDrive extends SubsystemBase {
     updateOdometry();
     updateSmartDashboard();
 
-    // Logs information about the robot with AdvantageScope
-    Logger.getInstance().recordOutput("Drive/Gryo" + "connected", m_pigeon.getLastError().equals(ErrorCode.OK));
-    Logger.getInstance().recordOutput("Drive/Gryo" + "positionUnits", m_pigeon.getYaw());
-    double[] xyzDps = new double[3];
-    m_pigeon.getRawGyro(xyzDps);
-    Logger.getInstance().recordOutput("Drive/Gyro" + "velocityRadPerSec", Units.degreesToRadians(xyzDps[2]));
+    // Logs information about the robot with AdvantageScope 
+
+    //TODO Fix this lol
+    //Logger.getInstance().recordOutput("Drive/Gryo" + "connected", m_pigeon.getLastError().equals(ErrorCode.OK));
+    
+    Logger.getInstance().recordOutput("Drive/Gryo" + "positionUnits", m_pigeon.getYaw().getValueAsDouble());
+    
+    // TODO fix this lol
+    // double[] xyzDps = new double[3];
+    // m_pigeon.getRawGyro(xyzDps);
+    Logger.getInstance().recordOutput("Drive/Gyro" + "velocityRadPerSec", Units.degreesToRadians(m_pigeon.getAngularVelocityZDevice().getValue()));
     if (moduleStates != null) {
       Logger.getInstance().recordOutput("SwerveModuleStates/Subsystem", moduleStates);
     }
@@ -213,7 +217,7 @@ public class SwerveDrive extends SubsystemBase {
     m_simYaw += chassisSpeed.omegaRadiansPerSecond * 0.02;
 
     Unmanaged.feedEnable(20);
-    m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
+    m_pigeon.getSimState().setRawYaw(-Units.radiansToDegrees(m_simYaw));
   }
 
   public static SwerveDriveKinematics getSwerveKinematics() {
@@ -264,15 +268,13 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   private Rotation2d getYaw() {
-    double[] ypr = new double[3];
-    m_pigeon.getYawPitchRoll(ypr);
-    return (invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+    double yaw = m_pigeon.getYaw().getValue();
+    return (invertGyro) ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);
   }
 
-  public Rotation2d getPitch() {
-    double[] ypr = new double[3];
-    m_pigeon.getYawPitchRoll(ypr);
-    return (invertGyro) ? Rotation2d.fromDegrees(360 - ypr[1]) : Rotation2d.fromDegrees(ypr[1]);
+  public Rotation2d getPitch() {  
+    double pitch = m_pigeon.getPitch().getValue();
+    return (invertGyro) ? Rotation2d.fromDegrees(360 - pitch) : Rotation2d.fromDegrees(pitch);
   }
 
   public void setSwerveModuleStates(SwerveModuleState[] states) {

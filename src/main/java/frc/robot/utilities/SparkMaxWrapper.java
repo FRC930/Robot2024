@@ -2,6 +2,7 @@ package frc.robot.utilities;
 //Imports
 import com.revrobotics.CANSparkMax;
 
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.wpilibj.RobotController;
@@ -16,10 +17,10 @@ public class SparkMaxWrapper extends CANSparkMax {
      * 
      * Manages a spark max, allowing it to run in simulation.
      * @param deviceID - Can BUS ID of desired motor
-     * @param type - Motor type, e.g. MotorType.kBrushless
+     * @param kbrushless - Motor type, e.g. MotorType.kBrushless
      */
-    public SparkMaxWrapper(int deviceID, MotorType type) {
-        super(deviceID,type);
+    public SparkMaxWrapper(int deviceID, com.revrobotics.CANSparkMaxLowLevel.MotorType kbrushless) {
+        super(deviceID,kbrushless);
 
         m_simSparkMax = SimDevice.create("SparkMax",deviceID);
         if (m_simSparkMax != null){
