@@ -9,10 +9,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.SparkMaxWrapper;
+import frc.robot.utilities.ThriftyNova;
 
 public class CANLauncher extends SubsystemBase {
-  CANSparkMax m_launchWheel;
-  CANSparkMax m_feedWheel;
+  ThriftyNova m_launchWheel;
+  ThriftyNova m_feedWheel;
  // sets the ID for the KLauncher, and feeder.
   private static final int kLauncherID = 6;
   private static final int kFeederID = 7;
@@ -25,11 +26,11 @@ public class CANLauncher extends SubsystemBase {
 
   /** Creates a new Launcher. */
   public CANLauncher() {
-    m_launchWheel = new SparkMaxWrapper(kLauncherID, MotorType.kBrushless);
-    m_feedWheel = new SparkMaxWrapper(kFeederID, MotorType.kBrushless);
+    m_launchWheel = new ThriftyNova(kLauncherID);
+    m_feedWheel = new ThriftyNova(kFeederID);
 
-    m_launchWheel.setSmartCurrentLimit(kLauncherCurrentLimit);
-    m_feedWheel.setSmartCurrentLimit(kFeedCurrentLimit);
+    m_launchWheel.setMaxCurrent(kLauncherCurrentLimit);
+    m_feedWheel.setMaxCurrent(kFeedCurrentLimit);
   }
 
   /**
@@ -56,18 +57,18 @@ public class CANLauncher extends SubsystemBase {
 
   // An accessor method to set the speed (technically the output percentage) of the launch wheel
   public void setLaunchWheel(double speed) {
-    m_launchWheel.set(speed);
+    m_launchWheel.setPercentOutput(speed);;
   }
 
   // An accessor method to set the speed (technically the output percentage) of the feed wheel
   public void setFeedWheel(double speed) {
-    m_feedWheel.set(speed);
+    m_feedWheel.setPercentOutput(speed);
   }
 
   // A helper method to stop both wheels. You could skip having a method like this and call the
   // individual accessors with speed = 0 instead
   public void stop() {
-    m_launchWheel.set(0);
-    m_feedWheel.set(0);
+    m_launchWheel.setPercentOutput(0);
+    m_feedWheel.setPercentOutput(0);
   }
 }
