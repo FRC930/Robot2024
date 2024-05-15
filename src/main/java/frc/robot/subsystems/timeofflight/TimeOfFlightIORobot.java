@@ -1,14 +1,9 @@
 package frc.robot.subsystems.timeofflight;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
-import edu.wpi.first.wpilibj.Timer;
-
 import frc.robot.IOs.TimeOfFlightIO;
-import frc.robot.utilities.SpeakerScoreUtility;
 
 /**
  * <h3>TimeOfFlightIORobot</h3>
@@ -34,7 +29,4 @@ public class TimeOfFlightIORobot implements TimeOfFlightIO {
         return m_sensor.getRange();
     }
 
-    // public void setRefreshRate(double refreshSeconds) {
-    //     m_sensor.setRangingMode(RangingMode.Short, refreshSeconds);
-    // }
 }

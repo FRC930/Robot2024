@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.305389050150424,
-        "y": 7.096766946743594
+        "x": 8.293678213604645,
+        "y": 7.424670370025476
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.485630491945719,
-        "y": 7.0733452736520315
+        "x": 7.403654636125248,
+        "y": 7.190453639109847
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 6.8157068696448375
       },
       "prevControl": {
-        "x": 6.314546837367568,
-        "y": 6.9328152351026535
+        "x": 6.373101020096476,
+        "y": 6.979658581285779
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,33 +32,22 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Aim",
-      "waypointRelativePos": 0.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "prepareAmpSkipYShoot3"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "Backup",
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.15,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
                 "name": "stopIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "prepareAmpSkipYShoot3"
               }
             }
           ]

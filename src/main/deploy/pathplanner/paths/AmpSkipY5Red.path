@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 7.4973413284915,
-        "y": 4.555515416309007
+        "x": 7.509052165037283,
+        "y": 4.578937089400569
       },
       "prevControl": {
-        "x": 7.075751212843366,
-        "y": 5.410406484151056
+        "x": 6.958642847385552,
+        "y": 5.4806715034257465
       },
       "nextControl": null,
       "isLocked": false,
@@ -64,7 +64,7 @@
             {
               "type": "named",
               "data": {
-                "name": "stopShoot"
+                "name": "hardStopShoot"
               }
             }
           ]
@@ -79,7 +79,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 3.0,
+    "velocity": 2.0,
     "rotation": 130.0,
     "rotateFast": false
   },

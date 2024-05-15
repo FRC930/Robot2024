@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.796336885113142,
-        "y": 6.956236908194216
+        "x": 3.8084278165703256,
+        "y": 7.155321129472502
       },
       "isLocked": false,
       "linkedName": "AmpY1_R"
     },
     {
       "anchor": {
-        "x": 7.251413761030089,
-        "y": 7.202164475655628
+        "x": 7.509052165037283,
+        "y": 7.389537860388131
       },
       "prevControl": {
-        "x": 3.788116834436236,
-        "y": 7.133095875979968
+        "x": 5.576764134983334,
+        "y": 7.4949353893001645
       },
       "nextControl": null,
       "isLocked": false,
@@ -51,7 +51,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 6.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -66,5 +66,5 @@
     "rotation": 180.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

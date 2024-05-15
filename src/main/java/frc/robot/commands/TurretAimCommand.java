@@ -3,10 +3,10 @@ package frc.robot.commands;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedSystemStats;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -22,18 +22,18 @@ import edu.wpi.first.apriltag.AprilTagFields;
 //Automatically aims the turret to one of the speakers based on the alliance.
 public class TurretAimCommand extends Command{
 
-    private static final double AIM_OFFSET = Units.inchesToMeters(23.0); // May be dynamic
     private static final double NON_AMP_AIM_OFFSET = Units.inchesToMeters(13.0); // May be dynamic
 
     //Has the shooter use custom offsets from SmartDashboard and logs extra info
     public static final boolean debugMode_TESTONLY = true;
+    private static final double TURRET_OFFSET_FUDGE_RED = -5.0;
+    private static final double TURRET_OFFSET_FUDGE_BLUE = -5.0;
 
     private TurretSubsystem m_TurretSubsystem;
     private Pose2d m_AmpSideBlueTargetPose;
     private Pose2d m_AmpSideRedTargetPose;
     private Pose2d m_NonAmpSideBlueTargetPose;
     private Pose2d m_NonAmpSideRedTargetPose;
-    private Pose2d m_TargetPose;
     private Pose2d m_CurrentPose;
     private final boolean useProxyPose;
     private double m_CurrentRobotHeading;
@@ -45,7 +45,7 @@ public class TurretAimCommand extends Command{
     private double ty; //target y
     private double rx; //robot x
     private double ry; //robot y
-    private boolean ampSide;
+    private double idealHeading;
     private Pose2d m_ProxyPoseRed;
     private Pose2d m_ProxyPoseBlue;
 
@@ -90,7 +90,6 @@ public class TurretAimCommand extends Command{
             m_AmpSideBlueTargetPose.getY() + Units.inchesToMeters(30 + 24), 
             m_AmpSideBlueTargetPose.getRotation());
 
-        m_TargetPose = m_AmpSideBlueTargetPose;
 
         if(proxyPoseRed != null && proxyPoseBlue != null) {
             m_ProxyPoseRed = proxyPoseRed;
@@ -137,10 +136,11 @@ public class TurretAimCommand extends Command{
         rx = m_CurrentPose.getX();
         ry = m_CurrentPose.getY();
 
-        m_DesiredHeading = calcTurretAngleExpo(alliance);
+        m_DesiredHeading = calcTurretAngleExpo(alliance) + (alliance == Alliance.Red ? TURRET_OFFSET_FUDGE_RED : TURRET_OFFSET_FUDGE_BLUE);
         
         if(debugMode_TESTONLY) {
             m_DesiredHeading += SmartDashboard.getNumber("TurretOffset", 0.0);
+            Logger.recordOutput("AutoAim/display/targetHeadingDisplay", new Pose2d(rx,ry,new Rotation2d(Units.degreesToRadians( m_CurrentRobotHeading - m_DesiredHeading))).transformBy(new Transform2d(new Translation2d(10,0),new Rotation2d())));
         }
 
         Logger.recordOutput("AutoAim/tx", tx);
@@ -151,7 +151,7 @@ public class TurretAimCommand extends Command{
         //Logs the desired heading
         // SmartDashboard.putNumber("AutoAim/Math", Math.toDegrees(Math.atan2(ty - ry, tx - rx)));
         Logger.recordOutput("AutoAim/DesiredHeading", m_DesiredHeading);
-
+        Logger.recordOutput("AutoAim/HeadingOffset", m_DesiredHeading - idealHeading);
         // actually moves the robots turret to the desired position
         // TODO sussex back in
         m_TurretSubsystem.setPosition(m_DesiredHeading);
@@ -161,7 +161,12 @@ public class TurretAimCommand extends Command{
         double txi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getX();
         double tyi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getY();
         double firstPart = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360);
+        idealHeading = firstPart;
         Logger.recordOutput("AutoAim/IdealHeading", firstPart);
+        if(debugMode_TESTONLY) {
+            Logger.recordOutput("AutoAim/display/targetDisplay", alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d());
+            Logger.recordOutput("AutoAim/display/idealHeadingDisplay", new Pose2d(rx,ry,new Rotation2d(Units.degreesToRadians( m_CurrentRobotHeading - firstPart))).transformBy(new Transform2d(new Translation2d(10,0),new Rotation2d())));
+        }
         return firstPart + AimingMathUtil.getTurretOffsetForDistance(SpeakerScoreUtility.inchesToSpeaker());
     }
     

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.305389050150424,
-        "y": 5.433828157242619
+        "x": 8.293678213604645,
+        "y": 5.3752739745137115
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.7315580594071305,
-        "y": 5.738309907432939
+        "y": 5.773442417070284
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 6.82
       },
       "prevControl": {
-        "x": 6.747847789561484,
-        "y": 6.148189186535292
+        "x": 6.829823645381955,
+        "y": 6.2887192250846695
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,33 +38,22 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "prepareShootAmp",
+      "name": "stopIntake",
       "waypointRelativePos": 0.1,
       "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "prepareAmpSkipYShoot4"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "stopIntake",
-      "waypointRelativePos": 0.05,
-      "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
                 "name": "stopIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "prepareAmpSkipYShoot4"
               }
             }
           ]

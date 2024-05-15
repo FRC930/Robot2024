@@ -161,6 +161,7 @@ public class LimeLightIntakeCommand extends Command {
             linearTX = 0.0;
         }
 
+        // TODO implement to remove jumping from note to note
         // Prevents the robot from unwantingly jumped to a new note
         // if (Math.abs(highPassFilter.calculate(linearTX)) > HIGH_PASS_LIMIT) {
         //     linearTX = 0.0;

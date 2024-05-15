@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.9112722961537205,
+        "y": 6.2770083885388885
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1103565174320065,
+        "y": 6.405827590542485
+      },
+      "isLocked": false,
+      "linkedName": "ampAnchor2Red"
+    },
+    {
+      "anchor": {
+        "x": 2.309440738710292,
+        "y": 6.534646792546081
+      },
+      "prevControl": {
+        "x": 2.2040432097982587,
+        "y": 6.417538427088265
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "shooting",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "preparedShoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 1.0,
+    "rotation": -145.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "AmpAnchor",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

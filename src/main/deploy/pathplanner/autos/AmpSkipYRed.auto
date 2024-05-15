@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 7.647176264395325
+      "x": 1.42,
+      "y": 7.29585116802188
     },
     "rotation": 180.0
   },
@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "setShotOffset-Up0.5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "prepareShoot"
           }
         },
@@ -27,12 +21,6 @@
           "type": "named",
           "data": {
             "name": "preparedShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "resetShotOffset"
           }
         },
         {
@@ -75,30 +63,6 @@
           "type": "path",
           "data": {
             "pathName": "AmpSkipY4Red"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "preparedShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSkipY5Red"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "MidLineLevel3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSkipY6Red"
           }
         },
         {

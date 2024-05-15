@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.281967377058862,
-        "y": 5.796864090161846
+        "y": 4.778021310678856
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.555895511220409,
-        "y": 6.019369984531695
+        "x": 7.63787136704088,
+        "y": 5.176189753235427
       },
       "isLocked": false,
       "linkedName": "AmpY4_R"
@@ -20,8 +20,8 @@
         "y": 6.89
       },
       "prevControl": {
-        "x": 6.176336885113142,
-        "y": 6.702626615267496
+        "x": 5.998354250631467,
+        "y": 6.476092609817175
       },
       "nextControl": null,
       "isLocked": false,
@@ -75,7 +75,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 180.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "AmpY",

@@ -1,20 +1,15 @@
 package frc.robot.subsystems;
 
  import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
-import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * <h3>ShooterSubsystem</h3>
@@ -29,18 +24,11 @@ public class ShooterSubsystem extends SubsystemBase{
     private boolean m_reachedSetPoint = false;
 
     public ShooterSubsystem(TalonVelocityIO LeftIO, TalonVelocityIO RightIO) { 
-        // m_leftMotor = new TalonFX(leftID);
         IO_Left = LeftIO;
         IO_Right = RightIO;
 
         IO_Left.getTalon().setInverted(true);
         IO_Right.getTalon().setInverted(false);
-
-        // Phoenix6Utility.resetTalonFxFactoryDefaults(m_leftMotor);
-
-        // Phoenix6Utility.applyConfigAndRetry(m_leftMotor, 
-        //     () -> m_leftMotor.setControl(new Follower(IO_Right.getTalon().getDeviceID(), true)));
-        
     }
     
     /**

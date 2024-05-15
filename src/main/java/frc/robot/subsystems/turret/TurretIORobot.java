@@ -1,8 +1,6 @@
 package frc.robot.subsystems.turret;
 
 
-import java.util.Map;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -16,7 +14,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.IOs.TalonPosIO;
 import frc.robot.utilities.CommandFactoryUtility;

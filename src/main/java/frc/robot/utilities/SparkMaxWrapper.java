@@ -84,16 +84,8 @@ public class SparkMaxWrapper extends CANSparkMax{
             return 12;
         }
         
-        public double getIOVelocity() {
-            return Units.RadiansPerSecond.convertFrom(getEncoder().getVelocity(),Units.RPM);
-        }
-        
         public double getIOPosition() {
             return Units.Radians.convertFrom(getEncoder().getPosition(),Units.Rotations);
-        }
-
-        public void followIO(SparkMaxWrapper other,boolean inverted) {
-            this.follow(other,inverted);
         }
     }
 

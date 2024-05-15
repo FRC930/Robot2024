@@ -1,6 +1,6 @@
 package frc.robot.subsystems.pivot;
 
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.system.plant.DCMotor;

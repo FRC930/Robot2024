@@ -1,19 +1,15 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.Utils;
+
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.Slot2Configs;
-import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -35,16 +31,13 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         m_motor = new TalonFX(MotorID); //Initializes the motor
 
         this.gearRatio = gearRatio; // The gear ratio
-        
-        
-        // m_request = new MotionMagicVelocityTorqueCurrentFOC(0,0,true,0,0,true,false,false); //The request that will be sent to the motor- Commented it out because of not working in testing
+          
         m_request = new VelocityTorqueCurrentFOC(0.0,0.0,0.0,0,true,false,false); //The request that will be sent to the motor
-        // m_request = new VelocityVoltage(0.0);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration(); //Creates a new blank TalonFX congfiguration that will be applied to the motors in a bit
         cfg.withSlot0(config); // The PID and FF configs
         cfg.withSlot1(config1);
-        cfg.Feedback.SensorToMechanismRatio = this.gearRatio; //The ratio between the motor turning and the elevator moving. We may have to invert this
+        cfg.Feedback.SensorToMechanismRatio = this.gearRatio;
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 
         // cfg.Voltage.PeakForwardVoltage = 8;
@@ -52,9 +45,6 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         cfg.TorqueCurrent.PeakForwardTorqueCurrent = 150;
         cfg.TorqueCurrent.PeakReverseTorqueCurrent = -150;
 
-         // cfg.CurrentLimits.SupplyCurrentLimitEnable = true; 
-        // cfg.CurrentLimits.SupplyCurrentThreshold = 0; // the peak supply current, in amps 
-        // cfg.CurrentLimits.SupplyTimeThreshold = 1.5; // the time at the peak supply current before the limit triggers, in sec
         cfg.CurrentLimits.StatorCurrentLimitEnable = true;
         cfg.CurrentLimits.StatorCurrentLimit = 80.0;
 
@@ -63,12 +53,6 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
         m_motor.setNeutralMode(NeutralModeValue.Coast); //Makes the motor continue rotating even when it is told to brake (its velocity is set to 0)
 
         Phoenix6Utility.applyConfigAndRetry(m_motor, () -> m_motor.setControl(new NeutralOut()));
-
-        // if(initReal) {
-        //     m_motor.setControl(m_request.withVelocity(0).withSlot(0));
-        // } else {
-        //     m_motor.setControl(simRequest);
-        // }
         
     }
 
@@ -147,7 +131,6 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
     @Override
     public double getTargetVelocity() {
         return Phoenix6Utility.getVelocityFromController(m_motor, 0.0);
-        // return ((VelocityTorqueCurrentFOC) m_motor.getAppliedControl()).Velocity;
     }
 
     @Override

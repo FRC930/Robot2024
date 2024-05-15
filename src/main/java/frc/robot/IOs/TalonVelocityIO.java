@@ -62,7 +62,7 @@ public interface TalonVelocityIO {
     public TalonFX getTalon();
     /**
     * <h3>stop</h3>
-    * This sets the shooter's speed to 0
+    * This sets the motor's speed to 0
     */
     void stop();
     /**

@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -51,7 +50,7 @@ public class PivotIORobot implements TalonPosIO{
         // cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // NEED TO CONFIGURE
         // TODO Use tuner x to zero and save number?
         // https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/cancoder/index.html
-        cc_cfg.MagnetSensor.MagnetOffset = -0.163818; // TODO NEED to configure
+        cc_cfg.MagnetSensor.MagnetOffset = 0.0014; // angle at -0.08 at actual 0
 
         if(!PivotSubsystem.ENABLE_REZEROING) {
             Phoenix6Utility.applyConfigAndRetry(m_cc, () -> {return m_cc.getConfigurator().apply(cc_cfg);});
