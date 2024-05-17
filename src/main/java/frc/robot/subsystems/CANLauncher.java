@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.SparkMaxWrapper;
@@ -31,6 +35,19 @@ public class CANLauncher extends SubsystemBase {
 
     m_launchWheel.setMaxCurrent(kLauncherCurrentLimit);
     m_feedWheel.setMaxCurrent(kFeedCurrentLimit);
+
+    m_launchWheel.setInverted(true);
+    m_feedWheel.setInverted(true);
+
+    // m_launchWheel.setRampDown(0.5);
+    // m_launchWheel.setRampUp(0.5);
+
+    // m_feedWheel.setRampDown(1.0);
+    // m_feedWheel.setRampUp(1.0);
+
+    //Didn't appear to affect motors
+    // m_launchWheel.setBrakeMode(true);
+    // m_feedWheel.setBrakeMode(true);
   }
 
   /**
@@ -55,9 +72,19 @@ public class CANLauncher extends SubsystemBase {
         });
   }
 
+  @Override
+  public void periodic() {
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedVelocity:", m_feedWheel.getVelocity());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherVelocity:", m_launchWheel.getVelocity());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedCurrentDraw:", m_feedWheel.getCurrentDraw());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherCurrentDraw:", m_launchWheel.getCurrentDraw());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedPosition:", m_feedWheel.getPosition());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherPosition:", m_launchWheel.getPosition());
+  }
+
   // An accessor method to set the speed (technically the output percentage) of the launch wheel
   public void setLaunchWheel(double speed) {
-    m_launchWheel.setPercentOutput(speed);;
+    m_launchWheel.setPercentOutput(speed);
   }
 
   // An accessor method to set the speed (technically the output percentage) of the feed wheel
