@@ -36,6 +36,7 @@ import frc.robot.subsystems.timeofflight.TimeOfFlightIOSim;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.turret.TurretIORobot;
 import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.utilities.AprilTagUtility;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.LimeLightDetectionUtility;
 import frc.robot.utilities.LimelightHelpers;
@@ -93,8 +94,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    private final boolean USE_LIMELIGHT_APRIL_TAG = true;
-    private boolean m_visionUpdatesOdometry = true;
     private boolean m_turnWithAmp = true;
     
     private static final double JOYSTICK_DEADBAND = 0.1;
@@ -111,7 +110,7 @@ public class RobotContainer {
     private static final double INTAKE_SUPPLY_CURRENT_LIMIT = 30.0;
     private static final double INTAKE_STATOR_CURRENT_LIMIT = 80.0;
 
-
+    private AprilTagUtility m_AprilTagUtility = new AprilTagUtility();
     private LimeLightDetectionUtility m_LimeLightDetectionUtility = new LimeLightDetectionUtility("limelight-game");
 
     //Use max speed from tuner constants from webpage
@@ -309,9 +308,6 @@ public class RobotContainer {
   // Only wish to configure subsystem once in DisableInit() -- delayed so give the devices time to startup 
   private boolean m_subsystemsConfigured = false;
   private boolean m_TeleopInitalized = false; // only want some things to initialze once
-
-  private int visioncounter = 0;
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -569,14 +565,14 @@ public class RobotContainer {
     if (autoCommand != null) {
         m_StartInTeleopUtility.updateAutonomous();
     }
-    m_visionUpdatesOdometry = false; // Turns off vision updates for autonomous
+    m_AprilTagUtility.m_visionUpdatesOdometry = false; // Turns off vision updates for autonomous
     return autoCommand;
   }
 
   public void robotPeriodic() {
     double fpgaTimestampStart = Logger.getRealTimestamp();
-    updateAllVision();
-    fpgaTimestampStart=logTimestamp(fpgaTimestampStart, "updateAllVision", this);
+    m_AprilTagUtility.updateAllVision();
+    fpgaTimestampStart = logTimestamp(fpgaTimestampStart, "updateAllVision", this);
     m_mechViewer.periodic();
     fpgaTimestampStart = logTimestamp(fpgaTimestampStart, "mechViewer", this);
   }
@@ -607,120 +603,9 @@ public class RobotContainer {
     PortForwarder.add(5804, "10.9.30.34", 5801); //limelight-game 
   }
 
-  /**
-   * Update all vision
-   */
-  public void updateAllVision() {
-    if (USE_LIMELIGHT_APRIL_TAG) {  
-      // updatePoseEstimateWithAprilTags("limelight-front",true);
-      // updatePoseEstimateWithAprilTags("limelight-back",true);
-      // updatePoseEstimateWithAprilTags("limelight-right", true);
-      // updatePoseEstimateWithAprilTags("limelight-left", true);
-      updatePoseWithMegaTag2("limelight-front", true);
-      updatePoseWithMegaTag2("limelight-back", false);
-      updatePoseWithMegaTag2("limelight-right", false);
-      updatePoseWithMegaTag2("limelight-left", false);
-    }
-  }
-
-  public void updatePoseWithMegaTag2(String limeLightName, boolean usePose) {
-    boolean doRejectUpdate = false;
-    double fpgaTimestamp = Timer.getFPGATimestamp();
-
-    LimelightHelpers.SetRobotOrientation(limeLightName, RobotOdometryUtility.getInstance().getRobotOdometry().getRotation().getDegrees() , 0,
-        0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limeLightName);
-
-    // if (Math.abs(TunerConstants.DriveTrain.getPigeon2().getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-    // {
-    //   doRejectUpdate = true;
-    // }
-
-    // distance from current pose to vision estimated pose
-    // Translation2d translation = TunerConstants.DriveTrain.getState().Pose.getTranslation();
-    // double poseDifference = translation.getDistance(mt2.pose.getTranslation());
-
-    double xyStds;
-    double degStds;
-    // if (mt2.tagCount >= 2) {
-      xyStds = 0.1;
-      degStds = 6;
-    // }
-    // 1 target with large area and close to estimated pose
-    // else if (mt2.tagCount == 1 && mt2.avgTagArea > 0.8 && poseDifference < 0.5) {
-    //   xyStds = 1.0;
-    //   degStds = 12;
-    // }
-    // conditions don't match to add a vision measurement
-    // else {
-    //   SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-    //   return;
-    // }
-
-    if (m_visionUpdatesOdometry && usePose && !doRejectUpdate && mt2.tagCount > 0) {
-      m_StartInTeleopUtility.updateTags();
-
-      drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, 99999.0));
-      drivetrain.addVisionMeasurement(mt2.pose, fpgaTimestamp - (mt2.timestampSeconds / 1000.0));
-
-      SmartDashboard.putBoolean(limeLightName + "/Updated", true);
-      Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
-      this.visioncounter++;
-    }
-
-    Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", mt2.pose);
-  }
-
-  // https://github.com/LimelightVision/limelight-examples/blob/main/java-wpilib/swerve-megatag-odometry/src/main/java/frc/robot/Drivetrain.java#L57
-  public void updatePoseEstimateWithAprilTags(String limeLightName, boolean usepose) {
-    LimelightHelpers.PoseEstimate lastResult = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
-    double fpgaTimestamp = Timer.getFPGATimestamp();
-    // double fpgaTimestamp = Logger.getRealTimestamp();
-
-    // distance from current pose to vision estimated pose
-    Translation2d translation = drivetrain.getState().Pose.getTranslation();
-    double poseDifference = translation.getDistance(lastResult.pose.getTranslation());
-
-    double xyStds;
-    double degStds;
-    if (lastResult.tagCount >= 2) {
-      xyStds = 0.1;
-      degStds = 6;
-    }
-    // 1 target with large area and close to estimated pose
-    else if (lastResult.tagCount == 1 && lastResult.avgTagArea > 0.8 && poseDifference < 0.5) {
-      xyStds = 1.0;
-      degStds = 12;
-    }
-    // conditions don't match to add a vision measurement
-    else {
-      SmartDashboard.putBoolean(limeLightName + "/Updated", false);
-      return;
-    }
-
-    if (m_visionUpdatesOdometry&&usepose) {
-        m_StartInTeleopUtility.updateTags();
-
-        drivetrain.setVisionMeasurementStdDevs(
-          VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-
-        drivetrain.addVisionMeasurement(lastResult.pose,  
-          fpgaTimestamp - (lastResult.latency/1000.0));
-        
-        SmartDashboard.putBoolean(limeLightName + "/Updated", true);
-        Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/UpdatCounts", this.visioncounter);
-        this.visioncounter++;
-    }
-    
-    Logger.recordOutput("LimeLightOdometry/" + limeLightName + "/Pose", lastResult.pose);
-    Logger.recordOutput("LimeLightOdometry/TA", lastResult.avgTagArea);
-    Logger.recordOutput("LimeLightOdometry/PoseDifference", poseDifference);
-  }
-  
   public void simulationPeriodic() {
     // mechanismSimulator.periodic(); // Moved to robotPeriodic()
   }
-
   public void teleopInit() {
     SpeakerScoreUtility.resetShotSpeedOffset();
     SpeakerScoreUtility.resetShotOffset();// Makes sure auto offets do not continue thru teleop.
@@ -728,7 +613,7 @@ public class RobotContainer {
       // Only want to initialize starting position once (if teleop multiple times dont reset pose again)
       m_StartInTeleopUtility.updateStartingPosition(); 
       m_TeleopInitalized = true;
-      m_visionUpdatesOdometry = true;
+      m_AprilTagUtility.m_visionUpdatesOdometry = true;
     }
   }
 
