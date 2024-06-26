@@ -54,7 +54,7 @@ public class RobotContainer {
           new SwerveModuleConstants(8, 9, 9, 288.721), 
           new SwerveModuleConstants(11, 10, 10, 58.184), 
           new SwerveModuleConstants(1, 3, 3, 268.770),
-          new SwerveModuleConstants(18, 19, 19, 188.350)); 
+          new SwerveModuleConstants(18, 19, 19, 185.868)); 
 
   public static final int kDriverControllerPort = 0;
   public static final int kCodriverControllerPort = 1;
