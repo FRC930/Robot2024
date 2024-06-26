@@ -33,9 +33,9 @@ public class AprilTagUtility {
             // updatePoseEstimateWithAprilTags("limelight-right", true);
             // updatePoseEstimateWithAprilTags("limelight-left", true);
             updatePoseWithMegaTag2("limelight-front", true);
-            updatePoseWithMegaTag2("limelight-back", false);
-            updatePoseWithMegaTag2("limelight-right", false);
-            updatePoseWithMegaTag2("limelight-left", false);
+            updatePoseWithMegaTag2("limelight-back", true);
+            updatePoseWithMegaTag2("limelight-right", true);
+            updatePoseWithMegaTag2("limelight-left", true);
         }
     }
 
@@ -49,12 +49,12 @@ public class AprilTagUtility {
                 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limeLightName);
 
-        // if (Math.abs(TunerConstants.DriveTrain.getPigeon2().getRate()) > 720) // if
-        // our angular velocity is greater than 720 degrees per second, ignore vision
-        // updates
-        // {
-        // doRejectUpdate = true;
-        // }
+        double rotationalRate = TunerConstants.DriveTrain.getPigeon2().getRate();
+        Logger.recordOutput("LimeLightOdometry/rotationalRate", rotationalRate);
+        if (Math.abs(rotationalRate) >= 200)
+        {
+            doRejectUpdate = true;
+        }
 
         // distance from current pose to vision estimated pose
         // Translation2d translation =
@@ -63,7 +63,7 @@ public class AprilTagUtility {
 
         double xyStds;
         // if (mt2.tagCount >= 2) {
-        xyStds = 0.3;
+        xyStds = 0.2;
         // }
 
         // 1 target with large area and close to estimated pose
