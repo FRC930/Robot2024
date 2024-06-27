@@ -19,8 +19,8 @@ public class CANLauncher extends SubsystemBase {
   ThriftyNova m_launchWheel;
   ThriftyNova m_feedWheel;
  // sets the ID for the KLauncher, and feeder.
-  private static final int kLauncherID = 6;
-  private static final int kFeederID = 7;
+  private static final int kLauncherID = 7; // 6
+  private static final int kFeederID = 6; // 7
   // sets the K Feed, and Launcher limits' to 80
   private static final int kLauncherCurrentLimit = 80;
   private static final int kFeedCurrentLimit = 80;
