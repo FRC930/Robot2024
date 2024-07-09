@@ -21,9 +21,11 @@ public class CANLauncher extends SubsystemBase {
  // sets the ID for the KLauncher, and feeder.
   private static final int kLauncherID = 7; // 6
   private static final int kFeederID = 6; // 7
-  // sets the K Feed, and Launcher limits' to 80
-  private static final int kLauncherCurrentLimit = 80;
-  private static final int kFeedCurrentLimit = 80;
+  // sets the feeder, and Launcher current limits
+  private static final int kLauncherSupplyCurrentLimit = 8;
+  private static final int kFeederSupplyCurrentLimit = 8;
+  private static final int kLauncherStatorCurrentLimit = 80;
+  private static final int kFeederStatorCurrentLimit = 80;
   // Sets the speed in reverse for intake.
   private static final double kIntakeFeederSpeed = -0.3;
   private static final double kIntakeLauncherSpeed = -0.3;
@@ -33,8 +35,8 @@ public class CANLauncher extends SubsystemBase {
     m_launchWheel = new ThriftyNova(kLauncherID);
     m_feedWheel = new ThriftyNova(kFeederID);
 
-    m_launchWheel.setMaxCurrent(kLauncherCurrentLimit);
-    m_feedWheel.setMaxCurrent(kFeedCurrentLimit);
+    m_launchWheel.setMaxCurrent(kLauncherSupplyCurrentLimit);
+    m_feedWheel.setMaxCurrent(kFeederSupplyCurrentLimit);
 
     m_launchWheel.setInverted(true);
     m_feedWheel.setInverted(true);
@@ -76,8 +78,10 @@ public class CANLauncher extends SubsystemBase {
   public void periodic() {
     Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedVelocity:", m_feedWheel.getVelocity());
     Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherVelocity:", m_launchWheel.getVelocity());
-    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedCurrentDraw:", m_feedWheel.getCurrentDraw());
-    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherCurrentDraw:", m_launchWheel.getCurrentDraw());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedCurrentDraw/supply:", m_feedWheel.getSupplyCurrent());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherCurrentDraw/supply:", m_launchWheel.getSupplyCurrent());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedCurrentDraw/stator:", m_feedWheel.getStatorCurrent());
+    Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherCurrentDraw/stator:", m_launchWheel.getStatorCurrent());
     Logger.recordOutput(this.getClass().getSimpleName() + "/" + "feedPosition:", m_feedWheel.getPosition());
     Logger.recordOutput(this.getClass().getSimpleName() + "/" + "launcherPosition:", m_launchWheel.getPosition());
   }
