@@ -22,10 +22,12 @@ public class CANLauncher extends SubsystemBase {
   private static final int kLauncherID = 7; // 6
   private static final int kFeederID = 6; // 7
   // sets the feeder, and Launcher current limits
-  private static final int kLauncherSupplyCurrentLimit = 8;
-  private static final int kFeederSupplyCurrentLimit = 8;
+  private static final int kLauncherSupplyCurrentLimit = 16;
+  private static final int kFeederSupplyCurrentLimit = 16;
   private static final int kLauncherStatorCurrentLimit = 80;
   private static final int kFeederStatorCurrentLimit = 80;
+
+
   // Sets the speed in reverse for intake.
   private static final double kIntakeFeederSpeed = -0.3;
   private static final double kIntakeLauncherSpeed = -0.3;
