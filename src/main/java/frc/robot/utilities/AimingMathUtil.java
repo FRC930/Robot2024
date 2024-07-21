@@ -18,7 +18,14 @@ public abstract class AimingMathUtil {
 
     private static final double TRAJ_OFFSET_ZERO = 15.6514; //13.6514 Offset for old note (changed to new note offset)
 
+    //Pivot
     public static final double DIST_FUDGE = 16.0;
+    public static final double BLUE_DIST_FUDGE = 0.0;
+    public static final double RED_DIST_FUDGE = 0.0;
+    public static final double BLUE_ANGLE_FUDGE = 2.0;
+    public static final double RED_ANGLE_FUDGE = 0.0;
+    //End Pivot
+
     /**
      * Given a certain distance, returns a certain offset to the turret to adjust for the notes flight characteristics
      * If this is somehow reversed based on alliance, just invert what this method returns. I don't think it is, but maybe.

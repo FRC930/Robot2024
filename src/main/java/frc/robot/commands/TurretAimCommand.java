@@ -49,6 +49,11 @@ public class TurretAimCommand extends Command{
     private Pose2d m_ProxyPoseRed;
     private Pose2d m_ProxyPoseBlue;
 
+    private static final double RED_TPOSITION_FUDGE_TO_AMP = -0.23; //meters
+    private static final double BLUE_TPOSITION_FUDGE_TO_AMP = 0.0; //meters
+    private static final double RED_TPOSITION_FUDGE_TO_CENTER = 0.0; //meters
+    private static final double BLUE_TPOSITION_FUDGE_TO_CENTER = 0.0; //meters
+
     //We default to the new model when using odometry
     public TurretAimCommand(TurretSubsystem turretSubsystem) {
         this(turretSubsystem, null, null);
@@ -158,8 +163,12 @@ public class TurretAimCommand extends Command{
     }
 
     private double calcTurretAngleExpo(Alliance alliance) {
-        double txi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getX();
-        double tyi = alliance == Alliance.Red ? m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY() : m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getY();
+        double txi = alliance == Alliance.Red ? 
+            m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getX() - RED_TPOSITION_FUDGE_TO_CENTER : 
+            m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getX() + BLUE_TPOSITION_FUDGE_TO_CENTER;
+        double tyi = alliance == Alliance.Red ? 
+            m_AprilTagFieldLayout.getTagPose(4).get().toPose2d().getY() + RED_TPOSITION_FUDGE_TO_AMP : 
+            m_AprilTagFieldLayout.getTagPose(7).get().toPose2d().getY() + BLUE_TPOSITION_FUDGE_TO_AMP;
         double firstPart = -Math.IEEEremainder(Math.toDegrees(Math.atan2(tyi - ry, txi - rx)) - m_CurrentRobotHeading, 360);
         idealHeading = firstPart;
         Logger.recordOutput("AutoAim/IdealHeading", firstPart);

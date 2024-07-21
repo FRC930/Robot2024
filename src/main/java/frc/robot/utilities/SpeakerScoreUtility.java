@@ -170,6 +170,14 @@ public class SpeakerScoreUtility {
         double h = 230.316 + AimingMathUtil.DIST_FUDGE + SmartDashboard.getNumber("offsets/distanceOffset",  0.0);
         double k = 23.5 + 0.5; //25.9504 - old value before champs;
 
+        if(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue) {
+            h += AimingMathUtil.BLUE_DIST_FUDGE;
+            k += AimingMathUtil.BLUE_ANGLE_FUDGE;
+        } else {
+            h += AimingMathUtil.RED_DIST_FUDGE;
+            k += AimingMathUtil.RED_ANGLE_FUDGE; 
+        }
+
         return Math.pow(exponent , (distance - h)) + k;
     }
 
