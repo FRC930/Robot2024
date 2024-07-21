@@ -257,7 +257,7 @@ public class AutoCommandManager {
                 true, 
                 new Pose2d(convertBlueXToRedX(2.41), 3.35, new Rotation2d(0.0)),
                 new Pose2d(2.41, 3.35, new Rotation2d(0.0))))
-                + 0.0,    //degrees fudge factor
+                + 5.0,    //degrees fudge factor
             new Pose2d(convertBlueXToRedX(2.41), 3.35, new Rotation2d(0.0)),
             new Pose2d(2.41, 3.35, new Rotation2d(0.0))));
 
@@ -266,9 +266,18 @@ public class AutoCommandManager {
         NamedCommands.registerCommand("prepareAmpYShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
         SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
             true, 
-            new Pose2d(convertBlueXToRedX(5.38), 6.89, new Rotation2d(0.0)),
+            new Pose2d(convertBlueXToRedX(5.31), 6.86, new Rotation2d(0.0)),
             new Pose2d(5.38, 6.89, new Rotation2d(0.0))))
             - 0.0,    //degrees fudge factor
+        new Pose2d(convertBlueXToRedX(4.38), 6.89, new Rotation2d(0.0)),
+        new Pose2d(4.38, 6.89, new Rotation2d(0.0))));
+
+        NamedCommands.registerCommand("prepareAmpYSecondShoot", CommandFactoryUtility.createPreparePosedShootEndlessCommand(turret, pivot, shooter,  
+        SpeakerScoreUtility.computePivotAnglePolyModel(SpeakerScoreUtility.inchesToSpeaker(
+            true, 
+            new Pose2d(convertBlueXToRedX(5.31), 6.86, new Rotation2d(0.0)),
+            new Pose2d(5.38, 6.89, new Rotation2d(0.0))))
+            + 2.0,    //degrees fudge factor
         new Pose2d(convertBlueXToRedX(4.38), 6.89, new Rotation2d(0.0)),
         new Pose2d(4.38, 6.89, new Rotation2d(0.0))));
 
@@ -304,7 +313,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                         new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
-                        + 1.2,    //degrees fudge factor
+                        + 5.2,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                 new Pose2d(3.32, 2.28, new Rotation2d(0.0))));
 
@@ -313,7 +322,7 @@ public class AutoCommandManager {
                         true, 
                         new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                         new Pose2d(3.32, 3.28, new Rotation2d(0.0))))
-                        + 1.2,    //degrees fudge factor
+                        + 5.2,    //degrees fudge factor
                 new Pose2d(convertBlueXToRedX(3.32), 3.28, new Rotation2d(0.0)),
                 new Pose2d(3.32, 2.28, new Rotation2d(0.0))));
 
