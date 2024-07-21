@@ -35,7 +35,7 @@ public class AprilTagUtility {
             updatePoseWithMegaTag2("limelight-front", true);
             updatePoseWithMegaTag2("limelight-back", true);
             updatePoseWithMegaTag2("limelight-right", true);
-            updatePoseWithMegaTag2("limelight-left", false);
+            updatePoseWithMegaTag2("limelight-left", true);
         }
     }
 
