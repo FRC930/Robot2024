@@ -22,8 +22,8 @@ public class CANLauncher extends SubsystemBase {
   private static final int kLauncherID = 7; // 6
   private static final int kFeederID = 6; // 7
   // sets the feeder, and Launcher current limits
-  private static final int kLauncherSupplyCurrentLimit = 16;
-  private static final int kFeederSupplyCurrentLimit = 16;
+  private static final int kLauncherSupplyCurrentLimit = 160;
+  private static final int kFeederSupplyCurrentLimit = 160;
   private static final int kLauncherStatorCurrentLimit = 80;
   private static final int kFeederStatorCurrentLimit = 80;
 
@@ -36,6 +36,9 @@ public class CANLauncher extends SubsystemBase {
   public CANLauncher() {
     m_launchWheel = new ThriftyNova(kLauncherID);
     m_feedWheel = new ThriftyNova(kFeederID);
+
+    m_launchWheel.setMaxForward(1.0);
+    m_launchWheel.setMaxReverse(-1.0);
 
     m_launchWheel.setMaxCurrent(kLauncherSupplyCurrentLimit);
     m_feedWheel.setMaxCurrent(kFeederSupplyCurrentLimit);
