@@ -16,14 +16,14 @@ public abstract class AimingMathUtil {
     */
     private static final double TRAJ_OFFSET_LINEAR_FACTOR = -0.0265424;
 
-    private static final double TRAJ_OFFSET_ZERO = 15.6514; //13.6514 Offset for old note (changed to new note offset)
+    private static final double TRAJ_OFFSET_ZERO = 18.6514; //13.6514 Offset for old note (changed to new note offset)
 
     //Pivot
     public static final double DIST_FUDGE = 16.0;
     public static final double BLUE_DIST_FUDGE = 0.0;
     public static final double RED_DIST_FUDGE = 0.0;
-    public static final double BLUE_ANGLE_FUDGE = 2.0;
-    public static final double RED_ANGLE_FUDGE = 0.0;
+    public static final double BLUE_ANGLE_FUDGE = 3.0;
+    public static final double RED_ANGLE_FUDGE = 2.0;
     //End Pivot
 
     /**
