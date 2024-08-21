@@ -1,5 +1,7 @@
 package frc.robot.IOs;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 /**
  * <h3>TalonPosIO</h3>
  * IO for Talons that are set with positions
@@ -55,4 +57,6 @@ public interface TalonPosIO {
         return 0.02;
     }
     public void delayedConfigure();
+
+    public TalonFX getTalonFX();
 }

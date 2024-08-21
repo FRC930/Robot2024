@@ -2,18 +2,22 @@ package frc.robot.subsystems.turret;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
+import frc.robot.commands.Orchestra.PlaysMusic;
 
 /**
  * <h3>PivotSubsystem</h3>
  * A subsystem that represents the pivot
  */
-public class TurretSubsystem extends SubsystemBase{
+public class TurretSubsystem extends SubsystemBase implements PlaysMusic{
 
     private final TalonPosIO m_io;
 
@@ -122,5 +126,15 @@ public class TurretSubsystem extends SubsystemBase{
 
     public void setRefinedTarget(double position) {
         m_io.setRefinedTarget(position);
+    }
+
+    @Override
+    public TalonFX[] getInstruments() {
+        return new TalonFX[] {m_io.getTalonFX()};
+    }
+
+    @Override
+    public Subsystem[] getSubsystems() {
+        return new Subsystem[] {this};
     }
 }

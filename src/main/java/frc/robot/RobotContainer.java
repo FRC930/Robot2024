@@ -12,6 +12,7 @@ import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TurretAimCommand;
 import frc.robot.commands.TurretRefineCommand;
+import frc.robot.commands.Orchestra.OrchestraCommand;
 import frc.robot.commands.tests.IndexerCommandTest;
 import frc.robot.commands.tests.IntakeCommandTest;
 import frc.robot.commands.tests.SetPivotPositionCommandTest;
@@ -434,6 +435,10 @@ public class RobotContainer {
     )
     .onFalse(CommandFactoryUtility.createStopShootingCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_turretSubsystem, m_intakeSubsystem));
     
+    String filename = "vivalavida";
+    m_driverController.start().onTrue(
+      new OrchestraCommand(filename + "Indexer", "orchestra/"+filename+".chrp", m_indexerSubsystem, m_shooterSubsystem, m_turretSubsystem, m_pivotSubsystem)
+    );
     SmartDashboard.putData("logging/forcePivotLog",ShotLoggingUtil.getPivotInstance().getDoLogCommand("Forced"));
     SmartDashboard.putData("logging/forceTurretLog",ShotLoggingUtil.getTurretInstance().getDoLogCommand("Forced"));
     

@@ -1,0 +1,8 @@
+Overall:
+Implement the PlaysMusic interface on a subsystem, then pass it into the initialization of an orchestra command.
+The orchestra command may then be used as any other command.
+
+PlaysMusic implementation:
+The getInstruments() should return all TalonFXs on a subsystem.
+The getSubsystems() should return any subsystems that the command should block when using these TalonFXs.
+    NOTE: Assuming the interface is being used on a subsystem, this should just return the subsystem which contains it.

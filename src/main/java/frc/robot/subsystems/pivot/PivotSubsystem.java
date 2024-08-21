@@ -10,11 +10,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonPosIO;
 import frc.robot.IOs.TimeOfFlightIO;
 import frc.robot.commands.TurretAimCommand;
+import frc.robot.commands.Orchestra.PlaysMusic;
 import frc.robot.utilities.CommandFactoryUtility;
 import frc.robot.utilities.Phoenix6Utility;
 import frc.robot.utilities.SpeakerScoreUtility;
@@ -23,7 +25,7 @@ import frc.robot.utilities.SpeakerScoreUtility;
  * <h3>PivotSubsystem</h3>
  * A subsystem that represents the pivot
  */
-public class PivotSubsystem extends SubsystemBase{
+public class PivotSubsystem extends SubsystemBase implements PlaysMusic{
 
     public static final boolean ENABLE_REZEROING = false;
 
@@ -161,5 +163,15 @@ public class PivotSubsystem extends SubsystemBase{
 
     public Command newWaitUntilSetpointCommand(double timeout) {
         return new WaitCommand(timeout).until(() -> atSetpoint()); // Not dependent on subsystem because can run parralel with set position
+    }
+
+    @Override
+    public TalonFX[] getInstruments() {
+        return new TalonFX[] {m_io.getTalonFX()};
+    }
+
+    @Override
+    public Subsystem[] getSubsystems() {
+        return new Subsystem[] {this};
     }
 }

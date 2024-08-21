@@ -147,4 +147,9 @@ public class TurretIORobot implements TalonPosIO{
         () -> m_motor.setControl(pullConfig.withPosition(Units.degreesToRotations(position)).withSlot(0)));
     }
 
+    @Override
+    public TalonFX getTalonFX() {
+        return m_motor;
+    }
+
 }

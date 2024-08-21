@@ -137,4 +137,9 @@ public class PivotIORobot implements TalonPosIO{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setPull'");
     }
+
+    @Override
+    public TalonFX getTalonFX() {
+        return m_motor;
+    }
 }

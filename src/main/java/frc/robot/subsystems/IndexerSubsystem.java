@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Robot;
 import frc.robot.IOs.TalonRollerIO;
 import frc.robot.IOs.TimeOfFlightIO;
+import frc.robot.commands.Orchestra.PlaysMusic;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.Phoenix6Utility;
 
@@ -25,7 +27,7 @@ import frc.robot.utilities.Phoenix6Utility;
  * <h3>IndexerSubsystem</h3>
  * This subsystem controls the indexer
  */
-public class IndexerSubsystem extends SubsystemBase {
+public class IndexerSubsystem extends SubsystemBase implements PlaysMusic {
     private TalonRollerIO m_starRollerIO;
     private TimeOfFlightIO m_sensorIO;
     private boolean m_sensorStatus;
@@ -213,6 +215,18 @@ public class IndexerSubsystem extends SubsystemBase {
         } else {
             return new WaitCommand(.1);
         }
+    }
+
+
+    @Override
+    public TalonFX[] getInstruments() {
+        return new TalonFX[] {m_rollerTopIO.getTalon(),m_starRollerIO.getTalon()};
+    }
+
+
+    @Override
+    public Subsystem[] getSubsystems() {
+        return new Subsystem[] {this};
     }
 
 }
