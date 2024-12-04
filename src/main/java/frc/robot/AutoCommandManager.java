@@ -75,7 +75,11 @@ public class AutoCommandManager {
         PathPlannerAuto ampSkipYRed = new PathPlannerAuto("AmpSkipYRed");
         PathPlannerAuto ampSkipYBlue = new PathPlannerAuto("AmpSkipYBlue");
 
-        PathPlannerAuto ampAnchorRed = new PathPlannerAuto("AmpAnchorRed");
+        PathPlannerAuto ampAnchorRed = new PathPlannerAuto("AmpAnchorRed"); 
+
+        PathPlannerAuto testChoreo = new PathPlannerAuto("TestChoreoPath");
+        PathPlannerAuto steveTestPath = new PathPlannerAuto("steveTestPath");
+        PathPlannerAuto underStageTestPath = new PathPlannerAuto("underStageTestPath");
 
 
         m_chooser.setDefaultOption("None", null);
@@ -102,7 +106,9 @@ public class AutoCommandManager {
         m_chooser.addOption("RED_AmpSkipY", ampSkipYRed);
         //m_chooser.addOption("BLUE_AmpSkipY", ampSkipYBlue);
         m_chooser.addOption("RED_AmpAnchor", ampAnchorRed);
-
+        m_chooser.addOption("TestChoreoPath", testChoreo);
+        m_chooser.addOption("SteveTestPath", steveTestPath);
+        m_chooser.addOption("UnderStageTestPath", underStageTestPath);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
@@ -355,7 +361,9 @@ public class AutoCommandManager {
             shooter.newSetSpeedsWithSlotCommand(50.0, 50.0, 1)
                 .alongWith(indexer.newSetSpeedCommand(0.7))
                 .andThen(indexer.newUntilNoNoteFoundCommand()) // dont stop until note gone
-                .andThen(new WaitCommand(0.5))); // This is to validate that note is out);
+                .andThen(new WaitCommand(0.5))
+                .andThen(shooter.newSetSpeedsWithSlotCommand(0, 0, 1))
+                .andThen(indexer.newSetSpeedCommand(0.0))); // This is to validate that note is out);
     }
 
     private static double convertBlueXToRedX(double x) {
